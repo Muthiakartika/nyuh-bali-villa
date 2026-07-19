@@ -1,0 +1,33 @@
+type InstagramTeaserProps = {
+  heading: string;
+  /** Seminyak and Ubud run separate Instagram accounts
+   * (@nyuhbalivillas vs. @nyuhbaliubud) — confirmed by checking the actual
+   * follow link on each property's page rather than assuming they share
+   * one account. */
+  instagramHref: string;
+};
+
+/**
+ * "What's happening @nyuhbalivillas" / "@nyuhbaliubud" — on the live site
+ * this is a Smash Balloon Instagram feed widget showing a live grid of
+ * recent posts. That requires an authenticated, ongoing connection to
+ * Instagram's API (and even a scraped snapshot would be a grid of expiring,
+ * signed image URLs that would break within days) — out of reach for a
+ * static clone, so this reproduces the heading and "Follow on Instagram"
+ * CTA without attempting to fake a live photo grid.
+ */
+export function InstagramTeaser({ heading, instagramHref }: InstagramTeaserProps) {
+  return (
+    <section className="flex flex-col items-center gap-4 bg-ink px-5 py-16 text-center md:px-[92px]">
+      <h2 className="font-heading text-[40px] font-extralight text-primary">{heading}</h2>
+      <a
+        href={instagramHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-[13px] text-white uppercase"
+      >
+        Follow on Instagram
+      </a>
+    </section>
+  );
+}

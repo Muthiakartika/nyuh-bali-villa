@@ -1,26 +1,52 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * Design tokens for the Nyuh Bali Villas clone.
+ *
+ * Tailwind v4 uses a "CSS-first" config: instead of a tailwind.config.js
+ * theme.extend block, custom design tokens are declared here with an
+ * `@theme` at-rule, and Tailwind turns each `--color-*` / `--font-*`
+ * variable into matching utility classes automatically — e.g. `--color-primary`
+ * below is what makes `bg-primary`, `text-primary`, `border-primary`, etc.
+ * available everywhere in the app. Centralizing the palette here (rather than
+ * writing hex codes inside components) means the whole site can be re-themed
+ * from this one file.
+ *
+ * These exact values were measured from the live site's computed styles
+ * (not eyeballed), per the brief's "avoid visual approximations" instruction:
+ *   - heading/accent color:  rgb(199, 162, 89) -> #c7a259
+ *   - body copy color:       rgb(64, 64, 64)   -> #404040
+ *   - page background:       white
+ *   - dark surface color:    rgb(38, 30, 19)   -> #261e13 (footer bar, the
+ *     "BOOK NOW" ribbon, and the mobile nav overlay all reuse this exact
+ *     dark brown, so it earns its own token rather than being repeated as a
+ *     one-off hex value in three separate components)
+ */
+@theme {
+  --color-primary: #c7a259;
+  --color-text: #404040;
+  --color-background: #ffffff;
+  --color-ink: #261e13;
+  --color-error: #ff0000;
 }
 
+/*
+ * A second, separate `@theme inline` block for the font tokens. This has to
+ * be "inline" (rather than a plain `@theme`) because `--font-open-sans` and
+ * `--font-source-sans` aren't literal values known at build time — they're
+ * CSS custom properties that next/font/google injects at runtime via a
+ * className on <html> (see layout.tsx). `@theme inline` tells Tailwind
+ * "generate the `font-body` / `font-heading` utilities, but keep them
+ * pointing at whatever that variable resolves to", instead of trying to
+ * hard-code a value right now.
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-body: var(--font-open-sans);
+  --font-heading: var(--font-source-sans);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-body);
 }

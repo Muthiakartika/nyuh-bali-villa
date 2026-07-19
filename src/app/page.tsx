@@ -1,65 +1,44 @@
-import Image from "next/image";
+import { HomeHeader } from "@/components/home/HomeHeader";
+import { HomeFooter } from "@/components/home/HomeFooter";
+import { PropertyPanel } from "@/components/home/PropertyPanel";
+import { BookNowRibbon } from "@/components/layout/BookNowRibbon";
 
+// The homepage's ribbon links to a "group" booking page (lets the visitor
+// choose either property once they land on the booking engine), unlike the
+// per-property pages later in this project, which will link straight to
+// that property's own booking page.
+const GROUP_BOOKING_HREF =
+  "https://booking.nyuhbalivillas.com/inst/#group?groupId=661MB8ZgvnAogj7QoCG4WJtr8FTILhqyXViqajI5ODY=&JDRN=Y";
+
+// The Home route: `src/app/page.tsx` maps to `/` in the App Router simply by
+// its file location — no routing configuration needed. This stays a Server
+// Component (no "use client"); the interactive pieces (the mobile menu
+// toggles) are isolated inside HomeHeader/HomeFooter instead of forcing this
+// whole page to ship as client-side JS.
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <>
+      <HomeHeader />
+
+      <main className="flex flex-col px-5 md:flex-row md:px-[92px]">
+        <PropertyPanel
+          headingLevel="h1"
+          name="SEMINYAK"
+          description="Experience romantic ambiance in our  Seminyak honeymoon villa that ready to pamper you and your loved one. Enjoy the personalized service from our team and signature Nyuh amenities for your memorable honeymoon."
+          imageSrc="https://nyuhbalivillas.com/wp-content/uploads/2023/03/home-seminyak.webp"
+          href="/seminyak"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+        <PropertyPanel
+          headingLevel="h2"
+          name="UBUD"
+          description="A sanctuary for relaxation and wellness, our Ubud resort is an ideal journey to recharge your body and mind. We invite you to experience our luxury retreat in Ubud to find tranquility, balance, and inner peace."
+          imageSrc="https://nyuhbalivillas.com/wp-content/uploads/2025/01/home-ubud-compress.webp"
+          href="/ubud"
+        />
       </main>
-    </div>
+
+      <HomeFooter />
+      <BookNowRibbon href={GROUP_BOOKING_HREF} />
+    </>
   );
 }
