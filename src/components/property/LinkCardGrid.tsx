@@ -75,25 +75,37 @@ export function LinkCardGrid({
         } ${DESKTOP_COLUMNS[columns]}`}
       >
         {items.map((item) => {
+          // `group-hover:*` below only ever activates when a `.group`
+          // ancestor exists — which only happens for the `<Link>` branch a
+          // few lines down. That means this same JSX can be reused for the
+          // non-clickable (`inScope: false`) branch too: the hover classes
+          // are simply inert there, so an item that isn't a real link never
+          // looks interactive on hover.
           const content = (
             <>
-              <div className={`relative w-full ${IMAGE_ASPECT_CLASS[imageAspect]}`}>
+              <div
+                className={`relative w-full overflow-hidden ${IMAGE_ASPECT_CLASS[imageAspect]}`}
+              >
                 <Image
                   src={item.imgSrc}
                   alt={item.label}
                   fill
                   sizes="500px"
-                  className="object-cover"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
-              <span className={`text-white ${LABEL_TEXT_SIZE[labelSize]}`}>{item.label}</span>
+              <span
+                className={`text-white transition-colors duration-200 group-hover:text-primary ${LABEL_TEXT_SIZE[labelSize]}`}
+              >
+                {item.label}
+              </span>
             </>
           );
 
           return (
             <div key={item.label} className="flex flex-col items-center gap-3 text-center">
               {item.inScope ? (
-                <Link href={item.href} className="flex flex-col items-center gap-3">
+                <Link href={item.href} className="group flex flex-col items-center gap-3">
                   {content}
                 </Link>
               ) : (

@@ -75,7 +75,7 @@ export function BookingSearchBar({ bookingHref }: BookingSearchBarProps) {
         href={bookingHref}
         target="_blank"
         rel="noopener noreferrer"
-        className="rounded bg-primary px-[10px] py-[6px] text-base text-white"
+        className="rounded bg-primary px-[10px] py-[6px] text-base text-white transition-opacity duration-200 hover:opacity-90"
       >
         Search
       </a>

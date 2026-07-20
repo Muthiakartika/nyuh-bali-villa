@@ -26,7 +26,7 @@ export function BookNowRibbon({ href }: BookNowRibbonProps) {
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex flex-col items-center text-base font-bold text-primary"
+        className="flex flex-col items-center text-base font-bold text-primary transition-opacity duration-200 hover:opacity-80"
       >
         {/* Keyed by index, not the letter itself — "BOOK" repeats "O", so
             using the letter as the key would collide. */}

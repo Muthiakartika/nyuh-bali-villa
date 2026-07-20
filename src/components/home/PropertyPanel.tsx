@@ -40,9 +40,12 @@ export function PropertyPanel({
   const Heading: ElementType = headingLevel;
 
   return (
+    // `group` lets the image inside react to hovering anywhere in this link
+    // (heading, paragraph, or photo) via Tailwind's `group-hover:` variant,
+    // rather than only when the cursor is directly over the image itself.
     <Link
       href={href}
-      className="flex w-full flex-col items-center py-5 text-center md:w-1/2"
+      className="group flex w-full flex-col items-center py-5 text-center md:w-1/2"
     >
       <Heading className="font-heading text-[40px] font-light text-primary">
         {name}
@@ -50,8 +53,15 @@ export function PropertyPanel({
       <p className="mt-[15px] max-w-[500px] text-lg leading-[1.6] font-extralight text-ink">
         {description}
       </p>
-      <div className="relative mt-[15px] aspect-[3/2] w-full max-w-[500px]">
-        <Image src={imageSrc} alt={name} fill className="object-fill" />
+      {/* overflow-hidden clips the image's hover zoom to this box instead of
+          letting it spill over the surrounding text. */}
+      <div className="relative mt-[15px] aspect-[3/2] w-full max-w-[500px] overflow-hidden">
+        <Image
+          src={imageSrc}
+          alt={name}
+          fill
+          className="object-fill transition-transform duration-500 group-hover:scale-105"
+        />
       </div>
     </Link>
   );

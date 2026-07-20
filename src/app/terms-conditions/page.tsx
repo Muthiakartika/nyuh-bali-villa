@@ -4,6 +4,7 @@ import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { LegalSection } from "@/components/legal/LegalSection";
 import { PROPERTY_SITES } from "@/data/properties";
 import { TERMS_CONDITIONS_SECTIONS } from "@/data/legal";
+import { Container } from "@/components/ui/Container";
 
 export const metadata: Metadata = {
   title: "Terms & Conditions - Nyuh Bali Villas",
@@ -21,15 +22,17 @@ export default function TermsConditionsPage() {
   return (
     <>
       <PropertyHeader site={site} activeHref="/terms-conditions" />
-      <main className="flex flex-col gap-12 px-5 py-16 md:px-[92px]">
-        <h1 className="font-heading text-center text-[56px] font-normal text-primary">
-          Terms &amp; Conditions
-        </h1>
-        <div className="flex flex-col gap-10">
-          {TERMS_CONDITIONS_SECTIONS.map((section) => (
-            <LegalSection key={section.heading} section={section} />
-          ))}
-        </div>
+      <main className="px-5 py-16">
+        <Container className="flex flex-col gap-12">
+          <h1 className="font-heading text-center text-[56px] font-normal text-primary">
+            Terms &amp; Conditions
+          </h1>
+          <div className="flex flex-col gap-10">
+            {TERMS_CONDITIONS_SECTIONS.map((section) => (
+              <LegalSection key={section.heading} section={section} />
+            ))}
+          </div>
+        </Container>
       </main>
       <PropertyFooter site={site} />
     </>

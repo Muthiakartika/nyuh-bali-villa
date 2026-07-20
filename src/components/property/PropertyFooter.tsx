@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { PropertySite } from "@/data/properties";
 import { EnvelopeIcon, FacebookIcon, InstagramIcon, MapPinIcon, PhoneIcon } from "@/components/ui/icons";
+import { Container } from "@/components/ui/Container";
 
 type PropertyFooterProps = {
   site: PropertySite;
@@ -35,15 +36,34 @@ export function PropertyFooter({ site }: PropertyFooterProps) {
   const mailHref = `mailto:${site.contact.email}`;
 
   return (
-    <footer className="bg-ink px-5 py-10 md:px-[92px]">
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
-          <Link href={`/${site.slug}`} className="relative h-10 w-10 shrink-0">
+    // Background stays full-bleed on <footer>; content is capped at 1120px
+    // and centered via Container — same split as PropertyHeader, matching
+    // the live site's measured layout instead of stretching edge-to-edge.
+    <footer className="bg-ink px-5 py-10">
+      <Container className="flex flex-col gap-8">
+        {/* Gold 2px divider at the very top of the footer content. Measured
+            on the live site as a `border-bottom: 2px` in the primary gold
+            (#c7a259) on a full content-width block. It shows on EVERY page
+            that uses this footer — including Contact and the legal pages,
+            which have no awards row above them — so it belongs here in the
+            shared footer, not on AwardsRow. */}
+        <div className="w-full border-t-2 border-primary" />
+
+        {/* Logo, copyright and nav stack vertically and left-align. The live
+            footer does NOT spread these across a horizontal row — the old
+            `md:flex-row md:justify-between` here was the main thing that made
+            this footer look different from the original. */}
+        <div className="flex flex-col items-start gap-4">
+          {/* The footer reuses the same per-property wordmark logo as the
+              header (site.logoSrc, shown at 136×50) — confirmed from the
+              live footer's real image source — rather than the small round
+              icon this previously used. */}
+          <Link href={`/${site.slug}`} className="relative h-[50px] w-[136px] shrink-0">
             <Image
-              src="https://nyuhbalivillas.com/wp-content/uploads/2022/12/Logo-Nyuh-Bali.png"
-              alt="Nyuh Bali Villas"
+              src={site.logoSrc}
+              alt={`Nyuh Bali Villas - ${site.label}`}
               fill
-              sizes="40px"
+              sizes="136px"
               className="object-contain"
             />
           </Link>
@@ -51,15 +71,24 @@ export function PropertyFooter({ site }: PropertyFooterProps) {
           <p className="text-sm text-white/50">© Copyright 2025 - All Rights Reserved</p>
 
           <nav>
-            <ul className="flex flex-wrap gap-x-6 gap-y-2">
+            {/* tracking-[1px] matches the live footer nav's letter-spacing. */}
+            <ul className="flex flex-wrap gap-x-8 gap-y-2">
               {footerLinks.map((link) => (
                 <li key={link.label}>
                   {link.inScope ? (
-                    <Link href={link.href} className="text-[15px] text-white/50 uppercase">
+                    <Link
+                      href={link.href}
+                      className="text-[15px] tracking-[1px] text-white/50 uppercase transition-colors duration-200 hover:text-white"
+                    >
                       {link.label}
                     </Link>
                   ) : (
-                    <span className="text-[15px] text-white/50 uppercase">{link.label}</span>
+                    // Out-of-scope labels (villas, offers, Blog) stay plain
+                    // text with no hover state — they aren't real links, so
+                    // they shouldn't look clickable either.
+                    <span className="text-[15px] tracking-[1px] text-white/50 uppercase">
+                      {link.label}
+                    </span>
                   )}
                 </li>
               ))}
@@ -94,7 +123,10 @@ export function PropertyFooter({ site }: PropertyFooterProps) {
             <a href={mailHref} aria-label="Email">
               <EnvelopeIcon className="h-8 w-8 shrink-0 text-primary" />
             </a>
-            <a href={mailHref} className="text-base leading-[1.6] text-white/50">
+            <a
+              href={mailHref}
+              className="text-base leading-[1.6] text-white/50 transition-colors duration-200 hover:text-white"
+            >
               {site.contact.email}
             </a>
           </div>
@@ -112,12 +144,17 @@ export function PropertyFooter({ site }: PropertyFooterProps) {
           </div>
         </div>
 
+        {/* transition-opacity + hover:opacity-70 on each icon link is the
+            only hover feedback these need — the icons already carry the
+            brand's gold accent color, so dimming on hover reads as "pressed"
+            without introducing a new color or a shadow/scale effect. */}
         <div className="flex gap-4">
           <a
             href="https://goo.gl/maps/C6g15D7NfNvwVxjq9"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Find us on Google Maps"
+            className="transition-opacity duration-200 hover:opacity-70"
           >
             <MapPinIcon className="h-8 w-8 text-primary" />
           </a>
@@ -126,6 +163,7 @@ export function PropertyFooter({ site }: PropertyFooterProps) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
+            className="transition-opacity duration-200 hover:opacity-70"
           >
             <FacebookIcon className="h-8 w-8 text-primary" />
           </a>
@@ -134,14 +172,19 @@ export function PropertyFooter({ site }: PropertyFooterProps) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
+            className="transition-opacity duration-200 hover:opacity-70"
           >
             <InstagramIcon className="h-8 w-8 text-primary" />
           </a>
-          <a href={mailHref} aria-label="Email">
+          <a
+            href={mailHref}
+            aria-label="Email"
+            className="transition-opacity duration-200 hover:opacity-70"
+          >
             <EnvelopeIcon className="h-8 w-8 text-primary" />
           </a>
         </div>
-      </div>
+      </Container>
     </footer>
   );
 }

@@ -33,7 +33,14 @@ export function HeroSlider({ images, alt }: HeroSliderProps) {
   }
 
   return (
-    <div className="relative h-[320px] w-full overflow-hidden md:h-[576px]">
+    // Height is a percentage of the *viewport's* height (vh), not a fixed
+    // pixel value — confirmed on the live site by resizing the browser and
+    // re-measuring at many widths. It turned out to be four tiers, not
+    // three: 30vh below 768px, 50vh from 768–1023px, 70vh from
+    // 1024–1124px, and 80vh from 1125px up. `heroxl` is that last cutoff —
+    // see its definition in globals.css for why it has to be a registered
+    // breakpoint rather than an arbitrary `min-[1125px]` variant here.
+    <div className="relative h-[30vh] w-full overflow-hidden md:h-[50vh] lg:h-[70vh] heroxl:h-[80vh]">
       {images.map((src, index) => (
         <div
           key={src}

@@ -60,3 +60,28 @@ Terms & Conditions and Privacy Policy hard-code `PROPERTY_SITES.ubud` for their 
 - `InstagramTeaser` shows the heading and a real "Follow on Instagram" link, not a live photo grid (the source is a Smash Balloon widget requiring an authenticated Instagram API connection).
 
 **Known live-site content quirks, preserved rather than "fixed":** the Privacy Policy's Ubud contact email is `info@ubudnyuhbali.co` (no "m"), genuinely different from the `info@ubudnyuhbali.com` used everywhere else on the live site — that inconsistency is in the source content itself. Conversely, `/ubud/contact/` is *broken* on the live site (always serves Seminyak's cached content, confirmed via network inspection) — that bug was **not** reproduced; the real `contact-us-ubud.webp` photo was recovered via the WordPress REST API and used with Ubud's own correct header/footer/form instead.
+
+---
+
+## UI Facelift — session progress (2026-07-20, resume here)
+
+A UI-refinement pass ("~75% original / ~25% polish") measured against the live site with computed styles (not eyeballing) at 390 / 768 / 1024 / 1440 / 1920 px. **Everything below is done and verified against `nyuhbalivillas.com`; the dev server was clean-restarted after each batch (see gotcha #1).**
+
+### Done & verified
+- **Shared `Container`** (`src/components/ui/Container.tsx`) — centered content wrapper, `max-w-[1080px]`. The live site wraps content in a 1120px box that itself has 20px inner padding → **1080px** content. Since every section already applies its own `px-5`, capping content at 1080 reproduces the live width at every viewport (wide = 1080 centered; mobile = viewport−40). Used by `PropertyHeader`, `PropertyFooter`, `HomeHeader`, `HomeFooter`, `AwardsRow`, and the contact / terms / privacy `<main>`s. Backgrounds stay full-bleed on the outer element; only the *content* is capped.
+- **`PropertyHeader`** — height `h-[82px] lg:h-[60px]` (live is 60px on desktop, 82px below `lg`). Real nav `<Link>`s get a hover-brighten; `inScope:false` spans do not.
+- **`HeroSlider`** — viewport-relative height `h-[30vh] md:h-[50vh] lg:h-[70vh] heroxl:h-[80vh]` (four tiers measured on live). `heroxl` is a custom breakpoint (see gotcha #2).
+- **Hover polish** — `LinkCardGrid` + `PropertyPanel` images `group-hover:scale-105` (wrappers got `overflow-hidden`); primary CTA buttons `hover:opacity-90`; footer social icons `hover:opacity-70`.
+- **`PropertyFooter`** rebuilt to match live: 2px gold divider at top (`border-t-2 border-primary`); logo is now the per-property wordmark `site.logoSrc` at 136×50 (was a 40×40 round icon); top block is stacked & left-aligned (logo → copyright → nav — was a horizontal `justify-between` row); nav `tracking-[1px]`. Gold line belongs to the footer (shows on Contact/legal pages too, which have no awards row).
+- **`AwardsRow`** — now takes a `variant` prop. Seminyak `"grid"` (default) = 5 equal columns spanning full width, square badges, single row that scales down (was centered/clustered). Ubud `variant="marquee"` = animated logo slider matching the live site (`animate-marquee`, 30s linear infinite; badges rendered twice and track slides `-50%` for a seamless loop). All award images are square.
+- **`globals.css`** — added `--breakpoint-heroxl: 70.3125rem`, `--animate-marquee` token, `@keyframes marquee`, and a `prefers-reduced-motion` guard that freezes the marquee.
+
+### Gotchas that WILL bite you if forgotten
+1. **Turbopack + Tailwind v4 does not pick up brand-new class names** added to `.tsx` files on an incremental rebuild — the new utilities are silently absent from the compiled CSS and just don't apply (JSX changes still hot-reload fine, which makes it look like only *some* of your edit landed). **Fix: stop the dev server → delete `.next` → restart.** Touching `globals.css`'s mtime did **not** help. So after adding any new Tailwind class, do a clean restart before trusting the result. (This bit us 3× this session.)
+2. **Custom breakpoints must be `rem`, not `px`.** `--breakpoint-heroxl` had to be `70.3125rem` (= 1125px). In px, Tailwind can't order it against the rem-based defaults and emits its `@media` block out of sequence, so `lg:` wins the cascade and the tier silently does nothing. In rem it sorts correctly between `lg` and `xl`.
+3. Windows/Turbopack: always stop the `next dev` process **before** deleting `.next` (see the Commands note above). Dev server is on **port 3001**.
+
+### Not done yet / next steps
+- The About-page content sections — `AboutNarrative`, `PromoBanner`, `LinkCardGrid`, `TestimonialCarousel`, `InstagramTeaser`, `BookingSearchBar` — still use `px-5 md:px-[92px]` + their own inner `max-w-*`, **not** `Container`. So they're not uniformly 1080px like the chrome/awards (card grid ≈1024, narrative text ≈896, vs live's 1080). Decide whether to move them onto `Container` to fully match live (weigh text readability at 1080).
+- Home page (`src/app/page.tsx`) two-panel picker doesn't use `Container`.
+- No visual screenshots were captured this session (the browser tool's screenshot + the live site's own screenshots timed out). Verification was computed-style measurement only — worth an eyeball pass in a normal browser, especially the **Ubud marquee motion** (its interpolation was proven correct via the Web Animations API, but it was paused under automation because the pane reported the document as `hidden`; it runs on a real visible tab).

@@ -46,7 +46,7 @@ export function AboutNarrative({
         href={bookingHref}
         target="_blank"
         rel="noopener noreferrer"
-        className="rounded-[3px] bg-primary px-4 py-[10px] text-base text-white"
+        className="rounded-[3px] bg-primary px-4 py-[10px] text-base text-white transition-opacity duration-200 hover:opacity-90"
       >
         {buttonLabel}
       </a>

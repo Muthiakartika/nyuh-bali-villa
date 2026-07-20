@@ -135,6 +135,7 @@ export default function UbudAboutPage() {
           instagramHref="https://www.instagram.com/nyuhbaliubud/"
         />
         <AwardsRow
+          variant="marquee"
           badges={[
             `${UPLOADS}/2023/02/ubud-award-3.jpg.webp`,
             `${UPLOADS}/2023/02/ubud-award-1.jpg.webp`,

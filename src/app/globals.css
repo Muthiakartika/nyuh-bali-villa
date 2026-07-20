@@ -28,6 +28,38 @@
   --color-background: #ffffff;
   --color-ink: #261e13;
   --color-error: #ff0000;
+
+  /*
+   * One extra breakpoint beyond Tailwind's built-in sm/md/lg/xl/2xl scale.
+   * The live site's hero image jumps from 70vh to 80vh at exactly 1125px
+   * (measured by resizing the browser in ~10px steps around that point) —
+   * an in-between value Tailwind has no built-in name for.
+   *
+   * The value MUST be written in rem, not px, even though it's conceptually
+   * "1125px". Tailwind orders breakpoints by comparing their numeric values,
+   * and it can't compare a px value against the built-in breakpoints, which
+   * are all defined in rem (lg = 64rem, xl = 80rem, …). A px breakpoint gets
+   * sorted to the very front instead of into its correct slot, so its media
+   * query ends up *before* the `lg` block in the generated CSS — and then
+   * `lg:h-[70vh]`, coming later in the file, wins the cascade at ≥1125px and
+   * silently cancels the 80vh tier. (Confirmed by reading the compiled CSS:
+   * with a px value the media order was 1125px, 40rem, 48rem, 64rem — the
+   * odd one out.) In rem it sorts numerically between lg and xl as intended:
+   * 1125 / 16 = 70.3125rem.
+   */
+  --breakpoint-heroxl: 70.3125rem;
+
+  /*
+   * The Ubud awards row is a continuously-scrolling logo marquee on the live
+   * site (a "logo slider"), not a static grid like Seminyak's. Declaring the
+   * animation as a `--animate-*` theme token makes Tailwind generate an
+   * `animate-marquee` utility, so AwardsRow can switch it on with one class.
+   * The badges are rendered twice back-to-back and the track slides left by
+   * exactly half its width (-50%), so the moment the first copy scrolls out
+   * the second copy is already in its place — an even, seamless loop with no
+   * visible jump. 30s linear matches the live slider's measured speed.
+   */
+  --animate-marquee: marquee 30s linear infinite;
 }
 
 /*
@@ -49,4 +81,29 @@ body {
   background-color: var(--color-background);
   color: var(--color-text);
   font-family: var(--font-body);
+}
+
+/*
+ * Keyframes for the Ubud awards marquee (see --animate-marquee above). Kept
+ * as plain CSS at the top level because @keyframes isn't a design token —
+ * Tailwind's `animate-marquee` utility just references this `marquee` name.
+ */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/*
+ * Respect users who've asked their OS to reduce motion: freeze the marquee
+ * so it shows as a static row instead of scrolling. An accessibility best
+ * practice for any always-on, auto-playing animation.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
 }

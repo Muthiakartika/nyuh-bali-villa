@@ -30,7 +30,7 @@ export function DirectBookingDeals({ bookingHref }: DirectBookingDealsProps) {
         type="button"
         onClick={() => setIsDismissed(true)}
         aria-label="Dismiss"
-        className="text-lg text-ink"
+        className="text-lg text-ink transition-opacity duration-200 hover:opacity-60"
       >
         &times;
       </button>
@@ -43,7 +43,7 @@ export function DirectBookingDeals({ bookingHref }: DirectBookingDealsProps) {
         href={bookingHref}
         target="_blank"
         rel="noopener noreferrer"
-        className="shrink-0 rounded-[3px] bg-ink px-4 py-2.5 text-base text-white"
+        className="shrink-0 rounded-[3px] bg-ink px-4 py-2.5 text-base text-white transition-opacity duration-200 hover:opacity-90"
       >
         Book Now
       </a>
