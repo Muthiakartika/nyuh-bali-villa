@@ -1,79 +1,72 @@
-import type { ReactNode } from "react";
 import { Reveal } from "@/components/ui/Reveal";
 
 type SectionHeadingProps = {
-  /** Small pill label above the heading. In the DWELLA reference composition
-   * every major band opens with one of these outlined chips ("About Us"), so
-   * it is a layout device here, not decoration. */
+  /** Small letter-spaced label above the heading. Optional — only used where
+   * an existing word from the site can carry it (a property name, an existing
+   * nav label). No new copy is invented for it. */
   eyebrow?: string;
   title: string;
-  /** One `<h1>` per page; every other band heading is an `<h2>`. */
+  /** One `<h1>` per page; every other section heading is an `<h2>`. */
   as?: "h1" | "h2";
-  /** Whether this sits on a light surface or the dark `primary` band. */
+  /** Whether this sits on a light surface (`sand`/`white`) or a dark one
+   * (`ink`). Drives which gold is safe to use — see the contrast note on
+   * `primary-deep` in globals.css. */
   surface?: "light" | "dark";
-  /**
-   * Optional right-hand column. DWELLA pairs its section headings with a
-   * supporting paragraph and, on carousels, the prev/next controls — heading
-   * left, everything else right, sharing one baseline.
-   */
-  trailing?: ReactNode;
-  /** Heading step from the DESIGN.md ramp. `h2` (36px) is the band default;
-   * `h1` (48px) opens a page. */
-  size?: "h1" | "h2";
+  align?: "left" | "center";
+  /** `section` is the normal band heading; `display` is for the one heading
+   * on a page that opens it. */
+  size?: "section" | "display";
   className?: string;
 };
 
 /**
- * The heading lockup used by every band.
+ * The heading lockup used by every band on the site: optional eyebrow, the
+ * heading itself, and a short gold rule beneath.
  *
- * Type comes straight off the DESIGN.md ramp — no literal `text-[Npx]` values,
- * which is exactly what `impeccable detect` flags. Weight is 500 at every
- * heading step, per the spec.
+ * The rule and the eyebrow are where the brand's gold now lives. That's the
+ * central typographic move of this redesign: on the old design the *heading*
+ * was gold, at 2.39:1 against white — technically failing WCAG AA and, more
+ * to the point, the single loudest "luxury website, 2005" signal a page can
+ * send. Gold demoted to an accent and headings set in the brand's own dark
+ * brown reads as more expensive, not less, and it costs no brand colour.
  */
 export function SectionHeading({
   eyebrow,
   title,
   as: Tag = "h2",
   surface = "light",
-  trailing,
-  size = "h2",
+  align = "left",
+  size = "section",
   className = "",
 }: SectionHeadingProps) {
   const isDark = surface === "dark";
+  const isCentered = align === "center";
 
   return (
-    <div
-      className={`flex flex-col gap-6 md:flex-row md:items-end md:justify-between md:gap-16 ${className}`}
+    <Reveal
+      className={`flex flex-col ${isCentered ? "items-center text-center" : "items-start"} ${className}`}
     >
-      <Reveal className="flex flex-col items-start">
-        {eyebrow ? (
-          // `{rounded.full}` chip with a hairline border — DESIGN.md's badge
-          // geometry, used here as the section eyebrow.
-          <span
-            className={`mb-5 inline-flex rounded-full border px-4 py-1.5 text-caption font-medium ${
-              isDark
-                ? "border-white/25 text-on-dark"
-                : "border-hairline-strong text-slate"
-            }`}
-          >
-            {eyebrow}
-          </span>
-        ) : null}
-
-        <Tag
-          className={`font-medium ${size === "h1" ? "text-h1" : "text-h2"} ${
-            isDark ? "text-on-dark" : "text-ink"
+      {eyebrow ? (
+        <span
+          className={`text-eyebrow font-body uppercase ${
+            isDark ? "text-primary" : "text-primary-deep"
           }`}
         >
-          {title}
-        </Tag>
-      </Reveal>
-
-      {trailing ? (
-        <Reveal delay={120} className="md:max-w-[420px] md:shrink-0">
-          {trailing}
-        </Reveal>
+          {eyebrow}
+        </span>
       ) : null}
-    </div>
+
+      <Tag
+        className={`font-heading font-light ${
+          size === "display" ? "text-display" : "text-section"
+        } ${eyebrow ? "mt-3.5" : ""} ${isDark ? "text-white" : "text-ink"}`}
+      >
+        {title}
+      </Tag>
+
+      {/* Full-strength gold: as a 1px rule it carries no contrast burden, so
+          this is exactly where the brand colour belongs. */}
+      <span aria-hidden className="mt-5 block h-px w-14 bg-primary" />
+    </Reveal>
   );
 }

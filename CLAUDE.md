@@ -85,32 +85,6 @@ The current design answers a client brief of **"75% keep the identity, 25% moder
 
 **Still binding, do not change:** same fonts (Open Sans body, Source Sans headings), same brand colours, same logo, same images, same booking flow, and **same copy** — no headline, paragraph, button label or nav item has been reworded. Where the redesign needed a label it didn't have (hero eyebrows, footer column headings), it reuses a string that already exists on the site ("Nyuh Bali Villas", "About Us", "Seminyak", "Our Blog", "Contact Us"). Composition, spacing, scale, colour *placement* and motion are fair game; wording, brand and photography are not.
 
-### Two authorities — read this before reconciling anything
-
-`DESIGN.md` at the repo root governs **structure**: the 10-step type ramp
-(13/14/16/18/22/28/36/48/60/80), the 4px spacing scale, the 1280px container,
-the radius scale, component geometry, and the **no-hover policy** ("hover states
-are NOT documented. Default and pressed/active states only" — affordances use
-`active:`, never hover-only).
-
-`DESIGN.md` does **not** govern colour. It documents Miro's palette; the site
-runs Nyuh Bali Villas' own brand — gold `#c7a259`, brown `#261e13`. **That
-divergence is deliberate. Do not "fix" the palette back toward DESIGN.md.**
-
-Token names are generic (`accent`, `surface`, `ink`) rather than literal
-(`yellow`, `sand`) so a colour can be retuned without every component reading as
-a lie. An earlier pass had a token named `yellow` holding gold — exactly the kind
-of collision that makes a codebase untrustworthy.
-
-Typography note: DESIGN.md specifies **Roobert PRO**, a commercial Displaay face
-that cannot be licensed or self-hosted here. **Plus Jakarta Sans** stands in —
-same geometric-humanist construction, carries the 500 weight the ramp leans on.
-Swapping in the real face is one loader in `layout.tsx` plus the `@theme inline`
-block in `globals.css`.
-
-Verification: `npx impeccable detect src` reads the ramp out of DESIGN.md and
-flags any literal `text-[Npx]` that misses it. It must report **0**.
-
 ### The design system as it stands
 
 - **Width:** `ui/Container` — `wide` 1240px (was 1080px, a 2012-era measure that squeezed 4-up grids to ~280px), `narrow` 680px for legal copy (~75 characters/line). Backgrounds stay full-bleed on the outer section; only content is capped. Media (hero, homepage panels, marquee) is deliberately allowed to escape the cap — contained text against uncontained image is most of what makes the layout read as editorial.

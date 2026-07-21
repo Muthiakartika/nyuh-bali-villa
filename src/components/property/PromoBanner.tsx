@@ -9,59 +9,63 @@ type PromoBannerProps = {
 };
 
 /**
- * The "Best Price Guaranteed" offer — the page's dark band.
+ * The "Best Price Guaranteed" offer.
  *
- * This is the reference composition's closing CTA treatment applied to the one
- * section whose job is to convert: heading and the takeaway on the left, what
- * it buys you and the action on the right, on a near-black ground so it
- * interrupts the white canvas rather than blending into it.
+ * This is now the page's first dark band, and it is dark on purpose: it is the
+ * only section whose job is to close a booking, so it gets to interrupt the
+ * warm sand rhythm rather than blend into it. Gold on `ink` also measures
+ * 6.93:1 — the promo code can finally be set large in full-strength brand gold
+ * without the contrast problem it has on a light surface.
  *
- * The promo code is set in brand gold on the brand brown — 6.93:1, so the one
- * thing a guest needs to take away is also the most legible thing in the band.
- * Every word is unchanged.
+ * Structurally it went from six centred lines of near-identical size — where
+ * the promo code, the one thing a guest needs to take away, carried no more
+ * weight than the sentence around it — to a two-column split: the pitch on the
+ * left, the code and what it buys you on the right. Every word is unchanged.
  */
 export function PromoBanner({ promoCode, perks, contactEmail }: PromoBannerProps) {
   return (
-    <Section tone="dark" space="loose">
-      <div className="grid gap-10 md:grid-cols-2 md:items-center md:gap-16">
+    <Section tone="ink" space="loose">
+      <div className="grid gap-8 md:grid-cols-2 md:items-center md:gap-14">
         <div>
           <SectionHeading title="Best Price Guaranteed" surface="dark" />
           <Reveal delay={120}>
-            <p className="mt-7 text-body text-on-dark-muted">
+            <p className="mt-6 text-[17px] leading-relaxed font-light text-white/70">
               Exclusive privileges for booking on our website.
             </p>
-            <p className="mt-8 text-caption text-on-dark-muted">Promo code</p>
-            <p className="mt-2 text-display font-medium text-accent">
-              &ldquo;{promoCode}&rdquo;
+            <p className="mt-4 text-[15px] text-white/70">
+              Screenshot the deal and{" "}
+              <a
+                href={`mailto:${contactEmail}`}
+                className="text-primary underline decoration-primary/40 underline-offset-[6px] transition-colors duration-300 hover:decoration-primary"
+              >
+                click here
+              </a>
             </p>
           </Reveal>
         </div>
 
         <Reveal delay={200}>
-          {/* Feature panel geometry from DESIGN.md: 28px corners, flat, held
-              off the background by a hairline rather than a shadow. */}
-          <div className="rounded-[28px] border border-white/10 p-7 md:p-8">
-            <ul className="flex flex-col divide-y divide-white/10">
+          {/* A bordered plate, not a card: a single gold hairline around the
+              offer is enough to set it apart on a dark ground, and it keeps
+              the section flat in the way the rest of the design is. */}
+          <div className="border border-primary/35 p-6 md:p-8">
+            <span className="text-eyebrow font-body block text-primary uppercase">
+              Promo code
+            </span>
+            <p className="font-heading mt-3 text-[38px] leading-none font-light tracking-[0.12em] text-primary md:text-[48px]">
+              &ldquo;{promoCode}&rdquo;
+            </p>
+
+            <ul className="mt-7 flex flex-col divide-y divide-white/10 border-t border-white/10">
               {perks.map((perk) => (
-                <li key={perk} className="py-4 text-body text-on-dark-muted first:pt-0">
+                <li
+                  key={perk}
+                  className="py-3 text-[15px] leading-relaxed font-light text-white/75"
+                >
                   {perk}
                 </li>
               ))}
             </ul>
-
-            {/* Wording is verbatim from the original page — "click here" stays
-                an inline link inside the sentence rather than being promoted to
-                a button, because turning it into one would have meant rewriting
-                the sentence around it. */}
-            <p className="mt-7 text-body-sm text-on-dark-muted">
-              Screenshot the deal and{" "}
-              <a
-                href={`mailto:${contactEmail}`}
-                className="text-accent underline decoration-accent/40 underline-offset-4"
-              >
-                click here
-              </a>
-            </p>
           </div>
         </Reveal>
       </div>

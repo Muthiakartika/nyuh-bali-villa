@@ -1,174 +1,166 @@
 @import "tailwindcss";
 
 /*
- * Design tokens.
+ * Design tokens for Nyuh Bali Villas.
  *
- * **Two authorities, split on purpose.** DESIGN.md governs *structure* — the
- * type ramp, spacing scale, container width, radius scale, component geometry,
- * and the no-hover policy. The *palette* is Nyuh Bali Villas' own brand and is
- * NOT taken from DESIGN.md: gold `#c7a259` and dark brown `#261e13` are the
- * marks this business actually trades under, and DESIGN.md's canary yellow on
- * near-black belongs to a different company.
+ * Tailwind v4 uses a "CSS-first" config: instead of a tailwind.config.js
+ * theme.extend block, custom design tokens are declared here with an
+ * `@theme` at-rule, and Tailwind turns each `--color-*` / `--font-*` /
+ * `--text-*` variable into matching utility classes automatically — e.g.
+ * `--color-primary` below is what makes `bg-primary`, `text-primary`,
+ * `border-primary`, etc. available everywhere in the app. Centralizing the
+ * palette here (rather than writing hex codes inside components) means the
+ * whole site can be re-themed from this one file.
  *
- * If you are reconciling this file against DESIGN.md and the colours disagree,
- * that disagreement is the design. Everything else in DESIGN.md is binding.
+ * The three brand values were measured from the live site's computed styles
+ * (not eyeballed) and are FIXED — the redesign brief forbids changing brand
+ * colour:
+ *   - gold accent:      rgb(199, 162, 89) -> #c7a259
+ *   - body copy:        rgb(64, 64, 64)   -> #404040
+ *   - dark brown:       rgb(38, 30, 19)   -> #261e13
  *
- * The token *names* stay generic (`accent`, `surface`, `ink`) rather than
- * literal (`yellow`, `sand`) so that a colour can be re-tuned without every
- * component reading as a lie — an earlier pass had a token called `yellow`
- * holding gold, which is exactly the kind of collision that makes a codebase
- * untrustworthy.
+ * Everything else below is *derived* from those three, never invented.
  */
 @theme {
-  /* --- Brand --- */
-  --color-primary: #261e13;
-  --color-on-primary: #ffffff;
-  --color-accent: #c7a259;
-  /* Pressed state for accent fills. */
-  --color-accent-deep: #a8873f;
-  /* Accent as *text on a light surface*. Brand gold on white measures 2.39:1
-     and fails WCAG AA; this darker step measures 4.78:1 and passes. Full
-     strength gold is for fills, rules and icons — never for small text. */
-  --color-accent-dark: #8a6f31;
-  --color-accent-light: #f0e4cc;
-
-  /* --- Surfaces. The two tints are the brand gold flattened over white at 8%
-         and 16%, so the warmth belongs to the palette rather than being a
-         separate decorative hue. --- */
-  --color-canvas: #ffffff;
-  --color-surface: #faf8f2;
-  --color-surface-soft: #fdfcf9;
-  --color-surface-warm: #f6f0e4;
-  --color-footer: #261e13;
-
-  /* --- Hairlines, warmed to sit with the surfaces rather than reading grey
-         against them. --- */
-  --color-hairline: #e6e1d7;
-  --color-hairline-soft: #f0ece4;
-  --color-hairline-strong: #cfc7b8;
-
-  /* --- Text --- */
+  --color-primary: #c7a259;
+  --color-text: #404040;
+  --color-background: #ffffff;
   --color-ink: #261e13;
-  /* Pressed state for the primary fill, per DESIGN.md's button-primary-pressed. */
-  --color-charcoal: #3a3025;
-  --color-slate: #404040;
-  --color-steel: #6b6459;
-  --color-stone: #8c857a;
-  --color-muted: #a8a199;
-  --color-on-dark: #ffffff;
-  --color-on-dark-muted: #cfc7b8;
-
-  /* --- Semantic --- */
-  --color-success: #00b473;
   --color-error: #ff0000;
 
   /*
-   * --- Type ramp (DESIGN.md → typography) ---
+   * `primary` at 8% and 16% flattened over white — the brand gold, not a new
+   * hue. These are the page's default surfaces, and they exist because the
+   * site used to alternate between stark white and `ink/5`; `ink` is so dark
+   * and desaturated that a 5% tint of it lands on #f4f4f3, a cold neutral
+   * grey. Tinting with the *gold* instead keeps the warmth the photography
+   * and the honeymoon/wellness positioning both need.
    *
-   * Ten steps: 13, 14, 16, 18, 22, 28, 36, 48, 60, 80. These are the ONLY
-   * legitimate font sizes in this codebase. `impeccable detect` reads the ramp
-   * straight out of DESIGN.md and flags any literal `text-[Npx]` that misses
-   * it — the previous design carried 23 such violations (15/17/21/26/32/38px),
-   * every one of them an ad-hoc value that existed because there was no ramp
-   * to reach for. Use these tokens, or add a step to DESIGN.md first.
-   *
-   * Line-height and tracking travel with each step, so a heading can never be
-   * set at the right size with the wrong leading.
+   *   sand      = 0.08*#c7a259 + 0.92*#ffffff = #faf8f2
+   *   sand-deep = 0.16*#c7a259 + 0.84*#ffffff = #f6f0e4
    */
-  --text-caption: 0.8125rem;
-  --text-caption--line-height: 1.4;
-
-  --text-body-sm: 0.875rem;
-  --text-body-sm--line-height: 1.5;
-
-  --text-body: 1rem;
-  --text-body--line-height: 1.5;
-
-  --text-subtitle: 1.125rem;
-  --text-subtitle--line-height: 1.5;
-
-  --text-h4: 1.375rem;
-  --text-h4--line-height: 1.3;
-
-  --text-h3: 1.75rem;
-  --text-h3--line-height: 1.25;
-
-  --text-h2: 2.25rem;
-  --text-h2--line-height: 1.2;
-  --text-h2--letter-spacing: -0.5px;
-
-  --text-h1: 3rem;
-  --text-h1--line-height: 1.15;
-  --text-h1--letter-spacing: -1px;
-
-  --text-display: 3.75rem;
-  --text-display--line-height: 1.1;
-  --text-display--letter-spacing: -1.5px;
-
-  --text-hero: 5rem;
-  --text-hero--line-height: 1.05;
-  --text-hero--letter-spacing: -2px;
+  --color-sand: #faf8f2;
+  --color-sand-deep: #f6f0e4;
 
   /*
-   * The hero is the one place the ramp needs to bend: an 80px headline on a
-   * 390px phone would break to five lines. `text-hero` stays the documented
-   * desktop step and this fluid token carries the same design intent down to
-   * mobile, clamped so it never lands between ramp steps arbitrarily —
-   * it interpolates 36px → 80px, both of which are documented steps.
+   * A darker shade of the same gold, for small gold text on light surfaces.
+   *
+   * This is an accessibility fix, not a palette change. Brand gold #c7a259
+   * on white measures 2.39:1 — it fails WCAG AA for both body text (4.5:1)
+   * and large text (3:1), which is why every gold section heading on the old
+   * design was genuinely hard to read. #8a6f31 measures 4.78:1 on white and
+   * passes AA outright.
+   *
+   * The rule this establishes: full-strength `primary` is for gold on dark,
+   * for rules/hairlines, for icons and for button fills — all places where
+   * it measures fine. `primary-deep` is for gold *text* on a light surface.
    */
-  --text-hero-fluid: clamp(2.25rem, 6.5vw, 5rem);
-  --text-hero-fluid--line-height: 1.05;
-  --text-hero-fluid--letter-spacing: -2px;
+  --color-primary-deep: #8a6f31;
 
   /*
-   * One extra breakpoint beyond Tailwind's sm/md/lg/xl/2xl scale, kept from the
-   * original build for the hero's last height step at 1125px.
+   * Type scale. The old design had exactly one heading size (26px mobile /
+   * 32px desktop) reused for all six section headings on a page, so nothing
+   * could out-rank anything else — a template, not a hierarchy. These four
+   * steps give the page a real top, middle and bottom voice.
    *
-   * The value MUST be written in rem, not px. Tailwind orders breakpoints by
-   * numeric value and cannot compare a px value against the rem-based defaults
-   * (lg = 64rem, …); a px breakpoint sorts to the very front, so its media
-   * query lands *before* the `lg` block and `lg:` silently wins above 1125px.
-   * In rem it sorts between lg and xl as intended: 1125 / 16 = 70.3125rem.
+   * `clamp()` rather than breakpoint jumps: display type that steps in
+   * discrete tiers looks broken at the widths in between, and a resort hero
+   * is the one place where type has to feel continuous with the image behind
+   * it at every viewport.
+   */
+  --text-eyebrow: 0.6875rem;
+  --text-eyebrow--line-height: 1;
+  --text-eyebrow--letter-spacing: 0.24em;
+
+  --text-display: clamp(2.375rem, 5.2vw, 4.25rem);
+  --text-display--line-height: 1.06;
+
+  --text-section: clamp(1.75rem, 3.2vw, 2.625rem);
+  --text-section--line-height: 1.16;
+
+  --text-quote: clamp(1.375rem, 2.4vw, 2rem);
+  --text-quote--line-height: 1.55;
+
+  /*
+   * One extra breakpoint beyond Tailwind's built-in sm/md/lg/xl/2xl scale,
+   * kept from the original build: the hero grows one last step at 1125px.
+   *
+   * The value MUST be written in rem, not px, even though it's conceptually
+   * "1125px". Tailwind orders breakpoints by comparing their numeric values,
+   * and it can't compare a px value against the built-in breakpoints, which
+   * are all defined in rem (lg = 64rem, xl = 80rem, …). A px breakpoint gets
+   * sorted to the very front instead of into its correct slot, so its media
+   * query ends up *before* the `lg` block in the generated CSS — and then
+   * `lg:h-[…]`, coming later in the file, wins the cascade at ≥1125px and
+   * silently cancels the tier. In rem it sorts numerically between lg and xl
+   * as intended: 1125 / 16 = 70.3125rem.
    */
   --breakpoint-heroxl: 70.3125rem;
 
-  /* Continuously-scrolling award logo row on the Ubud page. Rendered twice
-     back-to-back and slid by exactly -50%, so the loop is seamless. */
+  /*
+   * The Ubud awards row is a continuously-scrolling logo marquee on the live
+   * site (a "logo slider"), not a static grid like Seminyak's. Declaring the
+   * animation as a `--animate-*` theme token makes Tailwind generate an
+   * `animate-marquee` utility, so AwardsRow can switch it on with one class.
+   * The badges are rendered twice back-to-back and the track slides left by
+   * exactly half its width (-50%), so the moment the first copy scrolls out
+   * the second copy is already in its place — an even, seamless loop with no
+   * visible jump. 30s linear matches the live slider's measured speed.
+   */
   --animate-marquee: marquee 30s linear infinite;
 
-  /* Very slow push-in on the active hero slide. 12s over a 1.08 scale is below
-     the threshold where the eye reads it as motion — it registers as the image
-     being alive rather than as an animation playing. */
+  /*
+   * A very slow push-in on the active hero slide ("Ken Burns"). 12s over a
+   * 1.08 scale works out to roughly 0.1% growth per frame — below the
+   * threshold where the eye reads it as movement, so it registers as the
+   * image being *alive* rather than as an animation playing. Anything
+   * faster immediately looks like a screensaver.
+   */
   --animate-kenburns: kenburns 12s ease-out forwards;
 
-  /* Staggered entrance for the mobile menu. Safe to run from a hidden start
-     state because the overlay only exists in the DOM once opened. */
+  /*
+   * The mobile menu's staggered entrance. Unlike the scroll reveals this is
+   * safe to run from a hidden start state: the overlay only exists in the DOM
+   * after the visitor has opened it, so a failed animation can't strand any
+   * content the way a hidden-by-default page section could.
+   */
   --animate-rise-in: riseIn 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /*
- * Font tokens live in their own `@theme inline` block because they reference
- * CSS custom properties that next/font injects at runtime (see layout.tsx),
- * not literal values known at build time.
+ * A second, separate `@theme inline` block for the font tokens. This has to
+ * be "inline" (rather than a plain `@theme`) because `--font-open-sans` and
+ * `--font-source-sans` aren't literal values known at build time — they're
+ * CSS custom properties that next/font/google injects at runtime via a
+ * className on <html> (see layout.tsx). `@theme inline` tells Tailwind
+ * "generate the `font-body` / `font-heading` utilities, but keep them
+ * pointing at whatever that variable resolves to", instead of trying to
+ * hard-code a value right now.
  *
- * DESIGN.md specifies Roobert PRO at every level. Roobert PRO is a commercial
- * face from Displaay that cannot be licensed or self-hosted here, so Plus
- * Jakarta Sans stands in: the same geometric-humanist construction, and it
- * carries the 500 weight the ramp leans on almost everywhere. Swapping in the
- * real face later is a one-line change in layout.tsx plus this block.
+ * The fonts themselves are unchanged from the original site, per the brief.
  */
 @theme inline {
-  --font-sans: var(--font-jakarta);
-  --font-display: var(--font-jakarta);
+  --font-body: var(--font-open-sans);
+  --font-heading: var(--font-source-sans);
 }
 
+/*
+ * `sand`, not white, is the site's default surface. Stark white behind warm
+ * tropical photography is the single cheapest-looking pairing available, and
+ * defaulting here means no page can accidentally open on it.
+ */
 body {
-  background-color: var(--color-canvas);
-  color: var(--color-slate);
-  font-family: var(--font-sans);
+  background-color: var(--color-sand);
+  color: var(--color-text);
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
 }
 
+/*
+ * Keyframes. Kept as plain CSS at the top level because @keyframes isn't a
+ * design token — the `animate-marquee` / `animate-kenburns` utilities
+ * generated from the tokens above just reference these names.
+ */
 @keyframes marquee {
   from {
     transform: translateX(0);
@@ -201,10 +193,15 @@ body {
 /*
  * Scroll-reveal entrances — see components/ui/Reveal.tsx.
  *
- * `.reveal` carries only the transition; it has no hidden state of its own, so
- * server-rendered content ships visible and stays visible if JavaScript never
- * runs. `.reveal-hidden` is added by the client, and only to elements already
- * below the fold.
+ * `.reveal` only carries the transition; it has no hidden state of its own,
+ * so server-rendered content is visible by default and stays visible if
+ * JavaScript never runs. `.reveal-hidden` is added by the client, and only to
+ * elements that are still below the fold.
+ *
+ * The easing is a custom cubic-bezier rather than `ease-out`: it decelerates
+ * harder at the end, which is what makes an entrance settle into place
+ * instead of coasting to a stop. 900ms is deliberately slow — quick reveals
+ * read as "web app", slow ones read as "considered".
  */
 .reveal {
   transition:
@@ -217,6 +214,9 @@ body {
   transform: translateY(28px);
 }
 
+/*
+ * Respect users who've asked their OS to reduce motion.
+ */
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,
   .animate-kenburns,
@@ -224,8 +224,11 @@ body {
     animation: none;
   }
 
-  /* Forcing the finished state matters as much as dropping the transition —
-     otherwise anything already hidden would stay stuck at opacity 0. */
+  /*
+   * Switch the entrances off entirely. Forcing the finished state matters as
+   * much as dropping the transition — otherwise anything the client had
+   * already hidden would stay stuck at opacity 0.
+   */
   .reveal,
   .reveal-hidden {
     opacity: 1 !important;

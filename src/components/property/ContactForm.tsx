@@ -7,14 +7,19 @@ import { buttonClassName } from "@/components/ui/Button";
 /**
  * The "Please fill in the form below" contact form.
  *
- * The live site posts this to a WPForms backend that emails the property's
- * reservations inbox. This project has no server to receive it and no captcha
- * keys to configure, so `handleSubmit` prevents the native reload and swaps the
- * form for a confirmation — the part of the interaction a visitor actually
- * sees. A real deployment replaces the handler body with a Server Action.
+ * The live site submits this to a real backend (WPForms, plus a captcha bot
+ * check) that emails the property's reservations inbox. This project has no
+ * server to receive that submission and no captcha keys to configure, so
+ * `handleSubmit` doesn't send anywhere — it prevents the native page reload
+ * and swaps the form for a confirmation, which is the part of the interaction
+ * a visitor actually sees. A real deployment would replace `handleSubmit`'s
+ * body with a call to a Server Action that sends the email.
  *
- * Fields use `{rounded.md}` (8px), which DESIGN.md documents for inputs, with
- * the flat hairline border of elevation level 0.
+ * Redesign note: fields were boxed inputs with a hard outline on white. They're
+ * now underlined — a single hairline that turns gold on focus. Boxes draw the
+ * eye to the container; underlines draw it to the line you're writing on, and
+ * on a warm surface they leave the form looking like stationery rather than
+ * like a web form. No copy or field changed.
  */
 export function ContactForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -26,13 +31,15 @@ export function ContactForm() {
 
   // Shared so the heading is identical in the form and in the confirmation
   // that replaces it in place.
-  const heading = <SectionHeading title="Please fill in the form below" />;
+  const heading = (
+    <SectionHeading title="Please fill in the form below" />
+  );
 
   if (isSubmitted) {
     return (
       <div>
         {heading}
-        <p className="mt-8 text-body text-slate">
+        <p className="mt-8 text-[17px] leading-relaxed font-light text-text">
           Thank you for reaching out — we&apos;ll get back to you shortly.
         </p>
       </div>
@@ -40,14 +47,14 @@ export function ContactForm() {
   }
 
   const inputClassName =
-    "w-full rounded-lg border border-hairline bg-canvas px-4 py-3 text-body text-ink outline-none transition-colors duration-200 focus:border-accent-dark";
-  const labelClassName = "text-caption font-medium text-slate";
+    "w-full border-0 border-b border-ink/20 bg-transparent px-0 py-3 text-[16px] text-ink transition-colors duration-300 outline-none focus:border-primary";
+  const labelClassName = "text-eyebrow font-body text-primary-deep uppercase";
 
   return (
     <form onSubmit={handleSubmit}>
       {heading}
 
-      <div className="mt-8 flex flex-col gap-6">
+      <div className="mt-9 flex flex-col gap-7">
         <div className="flex flex-col gap-2">
           <label htmlFor="contact-name" className={labelClassName}>
             Name <span className="text-error">*</span>
@@ -66,7 +73,7 @@ export function ContactForm() {
           <legend className={labelClassName}>
             Do you already have the reservation with us?
           </legend>
-          <div className="mt-3 flex gap-8 text-body text-ink">
+          <div className="mt-3 flex gap-8 text-[16px] text-ink">
             <label className="flex cursor-pointer items-center gap-2.5">
               <input
                 type="radio"
@@ -107,9 +114,10 @@ export function ContactForm() {
           />
         </div>
 
-        {/* Uses the shared button classes rather than a hand-rolled copy, so the
-            form's primary action can never drift from the booking CTAs. */}
-        <button type="submit" className={buttonClassName("primary", "mt-2 w-fit")}>
+        {/* Uses the shared button classes rather than a hand-rolled copy, so
+            the form's primary action can never drift away from the booking
+            CTAs it sits alongside. */}
+        <button type="submit" className={buttonClassName("solid", "md", "mt-2 w-fit")}>
           Send
         </button>
       </div>

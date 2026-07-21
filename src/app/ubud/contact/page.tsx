@@ -32,11 +32,16 @@ export default function UbudContactPage() {
     <>
       <PropertyHeader site={site} activeHref="/ubud/contact" />
       <main>
-        <Section tone="canvas" space="loose">
-          <SectionHeading eyebrow={site.label} title="Contact Us" as="h1" size="h1" />
+        <Section tone="sand" space="loose">
+          <SectionHeading
+            eyebrow={site.label}
+            title="Contact Us"
+            as="h1"
+            size="display"
+          />
 
           <div className="mt-10 grid gap-9 md:mt-14 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
-            <div className="relative min-h-[380px] w-full overflow-hidden rounded-xl md:sticky md:top-24 md:h-[540px] md:self-start">
+            <div className="relative min-h-[380px] w-full overflow-hidden md:sticky md:top-24 md:h-[540px] md:self-start">
               <Image
                 src="https://nyuhbalivillas.com/wp-content/uploads/2023/03/contact-us-ubud.webp"
                 alt="Nyuh Bali Villas Ubud"

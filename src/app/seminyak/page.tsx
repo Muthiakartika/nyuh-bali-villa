@@ -15,8 +15,10 @@ import { TESTIMONIALS } from "@/data/testimonials";
 
 const site = PROPERTY_SITES.seminyak;
 
-// Title copied verbatim from the live page — every route needs its own or every
-// tab and search result reads the same as the homepage.
+// Overrides the root layout's Home-page title/description — every route
+// needs its own, or every browser tab and search result would read
+// "Nyuh Bali Villas & Resort - 5 Star Luxury Bali Villa" regardless of
+// which page it actually is. Title copied verbatim from the live page.
 export const metadata: Metadata = {
   title: "Nyuh Bali - Luxury Villas Seminyak - Romantic Honeymoons",
 };
@@ -30,14 +32,16 @@ const HERO_IMAGES = [
 ];
 
 /*
- * Section order is unchanged from the original site. The brand comes from
- * DESIGN.md and the composition from the DWELLA reference, but a returning
- * visitor still finds every piece of information exactly where they left it.
+ * Section order is unchanged from the original site, deliberately. The
+ * redesign brief's whole premise is evolution rather than replacement: a
+ * returning visitor should find every piece of information exactly where they
+ * left it. Everything that changed — composition, scale, colour placement,
+ * motion — happens inside these sections, not by rearranging them.
  *
- * The three content grids differentiate by *layout* rather than by three sizes
- * of the same card: villas and packages are image-forward tiles, while Discover
- * runs as listing rows, which scan far better once the items are alternatives.
- * `meta` carries the property name — real content, never a fabricated price.
+ * What the `tone` props encode is the page's new rhythm. The old page ran
+ * seven full-width dark slabs; dark now appears twice in the body (the offer
+ * and the testimonial) with warm sand either side of it, so each dark band
+ * lands as emphasis instead of as the page's default state.
  */
 export default function SeminyakAboutPage() {
   return (
@@ -47,6 +51,7 @@ export default function SeminyakAboutPage() {
         <PropertyHero
           images={HERO_IMAGES}
           alt="Nyuh Bali Villas Seminyak"
+          eyebrow="Nyuh Bali Villas"
           title="Seminyak"
         />
         <BookingSearchBar bookingHref={site.bookingHref} />
@@ -73,58 +78,59 @@ export default function SeminyakAboutPage() {
           contactEmail={site.contact.email}
         />
 
+        {/* Two large portrait cards: this is the property's actual inventory
+            and it earns the biggest crop on the page. */}
         <LinkCardGrid
           heading="Our Villas"
-          layout="cards"
           columns={2}
-          tone="canvas"
+          aspect="portrait"
+          tone="sand"
           items={[
             {
               label: "One-bedroom Pool Villa",
               href: "https://nyuhbalivillas.com/seminyak/villa/honeymoon/pool/",
               imgSrc: `${UPLOADS}/2023/03/Seminyak-One-bedroom-pool-villa.webp`,
-              meta: site.label,
             },
             {
               label: "Honeymoon Suite Pool Villa",
               href: "https://nyuhbalivillas.com/seminyak/villa/honeymoon/",
               imgSrc: `${UPLOADS}/2023/03/Seminyak-slider-2.webp`,
-              meta: site.label,
             },
           ]}
         />
 
         <LinkCardGrid
           heading="Discover"
-          layout="rows"
-          tone="surface"
+          columns={3}
+          aspect="tall"
+          tone="sand-deep"
           items={[
             {
               label: "Dining",
               href: "https://nyuhbalivillas.com/seminyak/dining/",
               imgSrc: `${UPLOADS}/2023/01/BBQ-seminyak-min-min-slider-1-_1__1.webp`,
-              meta: site.label,
             },
             {
               label: "SPA",
               href: "https://nyuhbalivillas.com/seminyak/spa/",
               imgSrc: `${UPLOADS}/2023/03/discover-spa.webp`,
-              meta: site.label,
             },
             {
               label: "Explore Bali",
               href: "https://nyuhbalivillas.com/seminyak/tour/",
               imgSrc: `${UPLOADS}/2023/03/discover-explore-bali.webp`,
-              meta: site.label,
             },
           ]}
         />
 
+        {/* Four square cards — the most compact crop on the page, so the
+            packages read as a set of options rather than as four more
+            full-size features competing with the villas above. */}
         <LinkCardGrid
           heading="Plan your Romantic Gateaway"
-          layout="cards"
           columns={4}
-          tone="canvas"
+          aspect="square"
+          tone="sand"
           items={[
             {
               label: "Stress-Free Proposal",

@@ -31,8 +31,8 @@ export default function TermsConditionsPage() {
     <>
       <PropertyHeader site={site} activeHref="/terms-conditions" />
       <main>
-        <Section tone="canvas" space="loose" width="narrow">
-          <SectionHeading title="Terms & Conditions" as="h1" size="h1" />
+        <Section tone="sand" space="loose" width="narrow">
+          <SectionHeading title="Terms & Conditions" as="h1" size="display" />
 
           <div className="mt-11 flex flex-col gap-10 md:mt-14">
             {TERMS_CONDITIONS_SECTIONS.map((section) => (
