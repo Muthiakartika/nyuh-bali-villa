@@ -2,48 +2,29 @@ import type { ReactNode } from "react";
 
 type ContainerProps = {
   children: ReactNode;
-  /** Extra classes for the caller's own layout needs (e.g. `flex items-center
-   * justify-between`). Merged onto the same div rather than requiring a
-   * wrapper, so Container can drop straight into an existing flex/grid
-   * without an extra DOM level. */
   className?: string;
-  /**
-   * `wide` (default) is the site's normal content width. `narrow` is for
-   * long-form reading — legal copy, the contact form column — where the
-   * limiting factor is line length, not the grid.
-   */
+  /** `wide` is the documented marketing width. `narrow` is a reading measure
+   * for long-form legal copy, which DESIGN.md does not cover — a 1280px column
+   * of terms & conditions would run to ~150 characters a line. */
   width?: "wide" | "narrow";
 };
 
-// 680px is a reading measure, not a grid width: at the 17px body size the
-// legal pages use, it works out to roughly 75 characters per line. Measured at
-// 760px the same copy ran to ~88 characters, well past the point where the eye
-// starts losing its place on the return sweep.
+// DESIGN.md → Layout → Grid & Container: "Marketing pages use 1280px
+// max-width with 32px gutters". The gutter lives on Section (px-8 = 32px), so
+// this only carries the cap.
 const WIDTH_CLASS: Record<"wide" | "narrow", string> = {
-  wide: "max-w-[1240px]",
-  narrow: "max-w-[680px]",
+  wide: "max-w-[1280px]",
+  narrow: "max-w-[720px]",
 };
 
 /**
- * Why this file exists: every section's *content* sits inside a centered box,
- * even though the *background* of each section spans the full browser width
- * behind it. Wrapping the content here — while leaving the background on the
- * outer section element — is what produces that "full-bleed colour, centered
- * content" split from one shared place, instead of each component inventing
- * its own padding.
+ * Caps and centres content while the section's background stays full-bleed.
+ * That split is what produces edge-to-edge colour bands with aligned content
+ * from one shared place, instead of each component inventing its own padding.
  *
- * **Why 1240px and not the 1080px this used to be.** 1080 was measured off
- * the live site, and it's a width from the era the redesign is trying to move
- * away from: on a 1440px display it leaves 180px of dead margin either side
- * and squeezes a 4-up card grid down to ~280px per card. 1240px gives the
- * grids room to breathe and lets display type reach a size that reads as
- * architectural rather than as a blog post, while still stopping well short
- * of edge-to-edge on a wide monitor.
- *
- * Media is deliberately allowed to escape this cap — the hero, the homepage
- * property panels and the awards marquee are all full-bleed. That contrast
- * (contained text, uncontained image) is most of what separates an editorial
- * layout from a stack of centered blocks.
+ * Media is deliberately allowed to escape the cap — the hero and the homepage
+ * property panels are full-bleed. Contained text against uncontained image is
+ * most of what makes the composition read as designed rather than stacked.
  */
 export function Container({
   children,

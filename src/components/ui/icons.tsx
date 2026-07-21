@@ -63,6 +63,26 @@ export function InstagramIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+// The trailing arrow on "View Details" / "Get Started" style actions. Kept
+// separate from ChevronIcon: a chevron says "there is more in this direction",
+// an arrow says "this takes you somewhere", and the two read differently at
+// the small sizes both are used at.
+export function ArrowIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  );
+}
+
 // Used for the hero slider's prev/next controls. A plain chevron rotated
 // with a Tailwind class (`rotate-180`) does double duty as both arrows
 // instead of needing two separate icon components.
