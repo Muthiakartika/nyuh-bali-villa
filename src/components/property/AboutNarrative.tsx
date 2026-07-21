@@ -1,6 +1,12 @@
-import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Reveal } from "@/components/ui/Reveal";
+import { Button } from "@/components/ui/Button";
 
 type AboutNarrativeProps = {
+  /** Small letter-spaced line above the heading — the property name, which
+   * already exists on the site. */
+  eyebrow: string;
   heading: string;
   paragraphs: string[];
   /** Seminyak's page has a short tagline between the narrative and the
@@ -15,22 +21,22 @@ type AboutNarrativeProps = {
 };
 
 /**
- * The white section right below the booking search bar: a centred heading,
- * one or more narrative paragraphs, an optional tagline, and a booking
- * button.
+ * The first reading section on each About page: heading on the left, the
+ * property's narrative on the right.
  *
- * The key change from the original is the **reading measure**. The body copy
- * used to run the full 1080px container width, which on Ubud's page is a
- * single ~1,000-character paragraph stretched into one enormous block — the
- * eye loses its place jumping back to the start of each line. Capping the
- * text at ~68 characters per line (`max-w-[68ch]`) with looser leading is
- * the single biggest readability win available here, and it costs nothing
- * visually because the heading and button stay centred on the same axis.
+ * The asymmetric split was already the strongest composition on the old site
+ * and it survives the redesign intact — the brief's own principle is that
+ * anything not improved by a change should be left alone. What changed is
+ * everything around it: the heading is now the brand's dark brown at a real
+ * display scale instead of low-contrast gold at 30px, it holds position while
+ * the narrative scrolls past it, and the closing tagline and CTA moved out of
+ * a centred block underneath into the foot of the text column, where the eye
+ * already is when it finishes reading.
  *
- * Everything else stays on-brand: Source Sans heading, gold `primary`, and
- * the same copy passed in as props.
+ * All copy is passed in verbatim from the page.
  */
 export function AboutNarrative({
+  eyebrow,
   heading,
   paragraphs,
   tagline,
@@ -38,59 +44,50 @@ export function AboutNarrative({
   buttonLabel,
 }: AboutNarrativeProps) {
   return (
-    <section className="px-5 py-16 md:py-32">
-      <Container>
-        {/* Editorial two-column split rather than one centred column: the
-            heading anchors the left, the narrative runs down the right. An
-            asymmetric intro reads as *designed* where a centred block of body
-            copy reads as a document, and the right column happens to land on
-            a good measure (~570px) without needing a `ch` cap. Stacks to one
-            column below `md`. */}
-        <div className="grid gap-10 md:grid-cols-[0.85fr_1.15fr] md:gap-16">
-          {/* `self-center` matters more than it looks: the heading is ~130px
-              tall next to a 537px column of narrative (and Ubud's single long
-              paragraph is taller still), so top-aligning it left ~76% of this
-              column empty underneath and the heading read as stranded in the
-              corner. Centring it against the text balances that whitespace
-              and makes the asymmetry look deliberate. */}
-          <div className="md:self-center">
-            <h1 className="font-heading text-[30px] leading-tight font-light text-primary md:text-[42px]">
-              {heading}
-            </h1>
-            {/* Same short gold rule used across every section heading. */}
-            <span aria-hidden className="mt-6 block h-px w-16 bg-primary/70" />
-          </div>
+    <Section tone="sand" space="loose">
+      <div className="grid gap-8 md:grid-cols-[0.9fr_1.1fr] md:gap-14">
+        {/*
+          `sticky` is what turns this from a two-column layout into an
+          editorial one: the heading anchors the left margin for the whole
+          length of the narrative rather than scrolling out of view after the
+          first paragraph. `top-24` clears the 72px scrolled header. On a single
+          column (below md) it has no effect at all, which is correct — a
+          sticky heading on a phone would just eat the screen.
+        */}
+        <SectionHeading
+          eyebrow={eyebrow}
+          title={heading}
+          className="md:sticky md:top-24 md:self-start"
+        />
 
-          <div className="flex flex-col gap-6">
+        <div className="flex flex-col">
+          <Reveal delay={120} className="flex flex-col gap-5">
             {paragraphs.map((paragraph) => (
-              <p key={paragraph} className="text-lg leading-[1.9] font-extralight text-text">
+              <p
+                key={paragraph}
+                className="text-[17px] leading-[1.9] font-light text-text"
+              >
                 {paragraph}
               </p>
             ))}
-          </div>
-        </div>
+          </Reveal>
 
-        {/* Tagline and CTA stay centred under the split — they close the
-            section, so they belong on the page's centre axis rather than in
-            either column. `gap-10` spaces them whether or not a tagline
-            exists (Ubud has none). */}
-        <div className="mt-16 flex flex-col items-center gap-10 text-center md:mt-20">
-          {tagline ? (
-            <p className="font-heading text-2xl font-light text-ink">{tagline}</p>
-          ) : null}
+          <Reveal delay={200} className="mt-9 flex flex-col items-start gap-6">
+            {tagline ? (
+              // Set as a statement rather than another paragraph: the gold
+              // rule and the larger, lighter setting mark it as the section's
+              // closing line. Wording unchanged.
+              <p className="font-heading border-l border-primary pl-6 text-[22px] leading-snug font-light text-ink md:text-[26px]">
+                {tagline}
+              </p>
+            ) : null}
 
-          {/* Uppercase + letter-spacing matches the nav's treatment, so the
-              button reads as part of the same design language. Label unchanged. */}
-          <a
-            href={bookingHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-[3px] bg-primary px-8 py-3.5 text-sm tracking-[2px] text-white uppercase transition-opacity duration-300 hover:opacity-90"
-          >
-            {buttonLabel}
-          </a>
+            <Button href={bookingHref} external>
+              {buttonLabel}
+            </Button>
+          </Reveal>
         </div>
-      </Container>
-    </section>
+      </div>
+    </Section>
   );
 }

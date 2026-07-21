@@ -1,4 +1,6 @@
-import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Reveal } from "@/components/ui/Reveal";
 
 type PromoBannerProps = {
   promoCode: string;
@@ -7,61 +9,66 @@ type PromoBannerProps = {
 };
 
 /**
- * The "Best Price Guaranteed" section — same structure on every property
- * page (heading, promo code, a bulleted perks list, a "screenshot the deal"
- * mailto CTA), but the perks themselves differ per property (Seminyak
- * offers a BBQ credit; Ubud offers a SPA discount), so `perks` is a prop
- * rather than hard-coded here.
+ * The "Best Price Guaranteed" offer.
  *
- * Redesign note: this was previously four centred paragraphs of near-identical
- * size, so the promo code — the one thing a guest actually needs to take away
- * — carried no more weight than the sentence around it. The copy is unchanged,
- * but it's now arranged as a bordered card with a clear hierarchy: a small
- * label, the code itself set large in gold, then the perks separated by a
- * rule. Nothing here invents new wording; "Promo code" and the code are just
- * put on their own lines so the code can be the focal point.
+ * This is now the page's first dark band, and it is dark on purpose: it is the
+ * only section whose job is to close a booking, so it gets to interrupt the
+ * warm sand rhythm rather than blend into it. Gold on `ink` also measures
+ * 6.93:1 — the promo code can finally be set large in full-strength brand gold
+ * without the contrast problem it has on a light surface.
+ *
+ * Structurally it went from six centred lines of near-identical size — where
+ * the promo code, the one thing a guest needs to take away, carried no more
+ * weight than the sentence around it — to a two-column split: the pitch on the
+ * left, the code and what it buys you on the right. Every word is unchanged.
  */
 export function PromoBanner({ promoCode, perks, contactEmail }: PromoBannerProps) {
   return (
-    // Sits on the warm `ink/5` tint so the offer reads as its own band
-    // between the white narrative above and the dark grid below — the
-    // section rhythm replaces the hairline box this used to have.
-    <section className="bg-ink/5 px-5 py-16 text-center md:py-32">
-      <Container className="flex flex-col items-center">
-        <h2 className="font-heading text-[30px] font-normal text-ink md:text-[40px]">
-          Best Price Guaranteed
-        </h2>
-        <span aria-hidden className="mt-6 block h-px w-16 bg-primary/70" />
+    <Section tone="ink" space="loose">
+      <div className="grid gap-8 md:grid-cols-2 md:items-center md:gap-14">
+        <div>
+          <SectionHeading title="Best Price Guaranteed" surface="dark" />
+          <Reveal delay={120}>
+            <p className="mt-6 text-[17px] leading-relaxed font-light text-white/70">
+              Exclusive privileges for booking on our website.
+            </p>
+            <p className="mt-4 text-[15px] text-white/70">
+              Screenshot the deal and{" "}
+              <a
+                href={`mailto:${contactEmail}`}
+                className="text-primary underline decoration-primary/40 underline-offset-[6px] transition-colors duration-300 hover:decoration-primary"
+              >
+                click here
+              </a>
+            </p>
+          </Reveal>
+        </div>
 
-        {/* No border, no box. The offer used to sit inside a hairline frame,
-            which read as a coupon; letting it breathe on the open page — with
-            the code itself as the one large gold statement — is both simpler
-            and more expensive-looking. Spacing does the grouping that the
-            border used to do. */}
-        <p className="mt-10 text-xs tracking-[3px] text-text uppercase md:mt-14">Promo code</p>
-        <p className="font-heading mt-4 text-[32px] leading-none font-light tracking-[3px] text-primary md:text-[40px] md:tracking-[4px]">
-          &ldquo;{promoCode}&rdquo;
-        </p>
-        <p className="mt-6 text-lg font-light text-text">
-          Exclusive privileges for booking on our website.
-        </p>
+        <Reveal delay={200}>
+          {/* A bordered plate, not a card: a single gold hairline around the
+              offer is enough to set it apart on a dark ground, and it keeps
+              the section flat in the way the rest of the design is. */}
+          <div className="border border-primary/35 p-6 md:p-8">
+            <span className="text-eyebrow font-body block text-primary uppercase">
+              Promo code
+            </span>
+            <p className="font-heading mt-3 text-[38px] leading-none font-light tracking-[0.12em] text-primary md:text-[48px]">
+              &ldquo;{promoCode}&rdquo;
+            </p>
 
-        <ul className="mt-12 flex max-w-[600px] flex-col gap-4 text-lg font-light text-text">
-          {perks.map((perk) => (
-            <li key={perk}>{perk}</li>
-          ))}
-        </ul>
-
-        <p className="mt-12 text-lg font-light text-text">
-          Screenshot the deal and{" "}
-          <a
-            href={`mailto:${contactEmail}`}
-            className="text-primary underline underline-offset-4 transition-opacity duration-300 hover:opacity-70"
-          >
-            click here
-          </a>
-        </p>
-      </Container>
-    </section>
+            <ul className="mt-7 flex flex-col divide-y divide-white/10 border-t border-white/10">
+              {perks.map((perk) => (
+                <li
+                  key={perk}
+                  className="py-3 text-[15px] leading-relaxed font-light text-white/75"
+                >
+                  {perk}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Reveal>
+      </div>
+    </Section>
   );
 }

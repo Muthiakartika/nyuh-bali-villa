@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
-import { HeroSlider } from "@/components/property/HeroSlider";
+import { PropertyHero } from "@/components/property/PropertyHero";
 import { BookingSearchBar } from "@/components/property/BookingSearchBar";
 import { AboutNarrative } from "@/components/property/AboutNarrative";
 import { PromoBanner } from "@/components/property/PromoBanner";
@@ -22,6 +22,7 @@ const site = PROPERTY_SITES.seminyak;
 export const metadata: Metadata = {
   title: "Nyuh Bali - Luxury Villas Seminyak - Romantic Honeymoons",
 };
+
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
 const HERO_IMAGES = [
@@ -30,15 +31,33 @@ const HERO_IMAGES = [
   `${UPLOADS}/2023/03/home-seminyak.webp`,
 ];
 
+/*
+ * Section order is unchanged from the original site, deliberately. The
+ * redesign brief's whole premise is evolution rather than replacement: a
+ * returning visitor should find every piece of information exactly where they
+ * left it. Everything that changed — composition, scale, colour placement,
+ * motion — happens inside these sections, not by rearranging them.
+ *
+ * What the `tone` props encode is the page's new rhythm. The old page ran
+ * seven full-width dark slabs; dark now appears twice in the body (the offer
+ * and the testimonial) with warm sand either side of it, so each dark band
+ * lands as emphasis instead of as the page's default state.
+ */
 export default function SeminyakAboutPage() {
   return (
     <>
-      <PropertyHeader site={site} activeHref="/seminyak" />
+      <PropertyHeader site={site} activeHref="/seminyak" overlay />
       <main>
-        <HeroSlider images={HERO_IMAGES} alt="Nyuh Bali Villas Seminyak" />
+        <PropertyHero
+          images={HERO_IMAGES}
+          alt="Nyuh Bali Villas Seminyak"
+          eyebrow="Nyuh Bali Villas"
+          title="Seminyak"
+        />
         <BookingSearchBar bookingHref={site.bookingHref} />
 
         <AboutNarrative
+          eyebrow="About Us"
           heading="Nyuh Bali's Honeymoon Villa in Seminyak"
           paragraphs={[
             "Nestled in the heart of Seminyak, Nyuh Bali Villa is designed as a romantic oasis to unwind while having easy access to enjoy the Seminyak vibes. World-class restaurants, minimarket, and money changers are just a few steps from your door. Each villa represents the authentic Balinese style featuring a private pool, tropical greenery, and our signature Nyuh Bali touches for the romantic experience in Bali.",
@@ -59,10 +78,13 @@ export default function SeminyakAboutPage() {
           contactEmail={site.contact.email}
         />
 
+        {/* Two large portrait cards: this is the property's actual inventory
+            and it earns the biggest crop on the page. */}
         <LinkCardGrid
           heading="Our Villas"
-          labelSize={28}
           columns={2}
+          aspect="portrait"
+          tone="sand"
           items={[
             {
               label: "One-bedroom Pool Villa",
@@ -77,15 +99,11 @@ export default function SeminyakAboutPage() {
           ]}
         />
 
-        {/* Middle of the three stacked grids runs on the light tone so the
-            page doesn't read as one long dark block — see LinkCardGrid's
-            `tone` prop. */}
         <LinkCardGrid
           heading="Discover"
-          labelSize={18}
-          imageAspect="347/250"
           columns={3}
-          tone="light"
+          aspect="tall"
+          tone="sand-deep"
           items={[
             {
               label: "Dining",
@@ -105,10 +123,14 @@ export default function SeminyakAboutPage() {
           ]}
         />
 
+        {/* Four square cards — the most compact crop on the page, so the
+            packages read as a set of options rather than as four more
+            full-size features competing with the villas above. */}
         <LinkCardGrid
           heading="Plan your Romantic Gateaway"
-          labelSize={18}
           columns={4}
+          aspect="square"
+          tone="sand"
           items={[
             {
               label: "Stress-Free Proposal",

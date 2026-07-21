@@ -5,7 +5,8 @@ import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { ContactForm } from "@/components/property/ContactForm";
 import { PROPERTY_SITES } from "@/data/properties";
-import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 
 const site = PROPERTY_SITES.ubud;
 
@@ -18,40 +19,42 @@ export const metadata: Metadata = {
 };
 
 // The live nyuhbalivillas.com/ubud/contact/ currently misroutes — every
-// navigation method (direct URL, clicking the real footer link) lands on
-// the Seminyak contact page's cached content instead, and no distinct
-// document request for that URL ever appears in the network log. That
-// appears to be a real bug/caching issue on the live site itself, not
-// something to reproduce. Its contact photo still genuinely exists,
-// though — confirmed via the WordPress REST API
-// (wp-json/wp/v2/media?search=contact-us), which returned a real
-// "contact-us-ubud.webp" attachment uploaded specifically for this page —
+// navigation method (direct URL, clicking the real footer link) lands on the
+// Seminyak contact page's cached content instead, and no distinct document
+// request for that URL ever appears in the network log. That appears to be a
+// real bug/caching issue on the live site itself, not something to reproduce.
+// Its contact photo still genuinely exists, though — confirmed via the
+// WordPress REST API (wp-json/wp/v2/media?search=contact-us), which returned a
+// real "contact-us-ubud.webp" attachment uploaded specifically for this page —
 // so this uses that real asset with Ubud's own header/footer/form.
 export default function UbudContactPage() {
   return (
     <>
       <PropertyHeader site={site} activeHref="/ubud/contact" />
-      {/* A grid rather than a flex row: grid items stretch by default, so the
-          photo column grows to the full height of the form beside it instead
-          of sitting as a short 3/2 letterbox with dead space underneath. The
-          min-height covers the single-column mobile case, where there's no
-          neighbouring column to take height from. */}
-      <main className="px-5 py-20 md:py-24">
-        <Container className="grid gap-10 md:grid-cols-2 md:gap-14">
-          <div className="relative min-h-[360px] w-full overflow-hidden">
-            <Image
-              src="https://nyuhbalivillas.com/wp-content/uploads/2023/03/contact-us-ubud.webp"
-              alt="Nyuh Bali Villas Ubud"
-              fill
-              sizes="(min-width: 768px) 520px, 100vw"
-              className="object-cover"
-              priority
-            />
-          </div>
-          <div>
+      <main>
+        <Section tone="sand" space="loose">
+          <SectionHeading
+            eyebrow={site.label}
+            title="Contact Us"
+            as="h1"
+            size="display"
+          />
+
+          <div className="mt-10 grid gap-9 md:mt-14 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
+            <div className="relative min-h-[380px] w-full overflow-hidden md:sticky md:top-24 md:h-[540px] md:self-start">
+              <Image
+                src="https://nyuhbalivillas.com/wp-content/uploads/2023/03/contact-us-ubud.webp"
+                alt="Nyuh Bali Villas Ubud"
+                fill
+                sizes="(min-width: 768px) 560px, 100vw"
+                className="object-cover"
+                priority
+              />
+            </div>
+
             <ContactForm />
           </div>
-        </Container>
+        </Section>
       </main>
       <PropertyFooter site={site} />
       <DirectBookingDeals bookingHref={site.bookingHref} />

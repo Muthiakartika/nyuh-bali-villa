@@ -1,27 +1,25 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { buttonClassName } from "@/components/ui/Button";
 
 /**
  * The "Please fill in the form below" contact form.
  *
- * The live site submits this to a real backend (WPForms, plus a
- * reCAPTCHA/hCaptcha bot check) that emails the property's reservations
- * inbox. This project has no server to receive that submission and no
- * captcha keys to configure, so `handleSubmit` doesn't send anywhere — it
- * just prevents the native page reload and swaps the form for a
- * confirmation message, which is the part of the interaction a visitor
- * actually sees. A real deployment would replace `handleSubmit`'s body with
- * a call to a Next.js Server Action (or an API route) that sends the email.
+ * The live site submits this to a real backend (WPForms, plus a captcha bot
+ * check) that emails the property's reservations inbox. This project has no
+ * server to receive that submission and no captcha keys to configure, so
+ * `handleSubmit` doesn't send anywhere — it prevents the native page reload
+ * and swaps the form for a confirmation, which is the part of the interaction
+ * a visitor actually sees. A real deployment would replace `handleSubmit`'s
+ * body with a call to a Server Action that sends the email.
  *
- * Redesign note (see "Modern redesign" in CLAUDE.md): the fields used to be
- * capped at `max-w-xs` (320px), so they sat as a narrow ragged column inside
- * a much wider form — the single most obviously unfinished thing on the page.
- * They're now full width with a consistent rhythm. The hardcoded `#cccccc`
- * border was also replaced with the brand's own `ink` at low opacity, and
- * focus now moves the border to gold instead of relying on the browser's
- * default outline. Labels became small uppercase captions to match the
- * nav/button treatment used elsewhere. No copy changed.
+ * Redesign note: fields were boxed inputs with a hard outline on white. They're
+ * now underlined — a single hairline that turns gold on focus. Boxes draw the
+ * eye to the container; underlines draw it to the line you're writing on, and
+ * on a warm surface they leave the form looking like stationery rather than
+ * like a web form. No copy or field changed.
  */
 export function ContactForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -31,22 +29,17 @@ export function ContactForm() {
     setIsSubmitted(true);
   }
 
-  // Shared so the heading looks identical in both the form and the
-  // post-submit confirmation, which replaces it in place.
-  const headingBlock = (
-    <>
-      <h2 className="font-heading text-[32px] font-extralight text-primary">
-        Please fill in the form below
-      </h2>
-      <span aria-hidden className="mt-5 block h-px w-16 bg-primary/70" />
-    </>
+  // Shared so the heading is identical in the form and in the confirmation
+  // that replaces it in place.
+  const heading = (
+    <SectionHeading title="Please fill in the form below" />
   );
 
   if (isSubmitted) {
     return (
       <div>
-        {headingBlock}
-        <p className="mt-8 text-lg font-light text-text">
+        {heading}
+        <p className="mt-8 text-[17px] leading-relaxed font-light text-text">
           Thank you for reaching out — we&apos;ll get back to you shortly.
         </p>
       </div>
@@ -54,34 +47,33 @@ export function ContactForm() {
   }
 
   const inputClassName =
-    "w-full rounded-[3px] border border-ink/15 bg-white px-4 py-3 text-base text-text transition-colors duration-200 outline-none focus:border-primary";
-  const labelClassName =
-    "text-xs font-semibold tracking-[2px] text-ink/70 uppercase";
+    "w-full border-0 border-b border-ink/20 bg-transparent px-0 py-3 text-[16px] text-ink transition-colors duration-300 outline-none focus:border-primary";
+  const labelClassName = "text-eyebrow font-body text-primary-deep uppercase";
 
   return (
     <form onSubmit={handleSubmit}>
-      {headingBlock}
+      {heading}
 
-      <div className="mt-10 flex flex-col gap-7">
-        <div className="flex flex-col gap-2.5">
+      <div className="mt-9 flex flex-col gap-7">
+        <div className="flex flex-col gap-2">
           <label htmlFor="contact-name" className={labelClassName}>
             Name <span className="text-error">*</span>
           </label>
           <input id="contact-name" type="text" required className={inputClassName} />
         </div>
 
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-2">
           <label htmlFor="contact-email" className={labelClassName}>
             Email <span className="text-error">*</span>
           </label>
           <input id="contact-email" type="email" required className={inputClassName} />
         </div>
 
-        <fieldset className="flex flex-col gap-2.5">
+        <fieldset className="flex flex-col gap-2">
           <legend className={labelClassName}>
             Do you already have the reservation with us?
           </legend>
-          <div className="mt-1 flex gap-8 text-base text-text">
+          <div className="mt-3 flex gap-8 text-[16px] text-ink">
             <label className="flex cursor-pointer items-center gap-2.5">
               <input
                 type="radio"
@@ -103,31 +95,29 @@ export function ContactForm() {
           </div>
         </fieldset>
 
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-2">
           <label htmlFor="contact-booking-number" className={labelClassName}>
             Your Booking Number (optional)
           </label>
           <input id="contact-booking-number" type="text" className={inputClassName} />
         </div>
 
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-2">
           <label htmlFor="contact-message" className={labelClassName}>
             Message <span className="text-error">*</span>
           </label>
           <textarea
             id="contact-message"
             required
-            rows={6}
+            rows={5}
             className={`${inputClassName} resize-y`}
           />
         </div>
 
-        {/* Same uppercase/tracking treatment as the booking CTA on the About
-            pages, so the two primary actions on the site look related. */}
-        <button
-          type="submit"
-          className="mt-2 w-fit rounded-[3px] bg-ink px-8 py-3.5 text-sm tracking-[2px] text-white uppercase transition-opacity duration-300 hover:opacity-90"
-        >
+        {/* Uses the shared button classes rather than a hand-rolled copy, so
+            the form's primary action can never drift away from the booking
+            CTAs it sits alongside. */}
+        <button type="submit" className={buttonClassName("solid", "md", "mt-2 w-fit")}>
           Send
         </button>
       </div>

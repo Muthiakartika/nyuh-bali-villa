@@ -1,11 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+import { useSyncExternalStore, type ReactNode } from "react";
 import { Container } from "@/components/ui/Container";
 
 type BookingSearchBarProps = {
   bookingHref: string;
 };
+
+type BookingDates = { checkIn: string; checkOut: string };
 
 function formatDate(date: Date) {
   const day = String(date.getDate()).padStart(2, "0");
@@ -13,76 +15,153 @@ function formatDate(date: Date) {
   return `${day}-${month}-${date.getFullYear()}`;
 }
 
-/**
- * The dark bar below the hero slider showing check-in/check-out dates, a
- * room summary, and a promo code field.
+function computeDates(): BookingDates {
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+  return { checkIn: formatDate(today), checkOut: formatDate(tomorrow) };
+}
+
+/*
+ * These pages are statically generated, so "today" inside the rendered HTML is
+ * whatever day the site was *built* — it would sit there showing a stale date
+ * forever. The dates therefore have to be recomputed in the browser.
  *
- * On the live site this is a full third-party booking-engine widget: real
- * date pickers, a nested guest counter with +/- buttons per room, live
- * availability. Rebuilding that entire reservation system is out of scope
- * for a visual clone with no backend to check availability against — so
- * this reproduces its *appearance* (including the check-in/out dates
- * genuinely defaulting to today/tomorrow, which is what the live widget
- * does too) while "Search" links out to the real booking engine, the same
- * treatment as the other booking CTAs on this site.
+ * `useSyncExternalStore` is the right tool for that rather than a `useState` +
+ * `useEffect` pair: it exists precisely to describe a value that legitimately
+ * differs between server and client, and it re-renders once after hydration
+ * without a setState inside an effect (which React's lint rules flag, fairly,
+ * as a cascading render).
+ *
+ * Both snapshots must be referentially stable — `getSnapshot` runs on every
+ * render, and returning a fresh object each time would loop forever — hence
+ * the module-level values below rather than calling `computeDates()` inline.
+ */
+const SERVER_DATES = computeDates();
+let clientDates: BookingDates | null = null;
+
+// Nothing to subscribe to: the value is read once per page load, exactly as
+// the live booking widget behaves.
+function subscribe() {
+  return () => {};
+}
+
+function getClientDates(): BookingDates {
+  clientDates ??= computeDates();
+  return clientDates;
+}
+
+function getServerDates(): BookingDates {
+  return SERVER_DATES;
+}
+
+const labelClassName = "text-eyebrow font-body text-primary-deep uppercase";
+const cellClassName = "flex flex-col justify-center gap-1.5 px-6 py-4";
+
+function Field({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className={cellClassName}>
+      <span className={labelClassName}>{label}</span>
+      {children}
+    </div>
+  );
+}
+
+/**
+ * The availability search below the hero.
+ *
+ * **This was the single most dated element on the site.** A full-width dark
+ * bar packed with white rectangular input boxes is the look of a third-party
+ * booking engine dropped into a page circa 2012, and stacking it directly
+ * under the hero created a hard three-band seam — photo, dark slab, white
+ * section — right at the top of every page.
+ *
+ * It is now a card that *overlaps* the bottom edge of the hero. That single
+ * change does three things at once: it removes the seam, it creates the only
+ * real sense of depth on the page, and it makes the most conversion-critical
+ * element on the site look like it belongs to the brand rather than to a
+ * vendor. Fields are separated by hairlines instead of being drawn as boxes,
+ * labels are small caps, and Search is a full-height block of brand gold.
+ *
+ * The fields, their labels and the behaviour are unchanged: this reproduces
+ * the live widget's *appearance* (including check-in/out genuinely defaulting
+ * to today/tomorrow) while Search links out to the real booking engine.
  */
 export function BookingSearchBar({ bookingHref }: BookingSearchBarProps) {
-  const { checkIn, checkOut } = useMemo(() => {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-    return { checkIn: formatDate(today), checkOut: formatDate(tomorrow) };
-  }, []);
-
-  const fieldValueClassName =
-    "rounded-[3px] border border-ink bg-white px-3 py-2 text-[13px] text-ink";
-  const fieldLabelClassName = "text-xs text-white uppercase";
+  // See the note above the store functions. `suppressHydrationWarning` on the
+  // two date spans covers the expected server/client difference on any day
+  // after the build — it is the difference, not a bug.
+  const dates = useSyncExternalStore(subscribe, getClientDates, getServerDates);
 
   return (
-    // Dark bar stays full-bleed; the fields sit inside the shared 1080px
-    // Container instead of the old unbounded `md:px-[92px]`.
-    <div className="bg-ink px-5 py-8">
-      <Container className="flex flex-col items-center gap-6 md:flex-row md:flex-wrap md:justify-center md:gap-6">
-      <label className="flex items-center gap-2 text-sm text-white">
-        <input type="checkbox" className="h-4 w-4 accent-primary" />
-        Flexible Dates
-      </label>
+    <div className="relative z-20 -mt-12 px-5 sm:px-8 md:-mt-20">
+      <Container>
+        {/*
+          The one shadow on the site. Elsewhere the design is deliberately flat,
+          but a card that overlaps an image has to actually read as sitting in
+          front of it — a warm, wide, very low-opacity cast in the brand's own
+          ink rather than a generic grey drop shadow.
+        */}
+        <div className="border border-ink/10 bg-sand shadow-[0_24px_70px_-30px_rgba(38,30,19,0.55)]">
+          {/*
+            The five-across row waits until `lg`, not `md`. At exactly 768px the
+            md variant gave each field about 120px — "1 Room, 2 Adult, 0 Child"
+            wrapped to three lines and the promo input was too narrow to type
+            in. Below 1024px the card is a clean vertical stack of four fields
+            with a full-width Search, which is the better tablet layout anyway.
+          */}
+          <div className="grid grid-cols-1 divide-y divide-ink/10 lg:grid-cols-[1fr_1fr_1.35fr_1fr_auto] lg:divide-x lg:divide-y-0">
+            <Field label="check in">
+              <span suppressHydrationWarning className="text-[15px] text-ink">
+                {dates.checkIn}
+              </span>
+            </Field>
 
-      <div className="flex items-end gap-3">
-        <div className="flex flex-col gap-1">
-          <span className={fieldLabelClassName}>check in</span>
-          <span className={fieldValueClassName}>{checkIn}</span>
+            <Field label="check out">
+              <span suppressHydrationWarning className="text-[15px] text-ink">
+                {dates.checkOut}
+              </span>
+            </Field>
+
+            {/* Static, not an interactive counter — the live widget's full
+                guest/room logic needs an availability backend this project
+                does not have. */}
+            <Field label="Room">
+              <span className="text-[15px] text-ink">1 Room, 2 Adult, 0 Child</span>
+            </Field>
+
+            <div className={cellClassName}>
+              <label htmlFor="promo-code" className={labelClassName}>
+                PromoCode
+              </label>
+              <input
+                id="promo-code"
+                type="text"
+                placeholder="Promo"
+                // `py-1.5` rather than `p-0`: as a bare text node the field was
+                // only 23px tall, too shallow to reliably tap into on a phone.
+                className="w-full border-0 bg-transparent px-0 py-1.5 text-[15px] text-ink outline-none placeholder:text-ink/35"
+              />
+            </div>
+
+            <a
+              href={bookingHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center bg-primary px-10 py-4 text-xs tracking-[0.22em] text-ink uppercase transition-colors duration-500 ease-out hover:bg-ink hover:text-primary"
+            >
+              Search
+            </a>
+          </div>
+
+          {/* Kept, but demoted: it modifies the search rather than being one of
+              its fields, so it reads as a footnote to the card instead of
+              competing with the dates for attention. */}
+          <label className="flex cursor-pointer items-center gap-2.5 border-t border-ink/10 px-6 py-3 text-[13px] text-text">
+            <input type="checkbox" className="h-3.5 w-3.5 accent-primary" />
+            Flexible Dates
+          </label>
         </div>
-        <span className="pb-2 text-white">→</span>
-        <div className="flex flex-col gap-1">
-          <span className={fieldLabelClassName}>check out</span>
-          <span className={fieldValueClassName}>{checkOut}</span>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <span className={fieldLabelClassName}>Room</span>
-        {/* Static, not an interactive counter — see the note above. */}
-        <span className={fieldValueClassName}>1 Room, 2 Adult, 0 Child</span>
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <span className={fieldLabelClassName}>PromoCode</span>
-        <input
-          type="text"
-          placeholder="Promo"
-          className={`w-[197px] ${fieldValueClassName}`}
-        />
-      </div>
-
-      <a
-        href={bookingHref}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="rounded bg-primary px-[10px] py-[6px] text-base text-white transition-opacity duration-200 hover:opacity-90"
-      >
-        Search
-      </a>
       </Container>
     </div>
   );

@@ -5,7 +5,8 @@ import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { ContactForm } from "@/components/property/ContactForm";
 import { PROPERTY_SITES } from "@/data/properties";
-import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 
 const site = PROPERTY_SITES.seminyak;
 
@@ -13,35 +14,48 @@ export const metadata: Metadata = {
   title: "Seminyak - Contact Us - Nyuh Bali",
 };
 
-// Unlike the About page, Contact has no hero slider or booking bar — just a
-// two-column split (a static photo, then the form) directly below the
-// header, confirmed by inspecting the page's actual structure rather than
-// assuming it would mirror the About page's layout.
+/**
+ * Contact has no hero slider or booking bar — confirmed by inspecting the
+ * live page's structure rather than assuming it mirrors the About page.
+ *
+ * Because there's no hero, the header renders solid from the first pixel
+ * (`overlay` omitted) — a transparent header over a plain sand surface would
+ * simply be invisible. The page instead opens on a proper title block, which
+ * the old version lacked entirely: it dropped the visitor straight into a
+ * photo and a form with nothing naming the page they'd landed on.
+ */
 export default function SeminyakContactPage() {
   return (
     <>
       <PropertyHeader site={site} activeHref="/seminyak/contact" />
-      {/* A grid rather than a flex row: grid items stretch by default, so the
-          photo column grows to the full height of the form beside it instead
-          of sitting as a short 3/2 letterbox with dead space underneath. The
-          min-height covers the single-column mobile case, where there's no
-          neighbouring column to take height from. */}
-      <main className="px-5 py-20 md:py-24">
-        <Container className="grid gap-10 md:grid-cols-2 md:gap-14">
-          <div className="relative min-h-[360px] w-full overflow-hidden">
-            <Image
-              src="https://nyuhbalivillas.com/wp-content/uploads/2023/03/Contact-us-seminyak.webp"
-              alt="Nyuh Bali Villas Seminyak"
-              fill
-              sizes="(min-width: 768px) 520px, 100vw"
-              className="object-cover"
-              priority
-            />
-          </div>
-          <div>
+      <main>
+        <Section tone="sand" space="loose">
+          <SectionHeading
+            eyebrow={site.label}
+            title="Contact Us"
+            as="h1"
+            size="display"
+          />
+
+          <div className="mt-10 grid gap-9 md:mt-14 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
+            {/* The photo holds position while the form scrolls beside it —
+                the same sticky treatment AboutNarrative gives its heading, so
+                both pages read as one design. On a single column it simply
+                stacks. */}
+            <div className="relative min-h-[380px] w-full overflow-hidden md:sticky md:top-24 md:h-[540px] md:self-start">
+              <Image
+                src="https://nyuhbalivillas.com/wp-content/uploads/2023/03/Contact-us-seminyak.webp"
+                alt="Nyuh Bali Villas Seminyak"
+                fill
+                sizes="(min-width: 768px) 560px, 100vw"
+                className="object-cover"
+                priority
+              />
+            </div>
+
             <ContactForm />
           </div>
-        </Container>
+        </Section>
       </main>
       <PropertyFooter site={site} />
       <DirectBookingDeals bookingHref={site.bookingHref} />

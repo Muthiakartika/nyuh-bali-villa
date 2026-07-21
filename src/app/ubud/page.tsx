@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
-import { HeroSlider } from "@/components/property/HeroSlider";
+import { PropertyHero } from "@/components/property/PropertyHero";
 import { BookingSearchBar } from "@/components/property/BookingSearchBar";
 import { AboutNarrative } from "@/components/property/AboutNarrative";
 import { PromoBanner } from "@/components/property/PromoBanner";
@@ -20,24 +20,31 @@ export const metadata: Metadata = {
 const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
-// Unlike Seminyak's 3-slide hero, the live Ubud page's slider genuinely
-// only has one slide (confirmed: only one `[id^="slide-"]` element exists,
-// reusing the homepage's Ubud panel photo) — Next/Prev controls are present
-// in the markup but functionally inert with nothing else to cycle to.
+// Unlike Seminyak's 3-slide hero, the live Ubud page's slider genuinely only
+// has one slide (confirmed: only one `[id^="slide-"]` element exists, reusing
+// the homepage's Ubud panel photo). PropertyHero now drops its controls and
+// auto-advance entirely for a single image, rather than rendering inert arrows
+// and a lone indicator the way the old slider did.
 const HERO_IMAGES = [`${UPLOADS}/2025/01/home-ubud-compress.webp`];
 
 export default function UbudAboutPage() {
   return (
     <>
-      <PropertyHeader site={site} activeHref="/ubud" />
+      <PropertyHeader site={site} activeHref="/ubud" overlay />
       <main>
-        <HeroSlider images={HERO_IMAGES} alt="Nyuh Bali Villas Ubud" />
+        <PropertyHero
+          images={HERO_IMAGES}
+          alt="Nyuh Bali Villas Ubud"
+          eyebrow="Nyuh Bali Villas"
+          title="Ubud"
+        />
         <BookingSearchBar bookingHref={site.bookingHref} />
 
         {/* Ubud's narrative is a single paragraph with no tagline sentence
-            before the button — unlike Seminyak's two paragraphs plus
-            tagline. Confirmed directly rather than assumed to be symmetric. */}
+            before the button — unlike Seminyak's two paragraphs plus tagline.
+            Confirmed directly rather than assumed to be symmetric. */}
         <AboutNarrative
+          eyebrow="About Us"
           heading="Luxury Villas & Suite in Ubud"
           paragraphs={[
             "Inspired by the philosophy of the coconut tree, or Nyuh in the Balinese language, which is known as the versatile tree to shore up people’s lives, Ubud Nyuh Bali Resort aims to create the holistic luxury retreat experience that you look for. Presenting you with two luxury yoga shalas, five-star accommodations, two swimming pools, a spa, and a home gym, you will feel the power of positive transformation of Ubud energy. Imagine waking up while hearing the groups of birds singing, inhaling the morning breeze during guided morning walks, stretching your body with a daily yoga class, and enjoying delicious healthy foods. Calm your mind by joining daily complimentary wellness activities like breathwork & sound healing to allow yourself to relax as your well-being deserves. With an experienced team that cares for you from the heart and with the personalized touch of our luxury villas in Ubud, you will feel recharged and reborn for a new beginning.",
@@ -56,14 +63,15 @@ export default function UbudAboutPage() {
           contactEmail={site.contact.email}
         />
 
-        {/* Ubud has no "large card" section like Seminyak's "Our Villas" —
-            Stay, Discover, and Packages all use the same 3-column, 26px
-            layout, confirmed by measuring all three rather than assuming
-            Stay would mirror Seminyak's oversized Villas treatment. */}
+        {/* All three of Ubud's grids genuinely run at three columns on the live
+            site — it has no oversized "Our Villas" equivalent. They're
+            differentiated here by crop and tone instead, so three consecutive
+            3-up grids don't read as one repeating texture. */}
         <LinkCardGrid
           heading="STAY"
-          labelSize={26}
           columns={3}
+          aspect="portrait"
+          tone="sand"
           items={[
             {
               label: "Suites",
@@ -83,14 +91,11 @@ export default function UbudAboutPage() {
           ]}
         />
 
-        {/* Middle of the three stacked grids runs on the light tone so the
-            page doesn't read as one long dark block — see LinkCardGrid's
-            `tone` prop. */}
         <LinkCardGrid
           heading="DISCOVER"
-          labelSize={26}
           columns={3}
-          tone="light"
+          aspect="tall"
+          tone="sand-deep"
           items={[
             {
               label: "Dining",
@@ -112,8 +117,9 @@ export default function UbudAboutPage() {
 
         <LinkCardGrid
           heading="OUR PACKAGES"
-          labelSize={26}
           columns={3}
+          aspect="square"
+          tone="sand"
           items={[
             {
               label: "Honeymoon",

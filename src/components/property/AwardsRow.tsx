@@ -30,9 +30,15 @@ const COLUMN_CLASS: Record<number, string> = {
 };
 
 /**
- * The row of trust/award badges near the bottom of every property page.
- * Seminyak lays them out as a static, full-width grid; Ubud scrolls them as
- * a marquee — see the `variant` prop.
+ * The row of award badges that closes every property page.
+ *
+ * Deliberately kept on `ink` while most other bands moved to the warm sand
+ * palette. These badge images come from the live site as third-party award
+ * marks with transparent backgrounds, several of them light-on-transparent —
+ * moving them onto a near-white surface risks some of them disappearing
+ * entirely, and that can't be verified without eyes on a real browser. Sitting
+ * on dark, directly above the dark footer, they also read as one quiet
+ * credentials base to the page rather than as another separate slab.
  */
 export function AwardsRow({ badges, variant = "grid" }: AwardsRowProps) {
   if (variant === "marquee") {
@@ -40,18 +46,18 @@ export function AwardsRow({ badges, variant = "grid" }: AwardsRowProps) {
     // by exactly half its width and loop seamlessly (see --animate-marquee /
     // @keyframes marquee in globals.css). overflow-hidden on the Container
     // clips the scrolling track to the same centred content width as every
-    // other section; the track itself is `w-max` so it can be wider than
-    // that window and scroll through it.
+    // other section; the track itself is `w-max` so it can be wider than that
+    // window and scroll through it.
     const loop = [...badges, ...badges];
 
     return (
-      <div className="bg-ink px-5 py-10">
+      <div className="bg-ink px-5 pt-12 pb-8 sm:px-8 md:pt-16">
         <Container className="overflow-hidden">
           <div className="flex w-max animate-marquee">
             {loop.map((src, index) => (
               <div
                 key={index}
-                className="relative mx-8 h-[120px] w-[120px] shrink-0"
+                className="relative mx-8 h-[110px] w-[110px] shrink-0"
                 // The second copy is a visual duplicate for the loop, so it's
                 // hidden from assistive tech to avoid announcing every badge
                 // twice.
@@ -61,7 +67,7 @@ export function AwardsRow({ badges, variant = "grid" }: AwardsRowProps) {
                   src={src}
                   alt="Award badge"
                   fill
-                  sizes="120px"
+                  sizes="110px"
                   className="object-contain"
                 />
               </div>
@@ -74,24 +80,27 @@ export function AwardsRow({ badges, variant = "grid" }: AwardsRowProps) {
 
   // Default: static grid (Seminyak). Equal columns span the full content
   // width so the badges are distributed edge to edge in a single row that
-  // scales down together on narrow screens, matching the live layout.
+  // scales down together on narrow screens.
   const columnClass = COLUMN_CLASS[badges.length] ?? "grid-cols-3 sm:grid-cols-4";
 
   return (
-    <div className="bg-ink px-5 py-10">
-      <Container className={`grid ${columnClass} items-center gap-2 md:gap-5`}>
+    <div className="bg-ink px-5 pt-12 pb-8 sm:px-8 md:pt-16">
+      <Container className={`grid ${columnClass} items-center gap-4 md:gap-8`}>
         {badges.map((src) => (
-          // aspect-square matches the source badges (all square), so each
-          // cell fills its grid column and scales with the viewport;
-          // object-contain keeps any non-square badge letterboxed, not
-          // cropped.
-          <div key={src} className="relative aspect-square">
+          // aspect-square matches the source badges (all square), so each cell
+          // fills its grid column and scales with the viewport; object-contain
+          // keeps any non-square badge letterboxed, not cropped.
+          //
+          // Held back and brought to full strength on hover — the standard
+          // treatment for a row of award marks, so they read as supporting
+          // credentials rather than competing with the content above them.
+          <div key={src} className="group/badge relative aspect-square">
             <Image
               src={src}
               alt="Award badge"
               fill
-              sizes="(min-width: 768px) 200px, 100px"
-              className="object-contain"
+              sizes="(min-width: 768px) 150px, 100px"
+              className="object-contain opacity-70 transition-opacity duration-500 group-hover/badge:opacity-100"
             />
           </div>
         ))}

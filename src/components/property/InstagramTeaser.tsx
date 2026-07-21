@@ -1,4 +1,7 @@
-import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Reveal } from "@/components/ui/Reveal";
+import { Button } from "@/components/ui/Button";
 
 type InstagramTeaserProps = {
   heading: string;
@@ -10,31 +13,33 @@ type InstagramTeaserProps = {
 };
 
 /**
- * "What's happening @nyuhbalivillas" / "@nyuhbaliubud" — on the live site
- * this is a Smash Balloon Instagram feed widget showing a live grid of
- * recent posts. That requires an authenticated, ongoing connection to
- * Instagram's API (and even a scraped snapshot would be a grid of expiring,
- * signed image URLs that would break within days) — out of reach for a
- * static clone, so this reproduces the heading and "Follow on Instagram"
- * CTA without attempting to fake a live photo grid.
+ * "What's happening @nyuhbalivillas" / "@nyuhbaliubud".
+ *
+ * On the live site this is a Smash Balloon feed widget showing recent posts.
+ * That needs an authenticated, ongoing connection to Instagram's API — and a
+ * scraped snapshot would be a grid of expiring signed URLs that breaks within
+ * days — so this stays a heading and a follow CTA rather than faking a photo
+ * grid that would rot.
+ *
+ * The old version rendered that as a full dark band containing one heading and
+ * one small text link floating in the middle of it: an almost-empty section
+ * that read as unfinished. Making it a compact two-column row — heading left,
+ * CTA right — turns the same content into a deliberate closing note instead.
  */
 export function InstagramTeaser({ heading, instagramHref }: InstagramTeaserProps) {
   return (
-    // Background full-bleed, content bound to the shared 1080px Container.
-    <section className="bg-ink px-5 py-16 text-center md:py-28">
-      <Container className="flex flex-col items-center gap-4">
-        <h2 className="font-heading text-[30px] font-extralight text-primary md:text-[40px]">
-          {heading}
-        </h2>
-        <a
-          href={instagramHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[13px] text-white uppercase transition-opacity duration-200 hover:opacity-70"
-        >
-          Follow on Instagram
-        </a>
-      </Container>
-    </section>
+    // `space="none"` with explicit padding rather than the standard rhythm:
+    // this band is the lead-in to the awards row below it, so it is
+    // deliberately shallower than a full section.
+    <Section tone="sand-deep" space="none" className="pt-12 pb-12 md:pt-16 md:pb-16">
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+        <SectionHeading title={heading} />
+        <Reveal delay={120} className="shrink-0">
+          <Button href={instagramHref} external variant="outline">
+            Follow on Instagram
+          </Button>
+        </Reveal>
+      </div>
+    </Section>
   );
 }

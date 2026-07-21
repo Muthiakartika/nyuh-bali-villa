@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Reveal } from "@/components/ui/Reveal";
 
 export type LinkCardItem = {
   label: string;
@@ -13,160 +15,157 @@ export type LinkCardItem = {
   inScope?: boolean;
 };
 
+type GridTone = "sand" | "sand-deep" | "ink";
+type CardAspect = "portrait" | "tall" | "square";
+
 type LinkCardGridProps = {
+  /** Optional small label above the heading. */
+  eyebrow?: string;
   heading: string;
   items: LinkCardItem[];
   columns: 2 | 3 | 4;
-  /** Card label size in px, measured per section — not tied to column
-   * count or image size. Seminyak's "Our Villas" cards use 28px labels,
-   * its "Discover"/"Packages" cards use 18px, and *every* grid on Ubud's
-   * page (Stay, Discover, Packages alike) uses 26px — three genuinely
-   * different values with no shared pattern to derive one from another. */
-  labelSize: 18 | 26 | 28;
-  /** Image aspect ratio as a Tailwind arbitrary value. Defaults to "3/2",
-   * which covers every grid except Seminyak's "Discover" section, which
-   * measured closer to 347/250. */
-  imageAspect?: "3/2" | "347/250";
   /**
-   * Section background. Each About page stacks three of these grids in a
-   * row; rendering all three on the same dark ink made that whole stretch of
-   * the page read as one undifferentiated block. Alternating the middle one
-   * to `light` gives the page rhythm. Defaults to "dark".
+   * Crop shape. Portrait crops are the default because a resort's rooms,
+   * gardens and spa read far better standing up than letterboxed — the old
+   * design used 3/2 landscape everywhere, which is the shape of a stock photo
+   * grid, not of a property portfolio.
    */
-  tone?: "dark" | "light";
+  aspect?: CardAspect;
+  tone?: GridTone;
 };
 
 // Tailwind's scanner needs each full class name to appear literally in the
-// source somewhere — building "grid-cols-" + columns at runtime wouldn't
-// get picked up, so column counts and label sizes are mapped through
-// lookups instead.
-const DESKTOP_COLUMNS: Record<2 | 3 | 4, string> = {
-  2: "sm:grid-cols-2",
-  3: "sm:grid-cols-3",
-  4: "sm:grid-cols-4",
+// source somewhere — building "grid-cols-" + columns at runtime wouldn't get
+// picked up, so these go through lookups instead.
+const COLUMN_CLASS: Record<2 | 3 | 4, string> = {
+  2: "grid-cols-1 sm:grid-cols-2",
+  3: "grid-cols-1 sm:grid-cols-3",
+  4: "grid-cols-2 sm:grid-cols-4",
 };
 
-// Each size steps down on small screens: at 2 columns a phone card is only
-// ~165px wide, where a 26–28px label wraps badly across the photo.
-const LABEL_TEXT_SIZE: Record<18 | 26 | 28, string> = {
-  18: "text-base md:text-lg",
-  26: "text-lg md:text-[26px]",
-  28: "text-xl md:text-[28px]",
+/*
+ * Every crop is landscape on a phone and portrait from `sm` up. That isn't a
+ * cosmetic tweak: three stacked portrait cards on a 390px screen is roughly
+ * 1,500px of scrolling for one section, whereas the same three as wide
+ * landscape strips read as a list you can take in. Responsive art direction,
+ * not just a responsive grid.
+ */
+const ASPECT_CLASS: Record<CardAspect, string> = {
+  portrait: "aspect-[3/2] sm:aspect-[4/5]",
+  tall: "aspect-[3/2] sm:aspect-[3/4]",
+  square: "aspect-[4/3] sm:aspect-square",
 };
 
-const IMAGE_ASPECT_CLASS: Record<"3/2" | "347/250", string> = {
-  "3/2": "aspect-[3/2]",
-  "347/250": "aspect-[347/250]",
+// Derived from the column count rather than passed in per section. The old
+// component took an explicit `labelSize` of 18, 26 or 28 measured off the live
+// site, which meant three arbitrary values with no relationship to each other;
+// tying the label to how much room the card actually has is a system.
+const LABEL_CLASS: Record<2 | 3 | 4, string> = {
+  2: "text-2xl md:text-[32px]",
+  3: "text-xl md:text-[26px]",
+  4: "text-lg md:text-[21px]",
 };
 
 /**
- * The dark image grid used repeatedly across both properties' About pages
- * (Villas/Stay, Discover, Packages) with a different column count, label
- * size, and item count each time — built once and reused with different
- * props instead of copy-pasted per section.
+ * The image grid used three times on each About page (Villas/Stay, Discover,
+ * Packages).
  *
- * Redesign note: the label used to sit *below* its photo as loose text, so
- * each card was two disconnected pieces and the rows read as a gallery of
- * unlabelled images with captions drifting underneath. The label now sits
- * **on** the image over a dark scrim, which makes each card a single object
- * and lets the whole tile respond to hover as one.
+ * **What changed and why.** Each card used to be a photograph under a flat
+ * `ink/35` wash with its label floating dead centre and a white hairline
+ * inset like a certificate frame. Three problems: the wash permanently dulled
+ * the photography, which is the actual product; a centred label sits directly
+ * on top of whatever the photo is of; and nine cards across three sections all
+ * received the identical treatment, so the middle of the page read as one long
+ * undifferentiated texture.
+ *
+ * Now the scrim is a gradient weighted to the bottom third, so the top of every
+ * image stays clean and full-strength. The label is anchored bottom-left over
+ * the darkest part of that gradient, with a gold rule that extends on hover.
+ * The frame is gone. Sections differentiate themselves through column count and
+ * crop shape instead of repeating one card at three sizes.
  */
 export function LinkCardGrid({
+  eyebrow,
   heading,
   items,
   columns,
-  labelSize,
-  imageAspect = "3/2",
-  tone = "dark",
+  aspect = "portrait",
+  tone = "sand",
 }: LinkCardGridProps) {
-  const isSingleColumnOnMobile = labelSize === 28;
-  const isLight = tone === "light";
+  const isDark = tone === "ink";
 
   return (
-    // Background stays full-bleed; Container caps the content at the
-    // site-wide 1080px. Measured on the live site, every card grid (2, 3 and
-    // 4 column alike) spans that full 1080px with 20px gaps — the old
-    // `max-w-5xl` held it 56px narrower at 1024px.
-    <section className={`px-5 py-16 md:py-28 ${isLight ? "bg-ink/5" : "bg-ink"}`}>
-      <Container className="flex flex-col items-center">
-        {/* Gold on the near-white `light` tone is too low-contrast at this
-            size, so light sections take the dark `ink` heading and let the
-            rule below carry the gold — the same pairing PromoBanner uses. */}
-        <h2
-          className={`font-heading text-[30px] font-light tracking-[1px] md:text-[40px] ${
-            isLight ? "text-ink" : "text-primary"
-          }`}
-        >
-          {heading}
-        </h2>
-        <span aria-hidden className="mt-6 block h-px w-16 bg-primary/70" />
+    <Section tone={tone}>
+      <SectionHeading
+        eyebrow={eyebrow}
+        title={heading}
+        surface={isDark ? "dark" : "light"}
+      />
 
-        <div
-          className={`mt-10 grid w-full gap-5 md:mt-16 ${
-            isSingleColumnOnMobile ? "grid-cols-1" : "grid-cols-2"
-          } ${DESKTOP_COLUMNS[columns]}`}
-        >
-          {items.map((item) => {
-            // `group-hover:*` below only ever activates when a `.group`
-            // ancestor exists — which only happens for the `<Link>` branch a
-            // few lines down. That means this same JSX can be reused for the
-            // non-clickable (`inScope: false`) branch too: the hover classes
-            // are simply inert there, so an item that isn't a real link never
-            // looks interactive on hover.
-            const content = (
+      <div
+        className={`mt-8 grid gap-4 md:mt-10 md:gap-5 ${COLUMN_CLASS[columns]}`}
+      >
+        {items.map((item, index) => {
+          // `group/card` is declared on the tile itself rather than on a
+          // wrapping <Link>. That matters: every item on this site is
+          // currently `inScope: false`, so the cards render as plain divs — a
+          // plain `group-hover:` keyed to a link ancestor never fires and the
+          // entire grid sits visually inert. A named group scoped to the tile
+          // works whether or not the card is a link.
+          const content = (
+            <div
+              className={`group/card relative w-full overflow-hidden ${ASPECT_CLASS[aspect]}`}
+            >
+              <Image
+                src={item.imgSrc}
+                alt={item.label}
+                fill
+                sizes="(min-width: 1280px) 300px, (min-width: 640px) 33vw, 100vw"
+                className="object-cover transition-transform duration-[900ms] ease-out group-hover/card:scale-[1.05]"
+              />
+
+              {/* Bottom-weighted gradient: enough contrast under the label to
+                  keep it legible on any photograph, while the upper two-thirds
+                  of the image stays untouched. */}
               <div
-                className={`relative w-full overflow-hidden ${IMAGE_ASPECT_CLASS[imageAspect]}`}
-              >
-                <Image
-                  src={item.imgSrc}
-                  alt={item.label}
-                  fill
-                  sizes="(min-width: 640px) 350px, 50vw"
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
-                />
+                aria-hidden
+                className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/20 to-transparent transition-opacity duration-700 group-hover/card:opacity-90"
+              />
 
-                {/* Flat scrim (not a gradient) so the label stays legible on
-                    any photo; it lifts on hover to brighten the image. Kept
-                    light so the photography carries the section. */}
-                <div className="absolute inset-0 bg-ink/40 transition-colors duration-500 group-hover:bg-ink/20" />
-
-                {/* An inset gold hairline that fades in on hover. Inset
-                    rather than flush to the edge so it reads as a considered
-                    frame around the photo instead of a plain border, and
-                    hover-only so a static grid stays quiet. */}
-                <div
+              <div className="absolute inset-x-0 bottom-0 p-4 md:p-6">
+                <span
+                  className={`font-heading block font-light text-white ${LABEL_CLASS[columns]}`}
+                >
+                  {item.label}
+                </span>
+                {/* The hover affordance. It replaces the gold rule the old
+                    design printed under every single card — repeated 2–4 times
+                    per row, it made the grids busy; as a hover state it does
+                    real work instead. */}
+                <span
                   aria-hidden
-                  className="pointer-events-none absolute inset-3 border border-transparent transition-colors duration-500 group-hover:border-primary/60"
+                  className="mt-3 block h-px w-9 bg-primary transition-all duration-500 ease-out group-hover/card:w-20"
                 />
-
-                {/* Just the label, centred. The gold rule that used to sit
-                    under every card was repeated 2–4 times per row and made
-                    the grids busy; the section heading keeps its rule, the
-                    cards stay quiet. */}
-                <div className="absolute inset-0 flex items-center justify-center p-4 text-center">
-                  <span
-                    className={`font-heading font-light tracking-[1px] text-white ${LABEL_TEXT_SIZE[labelSize]}`}
-                  >
-                    {item.label}
-                  </span>
-                </div>
               </div>
-            );
+            </div>
+          );
 
-            return (
-              <div key={item.label}>
-                {item.inScope ? (
-                  <Link href={item.href} className="group block">
-                    {content}
-                  </Link>
-                ) : (
-                  content
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </Container>
-    </section>
+          // Staggered by index so a row arrives left-to-right rather than all
+          // at once — the small detail that makes a grid feel composed instead
+          // of simply switched on.
+          return (
+            <Reveal key={item.label} delay={index * 90}>
+              {item.inScope ? (
+                <Link href={item.href} className="block">
+                  {content}
+                </Link>
+              ) : (
+                content
+              )}
+            </Reveal>
+          );
+        })}
+      </div>
+    </Section>
   );
 }

@@ -3,25 +3,25 @@
 import { useState } from "react";
 import type { Testimonial } from "@/data/testimonials";
 import { ChevronIcon } from "@/components/ui/icons";
-import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 
 type TestimonialCarouselProps = {
   testimonials: Testimonial[];
 };
 
 /**
- * "What our guests are saying" — one quote visible at a time with
- * prev/next arrows and dot indicators. Same small dependency-free carousel
- * pattern as HeroSlider: a local `useState` index and plain array indexing,
- * no carousel library. Seminyak has 3 testimonials and Ubud has 4 — the
- * component doesn't care, it just renders however many it's given.
+ * "What our guests are saying" — one quote at a time.
  *
- * Redesign note: the arrows were bare chevrons floating beside the text with
- * no hit area to speak of, and the author line looked like more body copy.
- * Now the arrows are proper circular buttons that pick up the gold on hover,
- * the author is set as a small gold caption so it reads as an attribution
- * rather than another sentence, and the active dot stretches into a pill so
- * the current position is obvious at a glance.
+ * This is the page's quiet moment, so it gets the opposite treatment to
+ * everything around it: dark, centred, generously spaced, and the only
+ * section on the site whose heading is not left-aligned. Social proof works
+ * best when it is allowed to be still.
+ *
+ * Same dependency-free carousel pattern as PropertyHero — a local `useState`
+ * index and plain array indexing, no carousel library. Seminyak has 3
+ * testimonials and Ubud has 4; the component just renders however many it is
+ * given.
  */
 export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -37,63 +37,65 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
 
   // Both arrows share this; kept in one place so they can't drift apart.
   const arrowClassName =
-    "flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-ink/15 text-ink transition-colors duration-300 hover:border-primary hover:text-primary";
+    "flex h-11 w-11 shrink-0 items-center justify-center border border-white/25 text-white transition-colors duration-300 hover:border-primary hover:bg-primary hover:text-ink";
 
   return (
-    <section className="px-5 py-16 text-center md:py-32">
-      <Container className="flex flex-col items-center">
-        <h2 className="font-heading text-[30px] font-extralight text-primary md:text-[40px]">
-          What our guests are saying
-        </h2>
-        <span aria-hidden className="mt-5 block h-px w-16 bg-primary/70" />
+    <Section tone="ink" space="loose" innerClassName="flex flex-col items-center">
+      <SectionHeading
+        title="What our guests are saying"
+        surface="dark"
+        align="center"
+      />
 
-        {/* The quote now gets the full column to itself. The arrows used to
-            flank it, which on a 390px screen left the text only 230px — about
-            nine characters a line. */}
-        <div className="mt-12 flex max-w-[640px] flex-col items-center">
-          {/* Purely decorative quote mark — aria-hidden so screen readers
-              don't announce a stray punctuation character before the quote. */}
-          <span
-            aria-hidden
-            className="font-heading text-[64px] leading-none text-primary/25"
-          >
-            &ldquo;
-          </span>
+      {/* Re-keyed on the active index so each quote fades up as it arrives
+          rather than swapping instantly. Capped at 800px: the quote is the
+          longest single run of text on the page and needs a reading measure,
+          not the full grid width. */}
+      <div
+        key={activeIndex}
+        className="mt-10 flex max-w-[800px] animate-rise-in flex-col items-center text-center"
+      >
+        <p className="text-quote font-heading font-light text-white/90 italic">
+          {active.quote}
+        </p>
+        <p className="text-eyebrow font-body mt-7 text-primary uppercase">
+          {active.author}
+        </p>
+      </div>
 
-          <p className="-mt-3 text-xl leading-[1.7] font-light text-text italic md:text-2xl">
-            {active.quote}
-          </p>
-          <p className="mt-6 text-sm tracking-[2px] text-primary uppercase">
-            {active.author}
-          </p>
-        </div>
-
-        {/* Controls grouped together beneath: arrows either side of the dots.
-            Rendered once rather than duplicated per breakpoint, so there's no
-            second pair of identically-labelled buttons in the DOM. */}
-        <div className="mt-10 flex items-center gap-5">
+      {/* Controls stay outside the re-keyed block so they don't re-animate on
+          every change. Hidden entirely for a single testimonial. */}
+      {testimonials.length > 1 ? (
+        <div className="mt-10 flex items-center gap-6">
           <button
             type="button"
             onClick={goToPrevious}
             aria-label="Previous testimonial"
             className={arrowClassName}
           >
-            <ChevronIcon className="h-5 w-5 rotate-180" />
+            <ChevronIcon className="h-4 w-4 rotate-180" />
           </button>
 
-          <div className="flex items-center gap-2">
+          {/* No `gap`: the buttons' own horizontal padding both separates the
+              marks and gives each one a real hit area — see the same treatment
+              in PropertyHero. */}
+          <div className="flex items-center">
             {testimonials.map((testimonial, index) => (
               <button
                 key={testimonial.author}
                 type="button"
                 onClick={() => setActiveIndex(index)}
                 aria-label={`Go to testimonial ${index + 1}`}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  index === activeIndex
-                    ? "w-6 bg-primary"
-                    : "w-1.5 bg-ink/25 hover:bg-ink/40"
-                }`}
-              />
+                className="group/rule flex items-center px-2 py-3.5"
+              >
+                <span
+                  className={`block h-px transition-all duration-500 ease-out ${
+                    index === activeIndex
+                      ? "w-10 bg-primary"
+                      : "w-5 bg-white/35 group-hover/rule:bg-white/70"
+                  }`}
+                />
+              </button>
             ))}
           </div>
 
@@ -103,10 +105,10 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
             aria-label="Next testimonial"
             className={arrowClassName}
           >
-            <ChevronIcon className="h-5 w-5" />
+            <ChevronIcon className="h-4 w-4" />
           </button>
         </div>
-      </Container>
-    </section>
+      ) : null}
+    </Section>
   );
 }
