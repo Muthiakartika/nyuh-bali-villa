@@ -18,12 +18,17 @@ export default function PrivacyPolicyPage() {
   return (
     <>
       <PropertyHeader site={site} activeHref="/privacy-policy" />
-      <main className="px-5 py-16">
-        <Container className="flex flex-col gap-12">
-          <h1 className="font-heading text-center text-[56px] font-normal text-primary">
+      {/* Same treatment as Terms & Conditions — see the note there on why the
+          text column is capped rather than running the full Container. */}
+      <main className="px-5 py-20 md:py-24">
+        <Container className="flex flex-col items-center">
+          {/* Steps down below `md` for the same reason as Terms & Conditions. */}
+          <h1 className="font-heading text-center text-[40px] leading-tight font-normal text-primary md:text-[56px]">
             Privacy Policy
           </h1>
-          <div className="flex flex-col gap-10">
+          <span aria-hidden className="mt-6 block h-px w-16 bg-primary/70" />
+
+          <div className="mt-16 flex w-full max-w-[72ch] flex-col gap-12">
             {PRIVACY_POLICY_SECTIONS.map((section) => (
               <LegalSection key={section.heading} section={section} />
             ))}

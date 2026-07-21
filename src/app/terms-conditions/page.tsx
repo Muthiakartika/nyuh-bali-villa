@@ -22,12 +22,22 @@ export default function TermsConditionsPage() {
   return (
     <>
       <PropertyHeader site={site} activeHref="/terms-conditions" />
-      <main className="px-5 py-16">
-        <Container className="flex flex-col gap-12">
-          <h1 className="font-heading text-center text-[56px] font-normal text-primary">
+      {/* Legal copy is the densest reading on the site, so the column is
+          capped at ~72 characters per line rather than running the full
+          1080px Container — the same reasoning as AboutNarrative, just a
+          slightly wider measure because this is reference material people
+          scan rather than read start to finish. */}
+      <main className="px-5 py-20 md:py-24">
+        <Container className="flex flex-col items-center">
+          {/* 56px is the original desktop size; on a 390px screen it wrapped
+              to two lines ~140px tall, which is a lot of weight for a legal
+              page, so it steps down below `md`. */}
+          <h1 className="font-heading text-center text-[40px] leading-tight font-normal text-primary md:text-[56px]">
             Terms &amp; Conditions
           </h1>
-          <div className="flex flex-col gap-10">
+          <span aria-hidden className="mt-6 block h-px w-16 bg-primary/70" />
+
+          <div className="mt-16 flex w-full max-w-[72ch] flex-col gap-12">
             {TERMS_CONDITIONS_SECTIONS.map((section) => (
               <LegalSection key={section.heading} section={section} />
             ))}
