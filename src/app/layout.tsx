@@ -1,29 +1,24 @@
 import type { Metadata } from "next";
-import { Open_Sans, Source_Sans_3 } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
-// The live site self-hosts two webfonts via a WordPress plugin: "Open Sans"
-// for body copy and "Source Sans" (Google's current distribution of the
-// former "Source Sans Pro") for headings, at weight 300 (light) as measured
-// on the homepage <h1>. `next/font/google` downloads and self-hosts these at
-// build time too — same visual result as the original, but without a
-// render-blocking request out to Google's font CDN at runtime.
+// DESIGN.md specifies a single family — Roobert PRO — at every step of the
+// type ramp. Roobert PRO is a commercial face from Displaay and cannot be
+// licensed or self-hosted from here, so Plus Jakarta Sans stands in for it:
+// the same geometric-humanist construction, and it carries the 500 weight the
+// ramp uses at almost every level. Replacing it with the real face later means
+// changing this loader and the `--font-*` block in globals.css, nothing else.
 //
-// Each loader's `variable` option exposes the font as a CSS custom property
-// (e.g. `--font-open-sans`) instead of a fixed className. That indirection is
-// what lets globals.css's `@theme inline` block turn them into ordinary
-// Tailwind utilities (`font-body`, `font-heading`) usable on any element,
-// rather than being stuck applying one font to one root element.
-const openSans = Open_Sans({
+// One family replaces the previous two (Open Sans body / Source Sans headings),
+// which matches how DESIGN.md is written — it never splits display from body.
+//
+// The `variable` option exposes the font as a CSS custom property rather than a
+// fixed className. That indirection is what lets globals.css's `@theme inline`
+// block turn it into ordinary Tailwind utilities usable on any element.
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  variable: "--font-open-sans",
-});
-
-const sourceSans = Source_Sans_3({
-  subsets: ["latin"],
-  weight: ["300", "400", "600", "700"],
-  variable: "--font-source-sans",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-jakarta",
 });
 
 // Metadata copied verbatim from the live site's <title>/<meta name="description">
@@ -56,7 +51,7 @@ export default function RootLayout({
     // `flex-1` on the page itself) and pushes the footer to the bottom of the
     // screen. Without this, a short page like the homepage left a band of
     // empty white below the footer.
-    <html lang="en" className={`${openSans.variable} ${sourceSans.variable}`}>
+    <html lang="en" className={jakarta.variable}>
       <body className="flex min-h-screen flex-col">{children}</body>
     </html>
   );
