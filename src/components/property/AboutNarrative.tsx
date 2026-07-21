@@ -47,7 +47,13 @@ export function AboutNarrative({
             a good measure (~570px) without needing a `ch` cap. Stacks to one
             column below `md`. */}
         <div className="grid gap-10 md:grid-cols-[0.85fr_1.15fr] md:gap-16">
-          <div>
+          {/* `self-center` matters more than it looks: the heading is ~130px
+              tall next to a 537px column of narrative (and Ubud's single long
+              paragraph is taller still), so top-aligning it left ~76% of this
+              column empty underneath and the heading read as stranded in the
+              corner. Centring it against the text balances that whitespace
+              and makes the asymmetry look deliberate. */}
+          <div className="md:self-center">
             <h1 className="font-heading text-[36px] leading-tight font-light text-primary md:text-[42px]">
               {heading}
             </h1>
