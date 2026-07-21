@@ -21,8 +21,8 @@ export default function PrivacyPolicyPage() {
       <PropertyHeader site={site} activeHref="/privacy-policy" />
       <main>
         {/* Same treatment as Terms & Conditions — see the note there. */}
-        <Section tone="sand" space="loose" width="narrow">
-          <SectionHeading title="Privacy Policy" as="h1" size="display" />
+        <Section tone="canvas" space="loose" width="narrow">
+          <SectionHeading title="Privacy Policy" as="h1" size="h1" />
 
           <div className="mt-11 flex flex-col gap-10 md:mt-14">
             {PRIVACY_POLICY_SECTIONS.map((section) => (

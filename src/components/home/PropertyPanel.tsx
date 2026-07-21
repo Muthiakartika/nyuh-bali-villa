@@ -1,35 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ElementType } from "react";
+import { ArrowIcon } from "@/components/ui/icons";
 
 type PropertyPanelProps = {
   name: string;
   description: string;
   imageSrc: string;
   href: string;
-  /** Which heading tag to render (see the note below on why this is a prop
-   * instead of always being the same tag). */
+  /** There should only be one `<h1>` per page and this renders twice, so the
+   * caller decides which tag applies rather than the component guessing. */
   headingLevel: "h1" | "h2";
 };
 
 /**
  * One half of the homepage's Seminyak/Ubud picker.
  *
- * **The landing page is now the choice itself.** It used to be two square
- * cards floating in a padded container between a dark header and a dark
- * footer, each photo sitting under a flat `ink/50` wash — half the image's
- * light thrown away — with a full paragraph of copy stacked over the middle
- * of it. Both properties ended up looking like the same grey-brown rectangle.
- *
- * Each panel is now a full-height plane of photography meeting its neighbour
- * at a seam, with a gradient weighted to the bottom so only the area behind
- * the text is darkened and the rest of the picture is left alone. The name is
- * set at display scale, the description sits under it at a proper reading
- * measure, and the gold rule between them extends on hover.
- *
- * `headingLevel` exists because there should only be one `<h1>` per page, and
- * this component renders twice — so the caller decides which tag applies
- * rather than the component guessing.
+ * The landing page is the choice itself: two full-height photographs meeting at
+ * a seam, each carrying its name, its description, and an explicit action.
+ * Per DESIGN.md's no-hover policy the action is always visible rather than
+ * revealed on hover — on a phone there is no hover to reveal it with.
  */
 export function PropertyPanel({
   name,
@@ -41,56 +31,52 @@ export function PropertyPanel({
   const Heading: ElementType = headingLevel;
 
   return (
-    // `group` lets everything inside react to hovering anywhere on the panel.
-    // `overflow-hidden` clips the image's zoom to the panel edges.
     <Link
       href={href}
-      className="group relative flex min-h-[62vh] items-end overflow-hidden focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-primary md:min-h-screen"
+      className="group relative flex min-h-[62vh] items-end overflow-hidden focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-accent md:min-h-screen"
     >
       <Image
         src={imageSrc}
         alt={name}
         fill
         sizes="(min-width: 768px) 50vw, 100vw"
-        className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05]"
+        className="object-cover"
         priority
       />
 
-      {/* Two gradients, not one flat wash. The top one exists only so the
-          overlaying header stays legible; the bottom one carries the text.
+      {/* Two gradients rather than one flat wash: the top one exists only so
+          the overlaying header stays legible, the bottom one carries the text.
           Between them the middle of the photograph is left at full strength,
-          which is the entire point — the photography is what's being chosen
-          between. */}
+          which is the entire point — the photography is what's being chosen. */}
       <div
         aria-hidden
-        className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ink/60 to-transparent"
+        className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-primary/60 to-transparent"
       />
       <div
         aria-hidden
-        className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-ink/90 via-ink/50 to-transparent transition-opacity duration-700 group-hover:opacity-85"
+        className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-primary/90 via-primary/50 to-transparent"
       />
 
-      {/* The bottom padding has to clear the footer, which floats over the
-          panels rather than sitting below them. HomeFooter measures ~88px on a
-          390px screen after the spacing pass, so `pb-28` (112px) keeps the last
-          line of the description clear of it with room to spare. Don't reduce
-          this without re-measuring the footer. */}
+      {/* Bottom padding has to clear HomeFooter, which floats over the panels
+          rather than sitting below them. Don't reduce it without re-measuring
+          that footer. */}
       <div className="relative w-full px-7 pb-28 sm:px-10 md:px-14 md:pb-32">
-        <Heading className="text-display font-heading font-light tracking-[0.06em] text-white uppercase">
-          {name}
-        </Heading>
+        <Heading className="text-h1 font-medium text-on-dark">{name}</Heading>
 
-        {/* A widening gold rule instead of a "read more" label — it gives the
-            panel a hover affordance without inventing any copy that isn't on
-            the original site. */}
-        <span
-          aria-hidden
-          className="mt-5 block h-px w-14 bg-primary transition-all duration-700 ease-out group-hover:w-28"
-        />
-
-        <p className="mt-5 max-w-[460px] text-[15px] leading-[1.9] font-light text-white/80">
+        <p className="mt-5 max-w-[460px] text-body-sm text-on-dark-muted">
           {description}
         </p>
+
+        {/* Icon-only on purpose. The no-hover policy says the affordance has to
+            be permanently visible, but the original site has no call-to-action
+            wording on these panels and inventing one ("Explore Seminyak") would
+            be writing copy. An arrow says "this goes somewhere" without any. */}
+        <span
+          aria-hidden
+          className="mt-7 flex h-12 w-12 items-center justify-center rounded-full bg-canvas text-primary"
+        >
+          <ArrowIcon className="h-4 w-4" />
+        </span>
       </div>
     </Link>
   );
