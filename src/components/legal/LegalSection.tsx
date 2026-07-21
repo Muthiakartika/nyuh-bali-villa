@@ -6,43 +6,31 @@ type LegalSectionProps = {
 
 /**
  * One numbered section of Terms & Conditions or Privacy Policy: a heading
- * ("3. Check‑In & Check‑Out") followed by either a single paragraph or a
- * bulleted list, matching the live site's own mix — most sections are lists,
- * but a few (the opening "Acceptance"/"Introduction" section on each page,
- * plus one further down) are a single sentence instead. The `type`
- * discriminant on `LegalSectionData` is what lets this render either shape
- * without a runtime check on `items` being present.
+ * followed by either a paragraph or a bulleted list, matching the source
+ * content's own mix. The `type` discriminant on `LegalSectionData` is what lets
+ * this render either shape without a runtime check on `items`.
  *
- * The heading moved from gold to `ink` for the same reason every other heading
- * on the site did — gold on a light surface measures 2.39:1 — and it matters
- * more here than anywhere else, because legal copy is the one thing on the site
- * someone may actually be obliged to read. Gold stays on the list markers,
- * where contrast carries no meaning.
+ * Type is on the DESIGN.md ramp (`h4` for headings, `body` for prose) rather
+ * than the ad-hoc 17px this used to carry — legal copy is the one thing on the
+ * site someone may be obliged to read, so it gets the documented steps.
  */
 export function LegalSection({ section }: LegalSectionProps) {
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="font-heading text-xl font-normal text-ink md:text-2xl">
-        {section.heading}
-      </h2>
+      <h2 className="text-h4 font-medium text-ink">{section.heading}</h2>
 
       {section.type === "paragraph" ? (
-        <p className="text-[17px] leading-[1.9] font-light text-text">
-          {section.text}
-        </p>
+        <p className="text-body text-slate">{section.text}</p>
       ) : (
-        <ul className="flex flex-col gap-3.5 text-[17px] leading-[1.9] font-light text-text">
+        <ul className="flex flex-col gap-3 text-body text-slate">
           {section.items.map((item) => (
-            // `pl-7` reserves the space the absolutely-positioned marker sits
-            // in, so wrapped lines align with the first line rather than
-            // running back under it. `whitespace-pre-line` preserves the
-            // intentional line breaks inside some of the source items.
-            <li key={item} className="relative pl-7 whitespace-pre-line">
-              {/* A short gold rule rather than a dot — the same mark used
-                  under every heading on the site, at list scale. */}
+            // `pl-6` reserves the space the marker sits in, so wrapped lines
+            // align with the first rather than running back under it.
+            // `whitespace-pre-line` preserves intentional breaks in the source.
+            <li key={item} className="relative pl-6 whitespace-pre-line">
               <span
                 aria-hidden
-                className="absolute top-[0.95em] left-0 block h-px w-3.5 bg-primary"
+                className="absolute top-[0.6em] left-0 block h-1.5 w-1.5 rounded-full bg-accent"
               />
               {item}
             </li>

@@ -20,11 +20,10 @@ export const metadata: Metadata = {
 const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
-// Unlike Seminyak's 3-slide hero, the live Ubud page's slider genuinely only
-// has one slide (confirmed: only one `[id^="slide-"]` element exists, reusing
-// the homepage's Ubud panel photo). PropertyHero now drops its controls and
-// auto-advance entirely for a single image, rather than rendering inert arrows
-// and a lone indicator the way the old slider did.
+// The live Ubud slider genuinely has one slide (confirmed: a single
+// `[id^="slide-"]` element, reusing the homepage's Ubud photo). PropertyHero
+// drops its controls and auto-advance entirely for a single image rather than
+// rendering inert arrows.
 const HERO_IMAGES = [`${UPLOADS}/2025/01/home-ubud-compress.webp`];
 
 export default function UbudAboutPage() {
@@ -32,17 +31,12 @@ export default function UbudAboutPage() {
     <>
       <PropertyHeader site={site} activeHref="/ubud" overlay />
       <main>
-        <PropertyHero
-          images={HERO_IMAGES}
-          alt="Nyuh Bali Villas Ubud"
-          eyebrow="Nyuh Bali Villas"
-          title="Ubud"
-        />
+        <PropertyHero images={HERO_IMAGES} alt="Nyuh Bali Villas Ubud" title="Ubud" />
         <BookingSearchBar bookingHref={site.bookingHref} />
 
-        {/* Ubud's narrative is a single paragraph with no tagline sentence
-            before the button — unlike Seminyak's two paragraphs plus tagline.
-            Confirmed directly rather than assumed to be symmetric. */}
+        {/* Ubud's narrative is a single paragraph with no tagline before the
+            button — unlike Seminyak's two paragraphs plus tagline. Confirmed
+            directly rather than assumed symmetric. */}
         <AboutNarrative
           eyebrow="About Us"
           heading="Luxury Villas & Suite in Ubud"
@@ -63,63 +57,68 @@ export default function UbudAboutPage() {
           contactEmail={site.contact.email}
         />
 
-        {/* All three of Ubud's grids genuinely run at three columns on the live
-            site — it has no oversized "Our Villas" equivalent. They're
-            differentiated here by crop and tone instead, so three consecutive
-            3-up grids don't read as one repeating texture. */}
+        {/* All three of Ubud's grids run at three columns on the live site — it
+            has no oversized "Our Villas" equivalent. They're differentiated here
+            by layout and tone instead, so three consecutive grids don't read as
+            one repeating texture. */}
         <LinkCardGrid
           heading="STAY"
+          layout="cards"
           columns={3}
-          aspect="portrait"
-          tone="sand"
+          tone="canvas"
           items={[
             {
               label: "Suites",
               href: "https://nyuhbalivillas.com/ubud/villa/",
               imgSrc: `${UPLOADS}/2023/03/Honeymoon-Suite-5.webp`,
+              meta: site.label,
             },
             {
               label: "Romantic Villas",
               href: "https://nyuhbalivillas.com/ubud/villa/",
               imgSrc: `${UPLOADS}/2023/03/ubud-One-Bedroom-Deluxe-Pool-Villa-6.webp`,
+              meta: site.label,
             },
             {
               label: "Family Villas",
               href: "https://nyuhbalivillas.com/ubud/villa/",
               imgSrc: `${UPLOADS}/2023/03/Four-Bedroom-Pool-Villa-4.webp`,
+              meta: site.label,
             },
           ]}
         />
 
         <LinkCardGrid
           heading="DISCOVER"
-          columns={3}
-          aspect="tall"
-          tone="sand-deep"
+          layout="rows"
+          tone="surface"
           items={[
             {
               label: "Dining",
               href: "https://nyuhbalivillas.com/ubud/dining/",
               imgSrc: `${UPLOADS}/2023/03/ezgif.com-gif-maker-3.webp`,
+              meta: site.label,
             },
             {
               label: "SPA",
               href: "https://nyuhbalivillas.com/ubud/spa/",
               imgSrc: `${UPLOADS}/2023/03/ubudspa.webp`,
+              meta: site.label,
             },
             {
               label: "Experience",
               href: "https://nyuhbalivillas.com/ubud/balinese-culture/",
               imgSrc: `${UPLOADS}/2023/03/ubud-walk-1.webp`,
+              meta: site.label,
             },
           ]}
         />
 
         <LinkCardGrid
           heading="OUR PACKAGES"
+          layout="cards"
           columns={3}
-          aspect="square"
-          tone="sand"
+          tone="canvas"
           items={[
             {
               label: "Honeymoon",

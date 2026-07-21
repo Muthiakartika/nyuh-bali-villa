@@ -7,9 +7,8 @@ import { Button } from "@/components/ui/Button";
 export type MobileNavLink = {
   label: string;
   href: string;
-  /** Defaults to true. Set false to render this entry as plain
-   * non-clickable text instead of a Link — see PropertyNavItem's `inScope`
-   * for why some nav destinations aren't real links in this project. */
+  /** Defaults to true. Set false to render as plain non-clickable text — see
+   * PropertyNavItem's `inScope`. */
   inScope?: boolean;
 };
 
@@ -17,20 +16,17 @@ type MobileNavOverlayProps = {
   isOpen: boolean;
   onClose: () => void;
   links: MobileNavLink[];
-  /** Optional because the homepage's two-link menu has no single property to
-   * book — its booking CTA is the group ribbon instead. */
+  /** Optional: the homepage's two-link menu has no single property to book. */
   bookingHref?: string;
 };
 
 /**
- * The full-screen menu shared by the homepage chrome and the property
- * headers.
+ * The full-screen menu shared by the homepage chrome and the property headers.
  *
- * Redesigned from a column of identical 15px grey links centred in the void.
- * Menu items are now left-aligned and set large, separated by hairlines, and
- * arrive in a short stagger — a mobile menu is a *page* on a phone, not a
- * dropdown, so it gets treated with the same typographic care as one. The
- * booking CTA sits at the bottom where a thumb reaches.
+ * A mobile menu is a page on a phone, not a dropdown, so it gets the same
+ * typographic care as one: left-aligned items at a real heading step, separated
+ * by hairlines, arriving in a short stagger, with the booking action where a
+ * thumb reaches.
  */
 export function MobileNavOverlay({
   isOpen,
@@ -45,9 +41,8 @@ export function MobileNavOverlay({
       if (event.key === "Escape") onClose();
     }
 
-    // Locking the page behind the overlay stops the situation where swiping
-    // the menu scrolls the article underneath it — the previous version was
-    // a fixed layer over a still-scrollable document.
+    // Locking the page behind the overlay stops swiping the menu from
+    // scrolling the article underneath it.
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKeyDown);
@@ -63,13 +58,13 @@ export function MobileNavOverlay({
   }
 
   return (
-    <div className="fixed inset-0 z-[200] flex flex-col bg-ink px-6 pt-6 pb-10">
+    <div className="fixed inset-0 z-[200] flex flex-col bg-primary px-6 pt-6 pb-10">
       <div className="flex justify-end">
         <button
           type="button"
           onClick={onClose}
           aria-label="Close menu"
-          className="flex h-10 w-10 items-center justify-center text-2xl leading-none text-primary transition-opacity duration-300 hover:opacity-70"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-h4 leading-none text-on-dark"
         >
           &times;
         </button>
@@ -79,26 +74,23 @@ export function MobileNavOverlay({
         <ul className="flex flex-col">
           {links.map((link, index) => {
             const rowClassName =
-              "flex items-center border-b border-white/10 py-4 font-heading text-2xl font-light";
+              "flex items-center border-b border-white/10 py-4 text-h4 font-medium";
 
             return (
               <li
                 key={link.label}
                 className="animate-rise-in"
-                // Inline rather than a Tailwind class so any number of links
-                // can stagger without a matching arbitrary class needing to
-                // exist in the stylesheet.
+                // Inline so any number of links can stagger without a matching
+                // arbitrary class needing to exist in the stylesheet.
                 style={{ animationDelay: `${index * 55}ms` }}
               >
                 {link.inScope === false ? (
-                  <span className={`${rowClassName} text-white/45`}>
-                    {link.label}
-                  </span>
+                  <span className={`${rowClassName} text-muted`}>{link.label}</span>
                 ) : (
                   <Link
                     href={link.href}
                     onClick={onClose}
-                    className={`${rowClassName} text-white transition-colors duration-300 hover:text-primary`}
+                    className={`${rowClassName} text-on-dark`}
                   >
                     {link.label}
                   </Link>
@@ -110,11 +102,7 @@ export function MobileNavOverlay({
       </nav>
 
       {bookingHref ? (
-        <Button
-          href={bookingHref}
-          external
-          className="w-full animate-rise-in"
-        >
+        <Button href={bookingHref} external variant="accent" className="w-full animate-rise-in">
           Book Now
         </Button>
       ) : null}
