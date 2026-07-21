@@ -1,3 +1,5 @@
+import { Container } from "@/components/ui/Container";
+
 type InstagramTeaserProps = {
   heading: string;
   /** Seminyak and Ubud run separate Instagram accounts
@@ -18,16 +20,19 @@ type InstagramTeaserProps = {
  */
 export function InstagramTeaser({ heading, instagramHref }: InstagramTeaserProps) {
   return (
-    <section className="flex flex-col items-center gap-4 bg-ink px-5 py-16 text-center md:px-[92px]">
-      <h2 className="font-heading text-[40px] font-extralight text-primary">{heading}</h2>
-      <a
-        href={instagramHref}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-[13px] text-white uppercase"
-      >
-        Follow on Instagram
-      </a>
+    // Background full-bleed, content bound to the shared 1080px Container.
+    <section className="bg-ink px-5 py-16 text-center">
+      <Container className="flex flex-col items-center gap-4">
+        <h2 className="font-heading text-[40px] font-extralight text-primary">{heading}</h2>
+        <a
+          href={instagramHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[13px] text-white uppercase transition-opacity duration-200 hover:opacity-70"
+        >
+          Follow on Instagram
+        </a>
+      </Container>
     </section>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { Container } from "@/components/ui/Container";
 
 type BookingSearchBarProps = {
   bookingHref: string;
@@ -38,7 +39,10 @@ export function BookingSearchBar({ bookingHref }: BookingSearchBarProps) {
   const fieldLabelClassName = "text-xs text-white uppercase";
 
   return (
-    <div className="flex flex-col items-center gap-6 bg-ink px-5 py-8 md:flex-row md:flex-wrap md:justify-center md:gap-6 md:px-[92px]">
+    // Dark bar stays full-bleed; the fields sit inside the shared 1080px
+    // Container instead of the old unbounded `md:px-[92px]`.
+    <div className="bg-ink px-5 py-8">
+      <Container className="flex flex-col items-center gap-6 md:flex-row md:flex-wrap md:justify-center md:gap-6">
       <label className="flex items-center gap-2 text-sm text-white">
         <input type="checkbox" className="h-4 w-4 accent-primary" />
         Flexible Dates
@@ -79,6 +83,7 @@ export function BookingSearchBar({ bookingHref }: BookingSearchBarProps) {
       >
         Search
       </a>
+      </Container>
     </div>
   );
 }

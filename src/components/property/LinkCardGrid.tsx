@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Container } from "@/components/ui/Container";
 
 export type LinkCardItem = {
   label: string;
@@ -66,14 +67,19 @@ export function LinkCardGrid({
   const isSingleColumnOnMobile = labelSize === 28;
 
   return (
-    <section className="flex flex-col items-center gap-10 bg-ink px-5 py-16 md:px-[92px]">
-      <h2 className="font-heading text-[40px] font-light text-primary">{heading}</h2>
+    // Background stays full-bleed; Container caps the content at the
+    // site-wide 1080px. Measured on the live site, every card grid (2, 3 and
+    // 4 column alike) spans that full 1080px with 20px gaps — the old
+    // `max-w-5xl` held it 56px narrower at 1024px.
+    <section className="bg-ink px-5 py-16">
+      <Container className="flex flex-col items-center gap-10">
+        <h2 className="font-heading text-[40px] font-light text-primary">{heading}</h2>
 
-      <div
-        className={`grid w-full max-w-5xl gap-5 ${
-          isSingleColumnOnMobile ? "grid-cols-1" : "grid-cols-2"
-        } ${DESKTOP_COLUMNS[columns]}`}
-      >
+        <div
+          className={`grid w-full gap-5 ${
+            isSingleColumnOnMobile ? "grid-cols-1" : "grid-cols-2"
+          } ${DESKTOP_COLUMNS[columns]}`}
+        >
         {items.map((item) => {
           // `group-hover:*` below only ever activates when a `.group`
           // ancestor exists — which only happens for the `<Link>` branch a
@@ -113,8 +119,9 @@ export function LinkCardGrid({
               )}
             </div>
           );
-        })}
-      </div>
+          })}
+        </div>
+      </Container>
     </section>
   );
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Testimonial } from "@/data/testimonials";
 import { ChevronIcon } from "@/components/ui/icons";
+import { Container } from "@/components/ui/Container";
 
 type TestimonialCarouselProps = {
   testimonials: Testimonial[];
@@ -29,39 +30,43 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
   }
 
   return (
-    <section className="flex flex-col items-center gap-8 px-5 py-16 text-center md:px-[92px]">
-      <h2 className="font-heading text-[40px] font-extralight text-primary">
-        What our guests are saying
-      </h2>
+    // Container bounds the section to the shared 1080px; the quote keeps its
+    // own max-w-[640px], which matches the live site's measured quote width.
+    <section className="px-5 py-16 text-center">
+      <Container className="flex flex-col items-center gap-8">
+        <h2 className="font-heading text-[40px] font-extralight text-primary">
+          What our guests are saying
+        </h2>
 
-      <div className="flex items-center gap-4">
-        <button type="button" onClick={goToPrevious} aria-label="Previous testimonial">
-          <ChevronIcon className="h-6 w-6 rotate-180 text-ink" />
-        </button>
+        <div className="flex items-center gap-4">
+          <button type="button" onClick={goToPrevious} aria-label="Previous testimonial">
+            <ChevronIcon className="h-6 w-6 rotate-180 text-ink" />
+          </button>
 
-        <div className="flex max-w-[640px] flex-col gap-4">
-          <p className="text-2xl leading-[1.6] font-light text-text italic">
-            {active.quote}
-          </p>
-          <p className="text-xl font-medium text-text">{active.author}</p>
+          <div className="flex max-w-[640px] flex-col gap-4">
+            <p className="text-2xl leading-[1.6] font-light text-text italic">
+              {active.quote}
+            </p>
+            <p className="text-xl font-medium text-text">{active.author}</p>
+          </div>
+
+          <button type="button" onClick={goToNext} aria-label="Next testimonial">
+            <ChevronIcon className="h-6 w-6 text-ink" />
+          </button>
         </div>
 
-        <button type="button" onClick={goToNext} aria-label="Next testimonial">
-          <ChevronIcon className="h-6 w-6 text-ink" />
-        </button>
-      </div>
-
-      <div className="flex gap-2">
-        {testimonials.map((testimonial, index) => (
-          <button
-            key={testimonial.author}
-            type="button"
-            onClick={() => setActiveIndex(index)}
-            aria-label={`Go to testimonial ${index + 1}`}
-            className={`h-2 w-2 rounded-full ${index === activeIndex ? "bg-primary" : "bg-ink/30"}`}
-          />
-        ))}
-      </div>
+        <div className="flex gap-2">
+          {testimonials.map((testimonial, index) => (
+            <button
+              key={testimonial.author}
+              type="button"
+              onClick={() => setActiveIndex(index)}
+              aria-label={`Go to testimonial ${index + 1}`}
+              className={`h-2 w-2 rounded-full ${index === activeIndex ? "bg-primary" : "bg-ink/30"}`}
+            />
+          ))}
+        </div>
+      </Container>
     </section>
   );
 }

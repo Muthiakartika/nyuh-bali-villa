@@ -1,3 +1,5 @@
+import { Container } from "@/components/ui/Container";
+
 type PromoBannerProps = {
   promoCode: string;
   perks: string[];
@@ -13,27 +15,39 @@ type PromoBannerProps = {
  */
 export function PromoBanner({ promoCode, perks, contactEmail }: PromoBannerProps) {
   return (
-    <section className="flex flex-col items-center gap-4 px-5 py-16 text-center md:px-[92px]">
-      <h2 className="text-[40px] font-normal text-ink">Best Price Guaranteed</h2>
+    // Container replaces the old `md:px-[92px]`, so this section shares the
+    // same 1080px content bound as the rest of the page. The copy itself is
+    // centred and narrower than that, so nothing moves visually — it just
+    // stops this being a second, competing way of setting content width.
+    <section className="px-5 py-16 text-center">
+      <Container className="flex flex-col items-center gap-4">
+        {/* font-heading (Source Sans) — the live heading uses the heading
+            font like every other heading on the site; this one was missing
+            the class and so fell back to the Open Sans body font, rendering
+            noticeably wider than the original. */}
+        <h2 className="font-heading text-[40px] font-normal text-ink">
+          Best Price Guaranteed
+        </h2>
 
-      <p className="text-xl text-text">
-        Promo code &ldquo;{promoCode}&rdquo;
-        <br />
-        Exclusive privileges for booking on our website.
-      </p>
+        <p className="text-xl text-text">
+          Promo code &ldquo;{promoCode}&rdquo;
+          <br />
+          Exclusive privileges for booking on our website.
+        </p>
 
-      <ul className="flex flex-col gap-2 text-xl font-light text-text">
-        {perks.map((perk) => (
-          <li key={perk}>{perk}</li>
-        ))}
-      </ul>
+        <ul className="flex flex-col gap-2 text-xl font-light text-text">
+          {perks.map((perk) => (
+            <li key={perk}>{perk}</li>
+          ))}
+        </ul>
 
-      <p className="text-xl text-text">
-        Screenshot the deal and{" "}
-        <a href={`mailto:${contactEmail}`} className="underline">
-          click here
-        </a>
-      </p>
+        <p className="text-xl text-text">
+          Screenshot the deal and{" "}
+          <a href={`mailto:${contactEmail}`} className="underline">
+            click here
+          </a>
+        </p>
+      </Container>
     </section>
   );
 }
