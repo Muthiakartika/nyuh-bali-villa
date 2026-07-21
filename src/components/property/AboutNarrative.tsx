@@ -34,18 +34,33 @@ export function AboutNarrative({
 }: AboutNarrativeProps) {
   return (
     <Section tone="canvas" space="loose">
-      <div className="grid gap-10 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
+      {/*
+        The two-column split waits until `lg`, not `md`. Measured at 768px the
+        md split left the narrative column 344px wide — 41 characters a line,
+        below the comfortable 45–75 band, which turned Ubud's single long
+        paragraph into 23 lines of a tall thin column. Below `lg` the two stack
+        instead, and the prose is capped so a full-width tablet column does not
+        swing to the opposite problem — uncapped at 768px it measured 87
+        characters a line.
+
+        The cap is `34rem` (544px), not a `ch` value. `62ch` was tried first and
+        did nothing at all: `ch` is the advance width of the "0" glyph, which in
+        Plus Jakarta Sans is 11.7px against a ~7.9px average character, so 62ch
+        resolved to 726px — wider than the 689px container it was meant to
+        constrain. 544px measures out at roughly 69 characters.
+      */}
+      <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
         {/* The heading holds the left margin for the length of the narrative
-            rather than scrolling away after the first paragraph. On one column
-            it has no effect, which is correct — a sticky heading on a phone
-            would just eat the screen. */}
+            rather than scrolling away after the first paragraph. Stacked, it
+            has no effect — which is correct, a sticky heading on a narrow
+            screen would just eat the viewport. */}
         <SectionHeading
           eyebrow={eyebrow}
           title={heading}
-          className="md:sticky md:top-28 md:self-start"
+          className="lg:sticky lg:top-28 lg:self-start"
         />
 
-        <div className="flex flex-col">
+        <div className="flex max-w-[34rem] flex-col lg:max-w-none">
           <Reveal delay={120} className="flex flex-col gap-5">
             {paragraphs.map((paragraph) => (
               <p key={paragraph} className="text-body text-slate">

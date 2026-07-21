@@ -35,8 +35,10 @@ export default function UbudContactPage() {
         <Section tone="canvas" space="loose">
           <SectionHeading eyebrow={site.label} title="Contact Us" as="h1" size="h1" />
 
-          <div className="mt-10 grid gap-9 md:mt-14 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
-            <div className="relative min-h-[380px] w-full overflow-hidden rounded-xl md:sticky md:top-24 md:h-[540px] md:self-start">
+          {/* Split at `lg` — see the note on Seminyak's contact page for the
+              measurement behind that. */}
+          <div className="mt-10 grid gap-9 md:mt-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
+            <div className="relative h-[320px] w-full overflow-hidden rounded-xl sm:h-[420px] lg:sticky lg:top-24 lg:h-[540px] lg:self-start">
               <Image
                 src="https://nyuhbalivillas.com/wp-content/uploads/2023/03/contact-us-ubud.webp"
                 alt="Nyuh Bali Villas Ubud"
