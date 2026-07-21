@@ -21,22 +21,24 @@ export default function SeminyakContactPage() {
   return (
     <>
       <PropertyHeader site={site} activeHref="/seminyak/contact" />
-      {/* Same full-bleed-background / capped-content split as the other
-          shared sections — <main> keeps the base padding, Container caps
-          the two-column row at 1120px instead of stretching to the edges. */}
-      <main className="px-5 py-16">
-        <Container className="flex flex-col gap-10 md:flex-row md:gap-10">
-          <div className="relative aspect-[3/2] w-full md:w-1/2">
+      {/* A grid rather than a flex row: grid items stretch by default, so the
+          photo column grows to the full height of the form beside it instead
+          of sitting as a short 3/2 letterbox with dead space underneath. The
+          min-height covers the single-column mobile case, where there's no
+          neighbouring column to take height from. */}
+      <main className="px-5 py-20 md:py-24">
+        <Container className="grid gap-10 md:grid-cols-2 md:gap-14">
+          <div className="relative min-h-[360px] w-full overflow-hidden">
             <Image
               src="https://nyuhbalivillas.com/wp-content/uploads/2023/03/Contact-us-seminyak.webp"
               alt="Nyuh Bali Villas Seminyak"
               fill
-              sizes="(min-width: 768px) 540px, 100vw"
+              sizes="(min-width: 768px) 520px, 100vw"
               className="object-cover"
               priority
             />
           </div>
-          <div className="w-full md:w-1/2">
+          <div>
             <ContactForm />
           </div>
         </Container>
