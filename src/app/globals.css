@@ -1,26 +1,25 @@
 @import "tailwindcss";
 
 /*
- * Design tokens for the Nyuh Bali Villas clone.
+ * Design tokens for Nyuh Bali Villas.
  *
  * Tailwind v4 uses a "CSS-first" config: instead of a tailwind.config.js
  * theme.extend block, custom design tokens are declared here with an
- * `@theme` at-rule, and Tailwind turns each `--color-*` / `--font-*`
- * variable into matching utility classes automatically — e.g. `--color-primary`
- * below is what makes `bg-primary`, `text-primary`, `border-primary`, etc.
- * available everywhere in the app. Centralizing the palette here (rather than
- * writing hex codes inside components) means the whole site can be re-themed
- * from this one file.
+ * `@theme` at-rule, and Tailwind turns each `--color-*` / `--font-*` /
+ * `--text-*` variable into matching utility classes automatically — e.g.
+ * `--color-primary` below is what makes `bg-primary`, `text-primary`,
+ * `border-primary`, etc. available everywhere in the app. Centralizing the
+ * palette here (rather than writing hex codes inside components) means the
+ * whole site can be re-themed from this one file.
  *
- * These exact values were measured from the live site's computed styles
- * (not eyeballed), per the brief's "avoid visual approximations" instruction:
- *   - heading/accent color:  rgb(199, 162, 89) -> #c7a259
- *   - body copy color:       rgb(64, 64, 64)   -> #404040
- *   - page background:       white
- *   - dark surface color:    rgb(38, 30, 19)   -> #261e13 (footer bar, the
- *     "BOOK NOW" ribbon, and the mobile nav overlay all reuse this exact
- *     dark brown, so it earns its own token rather than being repeated as a
- *     one-off hex value in three separate components)
+ * The three brand values were measured from the live site's computed styles
+ * (not eyeballed) and are FIXED — the redesign brief forbids changing brand
+ * colour:
+ *   - gold accent:      rgb(199, 162, 89) -> #c7a259
+ *   - body copy:        rgb(64, 64, 64)   -> #404040
+ *   - dark brown:       rgb(38, 30, 19)   -> #261e13
+ *
+ * Everything else below is *derived* from those three, never invented.
  */
 @theme {
   --color-primary: #c7a259;
@@ -30,10 +29,61 @@
   --color-error: #ff0000;
 
   /*
-   * One extra breakpoint beyond Tailwind's built-in sm/md/lg/xl/2xl scale.
-   * The live site's hero image jumps from 70vh to 80vh at exactly 1125px
-   * (measured by resizing the browser in ~10px steps around that point) —
-   * an in-between value Tailwind has no built-in name for.
+   * `primary` at 8% and 16% flattened over white — the brand gold, not a new
+   * hue. These are the page's default surfaces, and they exist because the
+   * site used to alternate between stark white and `ink/5`; `ink` is so dark
+   * and desaturated that a 5% tint of it lands on #f4f4f3, a cold neutral
+   * grey. Tinting with the *gold* instead keeps the warmth the photography
+   * and the honeymoon/wellness positioning both need.
+   *
+   *   sand      = 0.08*#c7a259 + 0.92*#ffffff = #faf8f2
+   *   sand-deep = 0.16*#c7a259 + 0.84*#ffffff = #f6f0e4
+   */
+  --color-sand: #faf8f2;
+  --color-sand-deep: #f6f0e4;
+
+  /*
+   * A darker shade of the same gold, for small gold text on light surfaces.
+   *
+   * This is an accessibility fix, not a palette change. Brand gold #c7a259
+   * on white measures 2.39:1 — it fails WCAG AA for both body text (4.5:1)
+   * and large text (3:1), which is why every gold section heading on the old
+   * design was genuinely hard to read. #8a6f31 measures 4.78:1 on white and
+   * passes AA outright.
+   *
+   * The rule this establishes: full-strength `primary` is for gold on dark,
+   * for rules/hairlines, for icons and for button fills — all places where
+   * it measures fine. `primary-deep` is for gold *text* on a light surface.
+   */
+  --color-primary-deep: #8a6f31;
+
+  /*
+   * Type scale. The old design had exactly one heading size (26px mobile /
+   * 32px desktop) reused for all six section headings on a page, so nothing
+   * could out-rank anything else — a template, not a hierarchy. These four
+   * steps give the page a real top, middle and bottom voice.
+   *
+   * `clamp()` rather than breakpoint jumps: display type that steps in
+   * discrete tiers looks broken at the widths in between, and a resort hero
+   * is the one place where type has to feel continuous with the image behind
+   * it at every viewport.
+   */
+  --text-eyebrow: 0.6875rem;
+  --text-eyebrow--line-height: 1;
+  --text-eyebrow--letter-spacing: 0.24em;
+
+  --text-display: clamp(2.375rem, 5.2vw, 4.25rem);
+  --text-display--line-height: 1.06;
+
+  --text-section: clamp(1.75rem, 3.2vw, 2.625rem);
+  --text-section--line-height: 1.16;
+
+  --text-quote: clamp(1.375rem, 2.4vw, 2rem);
+  --text-quote--line-height: 1.55;
+
+  /*
+   * One extra breakpoint beyond Tailwind's built-in sm/md/lg/xl/2xl scale,
+   * kept from the original build: the hero grows one last step at 1125px.
    *
    * The value MUST be written in rem, not px, even though it's conceptually
    * "1125px". Tailwind orders breakpoints by comparing their numeric values,
@@ -41,11 +91,9 @@
    * are all defined in rem (lg = 64rem, xl = 80rem, …). A px breakpoint gets
    * sorted to the very front instead of into its correct slot, so its media
    * query ends up *before* the `lg` block in the generated CSS — and then
-   * `lg:h-[70vh]`, coming later in the file, wins the cascade at ≥1125px and
-   * silently cancels the 80vh tier. (Confirmed by reading the compiled CSS:
-   * with a px value the media order was 1125px, 40rem, 48rem, 64rem — the
-   * odd one out.) In rem it sorts numerically between lg and xl as intended:
-   * 1125 / 16 = 70.3125rem.
+   * `lg:h-[…]`, coming later in the file, wins the cascade at ≥1125px and
+   * silently cancels the tier. In rem it sorts numerically between lg and xl
+   * as intended: 1125 / 16 = 70.3125rem.
    */
   --breakpoint-heroxl: 70.3125rem;
 
@@ -60,6 +108,23 @@
    * visible jump. 30s linear matches the live slider's measured speed.
    */
   --animate-marquee: marquee 30s linear infinite;
+
+  /*
+   * A very slow push-in on the active hero slide ("Ken Burns"). 12s over a
+   * 1.08 scale works out to roughly 0.1% growth per frame — below the
+   * threshold where the eye reads it as movement, so it registers as the
+   * image being *alive* rather than as an animation playing. Anything
+   * faster immediately looks like a screensaver.
+   */
+  --animate-kenburns: kenburns 12s ease-out forwards;
+
+  /*
+   * The mobile menu's staggered entrance. Unlike the scroll reveals this is
+   * safe to run from a hidden start state: the overlay only exists in the DOM
+   * after the visitor has opened it, so a failed animation can't strand any
+   * content the way a hidden-by-default page section could.
+   */
+  --animate-rise-in: riseIn 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /*
@@ -71,22 +136,30 @@
  * "generate the `font-body` / `font-heading` utilities, but keep them
  * pointing at whatever that variable resolves to", instead of trying to
  * hard-code a value right now.
+ *
+ * The fonts themselves are unchanged from the original site, per the brief.
  */
 @theme inline {
   --font-body: var(--font-open-sans);
   --font-heading: var(--font-source-sans);
 }
 
+/*
+ * `sand`, not white, is the site's default surface. Stark white behind warm
+ * tropical photography is the single cheapest-looking pairing available, and
+ * defaulting here means no page can accidentally open on it.
+ */
 body {
-  background-color: var(--color-background);
+  background-color: var(--color-sand);
   color: var(--color-text);
   font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
 }
 
 /*
- * Keyframes for the Ubud awards marquee (see --animate-marquee above). Kept
- * as plain CSS at the top level because @keyframes isn't a design token —
- * Tailwind's `animate-marquee` utility just references this `marquee` name.
+ * Keyframes. Kept as plain CSS at the top level because @keyframes isn't a
+ * design token — the `animate-marquee` / `animate-kenburns` utilities
+ * generated from the tokens above just reference these names.
  */
 @keyframes marquee {
   from {
@@ -97,13 +170,69 @@ body {
   }
 }
 
+@keyframes kenburns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /*
- * Respect users who've asked their OS to reduce motion: freeze the marquee
- * so it shows as a static row instead of scrolling. An accessibility best
- * practice for any always-on, auto-playing animation.
+ * Scroll-reveal entrances — see components/ui/Reveal.tsx.
+ *
+ * `.reveal` only carries the transition; it has no hidden state of its own,
+ * so server-rendered content is visible by default and stays visible if
+ * JavaScript never runs. `.reveal-hidden` is added by the client, and only to
+ * elements that are still below the fold.
+ *
+ * The easing is a custom cubic-bezier rather than `ease-out`: it decelerates
+ * harder at the end, which is what makes an entrance settle into place
+ * instead of coasting to a stop. 900ms is deliberately slow — quick reveals
+ * read as "web app", slow ones read as "considered".
+ */
+.reveal {
+  transition:
+    opacity 900ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-hidden {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+/*
+ * Respect users who've asked their OS to reduce motion.
  */
 @media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
+  .animate-marquee,
+  .animate-kenburns,
+  .animate-rise-in {
     animation: none;
+  }
+
+  /*
+   * Switch the entrances off entirely. Forcing the finished state matters as
+   * much as dropping the transition — otherwise anything the client had
+   * already hidden would stay stuck at opacity 0.
+   */
+  .reveal,
+  .reveal-hidden {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
 }
