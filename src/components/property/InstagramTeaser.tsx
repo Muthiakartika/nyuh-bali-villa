@@ -21,7 +21,7 @@ type InstagramTeaserProps = {
 export function InstagramTeaser({ heading, instagramHref }: InstagramTeaserProps) {
   return (
     // Background full-bleed, content bound to the shared 1080px Container.
-    <section className="bg-ink px-5 py-16 text-center">
+    <section className="bg-ink px-5 py-24 text-center md:py-28">
       <Container className="flex flex-col items-center gap-4">
         <h2 className="font-heading text-[40px] font-extralight text-primary">{heading}</h2>
         <a

@@ -27,6 +27,13 @@ type LinkCardGridProps = {
    * which covers every grid except Seminyak's "Discover" section, which
    * measured closer to 347/250. */
   imageAspect?: "3/2" | "347/250";
+  /**
+   * Section background. Each About page stacks three of these grids in a
+   * row; rendering all three on the same dark ink made that whole stretch of
+   * the page read as one undifferentiated block. Alternating the middle one
+   * to `light` gives the page rhythm. Defaults to "dark".
+   */
+  tone?: "dark" | "light";
 };
 
 // Tailwind's scanner needs each full class name to appear literally in the
@@ -68,21 +75,32 @@ export function LinkCardGrid({
   columns,
   labelSize,
   imageAspect = "3/2",
+  tone = "dark",
 }: LinkCardGridProps) {
   const isSingleColumnOnMobile = labelSize === 28;
+  const isLight = tone === "light";
 
   return (
     // Background stays full-bleed; Container caps the content at the
     // site-wide 1080px. Measured on the live site, every card grid (2, 3 and
     // 4 column alike) spans that full 1080px with 20px gaps — the old
     // `max-w-5xl` held it 56px narrower at 1024px.
-    <section className="bg-ink px-5 py-16">
+    <section className={`px-5 py-24 md:py-28 ${isLight ? "bg-ink/5" : "bg-ink"}`}>
       <Container className="flex flex-col items-center">
-        <h2 className="font-heading text-[40px] font-light text-primary">{heading}</h2>
-        <span aria-hidden className="mt-5 block h-px w-16 bg-primary/70" />
+        {/* Gold on the near-white `light` tone is too low-contrast at this
+            size, so light sections take the dark `ink` heading and let the
+            rule below carry the gold — the same pairing PromoBanner uses. */}
+        <h2
+          className={`font-heading text-[40px] font-light tracking-[1px] ${
+            isLight ? "text-ink" : "text-primary"
+          }`}
+        >
+          {heading}
+        </h2>
+        <span aria-hidden className="mt-6 block h-px w-16 bg-primary/70" />
 
         <div
-          className={`mt-12 grid w-full gap-5 ${
+          className={`mt-16 grid w-full gap-5 ${
             isSingleColumnOnMobile ? "grid-cols-1" : "grid-cols-2"
           } ${DESKTOP_COLUMNS[columns]}`}
         >
@@ -106,17 +124,29 @@ export function LinkCardGrid({
                 />
 
                 {/* Flat scrim (not a gradient) so the label stays legible on
-                    any photo; it lifts on hover to brighten the image. */}
-                <div className="absolute inset-0 bg-ink/45 transition-colors duration-500 group-hover:bg-ink/25" />
+                    any photo; it lifts on hover to brighten the image. Kept
+                    light so the photography carries the section. */}
+                <div className="absolute inset-0 bg-ink/40 transition-colors duration-500 group-hover:bg-ink/20" />
 
-                <div className="absolute inset-0 flex flex-col items-center justify-end p-4 text-center">
-                  <span className={`text-white ${LABEL_TEXT_SIZE[labelSize]}`}>
+                {/* An inset gold hairline that fades in on hover. Inset
+                    rather than flush to the edge so it reads as a considered
+                    frame around the photo instead of a plain border, and
+                    hover-only so a static grid stays quiet. */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-3 border border-transparent transition-colors duration-500 group-hover:border-primary/60"
+                />
+
+                {/* Just the label, centred. The gold rule that used to sit
+                    under every card was repeated 2–4 times per row and made
+                    the grids busy; the section heading keeps its rule, the
+                    cards stay quiet. */}
+                <div className="absolute inset-0 flex items-center justify-center p-4 text-center">
+                  <span
+                    className={`font-heading font-light tracking-[1px] text-white ${LABEL_TEXT_SIZE[labelSize]}`}
+                  >
                     {item.label}
                   </span>
-                  <span
-                    aria-hidden
-                    className="mt-3 block h-px w-8 bg-primary/80 transition-all duration-500 ease-out group-hover:w-16"
-                  />
                 </div>
               </div>
             );

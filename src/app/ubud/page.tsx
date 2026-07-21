@@ -83,10 +83,14 @@ export default function UbudAboutPage() {
           ]}
         />
 
+        {/* Middle of the three stacked grids runs on the light tone so the
+            page doesn't read as one long dark block — see LinkCardGrid's
+            `tone` prop. */}
         <LinkCardGrid
           heading="DISCOVER"
           labelSize={26}
           columns={3}
+          tone="light"
           items={[
             {
               label: "Dining",

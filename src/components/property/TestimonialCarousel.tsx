@@ -40,7 +40,7 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
     "flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-ink/15 text-ink transition-colors duration-300 hover:border-primary hover:text-primary";
 
   return (
-    <section className="px-5 py-20 text-center md:py-24">
+    <section className="px-5 py-24 text-center md:py-32">
       <Container className="flex flex-col items-center">
         <h2 className="font-heading text-[40px] font-extralight text-primary">
           What our guests are saying

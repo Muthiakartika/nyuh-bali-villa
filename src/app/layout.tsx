@@ -50,8 +50,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // `min-h-screen` + `flex flex-col` is the classic sticky-footer setup:
+    // every page renders <header>, <main> and <footer> as siblings here, so
+    // making the body a full-height column lets the <main> stretch (via
+    // `flex-1` on the page itself) and pushes the footer to the bottom of the
+    // screen. Without this, a short page like the homepage left a band of
+    // empty white below the footer.
     <html lang="en" className={`${openSans.variable} ${sourceSans.variable}`}>
-      <body>{children}</body>
+      <body className="flex min-h-screen flex-col">{children}</body>
     </html>
   );
 }

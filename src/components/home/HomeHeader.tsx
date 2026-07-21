@@ -24,12 +24,14 @@ export function HomeHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="relative z-[150] px-5 py-4 md:py-[5px]">
-      {/* Content capped at 1120px and centered via Container, matching the
-          live site's measured layout — see Container.tsx. This header has
-          no background color of its own, so unlike PropertyHeader there's
-          no full-bleed bar to keep separate; Container just replaces the
-          old flex row directly. */}
+    // The header used to sit on bare white, which made the landing page open
+    // on a stark white band above the imagery. It now shares the dark `ink`
+    // of the page body and footer, so the whole landing reads as one
+    // continuous dark surface with the photography as the only light.
+    // (Checked first that the homepage logo is a light/gold mark — ~8% dark
+    // pixels — so it stays legible here.)
+    <header className="relative z-[150] bg-ink px-5 py-6">
+      {/* Content capped at 1080px and centred via Container — see Container.tsx. */}
       <Container className="flex items-center justify-between">
         <Link href="/" className="relative h-[50px] w-[136px] shrink-0">
           {/* Hotlinked straight from the live site, per the project brief —
@@ -54,7 +56,7 @@ export function HomeHeader() {
               <li key={property.slug}>
                 <Link
                   href={property.href}
-                  className="text-[15px] text-primary uppercase transition-opacity duration-200 hover:opacity-70"
+                  className="text-[15px] tracking-[2px] text-primary uppercase transition-opacity duration-200 hover:opacity-70"
                 >
                   {property.label}
                 </Link>
@@ -72,9 +74,11 @@ export function HomeHeader() {
           aria-expanded={isMenuOpen}
           className="flex h-6 w-6 flex-col justify-center gap-1.5 md:hidden"
         >
-          <span className="block h-0.5 w-full bg-ink" />
-          <span className="block h-0.5 w-full bg-ink" />
-          <span className="block h-0.5 w-full bg-ink" />
+          {/* Gold, not `ink` — these bars now sit on the dark header, where
+              dark-on-dark would be invisible. Same reasoning as HomeFooter's. */}
+          <span className="block h-0.5 w-full bg-primary" />
+          <span className="block h-0.5 w-full bg-primary" />
+          <span className="block h-0.5 w-full bg-primary" />
         </button>
       </Container>
 

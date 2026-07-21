@@ -61,10 +61,13 @@ export function PropertyPanel({
         {/* Scrim: a flat wash of the brand's dark `ink` rather than a
             decorative gradient. It exists purely so white text stays legible
             over a photo, and it lifts on hover so the image reads brighter as
-            you point at it. */}
-        <div className="absolute inset-0 bg-ink/55 transition-colors duration-500 group-hover:bg-ink/40" />
+            you point at it. Kept lighter than it would need to be on a white
+            page — the landing is now dark, so the photography is the only
+            light on it and a heavy scrim would flatten the cards into the
+            background. */}
+        <div className="absolute inset-0 bg-ink/50 transition-colors duration-500 group-hover:bg-ink/30" />
 
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-8 py-10 text-center">
           <Heading className="font-heading text-[40px] leading-none font-light tracking-[2px] text-primary">
             {name}
           </Heading>
@@ -74,10 +77,14 @@ export function PropertyPanel({
               copy that isn't on the original site. */}
           <span
             aria-hidden
-            className="mt-5 block h-px w-10 bg-primary/80 transition-all duration-500 ease-out group-hover:w-20"
+            className="mt-5 block h-px w-12 bg-primary/80 transition-all duration-500 ease-out group-hover:w-24"
           />
 
-          <p className="mt-6 max-w-[460px] text-lg leading-[1.7] font-extralight text-white/85">
+          {/* Held to 400px at 16px rather than 460px at 18px: the wider,
+              larger setting broke into ragged lines that ended on stray words
+              ("our", "your"). The tighter measure keeps the block compact and
+              leaves more of the photo visible around it. */}
+          <p className="mt-6 max-w-[400px] text-base leading-[1.8] font-extralight text-white/85">
             {description}
           </p>
         </div>

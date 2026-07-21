@@ -23,32 +23,36 @@ type PromoBannerProps = {
  */
 export function PromoBanner({ promoCode, perks, contactEmail }: PromoBannerProps) {
   return (
-    <section className="px-5 py-20 text-center md:py-24">
+    // Sits on the warm `ink/5` tint so the offer reads as its own band
+    // between the white narrative above and the dark grid below — the
+    // section rhythm replaces the hairline box this used to have.
+    <section className="bg-ink/5 px-5 py-24 text-center md:py-32">
       <Container className="flex flex-col items-center">
         <h2 className="font-heading text-[40px] font-normal text-ink">
           Best Price Guaranteed
         </h2>
-        <span aria-hidden className="mt-5 block h-px w-16 bg-primary/70" />
+        <span aria-hidden className="mt-6 block h-px w-16 bg-primary/70" />
 
-        {/* A hairline gold border turns the offer into a distinct object on
-            the white page without needing a background colour or shadow. */}
-        <div className="mt-12 w-full max-w-[680px] border border-primary/30 px-6 py-10 md:px-12">
-          <p className="text-xs tracking-[3px] text-text uppercase">Promo code</p>
-          <p className="font-heading mt-3 text-[34px] leading-none font-light tracking-[3px] text-primary">
-            &ldquo;{promoCode}&rdquo;
-          </p>
-          <p className="mt-5 text-lg font-light text-text">
-            Exclusive privileges for booking on our website.
-          </p>
+        {/* No border, no box. The offer used to sit inside a hairline frame,
+            which read as a coupon; letting it breathe on the open page — with
+            the code itself as the one large gold statement — is both simpler
+            and more expensive-looking. Spacing does the grouping that the
+            border used to do. */}
+        <p className="mt-14 text-xs tracking-[3px] text-text uppercase">Promo code</p>
+        <p className="font-heading mt-4 text-[40px] leading-none font-light tracking-[4px] text-primary">
+          &ldquo;{promoCode}&rdquo;
+        </p>
+        <p className="mt-6 text-lg font-light text-text">
+          Exclusive privileges for booking on our website.
+        </p>
 
-          <ul className="mt-9 flex flex-col gap-3 border-t border-primary/20 pt-9 text-lg font-light text-text">
-            {perks.map((perk) => (
-              <li key={perk}>{perk}</li>
-            ))}
-          </ul>
-        </div>
+        <ul className="mt-12 flex max-w-[600px] flex-col gap-4 text-lg font-light text-text">
+          {perks.map((perk) => (
+            <li key={perk}>{perk}</li>
+          ))}
+        </ul>
 
-        <p className="mt-10 text-lg font-light text-text">
+        <p className="mt-12 text-lg font-light text-text">
           Screenshot the deal and{" "}
           <a
             href={`mailto:${contactEmail}`}

@@ -27,7 +27,16 @@ export default function Home() {
           cards is what makes them read as two distinct choices rather than
           one continuous block, and the vertical padding gives them room to
           breathe against the header and footer. */}
-      <main className="px-5 py-10 md:py-14">
+      {/* `flex-1` makes this stretch to fill whatever height is left between
+          the header and footer (see the body's flex column in layout.tsx),
+          and `justify-center` then centres the two cards in that space — so
+          the picker sits precisely in the middle of the screen instead of
+          hugging the top and leaving white space under the footer. */}
+      {/* `bg-ink/5` is the brand's dark brown at 5% — a warm off-white, not a
+          new colour in the palette. The header and footer stay dark, so the
+          page reads as dark chrome framing a light middle: no stark white at
+          the top, but not wall-to-wall brown either. */}
+      <main className="flex flex-1 flex-col justify-center bg-ink/5 px-5 py-10 md:py-14">
         <Container className="grid gap-5 md:grid-cols-2 md:gap-6">
           <PropertyPanel
             headingLevel="h1"
