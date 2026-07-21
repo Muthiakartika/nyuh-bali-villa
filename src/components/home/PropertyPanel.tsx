@@ -15,18 +15,21 @@ type PropertyPanelProps = {
 /**
  * One half of the homepage's Seminyak/Ubud picker.
  *
- * The original stacked three separate blocks — heading, then paragraph, then
- * photo underneath — which read as a plain document rather than a choice
- * between two properties. This version composes them into a single image
- * card: the photo fills the card, a dark scrim sits over it for legibility,
- * and the name + description are centred on top. Same content and same brand
- * (Source Sans heading, gold `primary`, dark `ink`) — only the composition
- * and motion changed.
+ * **The landing page is now the choice itself.** It used to be two square
+ * cards floating in a padded container between a dark header and a dark
+ * footer, each photo sitting under a flat `ink/50` wash — half the image's
+ * light thrown away — with a full paragraph of copy stacked over the middle
+ * of it. Both properties ended up looking like the same grey-brown rectangle.
  *
- * `headingLevel` exists because the live site uses an `<h1>` for the first
- * panel and an `<h2>` for the second (there should only be one `<h1>` per
- * page). Since this component is reused for both, the caller decides which
- * tag applies rather than the component guessing.
+ * Each panel is now a full-height plane of photography meeting its neighbour
+ * at a seam, with a gradient weighted to the bottom so only the area behind
+ * the text is darkened and the rest of the picture is left alone. The name is
+ * set at display scale, the description sits under it at a proper reading
+ * measure, and the gold rule between them extends on hover.
+ *
+ * `headingLevel` exists because there should only be one `<h1>` per page, and
+ * this component renders twice — so the caller decides which tag applies
+ * rather than the component guessing.
  */
 export function PropertyPanel({
   name,
@@ -38,59 +41,56 @@ export function PropertyPanel({
   const Heading: ElementType = headingLevel;
 
   return (
-    // `group` lets everything inside react to hovering anywhere on the card.
-    // `overflow-hidden` is what clips the image's zoom to the card edges.
+    // `group` lets everything inside react to hovering anywhere on the panel.
+    // `overflow-hidden` clips the image's zoom to the panel edges.
     <Link
       href={href}
-      className="group relative block overflow-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none"
+      className="group relative flex min-h-[62vh] items-end overflow-hidden focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-primary md:min-h-screen"
     >
-      {/* A squarer crop on desktop than the original 3/2 landscape — taller
-          cards give the two properties more presence side by side. The photos
-          are landscape, so `object-cover` crops the sides rather than
-          squashing them.
-          Mobile is deliberately taller (4/5): at 4/3 the card was only 263px
-          high while the heading plus a 7-line description needed ~287px, so
-          the text spilled out past the photo onto the page background. */}
-      <div className="relative aspect-[4/5] w-full sm:aspect-[4/3] md:aspect-square">
-        <Image
-          src={imageSrc}
-          alt={name}
-          fill
-          sizes="(min-width: 768px) 540px, 100vw"
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-          priority
+      <Image
+        src={imageSrc}
+        alt={name}
+        fill
+        sizes="(min-width: 768px) 50vw, 100vw"
+        className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05]"
+        priority
+      />
+
+      {/* Two gradients, not one flat wash. The top one exists only so the
+          overlaying header stays legible; the bottom one carries the text.
+          Between them the middle of the photograph is left at full strength,
+          which is the entire point — the photography is what's being chosen
+          between. */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ink/60 to-transparent"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-ink/90 via-ink/50 to-transparent transition-opacity duration-700 group-hover:opacity-85"
+      />
+
+      {/* The bottom padding has to clear the footer, which floats over the
+          panels rather than sitting below them. HomeFooter measures ~88px on a
+          390px screen after the spacing pass, so `pb-28` (112px) keeps the last
+          line of the description clear of it with room to spare. Don't reduce
+          this without re-measuring the footer. */}
+      <div className="relative w-full px-7 pb-28 sm:px-10 md:px-14 md:pb-32">
+        <Heading className="text-display font-heading font-light tracking-[0.06em] text-white uppercase">
+          {name}
+        </Heading>
+
+        {/* A widening gold rule instead of a "read more" label — it gives the
+            panel a hover affordance without inventing any copy that isn't on
+            the original site. */}
+        <span
+          aria-hidden
+          className="mt-5 block h-px w-14 bg-primary transition-all duration-700 ease-out group-hover:w-28"
         />
 
-        {/* Scrim: a flat wash of the brand's dark `ink` rather than a
-            decorative gradient. It exists purely so white text stays legible
-            over a photo, and it lifts on hover so the image reads brighter as
-            you point at it. Kept lighter than it would need to be on a white
-            page — the landing is now dark, so the photography is the only
-            light on it and a heavy scrim would flatten the cards into the
-            background. */}
-        <div className="absolute inset-0 bg-ink/50 transition-colors duration-500 group-hover:bg-ink/30" />
-
-        <div className="absolute inset-0 flex flex-col items-center justify-center px-8 py-10 text-center">
-          <Heading className="font-heading text-[32px] leading-none font-light tracking-[2px] text-primary md:text-[40px]">
-            {name}
-          </Heading>
-
-          {/* A short gold rule instead of a "read more" label — it gives the
-              card a hover affordance by widening, without inventing any new
-              copy that isn't on the original site. */}
-          <span
-            aria-hidden
-            className="mt-5 block h-px w-12 bg-primary/80 transition-all duration-500 ease-out group-hover:w-24"
-          />
-
-          {/* Held to 400px at 16px rather than 460px at 18px: the wider,
-              larger setting broke into ragged lines that ended on stray words
-              ("our", "your"). The tighter measure keeps the block compact and
-              leaves more of the photo visible around it. */}
-          <p className="mt-6 max-w-[400px] text-base leading-[1.8] font-extralight text-white/85">
-            {description}
-          </p>
-        </div>
+        <p className="mt-5 max-w-[460px] text-[15px] leading-[1.9] font-light text-white/80">
+          {description}
+        </p>
       </div>
     </Link>
   );

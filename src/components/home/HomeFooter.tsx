@@ -1,35 +1,37 @@
-"use client";
-
 import Link from "next/link";
-import { useState } from "react";
 import { PROPERTIES } from "@/data/properties";
-import { MobileNavOverlay } from "@/components/layout/MobileNavOverlay";
 import { Container } from "@/components/ui/Container";
 
 /**
- * The homepage's closing bar: copyright notice on the left, the same
- * "Seminyak / Ubud" links as the header on the right, collapsing to its own
- * hamburger + full-screen overlay on mobile — mirroring HomeHeader's
- * pattern exactly, because the live site's footer nav is built from the
- * same underlying menu component as its header nav.
+ * The homepage's closing line: copyright left, the same two property links
+ * right.
+ *
+ * Like HomeHeader this now floats over the photography rather than sitting on
+ * a dark bar of its own, so the landing page is one uninterrupted image split
+ * from edge to edge with the chrome laid quietly on top.
+ *
+ * It also stopped being a Client Component. The old version carried its own
+ * `useState` and its own hamburger opening a second copy of the full-screen
+ * menu — a duplicate of the header's, four inches below it. Two identical
+ * menus on one screen is not a feature, so the footer's was removed and this
+ * became a plain Server Component with no JavaScript at all.
  */
 export function HomeFooter() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   return (
-    // Background stays full-bleed on <footer>; content is capped at 1120px
-    // and centered via Container — same split as HomeHeader/PropertyHeader.
-    <footer className="bg-ink px-5 py-6">
-      <Container className="flex items-center justify-between">
-        <p className="text-xs text-white/50">Copyright © Nyuh Bali Villas</p>
+    // Shallow `py` on purpose: the nav links carry their own `py-2` for tap
+    // size, so the bar's padding was double-counting it and eating into the
+    // clearance PropertyPanel's `pb-28` reserves for this footer.
+    <footer className="absolute inset-x-0 bottom-0 z-[150] px-5 py-3 sm:px-8 md:py-5">
+      <Container className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-[13px] text-white/60">Copyright © Nyuh Bali Villas</p>
 
-        <nav className="hidden md:block">
-          <ul className="flex gap-8">
+        <nav>
+          <ul className="flex gap-7">
             {PROPERTIES.map((property) => (
               <li key={property.slug}>
                 <Link
                   href={property.href}
-                  className="text-[15px] text-primary uppercase transition-opacity duration-200 hover:opacity-70"
+                  className="inline-block py-2 text-[11px] tracking-[0.2em] text-white/70 uppercase transition-colors duration-300 hover:text-primary"
                 >
                   {property.label}
                 </Link>
@@ -37,29 +39,7 @@ export function HomeFooter() {
             ))}
           </ul>
         </nav>
-
-        {/* Same hamburger pattern as HomeHeader, but gold bars instead of dark
-            ones — this button sits on the dark footer background, so it needs
-            the light/gold color to stay visible, whereas the header's sits on
-            a white background and needs the dark color for the same reason. */}
-        <button
-          type="button"
-          onClick={() => setIsMenuOpen((open) => !open)}
-          aria-label="Toggle menu"
-          aria-expanded={isMenuOpen}
-          className="flex h-6 w-6 flex-col justify-center gap-1.5 md:hidden"
-        >
-          <span className="block h-0.5 w-full bg-primary" />
-          <span className="block h-0.5 w-full bg-primary" />
-          <span className="block h-0.5 w-full bg-primary" />
-        </button>
       </Container>
-
-      <MobileNavOverlay
-        isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-        links={PROPERTIES}
-      />
     </footer>
   );
 }

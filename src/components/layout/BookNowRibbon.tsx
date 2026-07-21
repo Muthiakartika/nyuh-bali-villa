@@ -7,40 +7,49 @@ type BookNowRibbonProps = {
 };
 
 /**
- * The fixed vertical "BOOK NOW" tab on the right edge of the screen.
+ * The fixed vertical "BOOK NOW" tab on the right edge of the homepage.
  *
  * It looks like rotated text, but inspecting the live site shows it isn't a
- * CSS `writing-mode` or `transform: rotate()` trick at all — it's just each
- * letter in its own block-level `<div>`, which stack top-to-bottom for free
- * because that's how block elements naturally flow. Reproducing that exact
- * structure (rather than a rotated string) is what makes the letter spacing
- * and the "BOOK" / "NOW" grouping gap match the original precisely.
+ * CSS `writing-mode` or `transform: rotate()` trick at all — it's each letter
+ * in its own block-level element, which stack top-to-bottom for free because
+ * that's how block elements naturally flow. Reproducing that exact structure
+ * is what makes the letter spacing and the "BOOK" / "NOW" grouping gap match
+ * the original.
  *
- * This is a Server Component — it's a static link with no state or browser
- * APIs involved, so there's no reason to ship it as client-side JS.
+ * Restyled from gold-on-dark to ink-on-gold: as the only permanent call to
+ * action on a page made entirely of photography, it should read as a solid
+ * printed tab rather than as another dark rectangle competing with the panels.
+ * It also slides slightly out from the edge on hover, which is the whole
+ * affordance a tab like this needs.
+ *
+ * A Server Component — a static link with no state or browser APIs, so there's
+ * no reason to ship it as client-side JS.
  */
 export function BookNowRibbon({ href }: BookNowRibbonProps) {
   return (
-    <div className="fixed top-[200px] right-0 z-[100] flex h-[230px] w-10 items-center justify-center bg-ink">
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex flex-col items-center text-base font-bold text-primary transition-opacity duration-200 hover:opacity-80"
-      >
-        {/* Keyed by index, not the letter itself — "BOOK" repeats "O", so
-            using the letter as the key would collide. */}
-        {["B", "O", "O", "K"].map((letter, i) => (
-          <div key={i}>{letter}</div>
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group/ribbon fixed top-1/2 right-0 z-[100] flex h-[212px] w-9 -translate-y-1/2 flex-col items-center justify-center bg-primary text-[13px] font-semibold tracking-[0.08em] text-ink transition-[background-color,color,padding] duration-500 ease-out hover:bg-ink hover:text-primary"
+    >
+      {/* Keyed by index, not the letter itself — "BOOK" repeats "O", so using
+          the letter as the key would collide. */}
+      {["B", "O", "O", "K"].map((letter, index) => (
+        <span key={index} className="block leading-[1.35]">
+          {letter}
+        </span>
+      ))}
+      {/* The live site separates "NOW" from "BOOK" with its own block and a
+          margin — kept, because that grouping is what makes the tab readable
+          as two words rather than one seven-letter column. */}
+      <span className="mt-3.5 flex flex-col items-center">
+        {["N", "O", "W"].map((letter, index) => (
+          <span key={index} className="block leading-[1.35]">
+            {letter}
+          </span>
         ))}
-        {/* The live site wraps "NOW" in its own div with margin-top: 15px,
-            which is what visually separates it from "BOOK" above it. */}
-        <div className="mt-[15px] flex flex-col items-center">
-          {["N", "O", "W"].map((letter, i) => (
-            <div key={i}>{letter}</div>
-          ))}
-        </div>
-      </a>
-    </div>
+      </span>
+    </a>
   );
 }
