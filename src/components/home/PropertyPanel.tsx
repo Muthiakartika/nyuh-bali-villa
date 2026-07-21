@@ -13,17 +13,15 @@ type PropertyPanelProps = {
 };
 
 /**
- * One half of the homepage's Seminyak/Ubud picker: a heading, a short
- * description, and a photo, all linking to that property's site.
+ * One half of the homepage's Seminyak/Ubud picker.
  *
- * On the live site this is built from three separate `<a>` tags — one
- * around the heading, one around the paragraph, one around the image, all
- * pointing at the same URL — because HTML doesn't allow nesting an `<a>`
- * inside another `<a>`, so a page builder wanting "click anywhere in this
- * block" has to duplicate the link instead. A single Next.js `<Link>`
- * wrapping all three pieces produces the identical clickable result with a
- * third of the markup, so that's the one intentional structural
- * simplification in this component versus the source DOM.
+ * The original stacked three separate blocks — heading, then paragraph, then
+ * photo underneath — which read as a plain document rather than a choice
+ * between two properties. This version composes them into a single image
+ * card: the photo fills the card, a dark scrim sits over it for legibility,
+ * and the name + description are centred on top. Same content and same brand
+ * (Source Sans heading, gold `primary`, dark `ink`) — only the composition
+ * and motion changed.
  *
  * `headingLevel` exists because the live site uses an `<h1>` for the first
  * panel and an `<h2>` for the second (there should only be one `<h1>` per
@@ -40,28 +38,49 @@ export function PropertyPanel({
   const Heading: ElementType = headingLevel;
 
   return (
-    // `group` lets the image inside react to hovering anywhere in this link
-    // (heading, paragraph, or photo) via Tailwind's `group-hover:` variant,
-    // rather than only when the cursor is directly over the image itself.
+    // `group` lets everything inside react to hovering anywhere on the card.
+    // `overflow-hidden` is what clips the image's zoom to the card edges.
     <Link
       href={href}
-      className="group flex w-full flex-col items-center py-5 text-center md:w-1/2"
+      className="group relative block overflow-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none"
     >
-      <Heading className="font-heading text-[40px] font-light text-primary">
-        {name}
-      </Heading>
-      <p className="mt-[15px] max-w-[500px] text-lg leading-[1.6] font-extralight text-ink">
-        {description}
-      </p>
-      {/* overflow-hidden clips the image's hover zoom to this box instead of
-          letting it spill over the surrounding text. */}
-      <div className="relative mt-[15px] aspect-[3/2] w-full max-w-[500px] overflow-hidden">
+      {/* A squarer crop on desktop than the original 3/2 landscape — taller
+          cards give the two properties more presence side by side. The photos
+          are landscape, so `object-cover` crops the sides rather than
+          squashing them. */}
+      <div className="relative aspect-[4/3] w-full md:aspect-square">
         <Image
           src={imageSrc}
           alt={name}
           fill
-          className="object-fill transition-transform duration-500 group-hover:scale-105"
+          sizes="(min-width: 768px) 540px, 100vw"
+          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+          priority
         />
+
+        {/* Scrim: a flat wash of the brand's dark `ink` rather than a
+            decorative gradient. It exists purely so white text stays legible
+            over a photo, and it lifts on hover so the image reads brighter as
+            you point at it. */}
+        <div className="absolute inset-0 bg-ink/55 transition-colors duration-500 group-hover:bg-ink/40" />
+
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
+          <Heading className="font-heading text-[40px] leading-none font-light tracking-[2px] text-primary">
+            {name}
+          </Heading>
+
+          {/* A short gold rule instead of a "read more" label — it gives the
+              card a hover affordance by widening, without inventing any new
+              copy that isn't on the original site. */}
+          <span
+            aria-hidden
+            className="mt-5 block h-px w-10 bg-primary/80 transition-all duration-500 ease-out group-hover:w-20"
+          />
+
+          <p className="mt-6 max-w-[460px] text-lg leading-[1.7] font-extralight text-white/85">
+            {description}
+          </p>
+        </div>
       </div>
     </Link>
   );

@@ -86,4 +86,21 @@ A UI-refinement pass ("~75% original / ~25% polish") measured against the live s
 
 ### Not done yet / next steps
 - `Container` is now used by every section on every page — if you add a new section, reuse it rather than reintroducing `md:px-[92px]`.
+
+---
+
+## Modern redesign (supersedes pixel-accuracy in specific places)
+
+**Read this before "fixing" anything back to match the live site.** The project began as a strict pixel-accurate clone (see the top of this file), but the homepage picker and the About Us pages were then deliberately redesigned to be "a bit more modern". Those sections are **intentionally different from nyuhbalivillas.com** — do not treat the differences as bugs to correct.
+
+**Constraints that still hold** (unchanged from the original brief): same fonts (Open Sans body, Source Sans headings), same palette (gold `primary` `#c7a259`, `ink` `#261e13`, `text` `#404040`), same logo, and **same copy** — no headline, paragraph, button label or nav item was reworded. Only composition, spacing, image treatment and motion changed.
+
+**What changed, and why:**
+- **`PropertyPanel` (homepage picker)** — was heading → paragraph → photo stacked as three separate blocks. Now one image card per property: photo fills a square card (`aspect-[4/3] md:aspect-square`, `object-cover`), a flat `bg-ink/55` scrim over it for legibility, name + description centred on top, and a short gold rule that widens on hover. `page.tsx` uses a `grid` with a real gutter so the two read as two distinct choices.
+- **`AboutNarrative`** — body copy was running the full 1080px, which on Ubud is a single ~1,000-character paragraph. Now capped at `max-w-[68ch]` (≈622px rendered) with `leading-[1.9]`. This is the one place that **knowingly reverses** an earlier accuracy fix; readability won.
+- **`LinkCardGrid`** — label moved from loose text *below* the photo to an overlay *on* it, over a scrim, so each tile is one object that responds to hover as a whole.
+- **`PromoBanner`** — same four pieces of copy, but arranged as a hairline gold-bordered card with real hierarchy: small "Promo code" label, the code itself large in gold, perks below a rule.
+- **`TestimonialCarousel`** — circular arrow buttons with a hover state, a decorative (aria-hidden) quote mark, author set as a small gold caption, and an active dot that stretches into a pill.
+
+**Design vocabulary to reuse:** a short gold rule (`h-px w-16 bg-primary/70`) sits under every section heading, and interactive imagery uses a flat `bg-ink/xx` scrim that lightens on hover plus a slow `scale-[1.04]`–`scale-[1.06]` zoom. Deliberately no gradients, glassmorphism or shadows — the restraint is part of the brand.
 - No visual screenshots were captured this session (the browser tool's screenshot + the live site's own screenshots timed out). Verification was computed-style measurement only — worth an eyeball pass in a normal browser, especially the **Ubud marquee motion** (its interpolation was proven correct via the Web Animations API, but it was paused under automation because the pane reported the document as `hidden`; it runs on a real visible tab).

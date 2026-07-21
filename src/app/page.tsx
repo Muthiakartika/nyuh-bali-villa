@@ -22,12 +22,13 @@ export default function Home() {
       <HomeHeader />
 
       {/* The two panels sit inside the same 1080px Container as every other
-          section (measured on the live homepage), so each half is 540px and
-          each panel's 500px-wide photo/description lands exactly where the
-          original's does. The old `md:px-[92px]` had no upper bound, which
-          made the halves grow with the viewport instead. */}
-      <main className="px-5">
-        <Container className="flex flex-col md:flex-row">
+          section, so each half is 540px wide. A `grid` with a real gap
+          replaces the old edge-to-edge flex row — the gutter between the two
+          cards is what makes them read as two distinct choices rather than
+          one continuous block, and the vertical padding gives them room to
+          breathe against the header and footer. */}
+      <main className="px-5 py-10 md:py-14">
+        <Container className="grid gap-5 md:grid-cols-2 md:gap-6">
           <PropertyPanel
             headingLevel="h1"
             name="SEMINYAK"

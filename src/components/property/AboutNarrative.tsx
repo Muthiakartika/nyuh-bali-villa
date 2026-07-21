@@ -15,11 +15,20 @@ type AboutNarrativeProps = {
 };
 
 /**
- * The white section right below the booking search bar: a centered heading,
+ * The white section right below the booking search bar: a centred heading,
  * one or more narrative paragraphs, an optional tagline, and a booking
- * button. Takes its copy as props rather than hard-coding Seminyak's text,
- * since About – Ubud reuses this exact layout with its own (unrelated,
- * single-paragraph, tagline-free) narrative.
+ * button.
+ *
+ * The key change from the original is the **reading measure**. The body copy
+ * used to run the full 1080px container width, which on Ubud's page is a
+ * single ~1,000-character paragraph stretched into one enormous block — the
+ * eye loses its place jumping back to the start of each line. Capping the
+ * text at ~68 characters per line (`max-w-[68ch]`) with looser leading is
+ * the single biggest readability win available here, and it costs nothing
+ * visually because the heading and button stay centred on the same axis.
+ *
+ * Everything else stays on-brand: Source Sans heading, gold `primary`, and
+ * the same copy passed in as props.
  */
 export function AboutNarrative({
   heading,
@@ -29,33 +38,41 @@ export function AboutNarrative({
   buttonLabel,
 }: AboutNarrativeProps) {
   return (
-    // Container caps the content at the site-wide 1080px and centres it,
-    // replacing the old `md:px-[92px]` padding that had no upper bound.
-    <section className="px-5 py-16 text-center">
-      <Container className="flex flex-col items-center gap-6">
-        <h1 className="font-heading text-[36px] font-light text-primary">
+    <section className="px-5 py-20 text-center md:py-24">
+      <Container className="flex flex-col items-center">
+        <h1 className="font-heading text-[36px] leading-tight font-light text-primary">
           {heading}
         </h1>
 
-        {/* The paragraphs fill the full 1080px content width — measured on
-            the live site, where the narrative text runs the whole width of
-            the container rather than being held to a narrower reading
-            column (this previously capped at max-w-4xl / 896px). */}
-        <div className="flex w-full flex-col gap-4">
+        {/* Same short gold rule used on the homepage cards — it ties the
+            sections together and gives the heading a clear terminator. */}
+        <span aria-hidden className="mt-6 block h-px w-16 bg-primary/70" />
+
+        {/* `ch` units size the box by character count rather than pixels, so
+            the measure stays comfortable no matter the font size. */}
+        <div className="mt-10 flex max-w-[68ch] flex-col gap-6">
           {paragraphs.map((paragraph) => (
-            <p key={paragraph} className="text-lg leading-[1.6] font-extralight text-text">
+            <p key={paragraph} className="text-lg leading-[1.9] font-extralight text-text">
               {paragraph}
             </p>
           ))}
         </div>
 
-        {tagline ? <p className="text-lg text-text">{tagline}</p> : null}
+        {/* Promoted from body text to a pull-quote: it's a standalone brand
+            line, not part of the narrative, so it gets the heading font and
+            a larger size to separate it from the paragraphs above. */}
+        {tagline ? (
+          <p className="font-heading mt-12 text-2xl font-light text-ink">{tagline}</p>
+        ) : null}
 
+        {/* Uppercase + letter-spacing matches the nav's existing treatment,
+            so the button reads as part of the same design language rather
+            than a default form control. The label itself is unchanged. */}
         <a
           href={bookingHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="rounded-[3px] bg-primary px-4 py-[10px] text-base text-white transition-opacity duration-200 hover:opacity-90"
+          className="mt-12 rounded-[3px] bg-primary px-8 py-3.5 text-sm tracking-[2px] text-white uppercase transition-opacity duration-300 hover:opacity-90"
         >
           {buttonLabel}
         </a>
