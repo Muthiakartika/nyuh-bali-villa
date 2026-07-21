@@ -21,9 +21,12 @@ type AwardsRowProps = {
 // string appears literally in the source, so the column count (which equals
 // the number of badges) is mapped through this lookup instead of being built
 // at runtime like `grid-cols-${n}` (which would never get generated).
+// Squeezing all 5 (or 8) badges into one row on a phone left them ~64px
+// wide, too small to read the award text on. Below `sm` they wrap onto
+// fewer, larger columns instead.
 const COLUMN_CLASS: Record<number, string> = {
-  5: "grid-cols-5",
-  8: "grid-cols-8",
+  5: "grid-cols-3 sm:grid-cols-5",
+  8: "grid-cols-4 sm:grid-cols-8",
 };
 
 /**
@@ -72,7 +75,7 @@ export function AwardsRow({ badges, variant = "grid" }: AwardsRowProps) {
   // Default: static grid (Seminyak). Equal columns span the full content
   // width so the badges are distributed edge to edge in a single row that
   // scales down together on narrow screens, matching the live layout.
-  const columnClass = COLUMN_CLASS[badges.length] ?? "grid-cols-4";
+  const columnClass = COLUMN_CLASS[badges.length] ?? "grid-cols-3 sm:grid-cols-4";
 
   return (
     <div className="bg-ink px-5 py-10">

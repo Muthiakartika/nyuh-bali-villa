@@ -46,10 +46,12 @@ const DESKTOP_COLUMNS: Record<2 | 3 | 4, string> = {
   4: "sm:grid-cols-4",
 };
 
+// Each size steps down on small screens: at 2 columns a phone card is only
+// ~165px wide, where a 26–28px label wraps badly across the photo.
 const LABEL_TEXT_SIZE: Record<18 | 26 | 28, string> = {
-  18: "text-lg",
-  26: "text-[26px]",
-  28: "text-[28px]",
+  18: "text-base md:text-lg",
+  26: "text-lg md:text-[26px]",
+  28: "text-xl md:text-[28px]",
 };
 
 const IMAGE_ASPECT_CLASS: Record<"3/2" | "347/250", string> = {
@@ -85,13 +87,13 @@ export function LinkCardGrid({
     // site-wide 1080px. Measured on the live site, every card grid (2, 3 and
     // 4 column alike) spans that full 1080px with 20px gaps — the old
     // `max-w-5xl` held it 56px narrower at 1024px.
-    <section className={`px-5 py-24 md:py-28 ${isLight ? "bg-ink/5" : "bg-ink"}`}>
+    <section className={`px-5 py-16 md:py-28 ${isLight ? "bg-ink/5" : "bg-ink"}`}>
       <Container className="flex flex-col items-center">
         {/* Gold on the near-white `light` tone is too low-contrast at this
             size, so light sections take the dark `ink` heading and let the
             rule below carry the gold — the same pairing PromoBanner uses. */}
         <h2
-          className={`font-heading text-[40px] font-light tracking-[1px] ${
+          className={`font-heading text-[30px] font-light tracking-[1px] md:text-[40px] ${
             isLight ? "text-ink" : "text-primary"
           }`}
         >
@@ -100,7 +102,7 @@ export function LinkCardGrid({
         <span aria-hidden className="mt-6 block h-px w-16 bg-primary/70" />
 
         <div
-          className={`mt-16 grid w-full gap-5 ${
+          className={`mt-10 grid w-full gap-5 md:mt-16 ${
             isSingleColumnOnMobile ? "grid-cols-1" : "grid-cols-2"
           } ${DESKTOP_COLUMNS[columns]}`}
         >

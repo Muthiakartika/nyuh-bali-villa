@@ -38,7 +38,7 @@ export function AboutNarrative({
   buttonLabel,
 }: AboutNarrativeProps) {
   return (
-    <section className="px-5 py-24 md:py-32">
+    <section className="px-5 py-16 md:py-32">
       <Container>
         {/* Editorial two-column split rather than one centred column: the
             heading anchors the left, the narrative runs down the right. An
@@ -54,7 +54,7 @@ export function AboutNarrative({
               corner. Centring it against the text balances that whitespace
               and makes the asymmetry look deliberate. */}
           <div className="md:self-center">
-            <h1 className="font-heading text-[36px] leading-tight font-light text-primary md:text-[42px]">
+            <h1 className="font-heading text-[30px] leading-tight font-light text-primary md:text-[42px]">
               {heading}
             </h1>
             {/* Same short gold rule used across every section heading. */}

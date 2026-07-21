@@ -26,9 +26,9 @@ export function PromoBanner({ promoCode, perks, contactEmail }: PromoBannerProps
     // Sits on the warm `ink/5` tint so the offer reads as its own band
     // between the white narrative above and the dark grid below — the
     // section rhythm replaces the hairline box this used to have.
-    <section className="bg-ink/5 px-5 py-24 text-center md:py-32">
+    <section className="bg-ink/5 px-5 py-16 text-center md:py-32">
       <Container className="flex flex-col items-center">
-        <h2 className="font-heading text-[40px] font-normal text-ink">
+        <h2 className="font-heading text-[30px] font-normal text-ink md:text-[40px]">
           Best Price Guaranteed
         </h2>
         <span aria-hidden className="mt-6 block h-px w-16 bg-primary/70" />
@@ -38,8 +38,8 @@ export function PromoBanner({ promoCode, perks, contactEmail }: PromoBannerProps
             the code itself as the one large gold statement — is both simpler
             and more expensive-looking. Spacing does the grouping that the
             border used to do. */}
-        <p className="mt-14 text-xs tracking-[3px] text-text uppercase">Promo code</p>
-        <p className="font-heading mt-4 text-[40px] leading-none font-light tracking-[4px] text-primary">
+        <p className="mt-10 text-xs tracking-[3px] text-text uppercase md:mt-14">Promo code</p>
+        <p className="font-heading mt-4 text-[32px] leading-none font-light tracking-[3px] text-primary md:text-[40px] md:tracking-[4px]">
           &ldquo;{promoCode}&rdquo;
         </p>
         <p className="mt-6 text-lg font-light text-text">

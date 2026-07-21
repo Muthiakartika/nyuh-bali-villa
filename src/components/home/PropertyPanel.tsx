@@ -47,8 +47,11 @@ export function PropertyPanel({
       {/* A squarer crop on desktop than the original 3/2 landscape — taller
           cards give the two properties more presence side by side. The photos
           are landscape, so `object-cover` crops the sides rather than
-          squashing them. */}
-      <div className="relative aspect-[4/3] w-full md:aspect-square">
+          squashing them.
+          Mobile is deliberately taller (4/5): at 4/3 the card was only 263px
+          high while the heading plus a 7-line description needed ~287px, so
+          the text spilled out past the photo onto the page background. */}
+      <div className="relative aspect-[4/5] w-full sm:aspect-[4/3] md:aspect-square">
         <Image
           src={imageSrc}
           alt={name}
@@ -68,7 +71,7 @@ export function PropertyPanel({
         <div className="absolute inset-0 bg-ink/50 transition-colors duration-500 group-hover:bg-ink/30" />
 
         <div className="absolute inset-0 flex flex-col items-center justify-center px-8 py-10 text-center">
-          <Heading className="font-heading text-[40px] leading-none font-light tracking-[2px] text-primary">
+          <Heading className="font-heading text-[32px] leading-none font-light tracking-[2px] text-primary md:text-[40px]">
             {name}
           </Heading>
 

@@ -40,14 +40,38 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
     "flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-ink/15 text-ink transition-colors duration-300 hover:border-primary hover:text-primary";
 
   return (
-    <section className="px-5 py-24 text-center md:py-32">
+    <section className="px-5 py-16 text-center md:py-32">
       <Container className="flex flex-col items-center">
-        <h2 className="font-heading text-[40px] font-extralight text-primary">
+        <h2 className="font-heading text-[30px] font-extralight text-primary md:text-[40px]">
           What our guests are saying
         </h2>
         <span aria-hidden className="mt-5 block h-px w-16 bg-primary/70" />
 
-        <div className="mt-12 flex w-full items-center justify-center gap-4 md:gap-8">
+        {/* The quote now gets the full column to itself. The arrows used to
+            flank it, which on a 390px screen left the text only 230px — about
+            nine characters a line. */}
+        <div className="mt-12 flex max-w-[640px] flex-col items-center">
+          {/* Purely decorative quote mark — aria-hidden so screen readers
+              don't announce a stray punctuation character before the quote. */}
+          <span
+            aria-hidden
+            className="font-heading text-[64px] leading-none text-primary/25"
+          >
+            &ldquo;
+          </span>
+
+          <p className="-mt-3 text-xl leading-[1.7] font-light text-text italic md:text-2xl">
+            {active.quote}
+          </p>
+          <p className="mt-6 text-sm tracking-[2px] text-primary uppercase">
+            {active.author}
+          </p>
+        </div>
+
+        {/* Controls grouped together beneath: arrows either side of the dots.
+            Rendered once rather than duplicated per breakpoint, so there's no
+            second pair of identically-labelled buttons in the DOM. */}
+        <div className="mt-10 flex items-center gap-5">
           <button
             type="button"
             onClick={goToPrevious}
@@ -57,22 +81,20 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
             <ChevronIcon className="h-5 w-5 rotate-180" />
           </button>
 
-          <div className="flex max-w-[640px] flex-col items-center">
-            {/* Purely decorative quote mark — aria-hidden so screen readers
-                don't announce a stray punctuation character before the quote. */}
-            <span
-              aria-hidden
-              className="font-heading text-[64px] leading-none text-primary/25"
-            >
-              &ldquo;
-            </span>
-
-            <p className="-mt-3 text-2xl leading-[1.7] font-light text-text italic">
-              {active.quote}
-            </p>
-            <p className="mt-6 text-sm tracking-[2px] text-primary uppercase">
-              {active.author}
-            </p>
+          <div className="flex items-center gap-2">
+            {testimonials.map((testimonial, index) => (
+              <button
+                key={testimonial.author}
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                aria-label={`Go to testimonial ${index + 1}`}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  index === activeIndex
+                    ? "w-6 bg-primary"
+                    : "w-1.5 bg-ink/25 hover:bg-ink/40"
+                }`}
+              />
+            ))}
           </div>
 
           <button
@@ -83,22 +105,6 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
           >
             <ChevronIcon className="h-5 w-5" />
           </button>
-        </div>
-
-        <div className="mt-10 flex items-center gap-2">
-          {testimonials.map((testimonial, index) => (
-            <button
-              key={testimonial.author}
-              type="button"
-              onClick={() => setActiveIndex(index)}
-              aria-label={`Go to testimonial ${index + 1}`}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                index === activeIndex
-                  ? "w-6 bg-primary"
-                  : "w-1.5 bg-ink/25 hover:bg-ink/40"
-              }`}
-            />
-          ))}
         </div>
       </Container>
     </section>

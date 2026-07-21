@@ -48,7 +48,12 @@ export function PropertyHeader({ site, activeHref }: PropertyHeaderProps) {
           />
         </Link>
 
-        <nav className="hidden md:block">
+        {/* Appears at `lg`, not `md`. These navs carry 7 (Seminyak) or 8
+            (Ubud) letter-spaced items — about 672px — which alongside the
+            136px logo simply does not fit a 768px tablet, and forced ~75px of
+            horizontal page scroll. The hamburger now covers everything below
+            1024px, which is also where the header shrinks to 60px. */}
+        <nav className="hidden lg:block">
           <ul className="flex gap-8">
             {site.navItems.map((item) => {
               const isActive = item.href === activeHref;
@@ -90,7 +95,7 @@ export function PropertyHeader({ site, activeHref }: PropertyHeaderProps) {
           onClick={() => setIsMenuOpen((open) => !open)}
           aria-label="Toggle menu"
           aria-expanded={isMenuOpen}
-          className="flex h-6 w-6 flex-col justify-center gap-1.5 md:hidden"
+          className="flex h-6 w-6 flex-col justify-center gap-1.5 lg:hidden"
         >
           <span className="block h-0.5 w-full bg-primary" />
           <span className="block h-0.5 w-full bg-primary" />
