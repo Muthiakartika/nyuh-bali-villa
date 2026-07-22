@@ -82,8 +82,14 @@ const valueClassName = "text-[15px] font-medium text-white";
 export function BookingSearchBar({ bookingHref }: BookingSearchBarProps) {
   const dates = useSyncExternalStore(subscribe, getClientDates, getServerDates);
 
+  // The negative top margin lifts the card up over the hero's bottom edge.
+  // Eased off from -mt-20 → -mt-14 so the card no longer touches the hero title:
+  // the title lockup sits ~80px off the hero's bottom (its `pb-20`), and pulling
+  // the card up by only 56px leaves a ~24px gap below "Seminyak" while still
+  // overlapping the photograph. The card-to-"About Us" spacing below is
+  // unaffected — this only shifts the card relative to the hero.
   return (
-    <div className="relative z-20 -mt-12 px-5 sm:px-8 md:-mt-20">
+    <div className="relative z-20 -mt-10 px-5 sm:px-8 md:-mt-14">
       <Container>
         <div className="overflow-hidden rounded-xl border border-primary/45 bg-ink shadow-[0_18px_48px_-22px_rgba(38,30,19,0.7)]">
           <div className="grid grid-cols-1 divide-y divide-white/12 lg:grid-cols-[1.6fr_1.25fr_1fr_auto] lg:items-stretch lg:divide-x lg:divide-y-0">
@@ -134,7 +140,7 @@ export function BookingSearchBar({ bookingHref }: BookingSearchBarProps) {
                 id="promo-code"
                 type="text"
                 placeholder="Promo"
-                className="w-full border-0 bg-transparent p-0 text-[15px] font-medium text-white outline-none placeholder:font-normal placeholder:text-white/35"
+                className="w-full border-0 bg-transparent px-0 py-1 text-[15px] font-medium text-white outline-none placeholder:font-normal placeholder:text-white/35"
               />
             </div>
 

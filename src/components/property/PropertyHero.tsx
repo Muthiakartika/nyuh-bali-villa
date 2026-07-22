@@ -159,7 +159,7 @@ export function PropertyHero({ images, alt, eyebrow, title }: PropertyHeroProps)
                 onClick={() => setActiveIndex(index)}
                 aria-label={`Go to slide ${index + 1}`}
                 aria-current={isActive}
-                className="group/dot flex items-center px-1.5 py-2.5"
+                className="group/dot flex items-center px-2.5 py-2.5"
               >
                 <span
                   className={`block h-1.5 rounded-full transition-all duration-500 ease-out ${
