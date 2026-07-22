@@ -51,13 +51,13 @@ export function AwardsRow({ badges, variant = "grid" }: AwardsRowProps) {
     const loop = [...badges, ...badges];
 
     return (
-      <div className="bg-ink px-5 pt-12 pb-8 sm:px-8 md:pt-16">
+      <div className="bg-ink px-5 pt-6 pb-5 sm:px-8 md:pt-8">
         <Container className="overflow-hidden">
           <div className="flex w-max animate-marquee">
             {loop.map((src, index) => (
               <div
                 key={index}
-                className="relative mx-8 h-[110px] w-[110px] shrink-0"
+                className="relative mx-6 h-[64px] w-[64px] shrink-0"
                 // The second copy is a visual duplicate for the loop, so it's
                 // hidden from assistive tech to avoid announcing every badge
                 // twice.
@@ -84,22 +84,24 @@ export function AwardsRow({ badges, variant = "grid" }: AwardsRowProps) {
   const columnClass = COLUMN_CLASS[badges.length] ?? "grid-cols-3 sm:grid-cols-4";
 
   return (
-    <div className="bg-ink px-5 pt-12 pb-8 sm:px-8 md:pt-16">
-      <Container className={`grid ${columnClass} items-center gap-4 md:gap-8`}>
+    <div className="bg-ink px-5 pt-6 pb-5 sm:px-8 md:pt-8">
+      <Container className={`grid ${columnClass} items-center gap-4 md:gap-6`}>
         {badges.map((src) => (
-          // aspect-square matches the source badges (all square), so each cell
-          // fills its grid column and scales with the viewport; object-contain
-          // keeps any non-square badge letterboxed, not cropped.
+          // Capped to a short, fixed height (`h-16 md:h-20`) rather than a
+          // full-column `aspect-square`, which stretched each badge to ~200px
+          // tall on desktop and made the credentials band as tall as a content
+          // section. `object-contain` centres each square mark within that
+          // shorter box, so they stay readable but compact.
           //
           // Held back and brought to full strength on hover — the standard
           // treatment for a row of award marks, so they read as supporting
           // credentials rather than competing with the content above them.
-          <div key={src} className="group/badge relative aspect-square">
+          <div key={src} className="group/badge relative h-14 md:h-[68px]">
             <Image
               src={src}
               alt="Award badge"
               fill
-              sizes="(min-width: 768px) 150px, 100px"
+              sizes="(min-width: 768px) 120px, 96px"
               className="object-contain opacity-70 transition-opacity duration-500 group-hover/badge:opacity-100"
             />
           </div>

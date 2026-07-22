@@ -39,23 +39,22 @@ const TONE_CLASS: Record<SectionTone, string> = {
 /*
  * One rhythm, four steps.
  *
- * These were tuned down from `py-20 md:py-28` / `py-24 md:py-36` after review:
- * the wider spacing read as *empty* rather than as generous, and it pushed the
- * page's actual content so far apart that the reader lost the sense that two
- * adjacent bands belonged to the same page. The steps still differ from each
- * other — that difference is what gives the page a cadence — they're just no
- * longer competing with the content for the screen.
+ * Tuned down twice now — from `py-20 md:py-28` originally, and again here after
+ * the client still read the section-to-section gaps as too wide. The catch is
+ * that adjacent sections *stack* their padding: a `loose` band's bottom plus the
+ * next `normal` band's top used to total ~176px of empty space between two
+ * pieces of content on desktop. At the values below that worst case is ~104px,
+ * which reads as a deliberate pause rather than a void.
  *
- * The mobile→desktop ratio matters as much as the values. Each step grows by
- * about 40% at `md`, so a phone gets genuinely tighter spacing rather than the
- * desktop rhythm scaled down: vertical space is far scarcer on a 390px screen,
- * where the same padding costs a much larger share of the viewport.
+ * The mobile→desktop ratio still matters: each step grows ~30% at `md`, so a
+ * phone gets genuinely tighter spacing, not the desktop rhythm scaled down —
+ * vertical space is far scarcer on a 390px screen.
  */
 const SPACE_CLASS: Record<SectionSpace, string> = {
   none: "",
-  tight: "py-10 md:py-14",
-  normal: "py-14 md:py-20",
-  loose: "py-16 md:py-24",
+  tight: "py-7 md:py-10",
+  normal: "py-9 md:py-12",
+  loose: "py-10 md:py-14",
 };
 
 /**

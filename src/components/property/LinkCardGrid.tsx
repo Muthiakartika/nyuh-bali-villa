@@ -16,7 +16,6 @@ export type LinkCardItem = {
 };
 
 type GridTone = "sand" | "sand-deep" | "ink";
-type CardAspect = "portrait" | "tall" | "square";
 
 type LinkCardGridProps = {
   /** Optional small label above the heading. */
@@ -24,13 +23,6 @@ type LinkCardGridProps = {
   heading: string;
   items: LinkCardItem[];
   columns: 2 | 3 | 4;
-  /**
-   * Crop shape. Portrait crops are the default because a resort's rooms,
-   * gardens and spa read far better standing up than letterboxed — the old
-   * design used 3/2 landscape everywhere, which is the shape of a stock photo
-   * grid, not of a property portfolio.
-   */
-  aspect?: CardAspect;
   tone?: GridTone;
 };
 
@@ -43,23 +35,8 @@ const COLUMN_CLASS: Record<2 | 3 | 4, string> = {
   4: "grid-cols-2 sm:grid-cols-4",
 };
 
-/*
- * Every crop is landscape on a phone and portrait from `sm` up. That isn't a
- * cosmetic tweak: three stacked portrait cards on a 390px screen is roughly
- * 1,500px of scrolling for one section, whereas the same three as wide
- * landscape strips read as a list you can take in. Responsive art direction,
- * not just a responsive grid.
- */
-const ASPECT_CLASS: Record<CardAspect, string> = {
-  portrait: "aspect-[3/2] sm:aspect-[4/5]",
-  tall: "aspect-[3/2] sm:aspect-[3/4]",
-  square: "aspect-[4/3] sm:aspect-square",
-};
-
-// Derived from the column count rather than passed in per section. The old
-// component took an explicit `labelSize` of 18, 26 or 28 measured off the live
-// site, which meant three arbitrary values with no relationship to each other;
-// tying the label to how much room the card actually has is a system.
+// Derived from the column count rather than passed in per section. Wider cards
+// (fewer columns) can carry a larger label.
 const LABEL_CLASS: Record<2 | 3 | 4, string> = {
   2: "text-2xl md:text-[32px]",
   3: "text-xl md:text-[26px]",
@@ -70,26 +47,28 @@ const LABEL_CLASS: Record<2 | 3 | 4, string> = {
  * The image grid used three times on each About page (Villas/Stay, Discover,
  * Packages).
  *
- * **What changed and why.** Each card used to be a photograph under a flat
- * `ink/35` wash with its label floating dead centre and a white hairline
- * inset like a certificate frame. Three problems: the wash permanently dulled
- * the photography, which is the actual product; a centred label sits directly
- * on top of whatever the photo is of; and nine cards across three sections all
- * received the identical treatment, so the middle of the page read as one long
- * undifferentiated texture.
+ * **Card height is fixed, not derived from the image.** Earlier the crop was
+ * driven by an `aspect-ratio` prop, which meant the card's height changed with
+ * its width — a 2-up card came out far taller than a 4-up one, and portrait
+ * source photos made the whole thing tower. Every card now shares one short,
+ * fixed height (`h-[200px] md:h-[240px]`) and the photograph is cropped into it
+ * with `object-cover`. So: every card in every grid is exactly the same height,
+ * the frame is landscape (or square at worst — the 4-up on a phone), and a tall
+ * portrait photo is cropped rather than allowed to stretch the card. The eye
+ * lands on the label and the subject, not on a column of image.
  *
- * Now the scrim is a gradient weighted to the bottom third, so the top of every
- * image stays clean and full-strength. The label is anchored bottom-left over
- * the darkest part of that gradient, with a gold rule that extends on hover.
- * The frame is gone. Sections differentiate themselves through column count and
- * crop shape instead of repeating one card at three sizes.
+ * The mobile height (`h-44` = 176px) is a touch shorter than desktop so that
+ * even the narrowest case — the 4-up packages at two columns on a 390px phone
+ * (~167px wide) — stays roughly square rather than turning portrait.
+ *
+ * The label sits bottom-left over a bottom-weighted gradient, with a gold rule
+ * that extends on hover — the top of the photo stays clean and full-strength.
  */
 export function LinkCardGrid({
   eyebrow,
   heading,
   items,
   columns,
-  aspect = "portrait",
   tone = "sand",
 }: LinkCardGridProps) {
   const isDark = tone === "ink";
@@ -113,9 +92,7 @@ export function LinkCardGrid({
           // entire grid sits visually inert. A named group scoped to the tile
           // works whether or not the card is a link.
           const content = (
-            <div
-              className={`group/card relative w-full overflow-hidden ${ASPECT_CLASS[aspect]}`}
-            >
+            <div className="group/card relative h-44 w-full overflow-hidden md:h-60">
               <Image
                 src={item.imgSrc}
                 alt={item.label}
@@ -138,10 +115,7 @@ export function LinkCardGrid({
                 >
                   {item.label}
                 </span>
-                {/* The hover affordance. It replaces the gold rule the old
-                    design printed under every single card — repeated 2–4 times
-                    per row, it made the grids busy; as a hover state it does
-                    real work instead. */}
+                {/* The hover affordance — a gold rule that extends. */}
                 <span
                   aria-hidden
                   className="mt-3 block h-px w-9 bg-primary transition-all duration-500 ease-out group-hover/card:w-20"

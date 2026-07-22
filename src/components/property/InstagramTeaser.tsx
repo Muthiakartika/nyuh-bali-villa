@@ -31,7 +31,7 @@ export function InstagramTeaser({ heading, instagramHref }: InstagramTeaserProps
     // `space="none"` with explicit padding rather than the standard rhythm:
     // this band is the lead-in to the awards row below it, so it is
     // deliberately shallower than a full section.
-    <Section tone="sand-deep" space="none" className="pt-12 pb-12 md:pt-16 md:pb-16">
+    <Section tone="sand-deep" space="none" className="py-9 md:py-12">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeading title={heading} />
         <Reveal delay={120} className="shrink-0">

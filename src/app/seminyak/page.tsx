@@ -5,7 +5,6 @@ import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
 import { BookingSearchBar } from "@/components/property/BookingSearchBar";
 import { AboutNarrative } from "@/components/property/AboutNarrative";
-import { PromoBanner } from "@/components/property/PromoBanner";
 import { LinkCardGrid } from "@/components/property/LinkCardGrid";
 import { TestimonialCarousel } from "@/components/property/TestimonialCarousel";
 import { InstagramTeaser } from "@/components/property/InstagramTeaser";
@@ -66,9 +65,6 @@ export default function SeminyakAboutPage() {
           tagline="We serve with smile and sincerity"
           bookingHref={site.bookingHref}
           buttonLabel="Book Your Stay"
-        />
-
-        <PromoBanner
           promoCode="ilovenyuh"
           perks={[
             "One-way airport transfer*",
@@ -78,12 +74,11 @@ export default function SeminyakAboutPage() {
           contactEmail={site.contact.email}
         />
 
-        {/* Two large portrait cards: this is the property's actual inventory
-            and it earns the biggest crop on the page. */}
+        {/* The property's actual inventory, so it gets the widest cards — two
+            columns at the shared card height. */}
         <LinkCardGrid
           heading="Our Villas"
           columns={2}
-          aspect="portrait"
           tone="sand"
           items={[
             {
@@ -102,7 +97,6 @@ export default function SeminyakAboutPage() {
         <LinkCardGrid
           heading="Discover"
           columns={3}
-          aspect="tall"
           tone="sand-deep"
           items={[
             {
@@ -123,13 +117,12 @@ export default function SeminyakAboutPage() {
           ]}
         />
 
-        {/* Four square cards — the most compact crop on the page, so the
-            packages read as a set of options rather than as four more
-            full-size features competing with the villas above. */}
+        {/* Four columns — the narrowest cards on the page (same height as the
+            rest), so the packages read as a compact set of options rather than
+            as four more full-size features competing with the villas above. */}
         <LinkCardGrid
           heading="Plan your Romantic Gateaway"
           columns={4}
-          aspect="square"
           tone="sand"
           items={[
             {

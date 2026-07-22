@@ -5,7 +5,6 @@ import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
 import { BookingSearchBar } from "@/components/property/BookingSearchBar";
 import { AboutNarrative } from "@/components/property/AboutNarrative";
-import { PromoBanner } from "@/components/property/PromoBanner";
 import { LinkCardGrid } from "@/components/property/LinkCardGrid";
 import { TestimonialCarousel } from "@/components/property/TestimonialCarousel";
 import { InstagramTeaser } from "@/components/property/InstagramTeaser";
@@ -51,9 +50,6 @@ export default function UbudAboutPage() {
           ]}
           bookingHref={site.bookingHref}
           buttonLabel="Plan Now"
-        />
-
-        <PromoBanner
           promoCode="ilovenyuh"
           perks={[
             "One-way airport transfer (for booking min 3 nights at our villa)",
@@ -65,12 +61,11 @@ export default function UbudAboutPage() {
 
         {/* All three of Ubud's grids genuinely run at three columns on the live
             site — it has no oversized "Our Villas" equivalent. They're
-            differentiated here by crop and tone instead, so three consecutive
-            3-up grids don't read as one repeating texture. */}
+            differentiated by tone (sand / sand-deep / sand), so three
+            consecutive 3-up grids don't read as one repeating texture. */}
         <LinkCardGrid
           heading="STAY"
           columns={3}
-          aspect="portrait"
           tone="sand"
           items={[
             {
@@ -94,7 +89,6 @@ export default function UbudAboutPage() {
         <LinkCardGrid
           heading="DISCOVER"
           columns={3}
-          aspect="tall"
           tone="sand-deep"
           items={[
             {
@@ -118,7 +112,6 @@ export default function UbudAboutPage() {
         <LinkCardGrid
           heading="OUR PACKAGES"
           columns={3}
-          aspect="square"
           tone="sand"
           items={[
             {
