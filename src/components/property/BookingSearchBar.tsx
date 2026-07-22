@@ -91,7 +91,7 @@ export function BookingSearchBar({ bookingHref }: BookingSearchBarProps) {
   return (
     <div className="relative z-20 -mt-10 px-5 sm:px-8 md:-mt-14">
       <Container>
-        <div className="overflow-hidden rounded-xl border border-primary/45 bg-ink shadow-[0_18px_48px_-22px_rgba(38,30,19,0.7)]">
+        <div className="overflow-hidden rounded-none border border-primary/45 bg-ink shadow-[0_18px_48px_-22px_rgba(38,30,19,0.7)]">
           <div className="grid grid-cols-1 divide-y divide-white/12 lg:grid-cols-[1.6fr_1.25fr_1fr_auto] lg:items-stretch lg:divide-x lg:divide-y-0">
             {/* Dates — check-in and check-out share one field with a gold arrow
                 between them, exactly as the live widget reads. */}
@@ -125,7 +125,7 @@ export function BookingSearchBar({ bookingHref }: BookingSearchBarProps) {
                 <span className={valueClassName}>1 Room, 2 Adult, 0 Child</span>
                 <span
                   aria-hidden
-                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-primary/60 text-base leading-none text-primary"
+                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-none border border-primary/60 text-base leading-none text-primary"
                 >
                   +
                 </span>
