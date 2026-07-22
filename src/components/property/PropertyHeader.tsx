@@ -67,22 +67,59 @@ export function PropertyHeader({
           overlay ? "fixed inset-x-0 top-0" : "sticky top-0"
         } ${
           isSolid
-            ? "h-[68px] bg-ink shadow-[0_1px_0_0_rgba(199,162,89,0.22)] lg:h-[72px]"
+            ? "h-[68px] bg-ink shadow-[0_10px_30px_-18px_rgba(38,30,19,0.55)] lg:h-[72px]"
             : "h-[84px] bg-transparent lg:h-[104px]"
         }`}
       >
-        <Container className="flex h-full items-center justify-between gap-6">
+        {/*
+          Over foliage photography the fully transparent bar left the gold logo
+          and white nav hard to read. Rather than a frosted-glass panel (a
+          decorative default this design avoids), the at-hero state gets a
+          brown scrim gradient in the brand's own `ink` — dark at the top edge,
+          fading to nothing by the foot of the bar. It fades out (opacity)
+          exactly as the solid `bg-ink` fades in on scroll, so the two states
+          cross-dissolve rather than snap. `pointer-events-none` keeps it clear
+          of the logo, nav and Book Now clicks underneath.
+        */}
+        <div
+          aria-hidden
+          className={`pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/90 via-ink/45 to-transparent transition-opacity duration-500 ease-out ${
+            isSolid ? "opacity-0" : "opacity-100"
+          }`}
+        />
+
+        {/*
+          The old site's signature: a thin gold rule under the header. Kept as
+          identity, reinterpreted for premium — not a flat edge-to-edge 2px line
+          but a 1px gold gradient that's brightest at the centre and dissolves
+          into nothing at both edges, so it reads as a drawn accent rather than a
+          border. It's persistent in both states (over the photo at the hero,
+          over the solid bar once scrolled), which is what keeps the header from
+          ever looking like it's floating with no separator. The soft shadow on
+          the solid state (above) adds the barely-there depth; together they
+          separate header from content without a hard line.
+        */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/70 to-transparent"
+        />
+
+        <Container className="relative flex h-full items-center justify-between gap-6">
           <Link
             href={`/${site.slug}`}
             className={`relative shrink-0 transition-all duration-500 ease-out ${
-              isSolid ? "h-[38px] w-[104px]" : "h-[46px] w-[126px]"
+              isSolid ? "h-[46px] w-[128px]" : "h-[56px] w-[154px]"
             }`}
           >
+            {/* Enlarged from 104/126px. The logo is a fine gold wordmark, and at
+                the old scrolled size it read faint on the dark bar; keeping it
+                larger — and shrinking it less on scroll — is what makes it
+                legible without touching the (hotlinked) asset. */}
             <Image
               src={site.logoSrc}
               alt={`Nyuh Bali Villas - ${site.label}`}
               fill
-              sizes="126px"
+              sizes="154px"
               className="object-contain object-left"
               priority
             />

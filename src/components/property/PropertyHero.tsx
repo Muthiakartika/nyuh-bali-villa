@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Container } from "@/components/ui/Container";
-import { ChevronIcon } from "@/components/ui/icons";
 
 type PropertyHeroProps = {
   images: string[];
@@ -32,8 +31,8 @@ const SLIDE_INTERVAL_MS = 6000;
  * an eyebrow over the property name at display scale. Both strings already
  * exist on the site; nothing was written for this. The slow push-in
  * (`animate-kenburns`) and the 1200ms crossfade are the only motion, and the
- * controls have moved out of the middle of the picture into an understated
- * cluster in the corner.
+ * slides are navigated by a row of bullet indicators rather than arrows over
+ * the photograph — tapping a bullet jumps to that slide.
  *
  * Controls and auto-advance are skipped entirely when there is only one image
  * — the live Ubud page genuinely has a single slide, and the old build still
@@ -48,7 +47,7 @@ export function PropertyHero({ images, alt, eyebrow, title }: PropertyHeroProps)
     if (!hasMultiple) return;
 
     // Someone who has asked their OS to reduce motion should not be handed a
-    // carousel that moves on its own; they still get the arrows.
+    // carousel that moves on its own; they still get the bullet controls.
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -61,17 +60,6 @@ export function PropertyHero({ images, alt, eyebrow, title }: PropertyHeroProps)
 
     return () => window.clearInterval(timer);
   }, [hasMultiple, images.length]);
-
-  function goToPrevious() {
-    setActiveIndex((current) => (current === 0 ? images.length - 1 : current - 1));
-  }
-
-  function goToNext() {
-    setActiveIndex((current) => (current === images.length - 1 ? 0 : current + 1));
-  }
-
-  const controlClassName =
-    "flex h-10 w-10 items-center justify-center border border-white/30 text-white transition-colors duration-300 hover:border-primary hover:bg-primary hover:text-ink";
 
   return (
     <section
@@ -144,60 +132,45 @@ export function PropertyHero({ images, alt, eyebrow, title }: PropertyHeroProps)
             <h1 className="text-display font-heading mt-3.5 font-light text-white">
               {title}
             </h1>
-            <span aria-hidden className="mt-5 block h-px w-20 bg-primary" />
           </div>
-
-          {hasMultiple ? (
-            <div className="hidden shrink-0 items-center gap-3 pb-2 md:flex">
-              <button
-                type="button"
-                onClick={goToPrevious}
-                aria-label="Previous slide"
-                className={controlClassName}
-              >
-                <ChevronIcon className="h-4 w-4 rotate-180" />
-              </button>
-              <button
-                type="button"
-                onClick={goToNext}
-                aria-label="Next slide"
-                className={controlClassName}
-              >
-                <ChevronIcon className="h-4 w-4" />
-              </button>
-            </div>
-          ) : null}
         </Container>
       </div>
 
-      {/* Progress rules rather than dots. A row of circles is the stock
-          carousel-plugin tell; thin bars read as a measure of how far through
-          a sequence you are. */}
+      {/*
+        Bullet indicators, replacing the corner prev/next arrows. The dots ARE
+        the navigation now — tapping one jumps to that slide, and the band
+        auto-advances on its own — so the arrows were redundant clutter over the
+        photograph. One centred row serves every breakpoint (a single set of
+        controls in the DOM, not a duplicate per size), sitting clear of the
+        bottom-left lockup. Each dot keeps a 24px-tall hit area via its padded
+        button while the visible mark stays small: the active slide is a wider
+        gold pill, the rest are muted dots that brighten on hover. Only rendered
+        when there's more than one slide — Ubud has a single image and shows
+        nothing.
+      */}
       {hasMultiple ? (
-        <div className="absolute inset-x-0 bottom-5 flex justify-center md:bottom-7">
-          {images.map((src, index) => (
-            // The visible mark is a hairline; the padding around it is what
-            // makes the control tappable. `px-2 py-3.5` gives every indicator a
-            // 28px-tall box at least 36px wide, comfortably past the 24px
-            // minimum — the gap between marks now comes from this padding
-            // rather than from a `gap` on the row, so the hit areas sit flush
-            // and there is no dead strip between them.
-            <button
-              key={src}
-              type="button"
-              onClick={() => setActiveIndex(index)}
-              aria-label={`Go to slide ${index + 1}`}
-              className="group/rule flex items-center px-2 py-3.5"
-            >
-              <span
-                className={`block h-px transition-all duration-500 ease-out ${
-                  index === activeIndex
-                    ? "w-12 bg-primary"
-                    : "w-6 bg-white/45 group-hover/rule:bg-white"
-                }`}
-              />
-            </button>
-          ))}
+        <div className="absolute inset-x-0 bottom-4 flex justify-center md:bottom-6">
+          {images.map((src, index) => {
+            const isActive = index === activeIndex;
+            return (
+              <button
+                key={src}
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                aria-label={`Go to slide ${index + 1}`}
+                aria-current={isActive}
+                className="group/dot flex items-center px-1.5 py-2.5"
+              >
+                <span
+                  className={`block h-1.5 rounded-full transition-all duration-500 ease-out ${
+                    isActive
+                      ? "w-5 bg-primary"
+                      : "w-1.5 bg-white/50 group-hover/dot:bg-white"
+                  }`}
+                />
+              </button>
+            );
+          })}
         </div>
       ) : null}
     </section>

@@ -63,6 +63,25 @@ export function InstagramIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+// The forward arrow on the booking widget's "Search" primary action. A full
+// arrow (shaft + head) reads as "go / take me there", where a bare chevron
+// reads as "there's more this way" — different intents at the same small size.
+export function ArrowIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  );
+}
+
 // Used for the hero slider's prev/next controls. A plain chevron rotated
 // with a Tailwind class (`rotate-180`) does double duty as both arrows
 // instead of needing two separate icon components.
