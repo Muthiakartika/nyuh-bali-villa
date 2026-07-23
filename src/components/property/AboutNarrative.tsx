@@ -59,29 +59,53 @@ export function AboutNarrative({
   contactEmail,
 }: AboutNarrativeProps) {
   return (
-    // Asymmetric padding on purpose. The booking card overlaps the hero and its
-    // bottom edge sits exactly on this section's top edge, so this `pt` is the
-    // whole gap between the card and the "About Us" heading — the earlier 56px
-    // read as cramped under the dark card, so the top opens to 72px (still sand,
-    // no white strip, because the section starts at the card's bottom). The
-    // bottom and the internal row gap tighten to keep the section itself compact.
+    // The one band whose top and bottom are *not* meant to match. Its `pt` isn't
+    // rhythm at all — the booking card overlaps the hero and its bottom edge
+    // sits exactly on this section's top edge, so this padding is the whole gap
+    // between that dark card and the "About Us" heading, and 56px read as
+    // cramped under it (still sand, no white strip, because the section starts
+    // at the card's bottom). The `pb` does follow the rhythm's bottom step, so
+    // the boundary into "Our Villas" is the same 96px as every other boundary on
+    // the page — see the note in Section.tsx.
     <Section
       tone="sand"
       space="none"
-      className="pt-12 pb-9 md:pt-[72px] md:pb-10"
+      className="pt-12 pb-10 md:pt-[72px] md:pb-13"
     >
-      <div className="grid gap-6 md:grid-cols-[0.9fr_1.1fr] md:gap-x-14 md:gap-y-6">
+      {/* The two-column split happens at `lg`, not `md`. At 768 it gave the
+          narrative a 347px column — 41 characters a line, a newspaper measure —
+          while the offer plate, stretched to match a much taller text column,
+          gained ~190px of empty dark space under its last line. One column reads
+          better than two bad ones, so a tablet gets the stacked layout. */}
+      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-x-14 lg:gap-y-6">
         {/* Top-left: the section heading. */}
         <SectionHeading
           eyebrow={eyebrow}
           title={heading}
-          className="md:col-start-1 md:row-start-1"
+          className="lg:col-start-1 lg:row-start-1"
         />
 
         {/* Right column, spanning both rows: the narrative, its closing
-            tagline, and the CTA. */}
-        <div className="flex flex-col md:col-start-2 md:row-span-2 md:row-start-1">
-          <Reveal delay={120} className="flex max-w-[62ch] flex-col gap-4">
+            tagline, and the CTA.
+
+            `lg:justify-between` is what lands the button on the same baseline
+            as the offer plate opposite it. The column is a stretched grid item,
+            so its height is the full two rows; pushing the CTA block to the
+            bottom means the button's bottom edge and the plate's bottom edge
+            are the same line at any width, instead of the button floating a
+            dozen pixels short wherever the narrative happened to stop. The
+            `mt-6` below stays as the *minimum* gap — `justify-between` only
+            ever adds to it, so this can't collapse the narrative onto the
+            tagline on a narrow column. */}
+        <div className="flex flex-col lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:justify-between">
+          {/* The measure is capped only while the section is stacked: at 768 the
+              paragraphs would otherwise run the full 704px container, ~83
+              characters a line. Above `lg` the column itself is the measure, so
+              the cap is lifted rather than leaving the text ragged inside its
+              own column. (A `ch` unit is no use here — it's the width of the
+              "0" glyph, 11.7px in this font, so `62ch` resolved to 726px, wider
+              than the container it was meant to constrain.) */}
+          <Reveal delay={120} className="flex max-w-[34rem] flex-col gap-4 lg:max-w-none">
             {paragraphs.map((paragraph) => (
               <p
                 key={paragraph}
@@ -92,7 +116,11 @@ export function AboutNarrative({
             ))}
           </Reveal>
 
-          <Reveal delay={200} className="mt-6 flex flex-col items-start gap-5">
+          {/* The tagline and the button are one closing block: `mt-6` is the
+              minimum distance from the narrative above (see `justify-between`
+              on the column — any spare column height lands here), and the `gap`
+              is the distance between the line and the button itself. */}
+          <Reveal delay={200} className="mt-6 flex flex-col items-start gap-8">
             {tagline ? (
               // Set as a statement rather than another paragraph: the gold rule
               // and the larger, lighter setting mark it as the section's closing
@@ -111,8 +139,19 @@ export function AboutNarrative({
         {/* Bottom-left: the offer plate, filling what used to be dead space
             beneath the heading. Dark on the light band so the gold survives —
             see the contrast note above. */}
-        <Reveal delay={260} className="md:col-start-1 md:row-start-2">
-          <div className="bg-ink p-5 md:p-6">
+        <Reveal delay={260} className="lg:col-start-1 lg:row-start-2">
+          {/* `h-full` so the plate always reaches the bottom of its row. The
+              Reveal is a stretched grid item and already does; without this the
+              dark panel inside it kept its natural height, so whenever the
+              narrative column was the taller of the two the plate stopped short
+              and the button had nothing to line up with.
+
+              `justify-center` handles the other half of that: when the plate is
+              stretched past its content (~63px at 1024), centring splits the
+              slack above and below instead of pooling it all under the last
+              line, so it reads as a roomier card rather than as a gap. At the
+              widths where the plate is the taller column it's a no-op. */}
+          <div className="flex h-full flex-col justify-center bg-ink p-5 md:p-6">
             <h3 className="font-heading text-[22px] leading-tight font-light text-white md:text-[26px]">
               Best Price Guaranteed
             </h3>

@@ -18,11 +18,10 @@ export const metadata: Metadata = {
  * Contact has no hero slider or booking bar — confirmed by inspecting the
  * live page's structure rather than assuming it mirrors the About page.
  *
- * Because there's no hero, the header renders solid from the first pixel
- * (`overlay` omitted) — a transparent header over a plain sand surface would
- * simply be invisible. The page instead opens on a proper title block, which
- * the old version lacked entirely: it dropped the visitor straight into a
- * photo and a form with nothing naming the page they'd landed on.
+ * With no hero to open on, the page leads with a proper title block, which the
+ * old version lacked entirely: it dropped the visitor straight into a photo and
+ * a form with nothing naming the page they'd landed on. (The header is the same
+ * solid bar as everywhere else — it no longer has a transparent variant.)
  */
 export default function SeminyakContactPage() {
   return (
@@ -37,12 +36,16 @@ export default function SeminyakContactPage() {
             size="display"
           />
 
-          <div className="mt-10 grid gap-9 md:mt-14 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
+          {/* Splits at `lg`, not `md` — at 768 the two columns came out 288px
+              and 353px, which turned the photograph into a 288×540 sliver
+              (0.53:1) next to a form barely wider than a phone's. A tablet gets
+              the stacked layout instead. */}
+          <div className="mt-10 grid gap-9 md:mt-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
             {/* The photo holds position while the form scrolls beside it —
                 the same sticky treatment AboutNarrative gives its heading, so
                 both pages read as one design. On a single column it simply
                 stacks. */}
-            <div className="relative min-h-[380px] w-full overflow-hidden md:sticky md:top-24 md:h-[540px] md:self-start">
+            <div className="relative min-h-[380px] w-full overflow-hidden lg:sticky lg:top-24 lg:h-[540px] lg:self-start">
               <Image
                 src="https://nyuhbalivillas.com/wp-content/uploads/2023/03/Contact-us-seminyak.webp"
                 alt="Nyuh Bali Villas Seminyak"

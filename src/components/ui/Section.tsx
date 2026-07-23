@@ -10,9 +10,10 @@ type SectionProps = {
    * Surface colour. The old design ran seven full-width `ink` slabs down a
    * single page — header, booking bar, two card grids, Instagram, awards and
    * footer — with the last three stacked back-to-back into ~600px of
-   * unbroken dark brown. Dark is now a *punctuation mark*: it appears three
-   * or four times per page, always with light on either side, so it lands as
-   * emphasis instead of as the page's baseline.
+   * unbroken dark brown. The body of a page now carries **no** `ink` band at
+   * all: dark survives as the site's chrome (header-on-scroll, awards, footer)
+   * and as small plates inside light sections, so it frames the content
+   * instead of being the content's baseline.
    */
   tone?: SectionTone;
   /** Vertical rhythm. `tight` and `loose` exist so adjacent sections can be
@@ -39,12 +40,26 @@ const TONE_CLASS: Record<SectionTone, string> = {
 /*
  * One rhythm, four steps.
  *
- * Tuned down twice now — from `py-20 md:py-28` originally, and again here after
- * the client still read the section-to-section gaps as too wide. The catch is
- * that adjacent sections *stack* their padding: a `loose` band's bottom plus the
- * next `normal` band's top used to total ~176px of empty space between two
- * pieces of content on desktop. At the values below that worst case is ~104px,
- * which reads as a deliberate pause rather than a void.
+ * Tuned down twice — from `py-20 md:py-28` originally, and again after the
+ * client still read the section-to-section gaps as too wide. The catch is that
+ * adjacent sections *stack* their padding: a `loose` band's bottom plus the next
+ * `normal` band's top used to total ~176px of empty space between two pieces of
+ * content on desktop. At the values below that worst case is ~104px, which reads
+ * as a deliberate pause rather than a void.
+ *
+ * **The top and bottom values are deliberately unequal, to look equal.** Every
+ * band opens on a heading and closes on something with a hard edge — a row of
+ * photographs, a plate, a button. A heading's glyphs don't start at the top of
+ * their line box: measured here, the cap of a 42px section heading sits ~7px
+ * below it (half-leading plus the font's ascent-above-cap). So a symmetrical
+ * `py-12` band renders ~55px of visible space above the title and exactly 48px
+ * below the last card — the client read the difference straight off a
+ * screenshot. Each step therefore carries 8px more on the bottom than the top,
+ * which lands the two *visible* gaps within a pixel of each other.
+ *
+ * The sums are unchanged (56/80, 72/96, 80/112 mobile/`md`), so this is a
+ * redistribution, not extra height — no band grew and no gap between bands
+ * widened.
  *
  * The mobile→desktop ratio still matters: each step grows ~30% at `md`, so a
  * phone gets genuinely tighter spacing, not the desktop rhythm scaled down —
@@ -52,9 +67,9 @@ const TONE_CLASS: Record<SectionTone, string> = {
  */
 const SPACE_CLASS: Record<SectionSpace, string> = {
   none: "",
-  tight: "py-7 md:py-10",
-  normal: "py-9 md:py-12",
-  loose: "py-10 md:py-14",
+  tight: "pt-6 pb-8 md:pt-9 md:pb-11",
+  normal: "pt-8 pb-10 md:pt-11 md:pb-13",
+  loose: "pt-9 pb-11 md:pt-13 md:pb-15",
 };
 
 /**

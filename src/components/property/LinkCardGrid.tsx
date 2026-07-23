@@ -29,10 +29,15 @@ type LinkCardGridProps = {
 // Tailwind's scanner needs each full class name to appear literally in the
 // source somewhere — building "grid-cols-" + columns at runtime wouldn't get
 // picked up, so these go through lookups instead.
+// The 4-up holds two columns all the way to `lg`. Going 4-across at `sm` put
+// four ~160px-wide tiles against a fixed 240px height — portrait cards, the
+// exact shape this grid exists to avoid — and squeezed labels like
+// "Stress-Free Proposal" onto three lines. Two columns keeps them landscape
+// (~310px wide) until there's genuinely room for four.
 const COLUMN_CLASS: Record<2 | 3 | 4, string> = {
   2: "grid-cols-1 sm:grid-cols-2",
   3: "grid-cols-1 sm:grid-cols-3",
-  4: "grid-cols-2 sm:grid-cols-4",
+  4: "grid-cols-2 lg:grid-cols-4",
 };
 
 // Derived from the column count rather than passed in per section. Wider cards
@@ -59,7 +64,8 @@ const LABEL_CLASS: Record<2 | 3 | 4, string> = {
  *
  * The mobile height (`h-44` = 176px) is a touch shorter than desktop so that
  * even the narrowest case — the 4-up packages at two columns on a 390px phone
- * (~167px wide) — stays roughly square rather than turning portrait.
+ * (~167px wide) — stays roughly square rather than turning portrait. Those two
+ * columns hold until `lg`; see COLUMN_CLASS.
  *
  * The label sits bottom-left over a bottom-weighted gradient, with a gold rule
  * that extends on hover — the top of the photo stays clean and full-strength.
