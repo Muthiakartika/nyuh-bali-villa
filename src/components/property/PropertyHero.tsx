@@ -26,7 +26,7 @@ const SLIDE_INTERVAL_MS = 6000;
  * resort gets to make a first impression. It was also 30vh tall on a phone,
  * about 250px: a banner strip, not a hero.
  *
- * **What it does now.** The image runs behind a fixed, transparent header and
+ * **What it does now.** The image opens directly under the solid header and
  * carries a typographic lockup anchored to the bottom-left — the brand name as
  * an eyebrow over the property name at display scale. Both strings already
  * exist on the site; nothing was written for this. The slow push-in
@@ -63,14 +63,21 @@ export function PropertyHero({ images, alt, eyebrow, title }: PropertyHeroProps)
 
   return (
     <section
-      // Mobile jumps from the old 30vh — a 250px banner strip — to 68vh.
+      // Mobile jumps from the old 30vh — a 250px banner strip — to 60vh.
       // `heroxl` (1125px) is kept from the original build, where it was
       // measured as the point the live hero grows one last step; see globals.css
       // for why it must be declared in rem. Capped at 80vh rather than a full
       // screen: a hero that fills the viewport pushes every piece of actual
       // information below the fold, and the booking card has to stay visible
       // where it overlaps the bottom edge.
-      className="relative h-[68vh] min-h-[440px] w-full overflow-hidden md:h-[72vh] lg:h-[76vh] heroxl:h-[80vh]"
+      //
+      // The mobile tier was 68vh while the header floated *over* this image and
+      // cost the page no flow height. Now that the header is solid and sits
+      // above the hero, it takes 68px of the fold — so the hero gives back the
+      // same 68px (68vh → 60vh at 390×844) and the card lands exactly where it
+      // did before. The wider tiers have the viewport to absorb the bar without
+      // pushing the card down, so they're unchanged.
+      className="relative h-[60vh] min-h-[440px] w-full overflow-hidden md:h-[72vh] lg:h-[76vh] heroxl:h-[80vh]"
       onMouseEnter={() => {
         isPausedRef.current = true;
       }}
@@ -108,13 +115,13 @@ export function PropertyHero({ images, alt, eyebrow, title }: PropertyHeroProps)
         );
       })}
 
-      {/* Top scrim: the header floats over this image with no background of
-          its own until you scroll, so the logo and nav need something to sit
-          against on a bright photograph. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ink/70 to-transparent"
-      />
+      {/* There is no top scrim. It existed only to keep a transparent header
+          legible over this photograph; now that the header is a solid `ink` bar
+          sitting above the image rather than on it, a dark gradient here would
+          just smear the bar's weight down into the picture — and the gold
+          hairline under the header is the separator. The photograph starts
+          clean. */}
+
       {/* Bottom scrim: weighted low and fading out well before the middle, so
           it lifts the type without greying out the photograph the way the old
           flat 35% wash did. */}
@@ -129,7 +136,12 @@ export function PropertyHero({ images, alt, eyebrow, title }: PropertyHeroProps)
             <span className="text-eyebrow font-body block text-primary uppercase">
               {eyebrow}
             </span>
-            <h1 className="text-display font-heading mt-3.5 font-light text-white">
+            {/* `mt-2`, not the `mt-3.5` the section headings use. The eyebrow
+                is set at `line-height: 1` and the display type below it is
+                enormous, so the two read as one lockup only when they're
+                genuinely close — at 14px the label looked detached from the
+                name it belongs to. */}
+            <h1 className="text-display font-heading mt-2 font-light text-white">
               {title}
             </h1>
           </div>

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { PropertySite } from "@/data/properties";
 import { MobileNavOverlay } from "@/components/layout/MobileNavOverlay";
 import { Container } from "@/components/ui/Container";
@@ -13,91 +13,44 @@ type PropertyHeaderProps = {
   /** The href of whichever nav item matches the page currently being viewed,
    * so the shared header knows which one to mark as current. */
   activeHref: string;
-  /**
-   * True on pages that open with a full-bleed hero image (both About pages).
-   * The header then floats *over* that image and only takes on a background
-   * once the visitor scrolls. Pages with no hero (Contact, the legal pages)
-   * pass false and get a solid bar from the first pixel, because a
-   * transparent header over a plain surface is just invisible.
-   */
-  overlay?: boolean;
 };
 
-export function PropertyHeader({
-  site,
-  activeHref,
-  overlay = false,
-}: PropertyHeaderProps) {
+/**
+ * The navigation bar shared by every property page.
+ *
+ * **Solid on every page, from the first pixel.** It used to float transparent
+ * over the hero photograph and only take on a background once you scrolled
+ * (an `overlay` prop, a scroll listener, and a brown scrim gradient to keep the
+ * logo readable over foliage). That is gone: no state depends on scroll
+ * position, the bar sits in normal flow as a `sticky` element, and the hero
+ * begins underneath it rather than behind it.
+ *
+ * The reason is legibility, and it's the same reason the scrim existed at all.
+ * A gold wordmark and letter-spaced white nav over a bright, high-detail
+ * photograph is legible only as long as that particular photograph stays dark
+ * behind that particular corner — and these heroes are a slideshow of live-site
+ * images that can change. A solid `ink` bar makes the header's contrast a
+ * property of the design rather than of whichever slide happens to be showing.
+ *
+ * `sticky` (not `fixed`) keeps it in the document flow, so no page needs a
+ * spacer element to make up for a header that left it.
+ *
+ * A Client Component only because of the mobile menu's `useState`.
+ */
+export function PropertyHeader({ site, activeHref }: PropertyHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    // A solid header has nothing to react to, so the listener is never
-    // attached on Contact/legal pages.
-    if (!overlay) return;
-
-    function handleScroll() {
-      setIsScrolled(window.scrollY > 24);
-    }
-
-    // Called once up front: a browser restoring a previous scroll position on
-    // reload would otherwise leave the header transparent halfway down the page.
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [overlay]);
-
-  const isSolid = !overlay || isScrolled;
 
   return (
     <>
-      {/*
-        `fixed` only for the overlay variant — it has to sit on top of the hero
-        rather than above it in the flow. The solid variant stays `sticky`,
-        which keeps it in normal flow and means no page needs a spacer element
-        to make up for a header that left the document.
-
-        The height change is the whole effect: the header opens tall and
-        weightless over the photograph, then compacts into a working navigation
-        bar as soon as you start reading. Same transition every luxury
-        hospitality site uses, and it buys back ~28px of hero.
-      */}
-      <header
-        className={`z-[150] w-full px-5 transition-[background-color,height,box-shadow] duration-500 ease-out sm:px-8 ${
-          overlay ? "fixed inset-x-0 top-0" : "sticky top-0"
-        } ${
-          isSolid
-            ? "h-[68px] bg-ink shadow-[0_10px_30px_-18px_rgba(38,30,19,0.55)] lg:h-[72px]"
-            : "h-[84px] bg-transparent lg:h-[104px]"
-        }`}
-      >
-        {/*
-          Over foliage photography the fully transparent bar left the gold logo
-          and white nav hard to read. Rather than a frosted-glass panel (a
-          decorative default this design avoids), the at-hero state gets a
-          brown scrim gradient in the brand's own `ink` — dark at the top edge,
-          fading to nothing by the foot of the bar. It fades out (opacity)
-          exactly as the solid `bg-ink` fades in on scroll, so the two states
-          cross-dissolve rather than snap. `pointer-events-none` keeps it clear
-          of the logo, nav and Book Now clicks underneath.
-        */}
-        <div
-          aria-hidden
-          className={`pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/90 via-ink/45 to-transparent transition-opacity duration-500 ease-out ${
-            isSolid ? "opacity-0" : "opacity-100"
-          }`}
-        />
-
+      <header className="sticky top-0 z-[150] h-[68px] w-full bg-ink px-5 shadow-[0_10px_30px_-18px_rgba(38,30,19,0.55)] sm:px-8 lg:h-[72px]">
         {/*
           The old site's signature: a thin gold rule under the header. Kept as
           identity, reinterpreted for premium — not a flat edge-to-edge 2px line
           but a 1px gold gradient that's brightest at the centre and dissolves
           into nothing at both edges, so it reads as a drawn accent rather than a
-          border. It's persistent in both states (over the photo at the hero,
-          over the solid bar once scrolled), which is what keeps the header from
-          ever looking like it's floating with no separator. The soft shadow on
-          the solid state (above) adds the barely-there depth; together they
-          separate header from content without a hard line.
+          border. With the bar now solid it's doing the job it was always best
+          at: separating the header from whatever follows it, warmly, without a
+          hard line. The soft shadow adds the barely-there depth.
         */}
         <div
           aria-hidden
@@ -105,21 +58,15 @@ export function PropertyHeader({
         />
 
         <Container className="relative flex h-full items-center justify-between gap-6">
-          <Link
-            href={`/${site.slug}`}
-            className={`relative shrink-0 transition-all duration-500 ease-out ${
-              isSolid ? "h-[46px] w-[128px]" : "h-[56px] w-[154px]"
-            }`}
-          >
-            {/* Enlarged from 104/126px. The logo is a fine gold wordmark, and at
-                the old scrolled size it read faint on the dark bar; keeping it
-                larger — and shrinking it less on scroll — is what makes it
-                legible without touching the (hotlinked) asset. */}
+          <Link href={`/${site.slug}`} className="relative h-[46px] w-[128px] shrink-0">
+            {/* Enlarged from 104px. The logo is a fine gold wordmark and read
+                faint at the old size on the dark bar; keeping it larger is what
+                makes it legible without touching the (hotlinked) asset. */}
             <Image
               src={site.logoSrc}
               alt={`Nyuh Bali Villas - ${site.label}`}
               fill
-              sizes="154px"
+              sizes="128px"
               className="object-contain object-left"
               priority
             />

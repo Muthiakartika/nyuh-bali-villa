@@ -37,15 +37,16 @@ const HERO_IMAGES = [
  * left it. Everything that changed — composition, scale, colour placement,
  * motion — happens inside these sections, not by rearranging them.
  *
- * What the `tone` props encode is the page's new rhythm. The old page ran
- * seven full-width dark slabs; dark now appears twice in the body (the offer
- * and the testimonial) with warm sand either side of it, so each dark band
- * lands as emphasis instead of as the page's default state.
+ * What the `tone` props encode is the page's new rhythm. The old page ran seven
+ * full-width dark slabs; the body now runs entirely on warm light surfaces —
+ * `sand` and `sand-deep` alternating, then white for the Instagram note — and
+ * dark is left to the chrome (the awards base and the footer) plus the small
+ * offer plate inside the About section.
  */
 export default function SeminyakAboutPage() {
   return (
     <>
-      <PropertyHeader site={site} activeHref="/seminyak" overlay />
+      <PropertyHeader site={site} activeHref="/seminyak" />
       <main>
         <PropertyHero
           images={HERO_IMAGES}

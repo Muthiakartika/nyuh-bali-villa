@@ -29,7 +29,7 @@ const HERO_IMAGES = [`${UPLOADS}/2025/01/home-ubud-compress.webp`];
 export default function UbudAboutPage() {
   return (
     <>
-      <PropertyHeader site={site} activeHref="/ubud" overlay />
+      <PropertyHeader site={site} activeHref="/ubud" />
       <main>
         <PropertyHero
           images={HERO_IMAGES}
