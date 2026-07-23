@@ -60,15 +60,18 @@ eyebrow + heading + a short gold rule beneath (`SectionHeading`).
   `narrow` (680px) is the legal-copy reading measure. Background colour is
   full-bleed on the outer `<section>`; only the content is capped.
 - **Bands:** compose with `components/ui/Section.tsx` — declare `tone`
-  (`sand` / `sand-deep` / `ink` / `white`) × `space` (totals `tight` 56/80 ·
-  `normal` 72/96 · `loose` 80/112, mobile/`md`), never hand-rolled section
-  padding.
-- **Bottom padding runs 8px deeper than top, on purpose.** A band opens on a
-  heading whose glyphs sit ~7px below their line box and closes on a hard edge,
-  so equal padding reads top-heavy. The split (`normal` = `pt-8 pb-10
-  md:pt-11 md:pb-13`) makes the two *visible* gaps match without changing the
-  step totals. Only `AboutNarrative` opts out — its top is clearance under the
-  booking card.
+  (`sand` / `sand-deep` / `ink` / `white`) × `space` (totals `tight` 52/80 ·
+  `normal` 60/96 · `loose` 68/112, mobile/`md`), never hand-rolled section
+  padding. **The mobile column is ~60% of the desktop one, not a scaled copy** —
+  stacked bands read wider than side-by-side ones at the same value.
+  Content-to-content across a boundary: ~64px on a phone, ~104px on desktop.
+- **Bottom padding runs deeper than top, on purpose** — 8px at `md`, 12px on
+  mobile. A band opens on a heading whose glyphs sit ~7px below their line box
+  and closes on a hard edge, so equal padding reads top-heavy; on a phone the
+  bottom strip also sits directly under a photograph, which compresses it
+  further. The split (`normal` = `pt-6 pb-9 md:pt-11 md:pb-13`) makes the two
+  *visible* gaps match. Only `AboutNarrative` opts out — its top is clearance
+  under the booking card.
 - Sharp corners are the convention (`rounded-none` on cards and buttons); the
   booking card and pill nav markers are the deliberate exceptions.
 - No gradients-as-decoration and one shadow only (the booking card). The
@@ -137,8 +140,13 @@ Four columns on one row: **brand column** (logo + Book Now + social) beside
 **Menu**, **Contact**, **Blog**, then a thin legal bar (copyright + Terms /
 Privacy). The CTA lives in the grid, not on a separate banner row above it. Tight
 gaps (`gap-x-10 gap-y-8`, `pt-9 md:pb-6`); the gold `border-t-2` and gold eyebrow
-headings carry the premium note without spending height. Desktop footer ≈ 324px.
-Mobile keeps `pb-24` to clear the fixed booking bar.
+headings carry the premium note without spending height. Desktop footer ≈ 308px.
+The legal bar is `mt-0 pt-2 sm:mt-4 sm:pt-4`. On a phone the columns stack, so
+its rule lands right under the last blog title and takes the same 8px above /
+8px below the `divide-y` gives every blog row — it reads as one more row of that
+list rather than a separated block. From `sm` it spans a grid with ragged column
+bottoms and goes back to 16px either side. Mobile keeps `pb-24` to clear the
+fixed booking bar.
 
 ### Awards (`property/AwardsRow.tsx`)
 Short badge row on `ink` (badges capped to ~68px, not full-column squares).

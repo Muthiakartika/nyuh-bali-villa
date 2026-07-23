@@ -42,7 +42,7 @@ export function InstagramTeaser({ heading, instagramHref }: InstagramTeaserProps
     <Section
       tone="white"
       space="none"
-      className="pt-8 pb-10 md:pt-11 md:pb-13"
+      className="pt-6 pb-9 md:pt-11 md:pb-13"
     >
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeading title={heading} />

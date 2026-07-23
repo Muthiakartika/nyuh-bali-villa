@@ -57,19 +57,28 @@ const TONE_CLASS: Record<SectionTone, string> = {
  * screenshot. Each step therefore carries 8px more on the bottom than the top,
  * which lands the two *visible* gaps within a pixel of each other.
  *
- * The sums are unchanged (56/80, 72/96, 80/112 mobile/`md`), so this is a
- * redistribution, not extra height — no band grew and no gap between bands
- * widened.
+ * On `md` and up the split is 8px, which is the pure glyph-offset correction.
+ * **On a phone it's 12px, which is more than the geometry alone asks for**, and
+ * that is deliberate: stacked bands put the bottom strip directly under a
+ * photograph while the top strip sits under a plain colour change, and a gap
+ * bounded by a dark image reads tighter than the same gap bounded by text. The
+ * client called the phone's bottom strip too narrow while it measured *wider*
+ * than the top one — so the compensation is optical, not arithmetic. Numerically
+ * the phone now runs 24px above / 36px below on a `normal` band.
  *
- * The mobile→desktop ratio still matters: each step grows ~30% at `md`, so a
- * phone gets genuinely tighter spacing, not the desktop rhythm scaled down —
- * vertical space is far scarcer on a 390px screen.
+ * **The mobile column is a third tighter than the desktop one, not a scaled
+ * copy.** Vertical space is far scarcer on a 390px screen, and stacked bands
+ * make every boundary read wider than the same number does beside a full-width
+ * grid: two `normal` bands used to meet across 72px on a phone, which the client
+ * flagged as too much room between a row of cards and the next heading. At the
+ * values below that boundary is 52px, and the widest boundary anywhere on a
+ * phone is 56px (against 104px on desktop).
  */
 const SPACE_CLASS: Record<SectionSpace, string> = {
   none: "",
-  tight: "pt-6 pb-8 md:pt-9 md:pb-11",
-  normal: "pt-8 pb-10 md:pt-11 md:pb-13",
-  loose: "pt-9 pb-11 md:pt-13 md:pb-15",
+  tight: "pt-5 pb-8 md:pt-9 md:pb-11",
+  normal: "pt-6 pb-9 md:pt-11 md:pb-13",
+  loose: "pt-7 pb-10 md:pt-13 md:pb-15",
 };
 
 /**

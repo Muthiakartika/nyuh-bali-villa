@@ -70,7 +70,7 @@ export function AboutNarrative({
     <Section
       tone="sand"
       space="none"
-      className="pt-12 pb-10 md:pt-[72px] md:pb-13"
+      className="pt-12 pb-9 md:pt-[72px] md:pb-13"
     >
       {/* The two-column split happens at `lg`, not `md`. At 768 it gave the
           narrative a 347px column — 41 characters a line, a newspaper measure —

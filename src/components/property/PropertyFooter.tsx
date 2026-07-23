@@ -184,8 +184,17 @@ export function PropertyFooter({ site }: PropertyFooterProps) {
           </div>
         </div>
 
-        {/* Legal bar — copyright at the bottom of the footer, where it belongs. */}
-        <div className="mt-8 flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
+        {/* Legal bar — copyright at the bottom of the footer, where it belongs.
+            On a phone the columns stack, so this rule lands directly under the
+            last blog title and reads as one more row of that list. `mt-0 pt-2`
+            makes it exactly that: 8px of the list item's own padding above the
+            rule and 8px below it, the same 8/8 the `divide-y` gives every other
+            blog row, so the legal line continues the rhythm instead of sitting
+            across a gap from it. From `sm` — where the columns stop being one
+            stacked list and the rule starts spanning a grid with ragged column
+            bottoms — it goes back to the 16px either side that a real section
+            divider needs. */}
+        <div className="mt-0 flex flex-col gap-3 border-t border-white/10 pt-2 sm:mt-4 sm:flex-row sm:items-center sm:justify-between sm:pt-4">
           <p className="text-[13px] text-white/40">© Copyright 2025 - All Rights Reserved</p>
           <nav>
             <ul className="flex flex-wrap gap-x-7">
