@@ -13,10 +13,16 @@ type TestimonialCarouselProps = {
 /**
  * "What our guests are saying" — one quote at a time.
  *
- * This is the page's quiet moment, so it gets the opposite treatment to
- * everything around it: dark, centred, generously spaced, and the only
+ * This is the page's quiet moment: centred, generously spaced, and the only
  * section on the site whose heading is not left-aligned. Social proof works
  * best when it is allowed to be still.
+ *
+ * It sits on `sand-deep` rather than the dark `ink` it used to. That leaves the
+ * closing run of the page reading as a slow fade — `sand` cards, `sand-deep`
+ * quote, white Instagram, then the `ink` awards base — instead of dropping into
+ * a full-width dark slab and back out again. Everything inside is re-set for a
+ * light surface: `ink` for the quote, `primary-deep` for the small gold (see the
+ * contrast note in globals.css), and `ink` hairlines for the controls.
  *
  * Same dependency-free carousel pattern as PropertyHero — a local `useState`
  * index and plain array indexing, no carousel library. Seminyak has 3
@@ -37,15 +43,15 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
 
   // Both arrows share this; kept in one place so they can't drift apart.
   const arrowClassName =
-    "flex h-11 w-11 shrink-0 items-center justify-center border border-white/25 text-white transition-colors duration-300 hover:border-primary hover:bg-primary hover:text-ink";
+    "flex h-11 w-11 shrink-0 items-center justify-center border border-ink/25 text-ink transition-colors duration-300 hover:border-primary hover:bg-primary hover:text-ink";
 
   return (
-    <Section tone="ink" space="loose" innerClassName="flex flex-col items-center">
-      <SectionHeading
-        title="What our guests are saying"
-        surface="dark"
-        align="center"
-      />
+    <Section
+      tone="sand-deep"
+      space="loose"
+      innerClassName="flex flex-col items-center"
+    >
+      <SectionHeading title="What our guests are saying" align="center" />
 
       {/* Re-keyed on the active index so each quote fades up as it arrives
           rather than swapping instantly. Capped at 800px: the quote is the
@@ -55,10 +61,10 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
         key={activeIndex}
         className="mt-10 flex max-w-[800px] animate-rise-in flex-col items-center text-center"
       >
-        <p className="text-quote font-heading font-light text-white/90 italic">
+        <p className="text-quote font-heading font-light text-ink italic">
           {active.quote}
         </p>
-        <p className="text-eyebrow font-body mt-7 text-primary uppercase">
+        <p className="text-eyebrow font-body mt-7 text-primary-deep uppercase">
           {active.author}
         </p>
       </div>
@@ -89,10 +95,12 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
                 className="group/rule flex items-center px-2 py-3.5"
               >
                 <span
+                  // `primary-deep` for the active rule, not `primary`: a 1px
+                  // hairline of full gold on a cream band is close to invisible.
                   className={`block h-px transition-all duration-500 ease-out ${
                     index === activeIndex
-                      ? "w-10 bg-primary"
-                      : "w-5 bg-white/35 group-hover/rule:bg-white/70"
+                      ? "w-10 bg-primary-deep"
+                      : "w-5 bg-ink/25 group-hover/rule:bg-ink/50"
                   }`}
                 />
               </button>

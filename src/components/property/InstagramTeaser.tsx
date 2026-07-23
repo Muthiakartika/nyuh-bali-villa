@@ -25,13 +25,25 @@ type InstagramTeaserProps = {
  * one small text link floating in the middle of it: an almost-empty section
  * that read as unfinished. Making it a compact two-column row — heading left,
  * CTA right — turns the same content into a deliberate closing note instead.
+ *
+ * White is the lightest surface on the page and this is the only band that uses
+ * it. That's the point: it lands as a clean break between the `sand-deep`
+ * testimonial above and the `ink` awards base below, so the page closes on a
+ * light-to-dark step rather than on two warm bands running together. The
+ * outline CTA and the `ink` heading both already read on white unchanged.
  */
 export function InstagramTeaser({ heading, instagramHref }: InstagramTeaserProps) {
   return (
     // `space="none"` with explicit padding rather than the standard rhythm:
     // this band is the lead-in to the awards row below it, so it is
-    // deliberately shallower than a full section.
-    <Section tone="sand-deep" space="none" className="py-9 md:py-12">
+    // deliberately shallower than a full section. It still follows the rhythm's
+    // top/bottom split (8px more below than above) so its visible gaps match
+    // every other band — see the note in Section.tsx.
+    <Section
+      tone="white"
+      space="none"
+      className="pt-8 pb-10 md:pt-11 md:pb-13"
+    >
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeading title={heading} />
         <Reveal delay={120} className="shrink-0">

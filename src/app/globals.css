@@ -48,14 +48,21 @@
    * This is an accessibility fix, not a palette change. Brand gold #c7a259
    * on white measures 2.39:1 — it fails WCAG AA for both body text (4.5:1)
    * and large text (3:1), which is why every gold section heading on the old
-   * design was genuinely hard to read. #8a6f31 measures 4.78:1 on white and
-   * passes AA outright.
+   * design was genuinely hard to read.
+   *
+   * The value is the brand gold scaled to 65% — the same hue, derived the same
+   * way, nothing invented. It was previously 70% (#8a6f31), which was measured
+   * against *white* and passed at 4.78:1 — but this site never actually puts
+   * text on white. Against the surfaces it really uses it was 4.50:1 on `sand`
+   * and 4.21:1 on `sand-deep`, i.e. failing on every warm band. Recalibrated
+   * against the darkest light surface instead, it now clears AA everywhere:
+   * 4.61:1 on sand-deep, 4.93:1 on sand, 5.23:1 on white.
    *
    * The rule this establishes: full-strength `primary` is for gold on dark,
    * for rules/hairlines, for icons and for button fills — all places where
    * it measures fine. `primary-deep` is for gold *text* on a light surface.
    */
-  --color-primary-deep: #8a6f31;
+  --color-primary-deep: #81693a;
 
   /*
    * Type scale. The old design had exactly one heading size (26px mobile /
