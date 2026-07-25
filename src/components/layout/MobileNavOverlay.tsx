@@ -11,6 +11,10 @@ export type MobileNavLink = {
    * non-clickable text instead of a Link — see PropertyNavItem's `inScope`
    * for why some nav destinations aren't real links in this project. */
   inScope?: boolean;
+  /** Off-site destination (opens in a new tab). */
+  external?: boolean;
+  /** Dropdown entries on desktop; an indented sub-list here. */
+  children?: MobileNavLink[];
 };
 
 type MobileNavOverlayProps = {
@@ -75,37 +79,76 @@ export function MobileNavOverlay({
         </button>
       </div>
 
-      <nav className="flex flex-1 flex-col justify-center">
+      {/* `overflow-y-auto` matters once submenus are expanded: the Ubud menu
+          is 8 top-level items plus 8 children, which is taller than a phone
+          screen. `justify-center` only centres the list while it still fits. */}
+      <nav className="flex flex-1 flex-col justify-center overflow-y-auto">
         <ul className="flex flex-col">
-          {links.map((link, index) => {
-            const rowClassName =
-              "flex items-center border-b border-white/10 py-4 font-heading text-2xl font-light";
+          {/* Flattened so the entrance stagger keeps running across parents and
+              children instead of restarting inside each sub-list. */}
+          {links
+            .flatMap((link) => [
+              { link, isChild: false },
+              ...(link.children ?? []).map((child) => ({
+                link: child,
+                isChild: true,
+              })),
+            ])
+            .map(({ link, isChild }, index) => {
+              // Children are set smaller and indented behind a short gold rule
+              // — a submenu on a phone reads as a sub-list, not as a peer of
+              // the section it belongs to.
+              const rowClassName = isChild
+                ? "flex items-center border-b border-white/10 py-2.5 pl-5 font-body text-[15px] tracking-[0.12em] uppercase"
+                : "flex items-center border-b border-white/10 py-4 font-heading text-2xl font-light";
 
-            return (
-              <li
-                key={link.label}
-                className="animate-rise-in"
-                // Inline rather than a Tailwind class so any number of links
-                // can stagger without a matching arbitrary class needing to
-                // exist in the stylesheet.
-                style={{ animationDelay: `${index * 55}ms` }}
-              >
-                {link.inScope === false ? (
-                  <span className={`${rowClassName} text-white/45`}>
-                    {link.label}
-                  </span>
-                ) : (
-                  <Link
-                    href={link.href}
-                    onClick={onClose}
-                    className={`${rowClassName} text-white transition-colors duration-300 hover:text-primary`}
-                  >
-                    {link.label}
-                  </Link>
-                )}
-              </li>
-            );
-          })}
+              const content = (
+                <>
+                  {isChild ? (
+                    <span
+                      aria-hidden
+                      className="mr-3 -ml-5 block h-px w-3 bg-primary/60"
+                    />
+                  ) : null}
+                  {link.label}
+                </>
+              );
+
+              return (
+                <li
+                  key={`${isChild ? "child" : "top"}-${link.label}`}
+                  className="animate-rise-in"
+                  // Inline rather than a Tailwind class so any number of links
+                  // can stagger without a matching arbitrary class needing to
+                  // exist in the stylesheet.
+                  style={{ animationDelay: `${index * 55}ms` }}
+                >
+                  {link.inScope === false ? (
+                    <span className={`${rowClassName} text-white/45`}>
+                      {content}
+                    </span>
+                  ) : link.external ? (
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={onClose}
+                      className={`${rowClassName} text-white transition-colors duration-300 hover:text-primary`}
+                    >
+                      {content}
+                    </a>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      onClick={onClose}
+                      className={`${rowClassName} text-white transition-colors duration-300 hover:text-primary`}
+                    >
+                      {content}
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
         </ul>
       </nav>
 

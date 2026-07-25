@@ -6,7 +6,40 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Nyuh Bali Villas clone** — a pixel-accurate Next.js recreation of [nyuhbalivillas.com](https://nyuhbalivillas.com), a real Bali villa rental business with two properties (Seminyak and Ubud). This is client/authorized work, not an unaffiliated scrape — confirmed with the user before building, which is why real content (guest testimonial names, contact details) is used verbatim and images are hotlinked directly from the live site rather than replaced with placeholders.
 
-Scope is deliberately limited to **7 pages**: Home, About Us (×2 properties), Contact (×2 properties), Terms & Conditions, Privacy Policy. The live site has many more pages (Villas, Offers, Dining, SPA, Explore/Culture, Blog, per-property sub-pages) — none of those are built here. Nav items and grid links that point to those out-of-scope pages render as plain, non-clickable text instead of dead links (see "The `inScope` convention" below).
+Scope is **24 routes**, built in three passes:
+
+*Original 7:* Home, About Us (×2 properties), Contact (×2 properties), Terms & Conditions, Privacy Policy.
+
+*Pass 2 (10):* `/ubud/villa`, `/ubud/packages`, `/ubud/villa/honeymoon/packages`, `/ubud/retreat`, `/ubud/wedding`, `/seminyak/villa`, `/seminyak/villa/honeymoon/packages`, `/seminyak/dining`, `/seminyak/spa`, `/seminyak/tour`.
+
+*Pass 3 (7) — completes the navigation, submenus included:* `/ubud/spa`, `/ubud/dining`, `/ubud/balinese-culture`, `/complimentary-services`, `/ubud/retreat/luxury`, `/ubud/retreat/host-your-own`, `/ubud/wellness`.
+
+*Pass 4 (50) — the tier below the nav.* **74 routes prerender in total.** These are data-driven rather than hand-written, because each family shares one WordPress template and differs only in content:
+
+| Family | Routes | Data | Rendered by |
+|---|---|---|---|
+| Room/villa detail | 10 | `data/rooms.ts` | `ubud/villa/[...room]`, `seminyak/villa/[...room]` |
+| Retreat programmes | 6 | `data/experiences.ts` | `ubud/retreat/[...programme]` |
+| Wellness classes | 7 (+`/ubud/fitness`) | `data/experiences.ts` | `ubud/wellness/[...class]` |
+| Culture activities | 4 | `data/experiences.ts` | `ubud/balinese-culture/[...activity]` |
+| Blog | 2 indexes + 17 posts | `data/posts.ts` | `**/discover/[slug]` + 3 standalone routes |
+| Standalone forms | 3 | inline | `InquiryForm` |
+
+**Catch-all routes with `dynamicParams = false`.** Room and experience slugs vary in depth (`suite` vs `honeymoon/pool`, `couples` vs `luxury/anti-aging`), so each family uses a catch-all fed by `generateStaticParams`. Static routes win over catch-alls in Next.js, which is what lets `/ubud/villa/honeymoon/packages`, `/ubud/retreat/luxury` and `/ubud/wellness` keep their own pages while their siblings resolve through the catch-all.
+
+**Blog posts are the one content type WordPress serves properly** — posts are not Oxygen, so `content.rendered` is real HTML. It is converted at generation time into a small block list (heading / paragraph / list / image) and rendered by `PostBody`, never with `dangerouslySetInnerHTML`. Posts live at several unrelated prefixes on the live site (`/ubud/discover/`, `/ubud/spa/`, `/ubud/retreat/detox`, `/ubud/wellness/yoga/retreat`, a bare `/life-coach-retreat-benefits`, and a misspelt `/ubud/discoverl/`), so each prefix has its own thin route wrapping the shared `PostPage`.
+
+**One live-site collision is reproduced, not fixed:** a post and a page both publish at `/ubud/retreat/host-your-own/`. WordPress serves the page, so the post is unreachable there — it is omitted here for the same reason (17 posts render, not 18).
+
+These reuse the existing design system — no new visual language — and each page file opens with a **Route Information** comment mapping its WordPress slug to its Next.js path and listing what to update if the slug changes.
+
+**Both menus are now fully navigable.** Seminyak's 7 items are flat; Ubud's 8 top-level items carry three dropdowns, matching the live site exactly: Offers ▾ (Romance, Retreat, Wedding), SPA ▾ (Balinese Spa, Medical Aesthetic), Retreat ▾ (Luxury Retreat, Host Your Retreat, Wellness Facilities). Only Medical Aesthetic leaves the site — it's a separate business on its own domain, which is what `PropertyNavChild.external` marks.
+
+**Every internal link now resolves.** The last audit reported 1462 internal hrefs across the 74 prerendered routes with 0 dead links and 1 orphan — `/ubud-spa-booking-form`, which nothing links to on the live site either (Ubud's spa books through Fresha). The `inScope` convention below is still the mechanism for anything that later points outside the build.
+
+The only WordPress pages deliberately left out are non-content ones: the in-room directory pages (`/ubud-directory`, `/seminyak-directory`, `/suite-directory`), `/welcomeaboard`, and superseded duplicates (`/ubud-culture`, `/lumbini-restaurant`, `/seminyak-honeymoon`, `/ubud-spa-and-medical-aesthetic`, `/ubud-backup/*`).
+
+**Source content is Oxygen Builder, not Elementor** — the WP REST API returns an empty `content.rendered` for these pages. Copy has to be scraped from the rendered HTML, and the section/room photographs are CSS **background images** in the LiteSpeed-combined stylesheet (`#slide-<id>-<pageid>{background-image:url(...)}`), not `<img>` tags. Both were extracted that way for the 10 pages above.
 
 Every visual value (colors, font sizes, spacing, breakpoints) was originally measured from the live site's computed styles rather than eyeballed. **That is no longer the whole story** — most pages have since been deliberately redesigned away from the original. Read "Design state" below before matching anything to the live site; the design system documented there is the current source of truth, not nyuhbalivillas.com.
 
@@ -37,23 +70,50 @@ There is no test suite in this project.
 
 **Images are hotlinked, not downloaded** — every `<Image>` `src` points at `nyuhbalivillas.com`'s own CDN. `next.config.ts`'s `images.remotePatterns` allow-lists that host, scoped to `/wp-content/uploads/**` specifically.
 
-**Route structure:**
+**Route structure** (every path matches the WordPress slug exactly, so the
+migration is a straight swap):
 ```
-/                     Home (property picker)
-/seminyak             About Us – Seminyak
-/seminyak/contact     Contact – Seminyak
-/ubud                 About Us – Ubud
-/ubud/contact         Contact – Ubud
-/terms-conditions     Terms & Conditions (global, not per-property)
-/privacy-policy       Privacy Policy (global, not per-property)
+/                                       Home (property picker)
+/seminyak                               About Us – Seminyak
+/seminyak/villa                         Villas
+/seminyak/villa/honeymoon/packages      Offers (romantic packages)
+/seminyak/dining                        Dining
+/seminyak/spa                           SPA
+/seminyak/tour                          Explore Bali (tours + booking form)
+/seminyak/contact                       Contact – Seminyak
+/ubud                                   About Us – Ubud
+/ubud/villa                             Stay (suites + villas)
+/ubud/packages                          Offers (romance / retreat / wedding)
+/ubud/villa/honeymoon/packages          Romance            [Offers ▾]
+/ubud/retreat                           Retreat            [Offers ▾]
+/ubud/wedding                           Wedding (+ enquiry form)  [Offers ▾]
+/ubud/retreat/luxury                    Luxury Retreat     [Retreat ▾]
+/ubud/retreat/host-your-own             Host Your Retreat  [Retreat ▾]
+/ubud/wellness                          Wellness Facilities [Retreat ▾]
+/ubud/spa                               SPA (Mahamaya)     [also SPA ▾ "Balinese Spa"]
+/ubud/dining                            Dining (Lumbini Restaurant)
+/ubud/balinese-culture                  Culture / Experience
+/ubud/contact                           Contact – Ubud
+/complimentary-services                 Services (top-level slug, Ubud chrome)
+/terms-conditions                       Terms & Conditions (global)
+/privacy-policy                         Privacy Policy (global)
 ```
+`/complimentary-services` sits at the root rather than under `/ubud`, exactly as
+WordPress has it, even though its content and chrome are Ubud's — the same
+top-level-slug situation as the two legal pages.
 Terms & Conditions and Privacy Policy hard-code `PROPERTY_SITES.ubud` for their header/footer chrome rather than taking a `site` prop — that's not an arbitrary choice, it's what the live site actually does (both legal pages render with Ubud's nav/footer regardless of referring property).
 
 **Data model** (`src/data/`): `properties.ts` exports `PROPERTY_SITES` (nav items, contact info, logo, booking URL, blog post titles, per property) and the smaller `PROPERTIES` list (just label+href, used by Home's picker). `testimonials.ts` and `legal.ts` hold the two properties' guest reviews and the two legal pages' section content respectively — kept separate from `properties.ts` because they're long and only needed by specific pages, not by every page's nav/footer.
 
 **Component organization** (`src/components/`):
 - `home/` — components used only on `/` (HomeHeader, HomeFooter, PropertyPanel). Home's chrome floats over full-bleed photography and carries 2 nav links, so it isn't shared with the property pages' 7–8-item header.
-- `property/` — everything shared across the Seminyak/Ubud About and Contact pages (PropertyHeader, PropertyFooter, PropertyHero, BookingSearchBar, AboutNarrative — which also carries the "Best Price Guaranteed" offer — LinkCardGrid, TestimonialCarousel, InstagramTeaser, AwardsRow, DirectBookingDeals, ContactForm).
+- `property/` — everything shared across the Seminyak/Ubud property pages (PropertyHeader, PropertyFooter, PropertyHero, BookingSearchBar, AboutNarrative — which also carries the "Best Price Guaranteed" offer — LinkCardGrid, TestimonialCarousel, InstagramTeaser, AwardsRow, DirectBookingDeals, ContactForm). The second pass added, all named for what they *do* rather than which page they came from:
+  - `ImageGallery` — client; a fixed-height multi-photo frame with gold bullet indicators, reusing PropertyHero's navigation convention and LinkCardGrid's crop rule. Used by rooms, packages, tours, spa.
+  - `RoomList` — the accommodation listing (Ubud Stay ×2 categories, Seminyak Villas). Photo + name + bed/size/occupancy + Check Rates / Details.
+  - `AmenityGrid` — the "Featured Amenities" icon row.
+  - `PackageList` — **the workhorse**: offers, retreat programmes, dining venues, wedding intro *and* the Explore Bali tours all render through it. An item is photographs + a pitch + optionally a benefits list (`benefits`), structured facts (`meta`, used for tour price/itinerary), extra paragraphs (`notes`) and one or more CTAs. Rows alternate sides at `lg`. Resist adding a parallel "TourList"/"RetreatList" — that was considered and rejected, they are the same shape.
+  - `TreatmentList` — the spa price menu. Genuinely a different shape (duration/price rows), so it is not forced through PackageList.
+  - `InquiryForm` — client; a data-driven form (`InquiryField[]`) for the Wedding and tour booking forms. Sibling of `ContactForm`, which keeps its own fixed five fields; both share the underlined-field treatment.
 - `legal/` — LegalSection, the paragraph-or-bulleted-list renderer shared by Terms & Privacy.
 - `layout/` — the two pieces genuinely shared between Home *and* the property pages: MobileNavOverlay (the full-screen mobile nav) and BookNowRibbon (Home's fixed vertical "BOOK NOW" tab).
 - `ui/` — the design-system primitives. **Reach for these before writing layout by hand:**

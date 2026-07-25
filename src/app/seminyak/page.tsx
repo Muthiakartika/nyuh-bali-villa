@@ -102,17 +102,20 @@ export default function SeminyakAboutPage() {
           items={[
             {
               label: "Dining",
-              href: "https://nyuhbalivillas.com/seminyak/dining/",
+              href: "/seminyak/dining",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/01/BBQ-seminyak-min-min-slider-1-_1__1.webp`,
             },
             {
               label: "SPA",
-              href: "https://nyuhbalivillas.com/seminyak/spa/",
+              href: "/seminyak/spa",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/03/discover-spa.webp`,
             },
             {
               label: "Explore Bali",
-              href: "https://nyuhbalivillas.com/seminyak/tour/",
+              href: "/seminyak/tour",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/03/discover-explore-bali.webp`,
             },
           ]}
@@ -128,22 +131,26 @@ export default function SeminyakAboutPage() {
           items={[
             {
               label: "Stress-Free Proposal",
-              href: "https://nyuhbalivillas.com/seminyak/villa/honeymoon/packages/",
+              href: "/seminyak/villa/honeymoon/packages",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/01/stress-free-proposal-package.webp`,
             },
             {
               label: "Sweet Celebration",
-              href: "https://nyuhbalivillas.com/seminyak/villa/honeymoon/packages",
+              href: "/seminyak/villa/honeymoon/packages",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/03/sweet-celebration.webp`,
             },
             {
               label: "Dreamy Honeymoon",
-              href: "https://nyuhbalivillas.com/seminyak/villa/honeymoon/packages",
+              href: "/seminyak/villa/honeymoon/packages",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/03/seminyak-slider.webp`,
             },
             {
               label: "Culture Hideaway",
-              href: "https://nyuhbalivillas.com/seminyak/villa/honeymoon/packages",
+              href: "/seminyak/villa/honeymoon/packages",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/01/balinese-culture-hideaway.webp`,
             },
           ]}

@@ -22,13 +22,28 @@ export type PropertyNavItem = {
   label: string;
   href: string;
   /**
-   * Whether this nav destination is one of the 7 pages this project
-   * actually builds. The live site's nav has several items (Villas,
-   * Offers, Dining, SPA, …) that lead to pages outside this project's
-   * scope; per the brief, those render as plain non-clickable text instead
-   * of dead links into pages that don't exist here.
+   * Whether this nav destination is a page this project actually builds.
+   * The live site's nav still has items leading outside this project's scope
+   * (Blog, per-room detail pages); per the brief, those render as plain
+   * non-clickable text instead of dead links into pages that don't exist here.
    */
   inScope: boolean;
+  /**
+   * Dropdown entries. The live Ubud menu has exactly three: Offers, SPA and
+   * Retreat. Seminyak's menu is flat and leaves this undefined.
+   *
+   * A child may point off-site (Medical Aesthetic is a separate business at
+   * healthylook-aesthetic.com), which is what `external` marks — `inScope`
+   * alone can't express "real link, but not one of ours".
+   */
+  children?: PropertyNavChild[];
+};
+
+export type PropertyNavChild = {
+  label: string;
+  href: string;
+  inScope: boolean;
+  external?: boolean;
 };
 
 export type PropertySite = {
@@ -45,11 +60,31 @@ export type PropertySite = {
    * `propertyId` query param), used by the "Book Your Stay" CTA and the
    * dismissible "Direct Booking Deals" corner widget. */
   bookingHref: string;
-  /** Real titles from each property's own "Our Blog" footer teaser — the
-   * two properties' blogs are entirely different, not the same posts with
-   * the property name swapped in, so this can't be derived from `label`. */
-  blogPostTitles: string[];
+  /** Where this property's "Offers" lives. The two differ — Seminyak's is
+   * nested under the honeymoon villa (/seminyak/villa/honeymoon/packages),
+   * Ubud's is top-level (/ubud/packages) — so the footer can't derive it from
+   * the slug the way it derives "villas" (/<slug>/villa). Update this if
+   * either Offers slug is renamed. */
+  offersHref: string;
+  /** The "Our Blog" footer teaser — the exact posts each property links to,
+   * which differ per property (the two blogs are entirely separate, not the
+   * same posts with the name swapped in). Now that the posts themselves are
+   * built these carry real hrefs; the live URLs are preserved, including the
+   * ones that don't sit under /<property>/discover/. */
+  blogPosts: { title: string; href: string }[];
+  /** Award badges for the `AwardsRow` that closes every page, and which of
+   * the two treatments that row uses (Seminyak is a static grid, Ubud a
+   * marquee — see AwardsRow). Centralized here because the badge set is
+   * identical on all of a property's pages; the two About pages predate this
+   * field and still list theirs inline, which is the one place to reconcile
+   * if the badges ever change. */
+  awards: {
+    variant: "grid" | "marquee";
+    badges: string[];
+  };
 };
+
+const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
 export const PROPERTY_SITES: Record<"seminyak" | "ubud", PropertySite> = {
   seminyak: {
@@ -58,32 +93,20 @@ export const PROPERTY_SITES: Record<"seminyak" | "ubud", PropertySite> = {
     logoSrc:
       "https://nyuhbalivillas.com/wp-content/uploads/2023/04/logonyuhbaliseminyak.webp",
     navItems: [
+      // Every Seminyak nav destination is now built in this project, so the
+      // whole menu is in scope. The hrefs mirror the WordPress paths exactly
+      // (see the Route Information comment at the top of each page file) —
+      // if a slug is ever renamed, this list is one of the places to update.
       { label: "About Us", href: "/seminyak", inScope: true },
-      {
-        label: "Villas",
-        href: "https://nyuhbalivillas.com/seminyak/villa/",
-        inScope: false,
-      },
+      { label: "Villas", href: "/seminyak/villa", inScope: true },
       {
         label: "Offers",
-        href: "https://nyuhbalivillas.com/seminyak/villa/honeymoon/packages/",
-        inScope: false,
+        href: "/seminyak/villa/honeymoon/packages",
+        inScope: true,
       },
-      {
-        label: "Dining",
-        href: "https://nyuhbalivillas.com/seminyak/dining/",
-        inScope: false,
-      },
-      {
-        label: "SPA",
-        href: "https://nyuhbalivillas.com/seminyak/spa/",
-        inScope: false,
-      },
-      {
-        label: "Explore Bali",
-        href: "https://nyuhbalivillas.com/seminyak/tour/",
-        inScope: false,
-      },
+      { label: "Dining", href: "/seminyak/dining", inScope: true },
+      { label: "SPA", href: "/seminyak/spa", inScope: true },
+      { label: "Explore Bali", href: "/seminyak/tour", inScope: true },
       { label: "Contact Us", href: "/seminyak/contact", inScope: true },
     ],
     contact: {
@@ -93,10 +116,24 @@ export const PROPERTY_SITES: Record<"seminyak" | "ubud", PropertySite> = {
     },
     bookingHref:
       "https://booking.nyuhbalivillas.com/inst/#home?propertyId=581MZlmJ8YVJgcICxbs034K4e3E7IANq0jI5ODU=&JDRN=Y",
-    blogPostTitles: [
-      "Sunset Seminyak",
-      "10 Romantic Honeymoon Activities in Seminyak",
+    offersHref: "/seminyak/villa/honeymoon/packages",
+    blogPosts: [
+      { title: "Sunset Seminyak", href: "/seminyak/discover/sunset" },
+      {
+        title: "10 Romantic Honeymoon Activities in Seminyak",
+        href: "/seminyak/discover/10-romantic-honeymoon-activities",
+      },
     ],
+    awards: {
+      variant: "grid",
+      badges: [
+        `${UPLOADS}/2023/01/awards-hotelcom-2020.png`,
+        `${UPLOADS}/2023/01/awards-hotelcom.png`,
+        `${UPLOADS}/2023/01/awards-tripadvisor.png`,
+        `${UPLOADS}/2023/01/awards-hotelscombined.png`,
+        `${UPLOADS}/2023/02/ubud-awards-chse.png`,
+      ],
+    },
   },
   ubud: {
     slug: "ubud",
@@ -107,42 +144,68 @@ export const PROPERTY_SITES: Record<"seminyak" | "ubud", PropertySite> = {
     // all — Contact – Ubud is only reachable from the footer. That
     // asymmetry is intentional and preserved here, not a mistake.
     navItems: [
+      // Mirrors the live Ubud menu exactly: 8 top-level items, three of which
+      // (Offers, SPA, Retreat) carry a dropdown. Every destination is now
+      // built in this project except Medical Aesthetic, which is a separate
+      // business on its own domain and so is an external link, not an inert
+      // label. Romance and Wedding live inside the Offers dropdown — that is
+      // where the live site puts them too, which is what keeps the top row at
+      // 8 items rather than the 10 that wouldn't fit at `lg`.
       { label: "About Us", href: "/ubud", inScope: true },
-      {
-        label: "Stay",
-        href: "https://nyuhbalivillas.com/ubud-backup/villa/",
-        inScope: false,
-      },
+      { label: "Stay", href: "/ubud/villa", inScope: true },
       {
         label: "Offers",
-        href: "https://nyuhbalivillas.com/ubud-backup/packages/",
-        inScope: false,
+        href: "/ubud/packages",
+        inScope: true,
+        children: [
+          {
+            label: "Romance",
+            href: "/ubud/villa/honeymoon/packages",
+            inScope: true,
+          },
+          { label: "Retreat", href: "/ubud/retreat", inScope: true },
+          { label: "Wedding", href: "/ubud/wedding", inScope: true },
+        ],
       },
       {
         label: "Services",
-        href: "https://nyuhbalivillas.com/complimentary-services/",
-        inScope: false,
+        href: "/complimentary-services",
+        inScope: true,
       },
       {
         label: "SPA",
-        href: "https://nyuhbalivillas.com/ubud-backup/spa/",
-        inScope: false,
+        href: "/ubud/spa",
+        inScope: true,
+        children: [
+          { label: "Balinese Spa", href: "/ubud/spa", inScope: true },
+          {
+            label: "Medical Aesthetic",
+            href: "https://healthylook-aesthetic.com/",
+            inScope: true,
+            external: true,
+          },
+        ],
       },
       {
         label: "Retreat",
-        href: "https://nyuhbalivillas.com/ubud-backup/retreat/",
-        inScope: false,
+        href: "/ubud/retreat",
+        inScope: true,
+        children: [
+          { label: "Luxury Retreat", href: "/ubud/retreat/luxury", inScope: true },
+          {
+            label: "Host Your Retreat",
+            href: "/ubud/retreat/host-your-own",
+            inScope: true,
+          },
+          {
+            label: "Wellness Facilities",
+            href: "/ubud/wellness",
+            inScope: true,
+          },
+        ],
       },
-      {
-        label: "Dining",
-        href: "https://nyuhbalivillas.com/ubud-backup/dining/",
-        inScope: false,
-      },
-      {
-        label: "Culture",
-        href: "https://nyuhbalivillas.com/ubud/balinese-culture/",
-        inScope: false,
-      },
+      { label: "Dining", href: "/ubud/dining", inScope: true },
+      { label: "Culture", href: "/ubud/balinese-culture", inScope: true },
     ],
     contact: {
       addressLines: ["Raya Silungan street", "Lodtunduh Ubud Bali (80571)"],
@@ -151,10 +214,33 @@ export const PROPERTY_SITES: Record<"seminyak" | "ubud", PropertySite> = {
     },
     bookingHref:
       "https://booking.nyuhbalivillas.com/inst/#home?propertyId=222Mjs8xZLdlXkm6I5ODQ=&JDRN=Y",
-    blogPostTitles: [
-      "Enter Ubud's Luxury Yoga Retreat",
-      "Five Relaxing Activities to Do in Ubud",
-      "Most Instagrammable Places in Ubud",
+    offersHref: "/ubud/packages",
+    blogPosts: [
+      {
+        title: "Enter Ubud's Luxury Yoga Retreat",
+        href: "/ubud/wellness/yoga/retreat",
+      },
+      {
+        title: "Five Relaxing Activities to Do in Ubud",
+        href: "/ubud/discover/five-relaxing-activities-to-do",
+      },
+      {
+        title: "Most Instagrammable Places in Ubud",
+        href: "/ubud/discover/most-instagrammable-places",
+      },
     ],
+    awards: {
+      variant: "marquee",
+      badges: [
+        `${UPLOADS}/2023/02/ubud-award-3.jpg.webp`,
+        `${UPLOADS}/2023/02/ubud-award-1.jpg.webp`,
+        `${UPLOADS}/2023/12/tripadvisor2020.png.webp`,
+        `${UPLOADS}/2023/12/tripadvisor-2021.png.webp`,
+        `${UPLOADS}/2023/02/ubud-awards-chse.png`,
+        `${UPLOADS}/2023/12/Best-Luxury-Boutique-Retreat-2023.png.webp`,
+        `${UPLOADS}/2023/12/Best-Luxury-Wellness-Resort.png.webp`,
+        `${UPLOADS}/2023/12/Best-Luxury-Yoga-Wellness-Retreat.png.webp`,
+      ],
+    },
   },
 };

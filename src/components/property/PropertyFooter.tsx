@@ -18,12 +18,16 @@ type PropertyFooterProps = {
 // The primary footer nav. Terms & Conditions and Privacy Policy live in the
 // legal bar, not here, so two pieces of boilerplate don't carry the same weight
 // as "villas" and "contact".
+//
+// Every entry is a real link now that the blog is built too. Both properties
+// use /<slug>/villa and /<slug>/discover, but their Offers slugs differ, so
+// that one comes from the property data (see `offersHref`).
 function buildFooterLinks(site: PropertySite) {
   return [
     { label: "about", href: `/${site.slug}`, inScope: true },
-    { label: "villas", href: "#", inScope: false },
-    { label: "offers", href: "#", inScope: false },
-    { label: "Blog", href: "#", inScope: false },
+    { label: "villas", href: `/${site.slug}/villa`, inScope: true },
+    { label: "offers", href: site.offersHref, inScope: true },
+    { label: "Blog", href: `/${site.slug}/discover`, inScope: true },
     { label: "contact", href: `/${site.slug}/contact`, inScope: true },
   ];
 }
@@ -171,13 +175,20 @@ export function PropertyFooter({ site }: PropertyFooterProps) {
             </ul>
           </div>
 
-          {/* Our Blog — out of the project's 7-page scope, so plain text. */}
+          {/* Our Blog — real links now that the posts are built. */}
           <div>
-            <span className={columnHeadingClassName}>Our Blog</span>
+            <Link href={`/${site.slug}/discover`} className={columnHeadingClassName}>
+              Our Blog
+            </Link>
             <ul className="mt-3.5 flex flex-col divide-y divide-white/10 border-t border-white/10">
-              {site.blogPostTitles.map((title) => (
-                <li key={title} className="py-2 text-[15px] leading-[1.5] text-white/70">
-                  {title}
+              {site.blogPosts.map((post) => (
+                <li key={post.href}>
+                  <Link
+                    href={post.href}
+                    className="block py-2 text-[15px] leading-[1.5] text-white/70 transition-colors duration-300 hover:text-primary"
+                  >
+                    {post.title}
+                  </Link>
                 </li>
               ))}
             </ul>

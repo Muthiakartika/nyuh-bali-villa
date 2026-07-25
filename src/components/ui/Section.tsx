@@ -26,6 +26,10 @@ type SectionProps = {
   className?: string;
   /** Classes for the inner Container (the content layer). */
   innerClassName?: string;
+  /** Anchor target for same-page links — the Explore Bali tours all link down
+   * to the booking form. Pair it with a `scroll-mt-*` class so the jump clears
+   * the sticky header. */
+  id?: string;
 };
 
 // Dark sections set a light default text colour so body copy inside them
@@ -98,9 +102,11 @@ export function Section({
   width = "wide",
   className = "",
   innerClassName = "",
+  id,
 }: SectionProps) {
   return (
     <section
+      id={id}
       className={`px-5 sm:px-8 ${TONE_CLASS[tone]} ${SPACE_CLASS[space]} ${className}`}
     >
       <Container width={width} className={innerClassName}>

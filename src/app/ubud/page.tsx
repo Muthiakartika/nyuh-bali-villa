@@ -70,17 +70,20 @@ export default function UbudAboutPage() {
           items={[
             {
               label: "Suites",
-              href: "https://nyuhbalivillas.com/ubud/villa/",
+              href: "/ubud/villa",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/03/Honeymoon-Suite-5.webp`,
             },
             {
               label: "Romantic Villas",
-              href: "https://nyuhbalivillas.com/ubud/villa/",
+              href: "/ubud/villa",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/03/ubud-One-Bedroom-Deluxe-Pool-Villa-6.webp`,
             },
             {
               label: "Family Villas",
-              href: "https://nyuhbalivillas.com/ubud/villa/",
+              href: "/ubud/villa",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/03/Four-Bedroom-Pool-Villa-4.webp`,
             },
           ]}
@@ -93,17 +96,20 @@ export default function UbudAboutPage() {
           items={[
             {
               label: "Dining",
-              href: "https://nyuhbalivillas.com/ubud/dining/",
+              href: "/ubud/dining",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/03/ezgif.com-gif-maker-3.webp`,
             },
             {
               label: "SPA",
-              href: "https://nyuhbalivillas.com/ubud/spa/",
+              href: "/ubud/spa",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/03/ubudspa.webp`,
             },
             {
               label: "Experience",
-              href: "https://nyuhbalivillas.com/ubud/balinese-culture/",
+              href: "/ubud/balinese-culture",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/03/ubud-walk-1.webp`,
             },
           ]}
@@ -115,18 +121,29 @@ export default function UbudAboutPage() {
           tone="sand"
           items={[
             {
+              // Points at the dedicated Romance page rather than the Offers
+              // page's Romance tab. Both render the identical three packages
+              // (they share UBUD_ROMANCE_PACKAGES), so a visitor sees the same
+              // thing either way — but this is the only entry point Romance
+              // has. The live Ubud menu carries a "Romance" item; this build's
+              // menu doesn't, because a 9th item doesn't fit beside the logo
+              // and Book Now at `lg` (see the note in data/properties.ts), and
+              // an unreachable route is the worse of the two problems.
               label: "Honeymoon",
-              href: "https://nyuhbalivillas.com/ubud/packages/",
+              href: "/ubud/villa/honeymoon/packages",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/03/ezgif.com-gif-maker-7.webp`,
             },
             {
               label: "Couple's Retreat",
-              href: "https://nyuhbalivillas.com/ubud/retreat/couples/",
+              href: "/ubud/retreat/couples",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/03/ubud-yoga-4.webp`,
             },
             {
               label: "Authentic Balinese Healing",
-              href: "https://nyuhbalivillas.com/ubud/retreat/luxury/balinese-healing/",
+              href: "/ubud/retreat/luxury/balinese-healing",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/05/TD004090-min.webp`,
             },
           ]}

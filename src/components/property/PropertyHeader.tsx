@@ -7,6 +7,7 @@ import type { PropertySite } from "@/data/properties";
 import { MobileNavOverlay } from "@/components/layout/MobileNavOverlay";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
+import { ChevronIcon } from "@/components/ui/icons";
 
 type PropertyHeaderProps = {
   site: PropertySite;
@@ -111,13 +112,23 @@ export function PropertyHeader({ site, activeHref }: PropertyHeaderProps) {
                 );
 
                 return (
-                  <li key={item.label}>
+                  // `group/item` scopes the dropdown's open state to this one
+                  // entry. Opening is pure CSS — hover for a mouse,
+                  // `focus-within` for a keyboard — so the submenu needs no
+                  // React state and stays available if hydration is slow.
+                  <li key={item.label} className="group/item relative">
                     {item.inScope ? (
                       <Link
                         href={item.href}
-                        className={`group/nav ${labelClassName} hover:text-white`}
+                        className={`group/nav ${labelClassName} flex items-center gap-1.5 hover:text-white`}
                       >
                         {item.label}
+                        {item.children?.length ? (
+                          <ChevronIcon
+                            aria-hidden
+                            className="h-2.5 w-2.5 rotate-90 text-primary transition-transform duration-300 group-hover/item:-rotate-90"
+                          />
+                        ) : null}
                         {marker}
                       </Link>
                     ) : (
@@ -126,6 +137,44 @@ export function PropertyHeader({ site, activeHref }: PropertyHeaderProps) {
                         {marker}
                       </span>
                     )}
+
+                    {item.children?.length ? (
+                      // `top-full` + `pt-4` means the gap between the bar and
+                      // the panel is the panel's own padding, so the pointer
+                      // never crosses dead space on its way down and the menu
+                      // can't flicker shut mid-travel.
+                      <div className="invisible absolute top-full left-0 z-10 pt-4 opacity-0 transition-opacity duration-300 group-focus-within/item:visible group-focus-within/item:opacity-100 group-hover/item:visible group-hover/item:opacity-100">
+                        <ul className="min-w-[212px] border-t border-primary/50 bg-ink py-2 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.75)]">
+                          {item.children.map((child) => {
+                            const childClassName =
+                              "block px-5 py-2.5 text-[11px] tracking-[0.2em] text-white/75 uppercase transition-colors duration-300 hover:bg-white/5 hover:text-primary";
+
+                            return (
+                              <li key={child.label}>
+                                {child.external ? (
+                                  <a
+                                    href={child.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={childClassName}
+                                  >
+                                    {child.label}
+                                  </a>
+                                ) : child.inScope ? (
+                                  <Link href={child.href} className={childClassName}>
+                                    {child.label}
+                                  </Link>
+                                ) : (
+                                  <span className="block px-5 py-2.5 text-[11px] tracking-[0.2em] text-white/40 uppercase">
+                                    {child.label}
+                                  </span>
+                                )}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    ) : null}
                   </li>
                 );
               })}

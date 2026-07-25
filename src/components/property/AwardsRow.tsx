@@ -17,17 +17,21 @@ type AwardsRowProps = {
   variant?: "grid" | "marquee";
 };
 
-// Tailwind's scanner only generates a `grid-cols-N` class if that exact
-// string appears literally in the source, so the column count (which equals
-// the number of badges) is mapped through this lookup instead of being built
-// at runtime like `grid-cols-${n}` (which would never get generated).
-// Squeezing all 5 (or 8) badges into one row on a phone left them ~64px
-// wide, too small to read the award text on. Below `sm` they wrap onto
-// fewer, larger columns instead.
-const COLUMN_CLASS: Record<number, string> = {
-  5: "grid-cols-3 sm:grid-cols-5",
-  8: "grid-cols-4 sm:grid-cols-8",
-};
+/*
+ * The badge box is a SQUARE that hugs the mark, not a full grid column.
+ *
+ * This used to be an equal-column grid (`grid-cols-5`), which stretched every
+ * cell to the full column width — 224px at the 1240px container — while the
+ * badges themselves are square images (119×119) drawn with `object-contain`.
+ * Measured: each badge rendered 68px wide inside a 224px cell, so **156px of
+ * every cell was empty** and the row read as five small marks marooned in a
+ * band of nothing.
+ *
+ * A flex row of square boxes fixes it: the box is the same size as the mark, so
+ * there is no dead area *inside* it, and the space between badges becomes real
+ * spacing that `justify-between` distributes. It also matches the marquee
+ * variant, which was already square (and measured 0px blank).
+ */
 
 /**
  * The row of award badges that closes every property page.
@@ -78,30 +82,26 @@ export function AwardsRow({ badges, variant = "grid" }: AwardsRowProps) {
     );
   }
 
-  // Default: static grid (Seminyak). Equal columns span the full content
-  // width so the badges are distributed edge to edge in a single row that
-  // scales down together on narrow screens.
-  const columnClass = COLUMN_CLASS[badges.length] ?? "grid-cols-3 sm:grid-cols-4";
-
+  // Default: static row (Seminyak). Square boxes spread across the content
+  // width — see the note above on why these are no longer grid columns.
   return (
     <div className="bg-ink px-5 pt-6 pb-5 sm:px-8 md:pt-8">
-      <Container className={`grid ${columnClass} items-center gap-4 md:gap-6`}>
+      <Container className="flex flex-wrap items-center justify-center gap-x-8 gap-y-5 sm:justify-between sm:gap-x-4">
         {badges.map((src) => (
-          // Capped to a short, fixed height (`h-16 md:h-20`) rather than a
-          // full-column `aspect-square`, which stretched each badge to ~200px
-          // tall on desktop and made the credentials band as tall as a content
-          // section. `object-contain` centres each square mark within that
-          // shorter box, so they stay readable but compact.
-          //
-          // Held back and brought to full strength on hover — the standard
-          // treatment for a row of award marks, so they read as supporting
+          // A square that matches the mark, capped short so the credentials
+          // band stays a strip rather than growing as tall as a content
+          // section. Held back and brought to full strength on hover — the
+          // standard treatment for award marks, so they read as supporting
           // credentials rather than competing with the content above them.
-          <div key={src} className="group/badge relative h-14 md:h-[68px]">
+          <div
+            key={src}
+            className="group/badge relative h-14 w-14 shrink-0 md:h-[68px] md:w-[68px]"
+          >
             <Image
               src={src}
               alt="Award badge"
               fill
-              sizes="(min-width: 768px) 120px, 96px"
+              sizes="68px"
               className="object-contain opacity-70 transition-opacity duration-500 group-hover/badge:opacity-100"
             />
           </div>

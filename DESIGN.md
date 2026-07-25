@@ -84,6 +84,21 @@ One CTA. Gold fill + `ink` text; hover **inverts** the fill (never
 `hover:opacity`). Square corners. `buttonClassName()` is exported so a real
 `<button type="submit">` matches the link-shaped CTAs.
 
+### Nav dropdowns (`PropertyHeader` · `MobileNavOverlay`)
+Ubud's menu has three submenus (Offers, SPA, Retreat); Seminyak's is flat.
+
+On desktop the panel opens on **hover *and* `focus-within`, in pure CSS** — no
+React state, so it works before hydration and for keyboard users alike. It is an
+extension of the header, not a floating card: same `ink` fill, a gold hairline on
+top, square corners, letter-spaced uppercase items. The panel sits at `top-full`
+with its own `pt-4`, so the gap between bar and panel *is* the panel's padding
+and the pointer never crosses dead space on the way down. A small gold chevron
+marks a parent and flips when open.
+
+On mobile the overlay is a page, not a dropdown, so children are simply indented
+one level behind a short gold rule and set smaller — and the list gains
+`overflow-y-auto`, because 8 parents plus 8 children is taller than a phone.
+
 ### Header (`property/PropertyHeader.tsx`) — **always solid, never transparent**
 One `sticky` `ink` bar on every page: 68px (72px at `lg`), a gold hairline
 gradient under it, a soft shadow, logo 128×46. It has **no** transparent /
@@ -148,9 +163,112 @@ list rather than a separated block. From `sm` it spans a grid with ragged column
 bottoms and goes back to 16px either side. Mobile keeps `pb-24` to clear the
 fixed booking bar.
 
+### Listings (`property/RoomList` · `PackageList` · `TreatmentList`)
+The three shapes the content pages are built from. All obey the same rules as
+the cards above: square corners, `object-cover` crops at a fixed height, gold
+rules, `ink` headings, no card container and no shadow.
+
+- **`RoomList`** — accommodation. Photo, name, three spec lines (bed / area /
+  occupancy) with gold glyphs, then Check Rates (solid) + Details. Two columns
+  at `lg`. `mt-auto` on the action row so buttons share a baseline across a row.
+- **`PackageList`** — offers, retreat programmes, dining venues *and* the tours.
+  Rows of photograph-beside-text that **alternate sides at `lg`** and stack
+  image-first below it. Benefits run two columns from `sm` (the Ubud lists are
+  19 items). One component on purpose — a tour and a package are the same shape;
+  don't add a parallel one.
+- **`TreatmentList`** — the spa price menu, which genuinely isn't that shape.
+  Duration/price options are hairline-divided rows with gold text links, not
+  buttons: ten CTA buttons down a page would break the rule that there is one
+  button treatment and it means "the main action". The section's single solid
+  Button is the closing Reserve Now.
+
+`property/ImageGallery.tsx` backs all of them — a fixed-height frame navigated
+by the hero's gold bullet indicators, showing no controls at all for a single
+photo.
+
+### Detail pages (`property/RoomDetail` · `property/ExperienceDetail`)
+The two templates behind the 28 pages below the nav. Both open with a
+`PropertyHero`, then run standard `Section` bands. `ExperienceDetail` renders
+each block only if the page has it (inclusions, price, FAQ, gallery) and pulls
+its band tone from a counter over the blocks it *actually* emitted, so a sparse
+page still alternates sand / sand-deep instead of repeating one surface.
+
+### FAQ (`property/FaqList`)
+Native `<details>/<summary>` — opens with no JavaScript, keyboard- and
+screen-reader-accessible for free, and keeps the page a Server Component. The
+marker is suppressed and replaced by a gold `+` whose vertical stroke scales to
+zero when open. Answers are always in the DOM, so the copy stays indexable —
+the same reasoning as `Reveal` never hiding content permanently.
+
+### Blog (`property/PostGrid` · `property/PostBody`)
+**Editorial hierarchy, not a uniform grid.** The index leads with the newest
+post at full width — photograph one side, headline and excerpt the other — then
+runs the remainder as a compact 3-up card. One large item plus one repeating
+size is how a magazine creates rhythm; fifteen identical cards read as a
+catalogue and give the eye nowhere to land. This is *not* a licence for random
+card sizes — the cards below the lead stay one fixed height, which is the same
+rule `LinkCardGrid` enforces.
+
+The lead splits at `lg` like every other split here, and drops to `featured={false}`
+automatically under four posts (a 2- or 3-post list has no hierarchy to express)
+and explicitly on an article's "more from the blog" row, where leading one post
+would out-shout the article being read.
+
+Cards otherwise follow `LinkCardGrid`'s rules (fixed photo height,
+`object-cover`, square corners, gold rule that extends on hover) but put the
+headline *below* the photo — a title has to stay readable at length, which a
+label over a gradient does not.
+
+**The article itself is set as a magazine feature, not a blog page.** A resort's
+whole proposition is atmosphere, so the piece has to earn the read:
+
+- a **standfirst** (the post's own excerpt) under a `date · N min read` line,
+  closed with the gold rule. Reading time is derived from the post's words at
+  200wpm — metadata, not written copy;
+- a **drop cap** on the opening paragraph only, in the heading face and
+  `primary-deep` — the cheapest legible signal that this is a feature, and it
+  spends no new token;
+- **photographs break the measure at `lg`**, running 900px against the 680px
+  text column. DESIGN.md already names contained-text-against-uncontained-image
+  as what makes a layout editorial; this is that rule applied to prose. It is
+  `lg` and not `md` because 900px + the section's padding needs a ≥1024px
+  viewport, so a phone or tablet keeps the image inside the column;
+- headings get a short gold rule above and real space before, rather than just
+  being bigger text;
+- body copy runs 18px/1.8 — a long-form measure, not a card's 17px/1.7.
+
+The column stays `narrow` (680px ≈ 75 characters), which is the one thing that
+should never change on a page of prose. `PostBody` renders a block list rather
+than injecting CMS HTML, so posts inherit this site's typography and nothing
+from WordPress can inject markup.
+
+`ReadingProgress` is a hairline gold bar pinned to the header's lower edge. It
+is `aria-hidden`, carries no content and starts at zero width, so a failure
+costs a progress bar and not information — the same standard `Reveal` is held
+to. It writes width straight to the node inside a `requestAnimationFrame`
+rather than through React state: a `setState` per scroll frame is exactly the
+weight a reading aid must not add.
+
+### Forms (`property/ContactForm` · `property/InquiryForm`)
+One field style: underlined, not boxed — a hairline that turns gold on focus,
+`primary-deep` uppercase labels. `ContactForm` is the Contact pages' fixed five
+fields; `InquiryForm` is the data-driven one (`InquiryField[]`) behind the
+Wedding and tour booking forms. Both sit in a `narrow` Section. Neither sends
+anywhere — a Server Action would replace `handleSubmit`.
+
 ### Awards (`property/AwardsRow.tsx`)
-Short badge row on `ink` (badges capped to ~68px, not full-column squares).
-Seminyak = static grid; Ubud = marquee.
+Short badge row on `ink`. **Each badge box is a 56/68px square that hugs the
+mark** — it used to be an equal-column grid, which stretched every cell to the
+full column width (224px at 1240) while the badge images are square, so each
+cell rendered a 68px mark inside 224px and left 156px of dead area. Squares
+remove that; the space between badges becomes real spacing that
+`justify-between` distributes. Seminyak = static row; Ubud = marquee (already
+square).
+
+**Image rule this makes explicit:** every *content* image on the site uses
+`object-cover` at a fixed frame height, so no photograph can ever letterbox.
+`object-contain` is reserved for marks that must not be cropped — the logo and
+these badges — and those boxes must match the mark's own aspect ratio.
 
 ## Copy & scope
 
