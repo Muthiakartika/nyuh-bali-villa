@@ -189,26 +189,41 @@ export function PropertyHeader({ site, activeHref }: PropertyHeaderProps) {
               corner. It belongs here, visible on every page and every scroll
               position.
             */}
-            <Button
-              href={site.bookingHref}
-              external
-              size="sm"
-              className="hidden sm:inline-flex"
-            >
-              Book Now
-            </Button>
+            {/*
+              Hidden below `sm` on a WRAPPER, not on the Button itself. The
+              button used to carry `hidden sm:inline-flex` directly, and it
+              never worked: `buttonClassName` hardcodes `inline-flex`, so the
+              element had two competing `display` utilities and Tailwind's own
+              stylesheet order — not the class attribute's order — decided that
+              `inline-flex` won. The CTA therefore rendered on every phone, and
+              logo + CTA + hamburger overflowed a 360px viewport by 17px. A
+              wrapper has no display utility of its own to lose to.
+
+              Phones aren't losing the booking action: `DirectBookingDeals`
+              docks it to the bottom of the screen at exactly these widths.
+            */}
+            <span className="hidden sm:block">
+              <Button href={site.bookingHref} external size="sm">
+                Book Now
+              </Button>
+            </span>
 
             {/* 44×44 hit area with a 24px visual mark. The bars used to be the
                 button, which made the primary navigation control on mobile
                 exactly 24×24 — the bare WCAG minimum and well under what a
-                thumb actually wants. `-mr-3` pulls the enlarged box back so the
-                visible mark stays aligned with the container edge. */}
+                thumb actually wants. The negative margin pulls the enlarged box
+                outward so the visible *mark* still lines up with the container
+                edge; it is exactly half the difference between the box and the
+                mark ((44 − 24) / 2 = 10px), so the box lands inside the
+                header's own 20px padding instead of past it. It was -12px,
+                which overhung the mark by 2px and spent more of that padding
+                than it needed to. */}
             <button
               type="button"
               onClick={() => setIsMenuOpen((open) => !open)}
               aria-label="Toggle menu"
               aria-expanded={isMenuOpen}
-              className="-mr-3 flex h-11 w-11 flex-col items-center justify-center gap-[5px] lg:hidden"
+              className="-mr-2.5 flex h-11 w-11 flex-col items-center justify-center gap-[5px] lg:hidden"
             >
               <span className="block h-px w-6 bg-primary" />
               <span className="block h-px w-6 bg-primary" />

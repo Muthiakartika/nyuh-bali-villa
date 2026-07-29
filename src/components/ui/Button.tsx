@@ -47,6 +47,16 @@ const SIZE_CLASS: Record<ButtonSize, string> = {
  * (the contact form's Send) can look identical to the link-shaped CTAs
  * without being wrapped in an anchor it has no business being.
  */
+/**
+ * **`extra` cannot override `display`.** The base list below hardcodes
+ * `inline-flex`, and appending a competing utility (`hidden`, `block`,
+ * `sm:inline-flex`) only puts two rules of equal specificity on one element —
+ * which of them wins is decided by Tailwind's stylesheet order, not by the
+ * order they appear in the class attribute. `PropertyHeader` learned this the
+ * expensive way: its `hidden sm:inline-flex` on the Book Now CTA silently did
+ * nothing, so the button rendered on every phone and pushed the header 17px
+ * wider than a 360px viewport. Put responsive display on a wrapper element.
+ */
 export function buttonClassName(
   variant: ButtonVariant = "solid",
   size: ButtonSize = "md",

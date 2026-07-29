@@ -2,7 +2,119 @@ import Image from "next/image";
 import Link from "next/link";
 import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
+import { FaqAccordion, type FaqEntry } from "@/components/property/FaqAccordion";
+import {
+  parseInline,
+  toArticleBlocks,
+  type PointItem,
+} from "@/components/property/postBlocks";
 import type { Post, PostBlock } from "@/data/posts";
+
+/**
+ * A rate table inside an article.
+ *
+ * A real `<table>`, because it is one — the money column has to be readable
+ * against its row, which is exactly what a table gives for free and what the
+ * flattened paragraph run it was imported as destroyed. The money column is
+ * right-aligned and set in `ink`, so the eye can run down it; everything else
+ * stays body copy. The wrapper scrolls rather than the page if a narrow phone
+ * can't fit three columns.
+ */
+function PriceTable({ columns, rows }: { columns: string[]; rows: string[][] }) {
+  return (
+    <div className="mt-8 overflow-x-auto">
+      <table className="w-full min-w-[20rem] border-collapse text-left">
+        <thead>
+          <tr className="border-b border-ink/15">
+            {columns.map((column, index) => (
+              <th
+                key={column}
+                scope="col"
+                className={`text-eyebrow font-body pb-3 font-normal text-primary-deep uppercase ${
+                  index === columns.length - 1 ? "text-right" : ""
+                }`}
+              >
+                {column}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.join("|")} className="border-b border-ink/10">
+              {row.map((cell, index) => {
+                const isLast = index === columns.length - 1;
+                return (
+                  <td
+                    key={index}
+                    className={`py-3 text-[15px] leading-snug font-light md:text-[16px] ${
+                      isLast
+                        ? "pl-4 text-right font-normal whitespace-nowrap text-ink"
+                        : index === 0
+                          ? "pr-4 text-ink"
+                          : "pr-4 text-text"
+                    }`}
+                  >
+                    {cell}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/** A recovered FAQ section, set as its own titled block inside the article. */
+function ArticleFaq({ heading, items }: { heading: string; items: FaqEntry[] }) {
+  return (
+    <section className="mt-12 md:mt-14">
+      <h2 className="font-heading text-[24px] leading-[1.2] font-light text-balance text-ink md:text-[29px]">
+        {heading}
+      </h2>
+      <div className="mt-6">
+        {/* No stagger: the article is already revealing section by section, and
+            a second entrance on top of that reads as a page still loading. */}
+        <FaqAccordion faqs={items} animate={false} />
+      </div>
+    </section>
+  );
+}
+
+/** Body text with the source's `[link:…]` shorthand resolved to real links. */
+function InlineText({ text }: { text: string }) {
+  const segments = parseInline(text);
+
+  return (
+    <>
+      {segments.map((segment, index) =>
+        segment.kind === "text" ? (
+          segment.text
+        ) : segment.external ? (
+          <a
+            key={index}
+            href={segment.href}
+            target="_blank"
+            rel="noreferrer"
+            className="text-primary-deep underline decoration-primary/40 underline-offset-[5px] transition-colors duration-300 hover:decoration-primary"
+          >
+            {segment.text}
+          </a>
+        ) : (
+          <Link
+            key={index}
+            href={segment.href}
+            className="text-primary-deep underline decoration-primary/40 underline-offset-[5px] transition-colors duration-300 hover:decoration-primary"
+          >
+            {segment.text}
+          </Link>
+        ),
+      )}
+    </>
+  );
+}
 
 type PostBodyProps = { post: Post };
 
@@ -19,7 +131,7 @@ export function formatPostDate(iso: string) {
 
 /** Derived from the post's own words — metadata, not written copy. 200 wpm is
  * the usual figure for adult reading of general prose. */
-function readingMinutes(blocks: PostBlock[]) {
+export function readingMinutes(blocks: PostBlock[]) {
   const words = blocks.reduce((total, block) => {
     if (block.kind === "list") return total + block.items.join(" ").split(/\s+/).length;
     if (block.kind === "image") return total;
@@ -28,38 +140,113 @@ function readingMinutes(blocks: PostBlock[]) {
   return Math.max(1, Math.round(words / 200));
 }
 
+/** A body paragraph. Shared so a paragraph reads identically whether it sits in
+ * the article's spine or inside a point. */
+function BodyParagraph({ text, className = "" }: { text: string; className?: string }) {
+  return (
+    // `break-words` is a guard, not styling: one unbreakable token in the CMS
+    // copy is enough to push the whole document into horizontal scroll on a
+    // phone, and the article body is the one place arbitrary text lands.
+    <p
+      className={`text-[17px] leading-[1.85] font-light break-words text-pretty text-text md:text-[19px] ${className}`}
+    >
+      <InlineText text={text} />
+    </p>
+  );
+}
+
 /**
- * A blog post's body, set as an editorial article rather than a blog page.
+ * A restored point list. The marker sits in its own gutter so every label
+ * starts on one vertical line and the eye can run down the list without
+ * reading it — which is the entire reason these are lists and not paragraphs.
+ */
+function PointList({ ordered, items }: { ordered: boolean; items: PointItem[] }) {
+  const Tag = ordered ? "ol" : "ul";
+
+  return (
+    <Tag className="mt-9 flex flex-col gap-9 border-t border-ink/10 pt-9">
+      {items.map((item) => (
+        <li
+          key={item.label}
+          className="grid grid-cols-[2.25rem_1fr] gap-x-4 sm:grid-cols-[3rem_1fr] sm:gap-x-6"
+        >
+          {ordered ? (
+            // The source's own numeral, not a generated one — one of these
+            // lists is titled "10 Romantic…" but only writes eight points, and
+            // renumbering would quietly assert a count the copy doesn't have.
+            <span
+              aria-hidden
+              className="font-heading text-[26px] leading-[1.15] font-light text-primary-deep sm:text-[32px]"
+            >
+              {item.marker}
+            </span>
+          ) : (
+            <span aria-hidden className="mt-[0.7em] block h-px w-full bg-primary" />
+          )}
+
+          <div>
+            <h3 className="font-heading text-[20px] leading-[1.3] font-light break-words text-balance text-ink sm:text-[23px]">
+              <InlineText text={item.label} />
+            </h3>
+
+            {item.body.map((block, index) =>
+              block.kind === "image" ? (
+                // Contained rather than breaking the measure: inside a list
+                // item a full-width image would tear the marker gutter apart.
+                <Image
+                  key={index}
+                  src={block.src}
+                  alt=""
+                  width={900}
+                  height={600}
+                  sizes="(min-width: 800px) 690px, 100vw"
+                  className="mt-5 h-auto w-full"
+                />
+              ) : block.kind === "paragraph" ? (
+                <BodyParagraph key={index} text={block.text} className="mt-4" />
+              ) : null,
+            )}
+          </div>
+        </li>
+      ))}
+    </Tag>
+  );
+}
+
+/**
+ * A blog post's body.
  *
- * **What changed and why.** The first version was one 680px column of uniform
- * 17px paragraphs — correct, and completely flat. For a resort whose entire
- * proposition is atmosphere, an article is a sales surface, so it is now
- * composed like a magazine feature:
+ * **What this pass changed, and why the previous one was wrong.** The article
+ * was set as a print magazine feature: drop cap on the opening paragraph, a
+ * gold hairline rule stacked above every heading, uppercase tracked metadata.
+ * That is one specific aesthetic lane — display-serif editorial — and it had
+ * two problems here. It is the single most saturated "designed article" look
+ * there is, so it reads as generic rather than considered; and the rule-above-
+ * every-heading device does not survive contact with this content, where one
+ * post carries twenty-one headings and the page turns into a ladder of
+ * identical gold ticks. Hierarchy now comes from scale and space, which is
+ * what actually scales to a 1,900-word post.
  *
- *  - a **standfirst** (the post's own excerpt) set large under a date ·
- *    reading-time line, closed with the site's gold rule;
- *  - a **drop cap** on the opening paragraph — the cheapest, most legible
- *    signal that this is a feature and not a notice. Set in the heading face
- *    and `primary-deep`, so it costs no new token;
- *  - **photographs that break the measure** at `lg`, running wider than the
- *    text they sit in. DESIGN.md already names this as the thing that makes
- *    the layout read as editorial: contained text against uncontained image;
- *  - **section headings that announce themselves** — a short gold rule above,
- *    generous space before — instead of merely being bigger text;
- *  - body copy at 18px/1.8 rather than 17px/1.7, which is a reading measure
- *    for long form rather than for a card.
+ * The bigger change is structural. Three posts are literal listicles whose
+ * points were written as marker punctuation inside ordinary paragraphs, so
+ * they rendered as the flattest text on the site — see `postBlocks.ts`. They
+ * are now real lists with the marker in its own gutter, which is what makes a
+ * long piece scannable instead of a wall.
  *
- * The column is still `narrow` (680px ≈ 75 characters) — the one thing that
- * should never change on a page of prose.
+ * Unchanged, because they were right: the `narrow` 680px measure (~75
+ * characters, the one thing that should never move on a page of prose), the
+ * standfirst, photographs breaking the measure at `lg`, and rendering a block
+ * list rather than injecting CMS HTML.
  */
 export function PostBody({ post }: PostBodyProps) {
   const minutes = readingMinutes(post.blocks);
-  // The opening paragraph gets the drop cap; anything after it must not.
-  const firstParagraph = post.blocks.findIndex((b) => b.kind === "paragraph");
+  const blocks = toArticleBlocks(post.blocks);
+  // The opening paragraph is set larger, as a lead-in. Anything after it is
+  // ordinary body copy.
+  const firstParagraph = blocks.findIndex((b) => b.kind === "paragraph");
 
   return (
-    <Section tone="sand" width="narrow">
-      {/* Byline row + standfirst. */}
+    <Section tone="sand" width="read">
       <Reveal>
         <p className="text-eyebrow font-body flex flex-wrap items-center gap-x-3 gap-y-1 text-primary-deep uppercase">
           <time dateTime={post.date}>{formatPostDate(post.date)}</time>
@@ -72,7 +259,7 @@ export function PostBody({ post }: PostBodyProps) {
         </p>
 
         {post.excerpt ? (
-          <p className="font-heading mt-6 text-[21px] leading-[1.55] font-light text-ink md:text-[25px]">
+          <p className="font-heading mt-6 text-[22px] leading-[1.5] font-light text-balance text-ink md:text-[26px]">
             {post.excerpt}
           </p>
         ) : null}
@@ -80,32 +267,55 @@ export function PostBody({ post }: PostBodyProps) {
         <span aria-hidden className="mt-8 block h-px w-14 bg-primary" />
       </Reveal>
 
-      <div className="mt-8 flex flex-col gap-6">
-        {post.blocks.map((block, index) => {
-          if (block.kind === "heading") {
+      <div className="mt-9">
+        {blocks.map((block, index) => {
+          if (block.kind === "points") {
             return (
-              <div key={index} className="mt-6">
-                <span aria-hidden className="block h-px w-10 bg-primary" />
-                <h2 className="font-heading mt-5 text-[26px] leading-tight font-light text-ink md:text-[30px]">
-                  {block.text}
-                </h2>
-              </div>
+              <PointList key={index} ordered={block.ordered} items={block.items} />
+            );
+          }
+
+          if (block.kind === "faq") {
+            return (
+              <ArticleFaq key={index} heading={block.heading} items={block.items} />
+            );
+          }
+
+          if (block.kind === "price") {
+            return (
+              <PriceTable key={index} columns={block.columns} rows={block.rows} />
+            );
+          }
+
+          if (block.kind === "heading") {
+            // Space above, none of its own below — a heading belongs to what
+            // follows it, and the gap that separates it from the *previous*
+            // section is what makes that legible.
+            return (
+              <h2
+                key={index}
+                className="font-heading mt-12 text-[24px] leading-[1.2] font-light text-balance text-ink first:mt-0 md:mt-14 md:text-[29px]"
+              >
+                {block.text}
+              </h2>
             );
           }
 
           if (block.kind === "list") {
             return (
-              <ul key={index} className="flex flex-col gap-2.5">
+              <ul key={index} className="mt-7 flex flex-col gap-3">
                 {block.items.map((item) => (
                   <li
                     key={item}
-                    className="flex gap-3.5 text-[18px] leading-[1.8] font-light text-text"
+                    className="grid grid-cols-[1.5rem_1fr] text-[17px] leading-[1.85] font-light text-text md:text-[19px]"
                   >
                     <span
                       aria-hidden
-                      className="mt-3.5 block h-px w-3.5 shrink-0 bg-primary"
+                      className="mt-[0.85em] block h-px w-3.5 bg-primary"
                     />
-                    {item}
+                    <span className="break-words text-pretty">
+                      <InlineText text={item} />
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -114,40 +324,35 @@ export function PostBody({ post }: PostBodyProps) {
 
           if (block.kind === "image") {
             return (
-              // Breaks the 680px measure at `lg` only: 900px needs a viewport
-              // wide enough to hold it plus the section's own padding
-              // (900 + 64 = 964 < 1024), so on a phone or tablet it stays
-              // inside the column and can't cause a horizontal scroll.
-              <div
-                key={index}
-                className="my-4 lg:-mx-[110px] lg:w-[calc(100%+220px)]"
-              >
+              // Flush with the text, deliberately. These used to break the
+              // measure — 900px against a 680px column at `lg` — which is a
+              // real editorial device, but it needs a wide gutter and a
+              // consistent rhythm to read as one. With a photograph every few
+              // paragraphs and nothing else escaping the column, the only
+              // thing it communicated was that two edges failed to line up.
+              <div key={index} className="mt-10 md:mt-12">
                 <Image
                   src={block.src}
                   alt=""
                   width={900}
                   height={600}
-                  sizes="(min-width: 1024px) 900px, 100vw"
+                  sizes="(min-width: 800px) 760px, 100vw"
                   className="h-auto w-full"
                 />
               </div>
             );
           }
 
-          const isOpener = index === firstParagraph;
-          return (
+          const isLead = index === firstParagraph;
+          return isLead ? (
             <p
               key={index}
-              className={`text-[18px] leading-[1.8] font-light text-text ${
-                isOpener
-                  ? // Drop cap: heading face, gold, three lines deep. `float-left`
-                    // rather than a grid so the following lines wrap around it.
-                    "first-letter:font-heading first-letter:mt-1.5 first-letter:mr-3 first-letter:float-left first-letter:text-[58px] first-letter:leading-[0.78] first-letter:font-light first-letter:text-primary-deep md:first-letter:text-[68px]"
-                  : ""
-              }`}
+              className="font-body mt-6 text-[19px] leading-[1.7] font-light break-words text-pretty text-ink first:mt-0 md:text-[21px]"
             >
-              {block.text}
+              <InlineText text={block.text} />
             </p>
+          ) : (
+            <BodyParagraph key={index} text={block.text} className="mt-6" />
           );
         })}
       </div>
@@ -155,7 +360,7 @@ export function PostBody({ post }: PostBodyProps) {
       {/* Closing rule + a way back into the blog. "Our Blog" is a string the
           site already uses (the footer column heading); no new copy. */}
       <Reveal>
-        <div className="mt-12 border-t border-ink/10 pt-7">
+        <div className="mt-14 border-t border-ink/10 pt-7">
           <Link
             href={`/${post.property}/discover`}
             className="text-eyebrow font-body group/back inline-flex items-center gap-3 text-primary-deep uppercase"

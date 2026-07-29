@@ -3,6 +3,7 @@ import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button, buttonClassName } from "@/components/ui/Button";
+import { ReadMore } from "@/components/ui/ReadMore";
 import { ImageGallery } from "@/components/property/ImageGallery";
 
 export type PackageItem = {
@@ -130,43 +131,57 @@ export function PackageList({
                   ) : null}
 
                   {item.benefits?.length ? (
-                    <>
-                      <h4 className="text-eyebrow font-body mt-7 text-primary-deep uppercase">
-                        {item.benefitsHeading ?? "Discover Benefits"}
-                      </h4>
-                      {/* Two columns from `sm`: these lists run to nineteen
-                          short items on the Ubud packages, which as one column
-                          is taller than the photograph beside it.
-                          `break-inside-avoid` stops an item splitting across
-                          the column boundary. */}
-                      <ul className="mt-4 sm:columns-2 sm:gap-x-8">
-                        {item.benefits.map((benefit) => (
-                          <li
-                            key={benefit}
-                            className="mb-2 flex break-inside-avoid gap-2.5 text-[14px] leading-relaxed font-light text-text"
-                          >
-                            <span
-                              aria-hidden
-                              className="mt-2.5 block h-px w-2.5 shrink-0 bg-primary"
-                            />
-                            {benefit}
-                          </li>
-                        ))}
-                      </ul>
-                    </>
+                    <h4 className="text-eyebrow font-body mt-7 text-primary-deep uppercase">
+                      {item.benefitsHeading ?? "Discover Benefits"}
+                    </h4>
                   ) : null}
 
-                  {item.notes?.length ? (
-                    <div className="mt-5 flex flex-col gap-3">
-                      {item.notes.map((note) => (
-                        <p
-                          key={note}
-                          className="text-[14px] leading-relaxed font-light text-text"
-                        >
-                          {note}
-                        </p>
-                      ))}
-                    </div>
+                  {/* The benefits list and the tour notes are what actually
+                      overruns the photograph — a nineteen-item list or a
+                      four-stop itinerary leaves the text column 370–550px
+                      taller than the 352px image beside it. `ReadMore` clamps
+                      whichever of the two is present, but only once it has
+                      measured a real overflow, so the short dining and retreat
+                      rows (which end *above* their photograph) keep no
+                      control. The heading stays outside the clamp so the
+                      collapsed state still says what it is hiding. */}
+                  {item.benefits?.length || item.notes?.length ? (
+                    <ReadMore tone={tone} label={item.name}>
+                      {item.benefits?.length ? (
+                        // Two columns from `sm`: these lists run to nineteen
+                        // short items on the Ubud packages, which as one column
+                        // is taller than the photograph beside it.
+                        // `break-inside-avoid` stops an item splitting across
+                        // the column boundary.
+                        <ul className="mt-4 sm:columns-2 sm:gap-x-8">
+                          {item.benefits.map((benefit) => (
+                            <li
+                              key={benefit}
+                              className="mb-2 flex break-inside-avoid gap-2.5 text-[14px] leading-relaxed font-light text-text"
+                            >
+                              <span
+                                aria-hidden
+                                className="mt-2.5 block h-px w-2.5 shrink-0 bg-primary"
+                              />
+                              {benefit}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
+
+                      {item.notes?.length ? (
+                        <div className="mt-5 flex flex-col gap-3">
+                          {item.notes.map((note) => (
+                            <p
+                              key={note}
+                              className="text-[14px] leading-relaxed font-light text-text"
+                            >
+                              {note}
+                            </p>
+                          ))}
+                        </div>
+                      ) : null}
+                    </ReadMore>
                   ) : null}
 
                   {item.ctas?.length ? (

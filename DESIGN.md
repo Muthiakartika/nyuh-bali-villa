@@ -57,8 +57,10 @@ eyebrow + heading + a short gold rule beneath (`SectionHeading`).
 ## Layout & rhythm
 
 - **Width:** `components/ui/Container.tsx` — `wide` (1240px) is the content cap;
-  `narrow` (680px) is the legal-copy reading measure. Background colour is
-  full-bleed on the outer `<section>`; only the content is capped.
+  `narrow` (680px) is the legal-copy reading measure at 17px; `read` (760px) is
+  the blog article's, at 19px. Both reading widths are set by line length
+  (~75–77 characters), not by the grid. Background colour is full-bleed on the
+  outer `<section>`; only the content is capped.
 - **Bands:** compose with `components/ui/Section.tsx` — declare `tone`
   (`sand` / `sand-deep` / `ink` / `white`) × `space` (totals `tight` 52/80 ·
   `normal` 60/96 · `loose` 68/112, mobile/`md`), never hand-rolled section
@@ -176,6 +178,13 @@ rules, `ink` headings, no card container and no shadow.
   image-first below it. Benefits run two columns from `sm` (the Ubud lists are
   19 items). One component on purpose — a tour and a package are the same shape;
   don't add a parallel one.
+  The benefits list and the tour notes sit inside **`ui/ReadMore`**, clamped to
+  128px behind a "Read more" toggle. Not decoration: those columns measured
+  725–905px against a 352px photograph, so a third of the row was empty band.
+  The clamp is applied only where a real overflow is *measured*, so the dining
+  and retreat rows — which already end above their photograph — keep no control
+  at all. The heading ("Discover Benefits") stays outside the clamp so the
+  collapsed state still names what it is holding back.
 - **`TreatmentList`** — the spa price menu, which genuinely isn't that shape.
   Duration/price options are hairline-divided rows with gold text links, not
   buttons: ten CTA buttons down a page would break the rule that there is one
@@ -195,10 +204,29 @@ page still alternates sand / sand-deep instead of repeating one surface.
 
 ### FAQ (`property/FaqList`)
 Native `<details>/<summary>` — opens with no JavaScript, keyboard- and
-screen-reader-accessible for free, and keeps the page a Server Component. The
-marker is suppressed and replaced by a gold `+` whose vertical stroke scales to
-zero when open. Answers are always in the DOM, so the copy stays indexable —
-the same reasoning as `Reveal` never hiding content permanently.
+screen-reader-accessible for free, and keeps the page a Server Component.
+Answers are always in the DOM, so the copy stays indexable — the same reasoning
+as `Reveal` never hiding content permanently.
+
+**Compact by design**: a closed row is 49px (`py-3`, 17/18px question), down
+from 61px. Six questions stack in 294px rather than 366px.
+
+The marker is the **header's own gold chevron**, rotating 90° → −90° on open,
+not the `+` it used to be. A plus reads as "expand a tree"; the site already has
+one affordance that means "there is more under this", and reusing it is what
+makes the block read as a dropdown at a glance.
+
+**The question is the one heading on this site that isn't `ink`.** The site rule
+is dark headings with gold as accent only — but a closed accordion is a stack of
+near-identical rows, and colour is what ranks the question above an answer set
+in the body face without spending height on an element that has to stay
+compact. Question: heading face, 400, `primary-deep` (the brand's brown),
+slight tracking. Answer: body face, 300, `text`. Measured 4.92:1 and 9.76:1.
+Full-strength gold is **not** an option here — 2.39:1 cannot carry text at this
+size, which is why it is `primary-deep`.
+
+Note the block currently renders on exactly one route: of 18 entries in
+`data/experiences.ts`, only `wellness/yoga` has a non-empty `faq` array.
 
 ### Blog (`property/PostGrid` · `property/PostBody`)
 **Editorial hierarchy, not a uniform grid.** The index leads with the newest
@@ -219,28 +247,105 @@ Cards otherwise follow `LinkCardGrid`'s rules (fixed photo height,
 headline *below* the photo — a title has to stay readable at length, which a
 label over a gradient does not.
 
-**The article itself is set as a magazine feature, not a blog page.** A resort's
-whole proposition is atmosphere, so the piece has to earn the read:
+Cards carry `date · N min read` and a two-line excerpt. The excerpt is clamped
+rather than trimmed in the data, and the closing gold rule hangs off `mt-auto`
+so the marks line up across a row whose titles wrap to different depths.
+
+**The article: structure first, decoration second.** An earlier pass set the
+piece as a print magazine feature — drop cap, a gold hairline stacked above
+every heading, the lot. That was removed, for two reasons. Display-serif
+editorial is the single most saturated "designed article" look there is, so it
+reads as generic rather than considered; and the rule-above-every-heading
+device does not survive this content, where one post carries twenty-one
+headings and the page becomes a ladder of identical gold ticks. Hierarchy now
+comes from scale and space, which is what scales to a 1,900-word post.
 
 - a **standfirst** (the post's own excerpt) under a `date · N min read` line,
   closed with the gold rule. Reading time is derived from the post's words at
   200wpm — metadata, not written copy;
-- a **drop cap** on the opening paragraph only, in the heading face and
-  `primary-deep` — the cheapest legible signal that this is a feature, and it
-  spends no new token;
-- **photographs break the measure at `lg`**, running 900px against the 680px
-  text column. DESIGN.md already names contained-text-against-uncontained-image
-  as what makes a layout editorial; this is that rule applied to prose. It is
-  `lg` and not `md` because 900px + the section's padding needs a ≥1024px
-  viewport, so a phone or tablet keeps the image inside the column;
-- headings get a short gold rule above and real space before, rather than just
-  being bigger text;
-- body copy runs 18px/1.8 — a long-form measure, not a card's 17px/1.7.
+- the **opening paragraph is set larger** (19/21px, `ink`) as a lead-in;
+- **point lists** are the main event — see `postBlocks.ts` below;
+- **photographs are flush with the text, at exactly the same width.** They used
+  to break the measure — 900px against a 680px column at `lg`. Breaking the
+  measure is a real editorial device, but it needs a wide gutter and a
+  consistent rhythm to read as one; with a photograph every few paragraphs and
+  nothing else escaping the column, all it communicated was that two edges
+  failed to line up. Verified by measurement: container, paragraphs and images
+  all run 253 → 1013 at 1280px. The exception is an image *inside* a point
+  list, which aligns to its item's text column (688px) rather than the article's
+  — it belongs to that item, and the rule is still "flush with the text beside
+  it";
+- headings are scale and space only — no rule, no eyebrow;
+- body copy runs 17/19px at 1.85 in a **`read` (760px) container**, measured at
+  77 characters a line. `narrow` (680px) stays what the legal pages use; the
+  article needed the extra width back once its photographs stopped escaping,
+  and 19px is what keeps 760px inside a sane measure.
 
-The column stays `narrow` (680px ≈ 75 characters), which is the one thing that
-should never change on a page of prose. `PostBody` renders a block list rather
-than injecting CMS HTML, so posts inherit this site's typography and nothing
-from WordPress can inject markup.
+**`postBlocks.ts` restores list structure the WordPress import dropped.** Three
+posts write their points as marker punctuation inside an ordinary paragraph
+("- Balinese Purification Ceremony at Tirta Empul", "1. Traditional
+Experiences"). The converter only recognised real `<ul>` markup, so all
+seventeen came through as body paragraphs — the posts that are *literally
+listicles* rendered as the flattest text on the site, markers sitting inline
+like typos. They are now real `<ul>`/`<ol>`s with the marker in its own gutter,
+so the labels start on one vertical line and the piece can be scanned.
+
+Every word is the source's own; only the marker punctuation is replaced by a
+marker. **Dashed runs are never renumbered** — one of them is titled "10
+Romantic…" and writes eight points, and generating numerals would assert a
+count the copy doesn't have. Posts without markers pass through untouched; this
+does not guess structure that isn't stated.
+
+`parseInline` in the same file resolves the source's `[link:URL]label`
+shorthand into real links. Two posts carry one each, and they had been
+rendering as visible text — see the constraint in CLAUDE.md.
+
+#### The article block contract (what a CRUD should emit)
+
+`ArticleBlock` in `postBlocks.ts` is the whole vocabulary. An editor writes
+these directly; `toArticleBlocks` passes anything it already recognises through
+untouched, so the recovery passes below are a one-time migration concern, not a
+runtime dependency.
+
+| Block | Shape | Renders as |
+|---|---|---|
+| `heading` | `{ text }` | `<h2>`, 24/29px `ink`, space above only |
+| `paragraph` | `{ text }` | 17/19px `text`; first one is the 19/21px lead; `[link:URL]label` becomes a link |
+| `list` | `{ items[] }` | gold-dash bullets, one line each |
+| `image` | `{ src }` | full measure width (760px), flush with the text |
+| `points` | `{ ordered, items[] }` | marker in its own gutter + heading-face label + the item's own body blocks |
+| `price` | `{ columns[], rows[][] }` | a real `<table>`; last column right-aligned `ink`, headers as gold eyebrows, wrapper scrolls on a narrow phone |
+| `faq` | `{ heading, items[] }` | its own `<h2>` plus `FaqAccordion` — the same rows the wellness pages use |
+
+**Three recovery passes run in a fixed order** (`faq` → `price` → `points`),
+most-specific signal first, because the weaker ones would otherwise mis-claim
+the same paragraphs. What each found in the imported content:
+
+- **`faq` — 88 question/answer pairs across 9 of the 17 posts.** Published as
+  alternating paragraphs under a heading, indistinguishable from body copy, so
+  over half the blog ended in a wall of short paragraphs. The trigger is a
+  paragraph ending in `?` followed by one that doesn't, three times over; the
+  heading above it is absorbed so the section isn't titled twice, and its
+  original wording is kept ("FAQ", "Find Your Answer", "Hatha Yoga FAQ",
+  "Learn More"). Headings that end in `?` are left alone — several posts use
+  one as a legitimate section title.
+- **`price` — one rate table, in the hot-stone-massage post.** A three-column
+  table serialised *column by column*: the word "Service", four treatment
+  names, "Duration", four durations, "Cost (IDR)", four prices. Read in order
+  it is nonsense — each price sat five paragraphs from what it cost. A run of
+  short paragraphs is a table when it divides into `c` columns of one header
+  plus `k` values and **exactly one column is entirely money while no header
+  is**; that pair of conditions is what disambiguates the partition (fifteen
+  cells also divide 5 × 3, but that puts prices in the header row).
+- **`points` — 17 items across 3 posts.** Covered above.
+
+All three are lossless: an unrecognised block passes through unchanged.
+
+What must not change is the *measure* — the article sits at ~77 characters a
+line, and that number is the constraint, not the pixel value it happens to
+produce. `PostBody` renders a block list rather than injecting CMS HTML, so
+posts inherit this site's typography and nothing from WordPress can inject
+markup.
 
 `ReadingProgress` is a hairline gold bar pinned to the header's lower edge. It
 is `aria-hidden`, carries no content and starts at zero width, so a failure

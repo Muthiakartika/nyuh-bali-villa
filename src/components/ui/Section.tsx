@@ -21,7 +21,7 @@ type SectionProps = {
    * around a moment that needs it (the testimonial). */
   space?: SectionSpace;
   /** Long-form reading measure instead of the full grid width. */
-  width?: "wide" | "narrow";
+  width?: "wide" | "narrow" | "read";
   /** Classes for the outer <section> (the full-bleed background layer). */
   className?: string;
   /** Classes for the inner Container (the content layer). */
