@@ -47,8 +47,18 @@ export function SectionHeading({
       className={`flex flex-col ${isCentered ? "items-center text-center" : "items-start"} ${className}`}
     >
       {eyebrow ? (
+        // `md:-mt-0.5` is optical, not spacing. A band's opening gap is
+        // measured by eye from the boundary to the first *ink*, and glyphs
+        // start below their line box by an amount that scales with type size:
+        // measured here, 6px under a 42px heading but 8px under the 11px
+        // eyebrow. Left alone, a band that opens on an eyebrow shows a 2px
+        // wider gap than one that opens on a heading — enough to make a page
+        // of alternating bands read as unevenly spaced. Pulling the eyebrow up
+        // by that 2px lands both cases on the same ink line, which is what
+        // lets `Section` use one padding pair for every band. Desktop only:
+        // the mobile rhythm is tuned separately and was not part of this.
         <span
-          className={`text-eyebrow font-body uppercase ${
+          className={`text-eyebrow font-body uppercase md:-mt-0.5 ${
             isDark ? "text-primary" : "text-primary-deep"
           }`}
         >

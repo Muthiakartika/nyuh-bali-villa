@@ -62,8 +62,9 @@ eyebrow + heading + a short gold rule beneath (`SectionHeading`).
   (~75–77 characters), not by the grid. Background colour is full-bleed on the
   outer `<section>`; only the content is capped.
 - **Bands:** compose with `components/ui/Section.tsx` — declare `tone`
-  (`sand` / `sand-deep` / `ink` / `white`) × `space` (totals `tight` 52/80 ·
-  `normal` 60/96 · `loose` 68/112, mobile/`md`), never hand-rolled section
+  (`sand` / `sand-deep` / `ink` / `white`) × `space` (mobile totals `tight` 52 ·
+  `normal` 60 · `loose` 68; **desktop is one shared 96px split 45/51 for every
+  step**, so no band boundary is lopsided), never hand-rolled section
   padding. **The mobile column is ~60% of the desktop one, not a scaled copy** —
   stacked bands read wider than side-by-side ones at the same value.
   Content-to-content across a boundary: ~64px on a phone, ~104px on desktop.

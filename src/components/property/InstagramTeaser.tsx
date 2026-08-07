@@ -36,13 +36,13 @@ export function InstagramTeaser({ heading, instagramHref }: InstagramTeaserProps
   return (
     // `space="none"` with explicit padding rather than the standard rhythm:
     // this band is the lead-in to the awards row below it, so it is
-    // deliberately shallower than a full section. It still follows the rhythm's
-    // top/bottom split (8px more below than above) so its visible gaps match
-    // every other band — see the note in Section.tsx.
+    // deliberately shallower than a full section. It still carries the
+    // rhythm's exact top/bottom split so its visible gaps match every other
+    // band — keep these two values in step with `DESKTOP_SPACE` in Section.tsx.
     <Section
       tone="white"
       space="none"
-      className="pt-6 pb-9 md:pt-11 md:pb-13"
+      className="pt-6 pb-9 md:pt-[45px] md:pb-[51px]"
     >
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeading title={heading} />

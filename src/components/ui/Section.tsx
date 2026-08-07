@@ -54,14 +54,27 @@ const TONE_CLASS: Record<SectionTone, string> = {
  * **The top and bottom values are deliberately unequal, to look equal.** Every
  * band opens on a heading and closes on something with a hard edge — a row of
  * photographs, a plate, a button. A heading's glyphs don't start at the top of
- * their line box: measured here, the cap of a 42px section heading sits ~7px
- * below it (half-leading plus the font's ascent-above-cap). So a symmetrical
- * `py-12` band renders ~55px of visible space above the title and exactly 48px
- * below the last card — the client read the difference straight off a
- * screenshot. Each step therefore carries 8px more on the bottom than the top,
- * which lands the two *visible* gaps within a pixel of each other.
+ * their line box: half-leading plus the font's ascent-above-cap puts the first
+ * ink some way below it. So a symmetrical `py-12` band renders more visible
+ * space above the title than below the last card — the client read the
+ * difference straight off a screenshot. Each step therefore carries more on
+ * the bottom than the top, which lands the two *visible* gaps on each other.
  *
- * On `md` and up the split is 8px, which is the pure glyph-offset correction.
+ * **The desktop correction is 6px, and it is measured, not estimated.** It was
+ * 8px, from an assumed ~7px glyph offset; measuring the real ink (canvas
+ * `actualBoundingBoxAscent` against the text node's baseline, rather than the
+ * element's box) puts it at exactly 6px for the 42px section heading. That 2px
+ * error was visible as a consistent "the gap under the boundary is tighter
+ * than the gap above it" across every band on every page. The `md` values are
+ * therefore written in px rather than as spacing steps — the correction is an
+ * optical constant, not a rhythm value, and the 4px scale cannot express it.
+ * **Each step's total is unchanged** (80 / 96 / 112), so no page moved; only
+ * the split did.
+ *
+ * The other half of that correction lives in `SectionHeading`: an 11px eyebrow
+ * has an 8px ink offset against the heading's 6px, so a band opening on one
+ * would sit 2px lower. It pulls itself up by that difference, which is what
+ * lets one padding pair serve every band.
  * **On a phone it's 12px, which is more than the geometry alone asks for**, and
  * that is deliberate: stacked bands put the bottom strip directly under a
  * photograph while the top strip sits under a plain colour change, and a gap
@@ -78,11 +91,28 @@ const TONE_CLASS: Record<SectionTone, string> = {
  * values below that boundary is 52px, and the widest boundary anywhere on a
  * phone is 56px (against 104px on desktop).
  */
+/*
+ * **On desktop all three steps are the same.** A boundary's upper half comes
+ * from band A's `pb` and its lower half from band B's `pt`, so the two halves
+ * can only match when `pb` and `pt` are constants — the moment two adjacent
+ * bands use different steps the boundary is lopsided by the difference between
+ * them, which is exactly what the testimonial's `loose` was doing (+8px against
+ * the `normal` band above it, the largest imbalance on the site). The client
+ * asked for every desktop boundary to read the same, and one shared pair is
+ * the only way to guarantee it.
+ *
+ * The steps still differ on mobile, which was explicitly out of scope for that
+ * request and is tuned separately (see the note above). If desktop ever wants
+ * its variation back, give `loose` its own `md:` pair here — and accept that
+ * every boundary it touches goes back to being uneven.
+ */
+const DESKTOP_SPACE = "md:pt-[45px] md:pb-[51px]";
+
 const SPACE_CLASS: Record<SectionSpace, string> = {
   none: "",
-  tight: "pt-5 pb-8 md:pt-9 md:pb-11",
-  normal: "pt-6 pb-9 md:pt-11 md:pb-13",
-  loose: "pt-7 pb-10 md:pt-13 md:pb-15",
+  tight: `pt-5 pb-8 ${DESKTOP_SPACE}`,
+  normal: `pt-6 pb-9 ${DESKTOP_SPACE}`,
+  loose: `pt-7 pb-10 ${DESKTOP_SPACE}`,
 };
 
 /**
