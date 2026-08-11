@@ -31,10 +31,9 @@ import { TestimonialCarousel } from "@/components/property/TestimonialCarousel";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { PROPERTY_SITES } from "@/data/properties";
 import { UBUD_OFFER_QUOTES, UBUD_ROMANCE_PACKAGES } from "@/data/packages";
+import { seo } from "@/data/seo";
 
-export const metadata: Metadata = {
-  title: "Ubud Romance - Honeymoon & Proposal Packages - Nyuh Bali Villas",
-};
+export const metadata: Metadata = seo("/ubud/villa/honeymoon/packages");
 
 const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";

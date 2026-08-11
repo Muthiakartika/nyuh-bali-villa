@@ -18,6 +18,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostPage, findPost } from "@/components/property/PostPage";
 import { POSTS } from "@/data/posts";
+import { seo } from "@/data/seo";
 
 const PREFIX = "/ubud/discoverl";
 const ITEMS = POSTS.filter((p) => p.path.startsWith(PREFIX + "/"));
@@ -35,11 +36,9 @@ export async function generateMetadata({
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  const post = findPost(`${PREFIX}/${(await params).slug}`);
-  return {
-    title: post ? post.title : "Not found",
-    description: post?.excerpt || undefined,
-  };
+  // Title and description come from the live site, keyed by published
+  // path — see src/data/seo.ts.
+  return seo(`${PREFIX}/${(await params).slug}`);
 }
 
 export default async function BlogPostPage({

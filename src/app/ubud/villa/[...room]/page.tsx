@@ -36,6 +36,7 @@ import { RoomDetailBody } from "@/components/property/RoomDetail";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { PROPERTY_SITES } from "@/data/properties";
 import { ROOM_DETAILS } from "@/data/rooms";
+import { seo } from "@/data/seo";
 
 const site = PROPERTY_SITES.ubud;
 const ROOMS = ROOM_DETAILS.filter((r) => r.property === "ubud");
@@ -58,10 +59,9 @@ export async function generateMetadata({
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  const room = findRoom((await params).room);
-  return {
-    title: room ? `${room.title} - Ubud Nyuh Bali Resort` : "Not found",
-  };
+  // Title and description come from the live site, keyed by published
+  // path — see src/data/seo.ts.
+  return seo(`/ubud/villa/${(await params).room.join("/")}`);
 }
 
 export default async function UbudRoomDetailPage({

@@ -11,10 +11,9 @@ import { InstagramTeaser } from "@/components/property/InstagramTeaser";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { PROPERTY_SITES } from "@/data/properties";
 import { TESTIMONIALS } from "@/data/testimonials";
+import { seo } from "@/data/seo";
 
-export const metadata: Metadata = {
-  title: "Ubud Luxury Villas - Private Villa and Suite - Book a Retreat",
-};
+export const metadata: Metadata = seo("/ubud");
 
 const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";

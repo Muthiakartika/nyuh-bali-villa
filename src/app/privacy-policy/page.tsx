@@ -6,10 +6,9 @@ import { PROPERTY_SITES } from "@/data/properties";
 import { PRIVACY_POLICY_SECTIONS } from "@/data/legal";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { seo } from "@/data/seo";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy - Nyuh Bali Villas – Your Data Protection & Privacy",
-};
+export const metadata: Metadata = seo("/privacy-policy");
 
 // See terms-conditions/page.tsx for why this hard-codes the Ubud site rather
 // than taking a `site` prop — same reasoning applies here.

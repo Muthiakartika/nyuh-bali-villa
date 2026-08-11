@@ -1,7 +1,16 @@
+import type { Metadata } from "next";
 import { HomeHeader } from "@/components/home/HomeHeader";
 import { HomeFooter } from "@/components/home/HomeFooter";
 import { PropertyPanel } from "@/components/home/PropertyPanel";
 import { BookNowRibbon } from "@/components/layout/BookNowRibbon";
+import { seo } from "@/data/seo";
+
+// Home used to be the one route with no metadata of its own, inheriting the
+// root layout's. That happened to be right — the layout's title and
+// description were themselves copied from the live homepage — but it left the
+// most important page on the site as the only one whose head wasn't stated
+// where the others state theirs.
+export const metadata: Metadata = seo("/");
 
 // The homepage's ribbon links to a "group" booking page (lets the visitor
 // choose either property once they land on the booking engine), unlike the

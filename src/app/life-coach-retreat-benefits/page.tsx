@@ -14,14 +14,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostPage, findPost } from "@/components/property/PostPage";
+import { seo } from "@/data/seo";
 
 const PATH = "/life-coach-retreat-benefits";
 const post = findPost(PATH);
 
-export const metadata: Metadata = {
-  title: post ? post.title : "Not found",
-  description: post?.excerpt || undefined,
-};
+export const metadata: Metadata = seo("/life-coach-retreat-benefits");
 
 export default function StandalonePostPage() {
   if (!post) notFound();

@@ -29,10 +29,9 @@ import { RoomList, type Room } from "@/components/property/RoomList";
 import { AmenityGrid } from "@/components/property/AmenityGrid";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { PROPERTY_SITES } from "@/data/properties";
+import { seo } from "@/data/seo";
 
-export const metadata: Metadata = {
-  title: "Seminyak Luxury Villas - Private Pool Villa - Nyuh Bali Villas",
-};
+export const metadata: Metadata = seo("/seminyak/villa");
 
 const site = PROPERTY_SITES.seminyak;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";

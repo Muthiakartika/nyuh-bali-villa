@@ -7,12 +7,11 @@ import { ContactForm } from "@/components/property/ContactForm";
 import { PROPERTY_SITES } from "@/data/properties";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { seo } from "@/data/seo";
 
 const site = PROPERTY_SITES.seminyak;
 
-export const metadata: Metadata = {
-  title: "Seminyak - Contact Us - Nyuh Bali",
-};
+export const metadata: Metadata = seo("/seminyak/contact");
 
 /**
  * Contact has no hero slider or booking bar — confirmed by inspecting the

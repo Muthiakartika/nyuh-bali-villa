@@ -23,10 +23,9 @@ import { PostGrid } from "@/components/property/PostGrid";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { PROPERTY_SITES } from "@/data/properties";
 import { POSTS } from "@/data/posts";
+import { seo } from "@/data/seo";
 
-export const metadata: Metadata = {
-  title: "Our Blog - Nyuh Bali Villas Seminyak",
-};
+export const metadata: Metadata = seo("/seminyak/discover");
 
 const site = PROPERTY_SITES.seminyak;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";

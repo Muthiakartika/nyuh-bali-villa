@@ -7,6 +7,7 @@ import { ContactForm } from "@/components/property/ContactForm";
 import { PROPERTY_SITES } from "@/data/properties";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { seo } from "@/data/seo";
 
 const site = PROPERTY_SITES.ubud;
 
@@ -14,9 +15,7 @@ const site = PROPERTY_SITES.ubud;
 // own <title> (see the routing-bug note below), so this follows the exact
 // naming pattern Seminyak's real title uses ("Seminyak - Contact Us -
 // Nyuh Bali") rather than leaving it untitled.
-export const metadata: Metadata = {
-  title: "Ubud - Contact Us - Nyuh Bali",
-};
+export const metadata: Metadata = seo("/ubud/contact");
 
 // The live nyuhbalivillas.com/ubud/contact/ currently misroutes — every
 // navigation method (direct URL, clicking the real footer link) lands on the

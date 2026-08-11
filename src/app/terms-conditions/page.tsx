@@ -6,10 +6,9 @@ import { PROPERTY_SITES } from "@/data/properties";
 import { TERMS_CONDITIONS_SECTIONS } from "@/data/legal";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { seo } from "@/data/seo";
 
-export const metadata: Metadata = {
-  title: "Terms & Conditions - Nyuh Bali Villas",
-};
+export const metadata: Metadata = seo("/terms-conditions");
 
 // Global, not per-property — the live site renders this (and Privacy Policy)
 // with the Ubud site's header/footer regardless of which property a visitor

@@ -25,6 +25,7 @@ import { ExperienceDetailBody } from "@/components/property/ExperienceDetail";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { PROPERTY_SITES } from "@/data/properties";
 import { EXPERIENCES } from "@/data/experiences";
+import { seo } from "@/data/seo";
 
 const site = PROPERTY_SITES.ubud;
 const PREFIX = "balinese-culture/";
@@ -48,10 +49,9 @@ export async function generateMetadata({
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  const item = find((await params).activity);
-  return {
-    title: item ? `${item.title} - Ubud Nyuh Bali Resort` : "Not found",
-  };
+  // Title and description come from the live site, keyed by published
+  // path — see src/data/seo.ts.
+  return seo(`/ubud/balinese-culture/${(await params).activity.join("/")}`);
 }
 
 export default async function CultureActivityPage({

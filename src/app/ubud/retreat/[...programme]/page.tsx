@@ -29,6 +29,7 @@ import { ExperienceDetailBody } from "@/components/property/ExperienceDetail";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { PROPERTY_SITES } from "@/data/properties";
 import { EXPERIENCES } from "@/data/experiences";
+import { seo } from "@/data/seo";
 
 const site = PROPERTY_SITES.ubud;
 const ITEMS = EXPERIENCES.filter((e) => e.slug.startsWith("retreat/"));
@@ -51,10 +52,9 @@ export async function generateMetadata({
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  const item = find((await params).programme);
-  return {
-    title: item ? `${item.title} - Ubud Nyuh Bali Resort` : "Not found",
-  };
+  // Title and description come from the live site, keyed by published
+  // path — see src/data/seo.ts.
+  return seo(`/ubud/retreat/${(await params).programme.join("/")}`);
 }
 
 export default async function RetreatProgrammePage({

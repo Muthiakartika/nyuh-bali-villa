@@ -11,6 +11,7 @@ import { InstagramTeaser } from "@/components/property/InstagramTeaser";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { PROPERTY_SITES } from "@/data/properties";
 import { TESTIMONIALS } from "@/data/testimonials";
+import { seo } from "@/data/seo";
 
 const site = PROPERTY_SITES.seminyak;
 
@@ -18,9 +19,7 @@ const site = PROPERTY_SITES.seminyak;
 // needs its own, or every browser tab and search result would read
 // "Nyuh Bali Villas & Resort - 5 Star Luxury Bali Villa" regardless of
 // which page it actually is. Title copied verbatim from the live page.
-export const metadata: Metadata = {
-  title: "Nyuh Bali - Luxury Villas Seminyak - Romantic Honeymoons",
-};
+export const metadata: Metadata = seo("/seminyak");
 
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 

@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/icons";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
+import { CurrentYear } from "@/components/ui/CurrentYear";
 
 type PropertyFooterProps = {
   site: PropertySite;
@@ -81,30 +82,36 @@ export function PropertyFooter({ site }: PropertyFooterProps) {
               Book Now
             </Button>
 
+            {/* All three come from the property, not from here. They used to be
+                literals — Seminyak's — on a component both properties render,
+                so every Ubud page pointed its map pin, Facebook and Instagram
+                at the wrong resort. The labels name the property too: a screen
+                reader hearing "Facebook" three pages deep into Ubud has no
+                other way to know which account it is about to open. */}
             <div className="mt-5 flex gap-2.5">
               <a
-                href="https://goo.gl/maps/C6g15D7NfNvwVxjq9"
+                href={site.social.maps}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Find us on Google Maps"
+                aria-label={`Find Nyuh Bali ${site.label} on Google Maps`}
                 className={socialLinkClassName}
               >
                 <MapPinIcon className="h-[18px] w-[18px]" />
               </a>
               <a
-                href="https://m.facebook.com/nyuhbalivillas/"
+                href={site.social.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Facebook"
+                aria-label={`Nyuh Bali ${site.label} on Facebook`}
                 className={socialLinkClassName}
               >
                 <FacebookIcon className="h-[18px] w-[18px]" />
               </a>
               <a
-                href="https://www.instagram.com/nyuhbalivillas/"
+                href={site.social.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Instagram"
+                aria-label={`Nyuh Bali ${site.label} on Instagram`}
                 className={socialLinkClassName}
               >
                 <InstagramIcon className="h-[18px] w-[18px]" />
@@ -206,7 +213,12 @@ export function PropertyFooter({ site }: PropertyFooterProps) {
             bottoms — it goes back to the 16px either side that a real section
             divider needs. */}
         <div className="mt-0 flex flex-col gap-3 border-t border-white/10 pt-2 sm:mt-4 sm:flex-row sm:items-center sm:justify-between sm:pt-4">
-          <p className="text-[13px] text-white/40">© Copyright 2025 - All Rights Reserved</p>
+          {/* The year is read on the client — see CurrentYear. A static build
+              would otherwise bake in whichever year it was compiled, which is
+              the same maintenance problem as writing the number by hand. */}
+          <p className="text-[13px] text-white/40">
+            © Copyright <CurrentYear /> - All Rights Reserved
+          </p>
           <nav>
             <ul className="flex flex-wrap gap-x-7">
               <li>

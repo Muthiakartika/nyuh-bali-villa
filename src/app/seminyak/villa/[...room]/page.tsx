@@ -30,6 +30,7 @@ import { RoomDetailBody } from "@/components/property/RoomDetail";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { PROPERTY_SITES } from "@/data/properties";
 import { ROOM_DETAILS } from "@/data/rooms";
+import { seo } from "@/data/seo";
 
 const site = PROPERTY_SITES.seminyak;
 const ROOMS = ROOM_DETAILS.filter((r) => r.property === "seminyak");
@@ -51,10 +52,9 @@ export async function generateMetadata({
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  const room = findRoom((await params).room);
-  return {
-    title: room ? `${room.title} - Nyuh Bali Villas Seminyak` : "Not found",
-  };
+  // Title and description come from the live site, keyed by published
+  // path — see src/data/seo.ts.
+  return seo(`/seminyak/villa/${(await params).room.join("/")}`);
 }
 
 export default async function SeminyakRoomDetailPage({

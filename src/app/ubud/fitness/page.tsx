@@ -28,13 +28,12 @@ import { ExperienceDetailBody } from "@/components/property/ExperienceDetail";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { PROPERTY_SITES } from "@/data/properties";
 import { EXPERIENCES } from "@/data/experiences";
+import { seo } from "@/data/seo";
 
 const site = PROPERTY_SITES.ubud;
 const item = EXPERIENCES.find((e) => e.slug === "fitness");
 
-export const metadata: Metadata = {
-  title: "Home Gym - Ubud Nyuh Bali Resort",
-};
+export const metadata: Metadata = seo("/ubud/fitness");
 
 export default function UbudFitnessPage() {
   if (!item) notFound();

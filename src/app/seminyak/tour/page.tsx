@@ -38,10 +38,9 @@ import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { PROPERTY_SITES } from "@/data/properties";
+import { seo } from "@/data/seo";
 
-export const metadata: Metadata = {
-  title: "Explore Bali - Private Tour from Seminyak - Nyuh Bali Villas",
-};
+export const metadata: Metadata = seo("/seminyak/tour");
 
 const site = PROPERTY_SITES.seminyak;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";

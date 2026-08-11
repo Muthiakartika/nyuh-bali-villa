@@ -154,6 +154,13 @@ reads sensibly. The **CTA button's bottom edge sits on the plate's bottom edge**
 below that it stacks and the paragraphs cap at `34rem`.
 
 ### Footer (`property/PropertyFooter.tsx`) — **compact, single row**
+Everything that differs between the two properties comes from the `site` object
+— logo, contact block, booking URL, `offersHref`, blog teasers, and the map/
+social links (`site.social`). **Nothing property-specific may be hardcoded
+here**: the map pin, Facebook and Instagram once were, all three holding
+Seminyak's values on a component both properties render, so every Ubud page
+sent visitors to the wrong resort. Only the copyright line, the two legal
+links and the column headings are genuinely shared.
 Four columns on one row: **brand column** (logo + Book Now + social) beside
 **Menu**, **Contact**, **Blog**, then a thin legal bar (copyright + Terms /
 Privacy). The CTA lives in the grid, not on a separate banner row above it. Tight

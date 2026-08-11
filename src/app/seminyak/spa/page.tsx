@@ -32,10 +32,9 @@ import { TestimonialCarousel } from "@/components/property/TestimonialCarousel";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { PROPERTY_SITES } from "@/data/properties";
 import type { Testimonial } from "@/data/testimonials";
+import { seo } from "@/data/seo";
 
-export const metadata: Metadata = {
-  title: "Romantic Spa Experience in Seminyak - Nyuh Bali Villas",
-};
+export const metadata: Metadata = seo("/seminyak/spa");
 
 const site = PROPERTY_SITES.seminyak;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";

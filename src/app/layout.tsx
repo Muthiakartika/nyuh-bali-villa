@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Open_Sans, Source_Sans_3 } from "next/font/google";
+import { seo } from "@/data/seo";
 import "./globals.css";
 
 // The live site self-hosts two webfonts via a WordPress plugin: "Open Sans"
@@ -26,14 +27,16 @@ const sourceSans = Source_Sans_3({
   variable: "--font-source-sans",
 });
 
-// Metadata copied verbatim from the live site's <title>/<meta name="description">
-// so search engines and browser tabs match the original. Next.js reads this
-// exported object once per route and writes the corresponding <head> tags
-// itself — there's no manual <head> markup anywhere in this app.
+// The site-wide fallback, and the live homepage's own title and description.
+// Next.js reads this exported object once per route and writes the head tags
+// itself — there is no manual <head> markup anywhere in this app.
+//
+// **Every route now states its own**, from `src/data/seo.ts`, copied per path
+// from the live site. What is left here matters for exactly one thing: the
+// fifteen live routes that publish no description at all inherit this one
+// rather than shipping none. Keep it in step with `ROUTE_SEO["/"]`.
 export const metadata: Metadata = {
-  title: "Nyuh Bali Villas & Resort - 5 Star Luxury Bali Villa",
-  description:
-    "Indulge in romantic ambiance at our Seminyak honeymoon villas. Unwind in our Ubud resort, a retreat for luxury yoga, inner peace and wellness.",
+  ...seo("/"),
   icons: {
     // Hotlinked, like every other image in this project — see next.config.ts.
     icon: "https://nyuhbalivillas.com/wp-content/uploads/2023/10/cropped-Nyuh-Resort-Favicon-32x32.jpg",

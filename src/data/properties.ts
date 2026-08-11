@@ -56,6 +56,26 @@ export type PropertySite = {
     phones: string[];
     email: string;
   };
+  /**
+   * The footer's map pin and social icons. **Each property runs its own
+   * accounts and sits at its own address** — Seminyak and Ubud are about 40km
+   * apart, and the live site links them separately.
+   *
+   * These used to be hardcoded in `PropertyFooter`, all three pointing at
+   * Seminyak, so every Ubud page sent visitors to the wrong resort's map pin,
+   * Facebook page and Instagram profile. That the Ubud values were already
+   * known is what made it a plain oversight rather than missing data:
+   * `app/ubud/page.tsx` was passing the correct Instagram handle to its own
+   * `InstagramTeaser` while the footer beneath it linked to Seminyak's.
+   *
+   * Values are the live site's own, with one deliberate exception noted on
+   * Seminyak's `facebook` below.
+   */
+  social: {
+    maps: string;
+    facebook: string;
+    instagram: string;
+  };
   /** Property-specific booking-engine URL (each property has its own
    * `propertyId` query param), used by the "Book Your Stay" CTA and the
    * dismissible "Direct Booking Deals" corner widget. */
@@ -113,6 +133,17 @@ export const PROPERTY_SITES: Record<"seminyak" | "ubud", PropertySite> = {
       addressLines: ["Bali Deli st 99,", "Seminyak, Bali"],
       phones: ["+62 361 738920", "+62 361 739196"],
       email: "reservation@nyuhbalivillas.com",
+    },
+    social: {
+      maps: "https://goo.gl/maps/C6g15D7NfNvwVxjq9",
+      // The live site links `m.facebook.com` here — the mobile host, which
+      // bounces a desktop visitor to a login wall instead of the page
+      // (verified: it 302s to `facebook.com/login.php?next=…`). `www` serves
+      // the same profile and loads it directly, so this is the one social
+      // value that deviates from live, on the same grounds the broken
+      // `/ubud/contact` page wasn't reproduced either. Ubud already uses `www`.
+      facebook: "https://www.facebook.com/nyuhbalivillas/",
+      instagram: "https://www.instagram.com/nyuhbalivillas/",
     },
     bookingHref:
       "https://booking.nyuhbalivillas.com/inst/#home?propertyId=581MZlmJ8YVJgcICxbs034K4e3E7IANq0jI5ODU=&JDRN=Y",
@@ -211,6 +242,11 @@ export const PROPERTY_SITES: Record<"seminyak" | "ubud", PropertySite> = {
       addressLines: ["Raya Silungan street", "Lodtunduh Ubud Bali (80571)"],
       phones: ["+62 85 333 779 779"],
       email: "info@ubudnyuhbali.com",
+    },
+    social: {
+      maps: "https://goo.gl/maps/f3FeKQkueL9rHse79",
+      facebook: "https://www.facebook.com/nyuhbaliubud/",
+      instagram: "https://www.instagram.com/nyuhbaliubud/",
     },
     bookingHref:
       "https://booking.nyuhbalivillas.com/inst/#home?propertyId=222Mjs8xZLdlXkm6I5ODQ=&JDRN=Y",

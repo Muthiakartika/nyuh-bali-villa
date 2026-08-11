@@ -30,10 +30,9 @@ import {
 } from "@/components/property/PackageList";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { PROPERTY_SITES } from "@/data/properties";
+import { seo } from "@/data/seo";
 
-export const metadata: Metadata = {
-  title: "Complimentary Services - Ubud Nyuh Bali Resort",
-};
+export const metadata: Metadata = seo("/complimentary-services");
 
 const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";

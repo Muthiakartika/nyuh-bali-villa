@@ -32,10 +32,9 @@ import {
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { Section } from "@/components/ui/Section";
 import { PROPERTY_SITES } from "@/data/properties";
+import { seo } from "@/data/seo";
 
-export const metadata: Metadata = {
-  title: "Intimate Wedding in Ubud - Nyuh Bali Villas",
-};
+export const metadata: Metadata = seo("/ubud/wedding");
 
 const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
