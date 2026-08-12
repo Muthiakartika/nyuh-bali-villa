@@ -68,10 +68,19 @@ export function PropertyFooter({ site }: PropertyFooterProps) {
           {/* Brand column — logo, the booking CTA, and social, on the same row
               as the rest of the footer so the CTA never floats off alone. */}
           <div className="flex flex-col items-start">
-            <Link href={`/${site.slug}`} className="relative h-[46px] w-[128px] shrink-0">
+            {/* Goes to `/`, matching the header — one wordmark, one
+                destination, wherever it appears. The accessible name carries
+                the destination because the image itself is decorative here:
+                left as alt text it would announce "Nyuh Bali Villas - Ubud"
+                for a link that opens the property picker. */}
+            <Link
+              href="/"
+              aria-label="Nyuh Bali Villas — home"
+              className="relative h-[46px] w-[128px] shrink-0"
+            >
               <Image
                 src={site.logoSrc}
-                alt={`Nyuh Bali Villas - ${site.label}`}
+                alt=""
                 fill
                 sizes="128px"
                 className="object-contain object-left"

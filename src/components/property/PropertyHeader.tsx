@@ -59,13 +59,24 @@ export function PropertyHeader({ site, activeHref }: PropertyHeaderProps) {
         />
 
         <Container className="relative flex h-full items-center justify-between gap-6">
-          <Link href={`/${site.slug}`} className="relative h-[46px] w-[128px] shrink-0">
+          {/* The logo goes to `/`, the property picker, not to this property's
+              own About page. On `/ubud` the old target was the page the visitor
+              was already on, so the most conventional control on the page did
+              nothing — and there was otherwise no way back to the landing view
+              from inside a property, since neither nav carries a link to it.
+              The accessible name says where it goes; the wordmark alone would
+              read as "Nyuh Bali Villas - Ubud" and imply the Ubud page. */}
+          <Link
+            href="/"
+            aria-label="Nyuh Bali Villas — home"
+            className="relative h-[46px] w-[128px] shrink-0"
+          >
             {/* Enlarged from 104px. The logo is a fine gold wordmark and read
                 faint at the old size on the dark bar; keeping it larger is what
                 makes it legible without touching the (hotlinked) asset. */}
             <Image
               src={site.logoSrc}
-              alt={`Nyuh Bali Villas - ${site.label}`}
+              alt=""
               fill
               sizes="128px"
               className="object-contain object-left"
