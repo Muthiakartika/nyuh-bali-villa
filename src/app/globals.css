@@ -149,6 +149,7 @@
 @theme inline {
   --font-body: var(--font-open-sans);
   --font-heading: var(--font-source-sans);
+  --font-script: var(--font-dancing-script);
 }
 
 /*

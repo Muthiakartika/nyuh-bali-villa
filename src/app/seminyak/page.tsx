@@ -83,12 +83,14 @@ export default function SeminyakAboutPage() {
           items={[
             {
               label: "One-bedroom Pool Villa",
-              href: "https://nyuhbalivillas.com/seminyak/villa/honeymoon/pool/",
+              href: "/seminyak/villa/honeymoon/pool",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/03/Seminyak-One-bedroom-pool-villa.webp`,
             },
             {
               label: "Honeymoon Suite Pool Villa",
-              href: "https://nyuhbalivillas.com/seminyak/villa/honeymoon/",
+              href: "/seminyak/villa/honeymoon",
+              inScope: true,
               imgSrc: `${UPLOADS}/2023/03/Seminyak-slider-2.webp`,
             },
           ]}
@@ -159,6 +161,14 @@ export default function SeminyakAboutPage() {
         <InstagramTeaser
           heading="What's happening @nyuhbalivillas"
           instagramHref="https://www.instagram.com/nyuhbalivillas/"
+          images={[
+            `${UPLOADS}/2023/03/Seminyak-One-bedroom-pool-villa.webp`,
+            `${UPLOADS}/2023/03/Seminyak-slider-2.webp`,
+            `${UPLOADS}/2023/01/BBQ-seminyak-min-min-slider-1-_1__1.webp`,
+            `${UPLOADS}/2023/03/discover-spa.webp`,
+            `${UPLOADS}/2023/03/discover-explore-bali.webp`,
+            `${UPLOADS}/2023/01/stress-free-proposal-package.webp`,
+          ]}
         />
         <AwardsRow
           badges={[

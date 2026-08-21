@@ -122,10 +122,13 @@ export function AboutNarrative({
               is the distance between the line and the button itself. */}
           <Reveal delay={200} className="mt-6 flex flex-col items-start gap-8">
             {tagline ? (
-              // Set as a statement rather than another paragraph: the gold rule
-              // and the larger, lighter setting mark it as the section's closing
-              // line. Wording unchanged.
-              <p className="font-heading border-l border-primary pl-6 text-[22px] leading-snug font-light text-ink md:text-[26px]">
+              // Set in the handwriting face rather than the heading face: this
+              // is the one line on the site written as something spoken to the
+              // guest rather than stated as brand copy, so it reads like a
+              // signed note. Sized up from the heading version it replaced —
+              // a script face needs more room than a sans to show its shape at
+              // the same apparent weight. Wording unchanged.
+              <p className="font-script border-l border-primary pl-6 text-[32px] leading-snug font-semibold text-ink md:text-[40px]">
                 {tagline}
               </p>
             ) : null}

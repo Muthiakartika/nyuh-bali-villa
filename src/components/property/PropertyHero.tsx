@@ -63,21 +63,26 @@ export function PropertyHero({ images, alt, eyebrow, title }: PropertyHeroProps)
 
   return (
     <section
-      // Mobile jumps from the old 30vh — a 250px banner strip — to 60vh.
-      // `heroxl` (1125px) is kept from the original build, where it was
-      // measured as the point the live hero grows one last step; see globals.css
-      // for why it must be declared in rem. Capped at 80vh rather than a full
-      // screen: a hero that fills the viewport pushes every piece of actual
-      // information below the fold, and the booking card has to stay visible
-      // where it overlaps the bottom edge.
+      // Below `lg`, height is driven by `aspect-ratio`, not viewport height.
+      // A `vh`-based height (the previous approach — 60vh, min-h-440px) sizes
+      // the box from the *phone's* aspect ratio, not the photograph's: on a
+      // 375×812 screen, 60vh is 487px tall against a 375px-wide image, a
+      // 0.77:1 box — portrait — cropping a landscape photograph (1600×1067,
+      // 1.5:1) down to a narrow vertical sliver. `aspect-[3/2]` instead makes
+      // the box itself land at the photo's own ratio regardless of device
+      // height, so the hero reads as a landscape banner on every phone rather
+      // than on some of them. `max-h` is a safety net for short/landscape
+      // viewports only — it can shrink the box further (making it *more*
+      // landscape) but can never make it taller, so it can't reintroduce the
+      // portrait crop.
       //
-      // The mobile tier was 68vh while the header floated *over* this image and
-      // cost the page no flow height. Now that the header is solid and sits
-      // above the hero, it takes 68px of the fold — so the hero gives back the
-      // same 68px (68vh → 60vh at 390×844) and the card lands exactly where it
-      // did before. The wider tiers have the viewport to absorb the bar without
-      // pushing the card down, so they're unchanged.
-      className="relative h-[60vh] min-h-[440px] w-full overflow-hidden md:h-[72vh] lg:h-[76vh] heroxl:h-[80vh]"
+      // `md` widens the ratio to 16:9 rather than reusing 3:2 — a tablet has
+      // the width to spare for a more cinematic strip. `lg` and up switch back
+      // to the original `vh` tiers: desktop viewports are reliably landscape
+      // and wide, so sizing from viewport height (up to 80vh, `heroxl` kept
+      // from the original build at 1125px — see globals.css for why it must be
+      // declared in rem) is safe there and was already measuring correctly.
+      className="relative aspect-[3/2] w-full max-h-[70vh] overflow-hidden md:aspect-[16/9] md:max-h-[65vh] lg:aspect-auto lg:h-[76vh] lg:max-h-none heroxl:h-[80vh]"
       onMouseEnter={() => {
         isPausedRef.current = true;
       }}

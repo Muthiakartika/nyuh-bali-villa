@@ -56,9 +56,7 @@ const FACILITIES: PackageItem[] = [
   },
   {
     name: "Free Access to Our Home Gym",
-    images: [
-      `${UPLOADS}/2023/03/54A5D787-D98B-4026-9F30-97102505361F-min-1.webp`,
-    ],
+    images: [`${UPLOADS}/2026/08/Nyuh-Bali-Ubud-23-1.jpg`],
     description:
       "Opening Hours: 7.00 AM – 9.00 PM. Here at Nyuh Bali, we understand your regular workout cannot be put on standby just because you are away from home. We have created a home gym to keep you in shape during the holiday. Exclusively for our in-house guests.",
     ctas: [{ label: "Explore More", href: "/ubud/fitness" }],
@@ -91,7 +89,7 @@ const FACILITIES: PackageItem[] = [
   },
   {
     name: "BodyTone Flow",
-    images: [`${UPLOADS}/2024/12/DW_03571-min-min.jpg`],
+    images: [`${UPLOADS}/2023/05/Lina-instructor-min.webp`],
     description:
       "Experience an energizing workout that targets your entire body using your own body weight as the primary resistance. These flowing exercises are ideal for everyone, regardless of fitness level. This practice helps enhance core strength, tone your body, and boost your confidence.",
     ctas: [
@@ -104,7 +102,7 @@ const FACILITIES: PackageItem[] = [
   },
   {
     name: "Life Coach with Psychologist",
-    images: [`${UPLOADS}/2023/05/Lina-instructor-min.webp`],
+    images: [`${UPLOADS}/2023/05/IS_06578-min.webp`],
     description:
       "Our certified psychologist will guide you through the intimate session to detach from what does not serve you anymore and live more mindfully afterward. To respect your privacy, the session will be held in your villa or room balcony or any place in our resort that your soul is comfortable with.",
     ctas: [
@@ -130,7 +128,9 @@ const FACILITIES: PackageItem[] = [
   },
   {
     name: "Holistic Chakra Balancing",
-    images: [`${UPLOADS}/2023/05/IS_06578-min.webp`],
+    images: [
+      `${UPLOADS}/2023/03/54A5D787-D98B-4026-9F30-97102505361F-min-1.webp`,
+    ],
     description:
       "The human body is believed to have seven Chakras, and each of them has a specific function to keep a balanced life. If one chakra is blocked, it will cause physical and mental imbalances leading to anxiety, overthinking, or even sadness. The healing session helps to release the negative energy and remove blocks to clarity, calm, and self-love for a well-balanced life.",
     ctas: [

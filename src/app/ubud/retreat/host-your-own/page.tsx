@@ -31,6 +31,10 @@ import {
 import { AmenityGrid } from "@/components/property/AmenityGrid";
 import { LinkCardGrid } from "@/components/property/LinkCardGrid";
 import { AwardsRow } from "@/components/property/AwardsRow";
+import { Section } from "@/components/ui/Section";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Reveal } from "@/components/ui/Reveal";
+import { Button } from "@/components/ui/Button";
 import { PROPERTY_SITES } from "@/data/properties";
 import { seo } from "@/data/seo";
 
@@ -178,7 +182,7 @@ export default function UbudHostYourRetreatPage() {
             },
             {
               label: "One Bedroom Deluxe Pool Villa",
-              href: "/ubud/villa",
+              href: "/ubud/villa/1-bedroom-pool-deluxe",
               inScope: true,
               imgSrc: `${UPLOADS}/2023/03/ubud-One-Bedroom-Deluxe-Pool-Villa.webp`,
             },
@@ -230,6 +234,19 @@ export default function UbudHostYourRetreatPage() {
         />
 
         <PackageList heading="Healthy Meals" packages={MEALS} tone="sand" />
+
+        {/* The live page's closing note: after all the detail above, a
+            visitor who is ready acts through the same form the intro section
+            already links to — this is a second, more prominent doorway to it
+            rather than a different destination. */}
+        <Section tone="sand-deep">
+          <SectionHeading title="Get a Quote for your Event" align="center" />
+          <Reveal delay={100} className="mt-8 flex justify-center">
+            <Button href="/ubud-personalize-your-retreat">
+              Personalize your Retreat
+            </Button>
+          </Reveal>
+        </Section>
 
         <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
       </main>

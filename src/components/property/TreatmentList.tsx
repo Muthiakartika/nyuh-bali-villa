@@ -1,8 +1,9 @@
+import Image from "next/image";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
-import { ImageGallery } from "@/components/property/ImageGallery";
+import { ChevronIcon } from "@/components/ui/icons";
 
 export type Treatment = {
   name: string;
@@ -38,6 +39,26 @@ type TreatmentListProps = {
  * The spa treatment menu — a price list, which is a different shape from the
  * package/room listings and so gets its own component rather than being forced
  * through `PackageList`.
+ *
+ * **Categories are an accordion, collapsed by default.** The live page splits
+ * its ~40 treatments behind menu tabs — Massage, Body Treatment, Hair Therapy,
+ * and so on — so a visitor sees seven short labels, not every price and
+ * description at once. Rendering every category fully expanded (the previous
+ * approach) put the whole menu — every duration, price, and paragraph — on the
+ * page at once, which made the section read as far longer than the rest of the
+ * site's pages. A native `<details>/<summary>` per category (the same
+ * mechanism `FaqAccordion` uses, for the same reasons: no JS required to open,
+ * keyboard- and screen-reader-accessible for free, and the content still ships
+ * in the server HTML so it stays indexable whether or not a visitor ever clicks)
+ * gets back to "seven labels, click one to see its treatments" without losing
+ * any content.
+ *
+ * Individual treatments inside an unopened category are not wrapped in
+ * `Reveal`: closed `<details>` content has no layout box until it's opened, and
+ * `Reveal`'s fold check reads a zero-size box as "already past the fold" —
+ * untested territory that `FaqAccordion` sidesteps by only ever animating the
+ * row, not what's inside it. This does the same: the category row animates in
+ * on scroll, and what's inside it appears instantly once a visitor opens it.
  *
  * **Prices are rows, not buttons.** Each treatment offers one or two
  * duration/price options and the live page puts a "Book Now" beside every one
@@ -83,31 +104,42 @@ export function TreatmentList({
         </Reveal>
       ) : null}
 
-      <div className="mt-10 flex flex-col gap-12 md:mt-12 md:gap-16">
-        {categories.map((category) => (
-          <div key={category.name}>
-            {category.image ? (
-              <Reveal>
-                <ImageGallery
-                  images={[category.image]}
-                  alt={category.name}
-                  heightClassName="h-40 md:h-56"
-                  sizes="(min-width: 1240px) 1240px, 100vw"
+      <div className="mt-10 flex flex-col border-t border-ink/10 md:mt-12">
+        {categories.map((category, categoryIndex) => (
+          <Reveal key={category.name} delay={categoryIndex * 60}>
+            <details className="group/cat border-b border-ink/10">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-5 py-5 [&::-webkit-details-marker]:hidden">
+                <div className="flex items-center gap-4 md:gap-5">
+                  {category.image ? (
+                    <span className="relative h-16 w-16 shrink-0 overflow-hidden md:h-24 md:w-24">
+                      <Image
+                        src={category.image}
+                        alt=""
+                        fill
+                        sizes="96px"
+                        className="object-cover"
+                      />
+                    </span>
+                  ) : null}
+                  <div>
+                    <h3 className="font-heading text-[19px] leading-tight font-light text-ink md:text-[26px]">
+                      {category.name}
+                    </h3>
+                    <span className="text-eyebrow font-body mt-1.5 block text-primary-deep uppercase">
+                      {category.treatments.length} treatments
+                    </span>
+                  </div>
+                </div>
+
+                <ChevronIcon
+                  aria-hidden
+                  className="h-3 w-3 shrink-0 rotate-90 text-primary transition-transform duration-300 group-open/cat:-rotate-90"
                 />
-              </Reveal>
-            ) : null}
+              </summary>
 
-            <Reveal delay={60}>
-              <h3 className="font-heading mt-6 text-[24px] leading-tight font-light text-ink md:text-[28px]">
-                {category.name}
-              </h3>
-              <span aria-hidden className="mt-4 block h-px w-12 bg-primary" />
-            </Reveal>
-
-            <div className="mt-7 grid gap-x-12 gap-y-9 lg:grid-cols-2">
-              {category.treatments.map((treatment, index) => (
-                <Reveal key={treatment.name} delay={index * 80}>
-                  <article>
+              <div className="grid gap-x-12 gap-y-9 pb-9 lg:grid-cols-2">
+                {category.treatments.map((treatment) => (
+                  <article key={treatment.name}>
                     <h4 className="font-heading text-[20px] leading-tight font-light text-ink">
                       {treatment.name}
                     </h4>
@@ -154,10 +186,10 @@ export function TreatmentList({
                       {treatment.description}
                     </p>
                   </article>
-                </Reveal>
-              ))}
-            </div>
-          </div>
+                ))}
+              </div>
+            </details>
+          </Reveal>
         ))}
       </div>
 

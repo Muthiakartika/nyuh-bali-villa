@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Open_Sans, Source_Sans_3 } from "next/font/google";
+import { Open_Sans, Source_Sans_3, Dancing_Script } from "next/font/google";
 import { seo } from "@/data/seo";
 import "./globals.css";
 
@@ -25,6 +25,16 @@ const sourceSans = Source_Sans_3({
   subsets: ["latin"],
   weight: ["300", "400", "600", "700"],
   variable: "--font-source-sans",
+});
+
+// A handwriting face for the one place the site quotes someone speaking
+// rather than stating brand copy — Seminyak's "We serve with smile and
+// sincerity" tagline. Everywhere else stays on the two faces above; see
+// `font-script` in globals.css and its one use in AboutNarrative.
+const dancingScript = Dancing_Script({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  variable: "--font-dancing-script",
 });
 
 // The site-wide fallback, and the live homepage's own title and description.
@@ -59,7 +69,10 @@ export default function RootLayout({
     // `flex-1` on the page itself) and pushes the footer to the bottom of the
     // screen. Without this, a short page like the homepage left a band of
     // empty white below the footer.
-    <html lang="en" className={`${openSans.variable} ${sourceSans.variable}`}>
+    <html
+      lang="en"
+      className={`${openSans.variable} ${sourceSans.variable} ${dancingScript.variable}`}
+    >
       <body className="flex min-h-screen flex-col">{children}</body>
     </html>
   );

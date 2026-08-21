@@ -152,6 +152,14 @@ export default function UbudAboutPage() {
         <InstagramTeaser
           heading="What's happening @nyuhbaliubud"
           instagramHref="https://www.instagram.com/nyuhbaliubud/"
+          images={[
+            `${UPLOADS}/2023/03/Honeymoon-Suite-5.webp`,
+            `${UPLOADS}/2023/03/ubud-One-Bedroom-Deluxe-Pool-Villa-6.webp`,
+            `${UPLOADS}/2023/03/ezgif.com-gif-maker-3.webp`,
+            `${UPLOADS}/2023/03/ubudspa.webp`,
+            `${UPLOADS}/2023/03/ubud-walk-1.webp`,
+            `${UPLOADS}/2023/03/ezgif.com-gif-maker-7.webp`,
+          ]}
         />
         <AwardsRow
           variant="marquee"

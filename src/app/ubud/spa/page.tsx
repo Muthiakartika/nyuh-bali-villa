@@ -509,6 +509,14 @@ export default function UbudSpaPage() {
         <InstagramTeaser
           heading="What's happening @mahamayaspa.ubud"
           instagramHref="https://www.instagram.com/mahamayaspa.ubud/"
+          images={[
+            `${UPLOADS}/2024/11/011A0972-Edit-min-1.jpg`,
+            `${UPLOADS}/2023/03/spa-ubud-body-treatment.jpg`,
+            `${UPLOADS}/2023/03/spa-ubud-hair-therapy.jpg`,
+            `${UPLOADS}/2024/11/011A1131-Edit-min-1.jpg`,
+            `${UPLOADS}/2024/11/011A0857-Edit-min.jpg`,
+            `${UPLOADS}/2024/07/WFM04209-min-min.jpg`,
+          ]}
         />
 
         <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
