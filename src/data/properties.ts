@@ -80,6 +80,13 @@ export type PropertySite = {
    * `propertyId` query param), used by the "Book Your Stay" CTA and the
    * dismissible "Direct Booking Deals" corner widget. */
   bookingHref: string;
+  /** The property token the booking engine's own quick-book widget is keyed
+   * to. It is NOT the same string as the `propertyId` inside `bookingHref` —
+   * the widget and the deep link use different tokens for the same property.
+   * Both are copied from the live site's own embed
+   * (`<script id="propInfo" propertyid="…">`); re-copy them from there if the
+   * engine ever reissues them. */
+  bookingWidgetId: string;
   /** Where this property's "Offers" lives. The two differ — Seminyak's is
    * nested under the honeymoon villa (/seminyak/villa/honeymoon/packages),
    * Ubud's is top-level (/ubud/packages) — so the footer can't derive it from
@@ -147,6 +154,7 @@ export const PROPERTY_SITES: Record<"seminyak" | "ubud", PropertySite> = {
     },
     bookingHref:
       "https://booking.nyuhbalivillas.com/inst/#home?propertyId=581MZlmJ8YVJgcICxbs034K4e3E7IANq0jI5ODU=&JDRN=Y",
+    bookingWidgetId: "743MjIrhkhuhSVN3oZhK442Ix4NmBuZ8XKB6ByN9pQf5ODU=",
     offersHref: "/seminyak/villa/honeymoon/packages",
     blogPosts: [
       { title: "Sunset Seminyak", href: "/seminyak/discover/sunset" },
@@ -250,6 +258,7 @@ export const PROPERTY_SITES: Record<"seminyak" | "ubud", PropertySite> = {
     },
     bookingHref:
       "https://booking.nyuhbalivillas.com/inst/#home?propertyId=222Mjs8xZLdlXkm6I5ODQ=&JDRN=Y",
+    bookingWidgetId: "763MjIPxIGWC0OXqpH6oTIW4mwfylqVvibzz2gkYEQB15ODQ=",
     offersHref: "/ubud/packages",
     blogPosts: [
       {

@@ -28,10 +28,18 @@ type TestimonialCarouselProps = {
  * index and plain array indexing, no carousel library. Seminyak has 3
  * testimonials and Ubud has 4; the component just renders however many it is
  * given.
+ *
+ * **Every quote is in the DOM, not just the active one.** This used to render
+ * `testimonials[activeIndex]` alone, so three of Ubud's four quotes existed
+ * only in React's payload and reached the page only after hydration — real
+ * page copy that a crawler, or a visitor whose JS never ran, never saw. That
+ * is the opposite of the rule the rest of the site follows: `FaqAccordion`
+ * ships every answer whether or not its row is open, and `PropertyHero` and
+ * `ImageGallery` ship every slide. So this now does what those two do —
+ * stack the slides and cross-fade between them.
  */
 export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const active = testimonials[activeIndex];
 
   function goToPrevious() {
     setActiveIndex((current) => (current === 0 ? testimonials.length - 1 : current - 1));
@@ -53,20 +61,38 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
     >
       <SectionHeading title="What our guests are saying" align="center" />
 
-      {/* Re-keyed on the active index so each quote fades up as it arrives
-          rather than swapping instantly. Capped at 800px: the quote is the
-          longest single run of text on the page and needs a reading measure,
-          not the full grid width. */}
-      <div
-        key={activeIndex}
-        className="mt-10 flex max-w-[800px] animate-rise-in flex-col items-center text-center"
-      >
-        <p className="text-quote font-heading font-light text-ink italic">
-          {active.quote}
-        </p>
-        <p className="text-eyebrow font-body mt-7 text-primary-deep uppercase">
-          {active.author}
-        </p>
+      {/* A one-cell grid: every quote is placed in the same `col-start-1
+          row-start-1`, so they stack without needing a fixed height the way
+          the image carousels do — the band takes the height of the longest
+          quote and stops jumping as you page through them. `items-center`
+          keeps a short quote optically centred in that height rather than
+          pinned to the top of the tallest one.
+
+          Capped at 800px: the quote is the longest single run of text on the
+          page and needs a reading measure, not the full grid width. */}
+      <div className="mt-10 grid w-full max-w-[800px] items-center">
+        {testimonials.map((testimonial, index) => {
+          const isActive = index === activeIndex;
+
+          return (
+            <div
+              key={testimonial.author}
+              // Present in the markup but not announced: a screen reader
+              // should hear the quote on screen, not all four at once.
+              aria-hidden={!isActive}
+              className={`col-start-1 row-start-1 flex flex-col items-center text-center transition-opacity duration-700 ease-out ${
+                isActive ? "opacity-100" : "pointer-events-none opacity-0"
+              }`}
+            >
+              <p className="text-quote font-heading font-light text-ink italic">
+                {testimonial.quote}
+              </p>
+              <p className="text-eyebrow font-body mt-7 text-primary-deep uppercase">
+                {testimonial.author}
+              </p>
+            </div>
+          );
+        })}
       </div>
 
       {/* Controls stay outside the re-keyed block so they don't re-animate on

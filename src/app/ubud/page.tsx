@@ -3,7 +3,7 @@ import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
-import { BookingSearchBar } from "@/components/property/BookingSearchBar";
+import { BookingWidget } from "@/components/property/BookingWidget";
 import { AboutNarrative } from "@/components/property/AboutNarrative";
 import { LinkCardGrid } from "@/components/property/LinkCardGrid";
 import { TestimonialCarousel } from "@/components/property/TestimonialCarousel";
@@ -36,7 +36,7 @@ export default function UbudAboutPage() {
           eyebrow="Nyuh Bali Villas"
           title="Ubud"
         />
-        <BookingSearchBar bookingHref={site.bookingHref} />
+        <BookingWidget site={site} />
 
         {/* Ubud's narrative is a single paragraph with no tagline sentence
             before the button — unlike Seminyak's two paragraphs plus tagline.
@@ -152,13 +152,16 @@ export default function UbudAboutPage() {
         <InstagramTeaser
           heading="What's happening @nyuhbaliubud"
           instagramHref="https://www.instagram.com/nyuhbaliubud/"
+          // Six of the resort's own photographs that appear nowhere else on
+          // this page — the grid used to repeat the Stay and Discover cards
+          // one band later, so the page ended by showing everything twice.
           images={[
-            `${UPLOADS}/2023/03/Honeymoon-Suite-5.webp`,
-            `${UPLOADS}/2023/03/ubud-One-Bedroom-Deluxe-Pool-Villa-6.webp`,
-            `${UPLOADS}/2023/03/ezgif.com-gif-maker-3.webp`,
-            `${UPLOADS}/2023/03/ubudspa.webp`,
-            `${UPLOADS}/2023/03/ubud-walk-1.webp`,
-            `${UPLOADS}/2023/03/ezgif.com-gif-maker-7.webp`,
+            `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-26-1.jpg`,
+            `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-18-1.jpg`,
+            `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-31-1.jpg`,
+            `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-28-1.jpg`,
+            `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-24-1.jpg`,
+            `${UPLOADS}/2024/11/DJI_0228-min.jpg`,
           ]}
         />
         <AwardsRow

@@ -47,7 +47,8 @@ const HERO_IMAGES = [`${UPLOADS}/2024/11/IMG_9148-Edit-min-1.jpg`];
 const FACILITIES: PackageItem[] = [
   {
     name: "Yoga Class",
-    images: [`${UPLOADS}/2024/11/IMG_9148-Edit-min-1.jpg`],
+    // The page's hero is already `IMG_9148`, so the class takes its own frame.
+    images: [`${UPLOADS}/2024/11/Hatha-Yoga.jpg`],
     description:
       "Gift yourself a relaxing yoga flow that will re-energize and wake up your entire body. Our yoga class is designed to be suitable for everyone from beginners to intermediate, no matter your fitness level. You will be guided step by step with our certified yoga teacher to do yoga pose in the correct alignment. And not only that, we also will help you to create a deeper connection between the breath and the movement. Available daily as complimentary exclusively for our in-house guests.",
     ctas: [

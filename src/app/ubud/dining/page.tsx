@@ -44,16 +44,20 @@ const MENU_BBQ = `${UPLOADS}/2023/06/BBQ-Ubud-020623.pdf`;
 const MENU_ROMANTIC = `${UPLOADS}/2023/05/CLD-Menu-Ubud-010523.pdf`;
 const MENU_CULTURAL_NIGHT = `${UPLOADS}/2025/06/Balinese-Cultural-Night.pdf`;
 
+// The live page's own opening slide (a plated main course) plus the
+// afternoon-tea still life. Neither appears again further down.
 const HERO_IMAGES = [
-  `${UPLOADS}/2023/03/ubud-dining-1.webp`,
-  `${UPLOADS}/2023/03/ubud-dining-2.webp`,
+  `${UPLOADS}/2023/03/ezgif.com-gif-maker-10.webp`,
+  `${UPLOADS}/2026/01/Afternoon-tea-1.jpg`,
 ];
 
 const DINING: PackageItem[] = [
   {
     name: "Lumbini Restaurant in Ubud",
+    // The restaurant itself. `ubud-dining-1` used to lead here, but it is a
+    // photograph of the poolside BBQ — which is where the live page puts it.
     images: [
-      `${UPLOADS}/2023/03/ubud-dining-1.webp`,
+      `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-18-1.jpg`,
       `${UPLOADS}/2023/03/ezgif.com-gif-maker-11.webp`,
     ],
     description:
@@ -70,14 +74,14 @@ const DINING: PackageItem[] = [
   },
   {
     name: "BBQ",
-    images: [`${UPLOADS}/2023/03/ubud-dining-4.webp`],
+    images: [`${UPLOADS}/2023/03/ubud-dining-1.webp`],
     description:
       "Savour the fresh, flavourful BBQ meats with a selection of traditional Balinese or Western Delight cooked by your chef. We invite you to take pleasure in an exclusive dining experience in the privacy of your private villa.",
     ctas: [{ label: "BBQ Menu", href: MENU_BBQ, external: true }],
   },
   {
     name: "Romantic Dinner",
-    images: [`${UPLOADS}/2023/03/ubud-dining-2.webp`],
+    images: [`${UPLOADS}/2024/11/011A0333-Edit-min-min-min-1.jpg`],
     description:
       "Treat yourself to a romantic dining experience under the stars served in your villa by the pool or in our special dining venue. It is the perfect opportunity for a couple seeking private time just for two. Your gourmet meal is served by a personal butler on a table specially decorated with tropical floral arrangements and candle lights.",
     ctas: [
@@ -110,7 +114,9 @@ const DINING: PackageItem[] = [
   },
   {
     name: "Floating Breakfast",
-    images: [`${UPLOADS}/2023/03/ezgif.com-gif-maker-9.webp`],
+    // Was a plated seafood dish — the wrong picture entirely. This is the
+    // live page's own floating-breakfast photograph.
+    images: [`${UPLOADS}/2023/03/ubud-dining-4.webp`],
     description:
       "Greet every morning with the positive thought to welcome the beautiful sunshine. Experience the real balinese vibes by having floating breakfast in our iconic main pool or your own private pool.",
   },

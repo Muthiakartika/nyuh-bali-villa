@@ -76,7 +76,10 @@ eyebrow + heading + a short gold rule beneath (`SectionHeading`).
   *visible* gaps match. Only `AboutNarrative` opts out — its top is clearance
   under the booking card.
 - Sharp corners are the convention (`rounded-none` on cards and buttons); the
-  booking card and pill nav markers are the deliberate exceptions.
+  booking card, the pill nav markers and the retreat pages' "Meet our … Team"
+  portraits are the deliberate exceptions. The team photographs are round, as
+  they are on the live site — a square crop of four faces read as rigid, and
+  the client asked for it; every other photograph on the site keeps its edges.
 - No gradients-as-decoration and one shadow only (the booking card). The
   restraint is the premium signal.
 
@@ -124,6 +127,20 @@ hero. Fields split by `ink/15` hairlines; labels and the small marks (the date
 arrow, the `+`) in `primary-deep` per the contrast rule; values in `ink`. Search
 stays a full-strength gold block with `ink` text — the only saturated area on the
 card. The one shadow on the site.
+
+What sits in that frame is now the **booking engine's own widget**, embedded the
+way the live site embeds it, so the bar carries the real availability calendar —
+nightly rates, sold-out dates. The card described above is a *skin* over it
+(`.booking-widget` rules at the foot of `globals.css`); the vendor ships a dark
+bar with white field boxes and white-on-gold Search, and every one of those
+rules is `!important`, so the skin has to out-specify them. In the widget the
+Search block is the site's standard `Button` at `md`, centred in its cell rather
+than stretched down the full row — a full-height gold slab read as oversized
+against the vendor's taller field row.
+
+`BookingSearchBar` remains as the fallback if that script never arrives: a
+working `<form>` with native date inputs, a guest stepper in a `<details>`
+popover, a promo field, and a Search that carries the dates to the engine.
 
 ### Testimonial (`property/TestimonialCarousel.tsx`)
 `sand-deep`, centred — the only heading on the site that isn't left-aligned. Set
@@ -201,7 +218,21 @@ rules, `ink` headings, no card container and no shadow.
 
 `property/ImageGallery.tsx` backs all of them — a fixed-height frame navigated
 by the hero's gold bullet indicators, showing no controls at all for a single
-photo.
+photo. It advances itself every 5s with the same 700ms crossfade, pausing on
+hover or focus and disabled outright under `prefers-reduced-motion`; the
+bullets stay the manual control and picking one restarts the wait.
+
+**No photograph appears twice on one page.** A detail page's hero is dropped
+from the gallery below it, a post's featured image is dropped from its body,
+and the Instagram grids draw on the property's own photos that the page has
+not already used. Where two entries genuinely share a subject — the two sunset
+tours both stop at Tanah Lot — each carries the stops unique to it rather than
+the same picture.
+
+**`ProgramList`** is the retreat pages' "Available Programs" block — one
+`<details>` row per length-of-stay tier, opening to three columns at `lg`: what
+that tier adds, then the two blocks every tier repeats. The first tier is open
+by default, because a stack of closed rows gives no clue what is inside.
 
 ### Detail pages (`property/RoomDetail` · `property/ExperienceDetail`)
 The two templates behind the 28 pages below the nav. Both open with a

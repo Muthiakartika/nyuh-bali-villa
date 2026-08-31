@@ -37,7 +37,11 @@ export const metadata: Metadata = seo("/complimentary-services");
 const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
-const HERO_IMAGES = [`${UPLOADS}/2026/01/IMG_2301-1-min.jpg`];
+// Not the shuttle photograph: that one belongs to the Shuttle Service entry
+// in the list below, and using it here too opened the page on a picture the
+// visitor then met again a screen later. This is the same shoot's service
+// photograph — afternoon tea being brought out — which nothing else uses.
+const HERO_IMAGES = [`${UPLOADS}/2026/08/Nyuh-Bali-Ubud-17-1.jpg`];
 
 // Every entry is complimentary for in-house guests, so none of them carries a
 // booking CTA — the live page links each one through to its detail page, all

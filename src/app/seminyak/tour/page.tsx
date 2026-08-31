@@ -50,10 +50,14 @@ const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 // tour booking, so linking to it is the honest reading of that intent.
 const BOOKING_ANCHOR = "#tour-booking";
 
-const HERO_IMAGES = [`${UPLOADS}/2023/03/Tour-Seminyak.webp`];
+// `Tour-Seminyak` is the private-car photograph, which is what the two
+// open-ended charters below actually depict — so it goes to one of them
+// rather than being the hero *and* both of them, as it was.
+const HERO_IMAGES = [`${UPLOADS}/2024/10/Sunset-Seminyak-1-Source_-Stephan-Despins.jpg`];
 
 // The two open-ended charters. They have no photographs of their own on the
-// live page, so both use the page's own header image.
+// live page, which used the page header image for both; here they take one
+// scene each so no two rows on the page carry the same picture.
 const DAY_TRAVELLING: PackageItem[] = [
   {
     name: "Half Day Travelling",
@@ -74,7 +78,7 @@ const DAY_TRAVELLING: PackageItem[] = [
   },
   {
     name: "Full Day Travelling",
-    images: [`${UPLOADS}/2023/03/Tour-Seminyak.webp`],
+    images: [`${UPLOADS}/2023/03/Campuhan-ridge-walk.jpeg`],
     meta: [
       { label: "Price", value: "IDR 1.250.000 ++ / car" },
       { label: "Duration", value: "10 hours" },
@@ -219,11 +223,14 @@ const TOURS: PackageItem[] = [
   },
   {
     name: "Countryside to Sunset Tour",
+    // Taman Ayun and Tanah Lot are on this itinerary too, but they are the
+    // Exotic Sunset Tour's only two stops and carry its slider — showing them
+    // twice on one page made the two tours look like the same trip. This
+    // slider takes the stops that are unique to it; the itinerary line below
+    // still lists all four.
     images: [
-      `${UPLOADS}/2023/03/Taman-Ayun.webp`,
       `${UPLOADS}/2023/03/jatiluwih.webp`,
       `${UPLOADS}/2023/03/ulun-danu-1.webp`,
-      `${UPLOADS}/2023/03/tanahlot.webp`,
     ],
     description: "All Inclusive Package. Full day Tour depart from 08.00",
     meta: [

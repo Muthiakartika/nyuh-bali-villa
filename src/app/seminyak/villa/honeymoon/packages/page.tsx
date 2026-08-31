@@ -21,7 +21,7 @@ import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
-import { BookingSearchBar } from "@/components/property/BookingSearchBar";
+import { BookingWidget } from "@/components/property/BookingWidget";
 import {
   PackageList,
   type PackageItem,
@@ -37,9 +37,11 @@ export const metadata: Metadata = seo("/seminyak/villa/honeymoon/packages");
 const site = PROPERTY_SITES.seminyak;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
+// Not the Dreamy Honeymoon and Sweet Celebration photographs — those are the
+// first two packages listed below.
 const HERO_IMAGES = [
-  `${UPLOADS}/2023/03/seminyak-slider.webp`,
-  `${UPLOADS}/2023/03/sweet-celebration.webp`,
+  `${UPLOADS}/2023/03/Honeymoon-Suite-Pool-Villa-6.webp`,
+  `${UPLOADS}/2023/03/Honeymoon-Suite-Pool-Villa-3.webp`,
 ];
 
 // The complimentary inclusions that close every Seminyak package verbatim.
@@ -166,7 +168,7 @@ export default function SeminyakHoneymoonPackagesPage() {
           eyebrow="Offers"
           title="Romantic Package in Seminyak"
         />
-        <BookingSearchBar bookingHref={site.bookingHref} />
+        <BookingWidget site={site} />
 
         <PackageList
           eyebrow="Offers"

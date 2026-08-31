@@ -42,6 +42,14 @@ const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
 // Mahamaya Spa takes bookings through Fresha, not the resort's own booking
 // engine, so every "Book Now" and the closing "Reserve Now" point here.
+// Each treatment category's thumbnail. The live page has no per-tab
+// photograph, so these are chosen here — and four of them are the resort's own
+// square category images (`spa-ubud-massage`, `-body-treatment`,
+// `-hair-therapy`, `-bathing`), which is what they were made for.
+//
+// They had drifted: MASSAGE and MEDI FACIAL shared one massage close-up, and
+// ROMANTIC SPA FOR COUPLE was showing the facial photograph. Each category now
+// shows its own treatment, and no photograph appears twice on the page.
 const RESERVE_HREF =
   "https://www.fresha.com/a/mahamaya-spa-at-ubud-nyuh-bali-resort-bali-lodtunduh-gianyar-regency-jalan-raya-silungan-kgeujm85/booking?menu=true";
 
@@ -57,7 +65,7 @@ const at = (label: string) => ({ label, href: RESERVE_HREF });
 const TREATMENTS: TreatmentCategory[] = [
   {
     name: "MASSAGE",
-    image: `${UPLOADS}/2024/11/011A0972-Edit-min-1.jpg`,
+    image: `${UPLOADS}/2023/03/spa-ubud-massage.jpg`,
     treatments: [
       {
         name: "Bamboo Drainage Massage",
@@ -195,7 +203,7 @@ const TREATMENTS: TreatmentCategory[] = [
   },
   {
     name: "BATHING RITUAL",
-    image: `${UPLOADS}/2024/11/011A1131-Edit-min-1.jpg`,
+    image: `${UPLOADS}/2023/03/spa-ubud-bathing.jpg`,
     treatments: [
       {
         name: "Tropical Balinese Flower Bath",
@@ -304,7 +312,7 @@ const TREATMENTS: TreatmentCategory[] = [
   },
   {
     name: "SPA PACKAGE — ROMANTIC SPA FOR COUPLE",
-    image: `${UPLOADS}/2024/07/WFM04209-min-min.jpg`,
+    image: `${UPLOADS}/2024/11/011A1009-Edit-min.jpg`,
     treatments: [
       {
         name: "Rama & Shinta Refresher",
@@ -346,7 +354,7 @@ const TREATMENTS: TreatmentCategory[] = [
   },
   {
     name: "MEDI FACIAL BY HEALTHY LOOK AESTHETIC",
-    image: `${UPLOADS}/2024/11/011A0972-Edit-min-1.jpg`,
+    image: `${UPLOADS}/2024/07/WFM04209-min-min.jpg`,
     treatments: [
       {
         name: "Ageless Radiance Facial",
@@ -509,13 +517,15 @@ export default function UbudSpaPage() {
         <InstagramTeaser
           heading="What's happening @mahamayaspa.ubud"
           instagramHref="https://www.instagram.com/mahamayaspa.ubud/"
+          // Mahamaya's own photographs, none of which is one of the menu
+          // thumbnails above — the grid used to repeat all six of them.
           images={[
             `${UPLOADS}/2024/11/011A0972-Edit-min-1.jpg`,
-            `${UPLOADS}/2023/03/spa-ubud-body-treatment.jpg`,
-            `${UPLOADS}/2023/03/spa-ubud-hair-therapy.jpg`,
             `${UPLOADS}/2024/11/011A1131-Edit-min-1.jpg`,
-            `${UPLOADS}/2024/11/011A0857-Edit-min.jpg`,
-            `${UPLOADS}/2024/07/WFM04209-min-min.jpg`,
+            `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-27-1.jpg`,
+            `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-29-1.jpg`,
+            `${UPLOADS}/2023/11/Website-Pictures-3.jpg`,
+            `${UPLOADS}/2023/05/Flower-bath-spa.webp`,
           ]}
         />
 

@@ -43,7 +43,11 @@ export const metadata: Metadata = seo("/ubud/retreat/host-your-own");
 const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
-const HERO_IMAGES = [`${UPLOADS}/2023/05/AW_06570-min-2.jpg`];
+// Not `AW_06570-min-2`: that is the same photograph as the
+// `AW_06570-min.webp` the Rooftop Yoga Shala card carries below (the live
+// page runs it in both places), and one picture twice on a page is exactly
+// what the client asked us to stop doing.
+const HERO_IMAGES = [`${UPLOADS}/2023/10/how-to-host-retreat-4.jpg`];
 
 const RETREAT_EMAIL = "retreat@ubudnyuhbali.com";
 
@@ -72,21 +76,24 @@ const INTRO: PackageItem[] = [
 const MEALS: PackageItem[] = [
   {
     name: "Healthy Meals",
-    images: [`${UPLOADS}/2023/03/ubud-dining-1.webp`],
+    images: [`${UPLOADS}/2023/11/One-of-our-healthy-food.png`],
     description:
       "Just like you, we agree that luxury retreats should provide both healthy and tasty food. Here at Nyuh Bali, we believe that good food should come from fresh ingredients with respect to nature. All meals are healthy and delicious and are served in our healthy dining restaurant, The Retreat. We provide a variety of cuisine options, including Balinese, western, vegan, vegetarian, gluten-free, and Mediterranean.",
   },
   {
     name: "Retreat Specialist",
-    images: [`${UPLOADS}/2023/05/AW_06570-min.jpg`],
+    images: [`${UPLOADS}/2023/10/how-to-host-retreat-8.jpg`],
     description:
       "We are dedicated to supporting your retreat in many ways for a memorable experience for you and your students. Just tell us anything in your mind, and we will explore all possibilities.",
     benefitsHeading: "Some options that could be added to your program",
+    // Two of these are a label and a sentence on one line each on the live
+    // site, split by a `<br>`. They had been condensed into a single reworded
+    // line; restored verbatim, with the break kept.
     benefits: [
       "Healthy Balinese Cooking Class (vegan's also possible)",
       "Movie Night & Special Events",
-      "Island Excursions — from cultural tours to adventurous activities like mount trekking, rafting, and ATV riding",
-      "Printing Service — retreat materials and amenities like books, t-shirts, and goodie bag",
+      "Island Excursions\nWe can arrange from cultural tours to adventurous activities like mount trekking, rafting, and ATV riding",
+      "Printing Service\nWe can help to print retreat materials and amenities like books, t-shirts, and goodie bag",
       "Photography Service",
     ],
   },
@@ -204,31 +211,31 @@ export default function UbudHostYourRetreatPage() {
               label: "Home Gym",
               href: "/ubud/fitness",
               inScope: true,
-              imgSrc: `${UPLOADS}/2024/12/DW_03571-min-min.jpg`,
+              imgSrc: `${UPLOADS}/2023/03/ubud-gym-1.webp`,
             },
             {
               label: "Indoor Yoga Shala",
               href: "/ubud/villa/1-bedroom-pool-deluxe",
               inScope: true,
-              imgSrc: `${UPLOADS}/2024/11/IMG_9148-Edit-min-1.jpg`,
+              imgSrc: `${UPLOADS}/2023/03/ubud-yoga-2.webp`,
             },
             {
               label: "Rooftop Yoga Shala",
               href: "/ubud/villa/1-bedroom-pool-royal",
               inScope: true,
-              imgSrc: `${UPLOADS}/2023/05/AW_06640-min.webp`,
+              imgSrc: `${UPLOADS}/2023/05/AW_06570-min.webp`,
             },
             {
               label: "Meditation Garden",
               href: "/ubud/villa/honeymoon/pool",
               inScope: true,
-              imgSrc: `${UPLOADS}/2023/05/IS_06578-min.webp`,
+              imgSrc: `${UPLOADS}/2023/03/ubud-yoga-1.webp`,
             },
             {
               label: "Wellness Library",
               href: "/ubud/villa/2-bedroom-pool",
               inScope: true,
-              imgSrc: `${UPLOADS}/2023/05/IS_06972-min.webp`,
+              imgSrc: `${UPLOADS}/2023/04/0D7555AC-09E4-4332-9619-08A9AA329530.webp`,
             },
           ]}
         />

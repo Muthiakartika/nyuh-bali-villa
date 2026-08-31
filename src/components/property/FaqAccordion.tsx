@@ -56,7 +56,12 @@ export function FaqAccordion({ faqs, animate = true }: FaqAccordionProps) {
               />
             </summary>
 
-            <p className="max-w-[62rem] pb-4 text-[15px] leading-[1.7] font-light text-text md:text-[16px]">
+            {/* `whitespace-pre-line`: a few recovered answers are genuinely
+                multi-line on the live site — the slimming page's "Who should
+                avoid CM Slim?" is a six-item list, and "Is CM Slim safe?" runs
+                two paragraphs. Every other answer is a single line, for which
+                this is a no-op. */}
+            <p className="max-w-[62rem] pb-4 text-[15px] leading-[1.7] font-light whitespace-pre-line text-text md:text-[16px]">
               {faq.answer}
             </p>
           </details>

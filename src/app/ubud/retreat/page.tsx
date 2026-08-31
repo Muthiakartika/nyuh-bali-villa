@@ -22,7 +22,7 @@ import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
-import { BookingSearchBar } from "@/components/property/BookingSearchBar";
+import { BookingWidget } from "@/components/property/BookingWidget";
 import {
   PackageList,
   type PackageItem,
@@ -36,7 +36,8 @@ export const metadata: Metadata = seo("/ubud/retreat");
 const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
-const HERO_IMAGES = [`${UPLOADS}/2023/04/Photo-15-01-23-14.18.24-1-min.jpg`];
+// Kept off the Personalised Luxury Retreat photograph immediately below it.
+const HERO_IMAGES = [`${UPLOADS}/2023/05/AW_06575-min.webp`];
 
 // The live page is three programmes, each a photograph, a pitch and an
 // EXPLORE MORE link. All three destinations are now built here, and they are
@@ -90,7 +91,7 @@ export default function UbudRetreatPage() {
           eyebrow="Ubud"
           title="Retreat"
         />
-        <BookingSearchBar bookingHref={site.bookingHref} />
+        <BookingWidget site={site} />
 
         <PackageList
           eyebrow="Retreat"

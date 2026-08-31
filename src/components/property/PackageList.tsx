@@ -163,7 +163,11 @@ export function PackageList({
                                 aria-hidden
                                 className="mt-2.5 block h-px w-2.5 shrink-0 bg-primary"
                               />
-                              {benefit}
+                              {/* `whitespace-pre-line`: a few source bullets are
+                                  a label and a sentence separated by a `<br>` on
+                                  the live site. Single-line bullets, which is
+                                  almost all of them, are unaffected. */}
+                              <span className="whitespace-pre-line">{benefit}</span>
                             </li>
                           ))}
                         </ul>

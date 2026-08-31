@@ -28,9 +28,19 @@ type ButtonProps = {
  * used as the universal hover across the old design; opacity is what you
  * reach for when no hover has actually been designed, and it makes an element
  * look disabled at the exact moment it should look ready.
+ *
+ * **`solid` carries a transparent border that turns gold on hover.** The
+ * inversion alone works on the light bands but fails on the two `ink` ones:
+ * the header bar and the footer base both run a solid Book Now, and hovering
+ * it swapped the fill to `ink` — the colour it was already sitting on — so the
+ * button dissolved into the background and left gold lettering floating in the
+ * dark. The border is transparent at rest, so nothing about the resting button
+ * changes; on hover it draws the shape back. It also puts `solid` on the same
+ * box size as the two outline variants, which already carry a border.
  */
 const VARIANT_CLASS: Record<ButtonVariant, string> = {
-  solid: "bg-primary text-ink hover:bg-ink hover:text-primary",
+  solid:
+    "border border-transparent bg-primary text-ink hover:border-primary hover:bg-ink hover:text-primary",
   outline:
     "border border-ink/25 text-ink hover:border-ink hover:bg-ink hover:text-sand",
   "outline-light":

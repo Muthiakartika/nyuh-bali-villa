@@ -15,10 +15,19 @@ import type { Metadata } from "next";
  * be re-fetched and diffed against the live site in a single step, and so the
  * coming CRUD has one seam to write into.
  *
- * **Fifteen live routes publish no description at all.** Those entries carry a
- * title only, and Next then falls back to the site-wide description from the
- * root layout — better than emitting no description tag, which is what the
- * live site itself does on those pages.
+ * **Fifteen live routes publish no description at all.** Those fifteen are the
+ * only entries here whose description did not come from nyuhbalivillas.com,
+ * because there was nothing to copy. They previously carried a title only and
+ * fell back to the root layout's — which meant fifteen pages sharing one
+ * description, and that description opens by talking about the *Seminyak*
+ * honeymoon villas even on the Ubud pages. Each now has its own, assembled out
+ * of words already on that page: its opening paragraph, its own headings, or
+ * the property's contact details from `properties.ts`. Nothing is newly
+ * written marketing copy, and re-fetching the live site will not overwrite
+ * them — they are additions, not a diff.
+ *
+ * Verified against the live site: all 74 titles and all 59 live descriptions
+ * match byte-for-byte.
  *
  * One live fault is copied rather than corrected, on the same principle as the
  * rest of this build: `/ubud/discover/5-star-resort` publishes the *yoga
@@ -56,6 +65,8 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   },
   "/seminyak/contact": {
     title: "Seminyak - Contact Us - Nyuh Bali",
+    description:
+      "Contact Nyuh Bali Villas Seminyak: Bali Deli st 99, Seminyak, Bali. Call +62 361 738920 or email reservation@nyuhbalivillas.com — or fill in the form.",
   },
   "/seminyak/dining": {
     title: "Seminyak Dining Experience - Candle Light Dinner",
@@ -64,6 +75,8 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   },
   "/seminyak/discover": {
     title: "Seminyak - Blog - Nyuh Bali",
+    description:
+      "Stories from Nyuh Bali Villas Seminyak — sunsets, romantic honeymoon activities and the things worth doing while you stay with us.",
   },
   "/seminyak/discover/10-romantic-honeymoon-activities": {
     title: "10 Romantic Honeymoon Activities in Seminyak",
@@ -87,6 +100,8 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   },
   "/seminyak/villa": {
     title: "Seminyak Luxury Villas - Nyuh Bali",
+    description:
+      "What's better than living in a private villa with your own pool? Each villa is completed with pool and sundeck to be enjoyed anytime at your convenience.",
   },
   "/seminyak/villa/honeymoon": {
     title: "Honeymoon Suite Pool Villa - Seminyak",
@@ -105,6 +120,8 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   },
   "/spa-reservation-seminyak": {
     title: "Seminyak - SPA Booking Form - Nyuh Bali",
+    description:
+      "Reserve your treatment at Nyuh Bali Villas Seminyak — Balinese massage, warm stone, holistic body treatment and romantic couple packages.",
   },
   "/terms-conditions": {
     title: "Terms & Conditions - Nyuh Bali Villas",
@@ -118,12 +135,18 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   },
   "/ubud-personalize-your-retreat": {
     title: "Ubud - Personalize Your Retreat Form - Nyuh Bali",
+    description:
+      "Tell us your dates, your group and your dining plan, and our retreat specialist will personalise a retreat at Ubud Nyuh Bali Resort for you.",
   },
   "/ubud-spa-booking-form": {
     title: "Ubud - SPA booking form - Nyuh Bali",
+    description:
+      "Book a treatment at Mahamaya Spa, Ubud Nyuh Bali Resort — massage, body treatment, hair, bath, self indulgence, couple package or facial.",
   },
   "/ubud/balinese-culture": {
     title: "Ubud - Experience - Nyuh Bali",
+    description:
+      "Experience the charm of Balinese culture at our Cultural Night: a four-course Balinese dinner, traditional dance performances and a lively Joget.",
   },
   "/ubud/balinese-culture/balinese-class": {
     title: "Daily Balinese Class - Make Offerings at Ubud Nyuh Bali Resort",
@@ -147,6 +170,8 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   },
   "/ubud/contact": {
     title: "Ubud - Contact Us - Nyuh Bali",
+    description:
+      "Contact Ubud Nyuh Bali Resort: Raya Silungan street, Lodtunduh Ubud Bali (80571). Call +62 85 333 779 779 or email info@ubudnyuhbali.com.",
   },
   "/ubud/dining": {
     title: "Luxury Restaurant - Breakfast & Dinner at Ubud Nyuh Bali Resort",
@@ -155,6 +180,8 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   },
   "/ubud/discover": {
     title: "Ubud - Blog - Nyuh Bali",
+    description:
+      "Stories from Ubud Nyuh Bali Resort — yoga, wellness retreats, honeymoons and what makes a 5-star resort in Bali worth the stay.",
   },
   "/ubud/discover/5-star-resort": {
     title: "Yoga Teacher Training in Bali - Nyuh Bali Ubud Resort",
@@ -183,6 +210,8 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   },
   "/ubud/discover/restoring-body-balance": {
     title: "How to Restore a Balanced Body - Mind & Soul - Nyuh Bali",
+    description:
+      "The modern world often leaves people feeling disconnected from themselves and their bodies. Wellness retreats have emerged as sanctuaries — here is why.",
   },
   "/ubud/discover/wellness-retreat": {
     title: "Wellness Retreat in Bali - Nyuh Bali Ubud Resort",
@@ -211,6 +240,8 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   },
   "/ubud/retreat": {
     title: "Ubud - Retreat - Nyuh Bali",
+    description:
+      "We are dedicated to creating a luxury retreat in Ubud for everyone, whether you want to heal your soul, let go, or simply just to relax.",
   },
   "/ubud/retreat/couples": {
     title: "Luxury Couple Retreat in Bali - Ubud Nyuh Bali Resort",
@@ -234,6 +265,8 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   },
   "/ubud/retreat/luxury/anti-aging": {
     title: "Ubud - Anti Aging Retreat - Nyuh Bali",
+    description:
+      "Our luxury anti-aging retreat in Ubud combines the psychological benefits of Balinese healing with scientifically proven treatments for the effects of aging.",
   },
   "/ubud/retreat/luxury/balinese-healing": {
     title: "Traditional Ubud Healing Therapist - Ubud Nyuh Bali Resort",
@@ -282,6 +315,8 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   },
   "/ubud/villa/1-bedroom-pool-deluxe": {
     title: "Ubud - One Bedroom Deluxe Pool Villa - Nyuh Bali",
+    description:
+      "The 240 sqm pool villa comes with a private pool surrounded by greenery, a unique outdoor shower and an indoor bathtub made from natural green stone.",
   },
   "/ubud/villa/1-bedroom-pool-royal": {
     title: "One Bedroom Pool Villa in Ubud - Nyuh Bali Resort",
@@ -310,6 +345,8 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   },
   "/ubud/villa/honeymoon/packages": {
     title: "Ubud - Romance - Nyuh Bali",
+    description:
+      "Arrange the first romantic holiday as husband and wife. Indulge your partner in a perfect honeymoon in Ubud Bali and show your everlasting commitment.",
   },
   "/ubud/villa/honeymoon/pool": {
     title: "Ubud Honeymoon Suites - Ubud Nyuh Bali Resort",
@@ -318,6 +355,8 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   },
   "/ubud/villa/suite": {
     title: "Ubud - Nyuh Suite - Nyuh Bali",
+    description:
+      "One floor only consists of three suites, so you enjoy the serenity you are looking for — an ample bedroom with a stone bathtub, rain shower and separate toilet.",
   },
   "/ubud/wedding": {
     title: "Intimate Wedding in Ubud - Nyuh Bali Villas",

@@ -65,15 +65,18 @@ export const ROOM_DETAILS: RoomDetail[] = [
     ],
     amenities: ["Air Conditioned", "Minibar (additional charge)", "Safety box", "Toilet", "Coffeemaker", "Hair dryer", "Refrigerator", "Sitting Area", "Cold and hot running water", "Gazebo", "LCD TV with satellite channels", "Telephone"],
     facilities: ["Lobby with waiting area", "Onsite car park", "Home gym", "Retreat Facilities", "16 Hours Room Service", "Bale Lotus (picnic area)", "Guest concierge", "Two Main Pool", "Free Yoga Class", "Two Yoga Venue", "Wedding Venue", "24 hours reception & security", "Mahamaya SPA & Salon", "Free Daily Activity", "Restaurant", "Laundry Service"],
+    // Re-synced with the live page in Aug 2026: the resort replaced four of
+    // the six 2023 photographs with a new shoot (`2026/08/Nyuh-Bali-Ubud-*`).
+    // Order is the live gallery's own order.
     gallery: [
-      `${U}2023/03/Honeymoon-Suite-1.webp`,
-      `${U}2023/03/Honeymoon-Suite-2.webp`,
       `${U}2023/03/Honeymoon-Suite-3.webp`,
       `${U}2023/03/Honeymoon-Suite-4.webp`,
-      `${U}2023/03/Honeymoon-Suite-5.webp`,
-      `${U}2023/03/Honeymoon-Suite-6.webp`,
+      `${U}2026/08/Nyuh-Bali-Ubud-3-1.jpg`,
+      `${U}2026/08/Nyuh-Bali-Ubud-4-1.jpg`,
+      `${U}2026/08/Nyuh-Bali-Ubud-5-1.jpg`,
+      `${U}2026/08/Nyuh-Bali-Ubud-6-1.jpg`,
     ],
-    hero: `${U}2023/03/Honeymoon-Suite-5.webp`,
+    hero: `${U}2026/08/Nyuh-Bali-Ubud-3-1.jpg`,
   },
   {
     slug: "1-bedroom-pool-deluxe",
@@ -143,13 +146,16 @@ export const ROOM_DETAILS: RoomDetail[] = [
     ],
     amenities: ["Air Conditioned in the villa", "Dining area", "Minibar", "Pool chairs", "Telephone", "Coffeemaker", "Hair dryer", "Refrigerator", "Safety box", "Toilet", "Cold and hot running water", "LCD TV with satellite channels", "Pantry", "Sitting Area"],
     facilities: ["Lobby with waiting area", "Onsite car park", "Home gym", "Retreat Facilities", "16 Hours Room Service", "Bale Lotus (picnic area)", "Guest concierge", "Two Main Pool", "Free Yoga", "Two Yoga Venue", "Wedding Venue", "24 hours reception & security", "Mahamaya SPA & Salon", "Free Daily Activity", "Restaurant", "Laundry Service"],
+    // Re-synced with the live page in Aug 2026. This also drops the borrowed
+    // `One-Bedroom-Royal-Pool-Villa-1` shot the live gallery used to close on
+    // — the new photographs are of this villa.
     gallery: [
       `${U}2023/03/Honeymoon-Pool-Villa-5.webp`,
-      `${U}2023/03/Honeymoon-Pool-Villa-4.webp`,
       `${U}2023/03/Honeymoon-Pool-Villa-3.webp`,
       `${U}2023/03/Honeymoon-Pool-Villa-2.webp`,
-      `${U}2023/03/Honeymoon-Pool-Villa-1.webp`,
-      `${U}2023/03/One-Bedroom-Royal-Pool-Villa-1.webp`,
+      `${U}2026/08/Nyuh-Bali-Ubud-12-1.jpg`,
+      `${U}2026/08/Nyuh-Bali-Ubud-13-1.jpg`,
+      `${U}2026/08/Nyuh-Bali-Ubud-14-1.jpg`,
     ],
     hero: `${U}2023/03/Honeymoon-Pool-Villa-5.webp`,
   },

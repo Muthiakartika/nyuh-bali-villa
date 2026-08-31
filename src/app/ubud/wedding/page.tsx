@@ -39,9 +39,11 @@ export const metadata: Metadata = seo("/ubud/wedding");
 const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
+// `ubud-wedding-1` is the third frame of the Intimate Wedding slider below,
+// so the hero closes on the reception photograph instead.
 const HERO_IMAGES = [
   `${UPLOADS}/2023/02/Ubud-intimate-wedding-4.jpg`,
-  `${UPLOADS}/2023/03/ubud-wedding-1.webp`,
+  `${UPLOADS}/2023/02/Ubud-intimate-wedding-2.jpg`,
 ];
 
 // The live page's brochure download is one PDF linked from two buttons; both

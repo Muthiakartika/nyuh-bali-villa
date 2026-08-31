@@ -244,3 +244,256 @@ body {
     transition: none !important;
   }
 }
+
+/*
+ * ---------------------------------------------------------------------------
+ * Brand skin for the booking engine's own quick-book widget
+ * ---------------------------------------------------------------------------
+ *
+ * `BookingWidget` embeds STAAH SwiftBook's widget so the booking bar has the
+ * real availability calendar — nightly rates, sold-out dates — which no amount
+ * of our own markup can reproduce. What we do own is how it looks on our page,
+ * and out of the box it arrives as the vendor's dark bar with white field
+ * boxes: the 2012 booking-engine look the redesign spent its whole budget
+ * getting away from.
+ *
+ * These rules dress it as the card the rest of the site expects — `sand-deep`
+ * inside a thick `ink` frame, `primary-deep` labels, `ink` values, the one
+ * shadow, and a gold Search with `ink` text (the vendor ships white-on-gold,
+ * which measures 2.39:1 and fails AA; see the contrast note above).
+ *
+ * **Every declaration here needs `!important`, and that is not laziness.** The
+ * widget's theme is injected at runtime as a `<style>` block in which *every*
+ * rule is already `!important` — it is how STAAH applies the colours set in
+ * the property's own dashboard. An `!important` from a stylesheet that loads
+ * earlier only wins on higher specificity, which is why each selector below is
+ * scoped through `.booking-widget` and, for `.dayUseLable`, through the
+ * vendor's own wrapper as well: their rule for that one is already three
+ * classes deep, and a tie would go to whichever stylesheet loads last (theirs).
+ *
+ * **These are the vendor's class names, not ours.** They are scoped to
+ * `.booking-widget` so nothing here can reach the rest of the site, and the
+ * failure mode is soft: if STAAH renames a class, that rule stops applying and
+ * the widget falls back to *their* styling, which is already themed to the
+ * brand's ink and gold. Re-check this block after any widget update.
+ */
+.booking-widget .MbsSearchWidget {
+  background: var(--color-sand-deep) !important;
+  border: 3px solid var(--color-ink);
+  border-radius: 0;
+  box-shadow: 0 18px 48px -22px rgb(38 30 19 / 0.7);
+  color: var(--color-ink) !important;
+}
+
+/* The vendor forces Inter on everything inside its wrapper. */
+.booking-widget .Configure-quickBook-Widget,
+.booking-widget .Configure-quickBook-Widget input,
+.booking-widget .Configure-quickBook-Widget select,
+.booking-widget .Configure-quickBook-Widget option,
+.booking-widget .Configure-quickBook-Widget button {
+  font-family: var(--font-body) !important;
+}
+
+/* Field labels — the site's eyebrow treatment. */
+.booking-widget .MbsSearchWidget .lbl {
+  color: var(--color-primary-deep) !important;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* The value boxes become plain type on the card, the way our own bar reads:
+   the vendor draws each one as a bordered white input. */
+.booking-widget .MbsSearchWidget .checkinDate {
+  background-color: transparent !important;
+  border: 0 !important;
+  border-radius: 0;
+  color: var(--color-ink) !important;
+}
+
+.booking-widget .MbsSearchWidget .checkinDate::placeholder {
+  color: rgb(38 30 19 / 0.4) !important;
+}
+
+.booking-widget .MbsSearchWidget .mbs-arrow {
+  color: var(--color-primary-deep) !important;
+}
+
+/* Four classes deep on purpose — see the specificity note above. */
+.booking-widget .Configure-quickBook-Widget .MbsSearchWidget .dayUseLable {
+  color: var(--color-text) !important;
+  font-size: 13px !important;
+}
+
+.booking-widget .MbsSearchWidget .flexibleDate .checklbl::before {
+  border: 1px solid rgb(38 30 19 / 0.4) !important;
+}
+
+.booking-widget .MbsSearchWidget .flexibleDate input:checked + .checklbl::after {
+  border-color: var(--color-primary-deep) !important;
+}
+
+/* The one saturated block on the card. `ink` on gold measures 6.93:1; the
+   vendor's white on the same gold is 2.39:1. */
+.booking-widget .MbsSearchWidget .btn.searchBtn {
+  background-color: var(--color-primary) !important;
+  border: 0 !important;
+  border-radius: 0;
+  color: var(--color-ink) !important;
+  font-size: 12px !important;
+  letter-spacing: 0.22em !important;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.booking-widget .MbsSearchWidget .btn.searchBtn:hover {
+  background-color: var(--color-primary-deep) !important;
+  color: #ffffff !important;
+}
+
+/*
+ * Layout — `lg` and up only.
+ *
+ * Colour alone was not enough: on a wide screen the vendor lays the bar out as
+ * four floating groups centred inside a capped, inset strip (a ~55px margin
+ * each side, a 130px gap before the first field, a small Search button
+ * hovering clear of the right edge). Our card is the full container width, its
+ * cells divided by hairlines, and Search is a full-height gold block flush to
+ * the frame. The rules below re-lay it out.
+ *
+ * **Deliberately not applied below `lg`.** There the vendor stacks the fields,
+ * which is what our own card does at that width anyway; forcing the row rules
+ * onto the stacked layout put hairlines on the left of stacked rows and left a
+ * dead 38px strip under it. Every split on this site happens at `lg`, and this
+ * is the same rule. Colour and type above are unscoped and apply at every
+ * width.
+ *
+ * This is the fragile half of the file — re-check after any widget update.
+ */
+@media (min-width: 64rem) {
+  .booking-widget .MbsSearchWidget {
+    align-items: stretch !important;
+    /* Grid, not flex, and for one reason: the card's column ratios come from
+       `BookingSearchBar`'s own `grid-cols-[1.6fr_1.25fr_1fr_auto]`, and `fr`
+       reproduces them exactly. Flex grow factors do not — each cell's 48px of
+       horizontal padding rides along inside the grown box and pulls the
+       proportions toward 1 (measured 1.49 : 1.21 : 1 against a target of
+       1.6 : 1.25 : 1). */
+    display: grid !important;
+    gap: 0 !important;
+    grid-template-columns: 1.6fr 1.25fr 1fr auto;
+    /* The vendor caps the bar and centres it, which left it inset ~55px inside
+       our container; ours is the full contained width. */
+    margin: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+    /* The bottom inset is the Flexible Dates strip, absolutely placed below. */
+    padding: 0 0 38px !important;
+    position: relative;
+  }
+
+  /* Each field group becomes one of our cells: the card's own padding,
+     hairline-divided. `min-width: 0` so a long room summary shrinks instead of
+     pushing its column wider than its `fr` share. */
+  .booking-widget .MbsSearchWidget > .formGroup {
+    border-left: 1px solid rgb(38 30 19 / 0.15);
+    min-width: 0;
+    padding: 14px 24px !important;
+  }
+
+  .booking-widget .MbsSearchWidget > .formGroup:first-child {
+    border-left: 0;
+  }
+
+  /* The dates share one cell, with the arrow between them — the arrow is
+     absolutely placed by the vendor, which only works while its parent stays
+     positioned; letting it flow keeps it between the two dates at any width. */
+  .booking-widget .MbsSearchWidget .searchinOut,
+  .booking-widget .MbsSearchWidget .checkInOutForm {
+    align-items: flex-end;
+    /* Both have to give up `position: relative` or the Flexible Dates strip
+       below stays trapped inside the dates cell instead of spanning the card. */
+    position: static !important;
+  }
+
+  .booking-widget .MbsSearchWidget .mbs-arrow {
+    margin: 0 12px 6px !important;
+    position: static !important;
+  }
+
+  .booking-widget .MbsSearchWidget .checkinOut.input {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  /* Search sits in its own hairline-divided cell, centred — not stretched to
+     the full height of the row. A full-height gold slab read as oversized
+     against the rest of the card; this is the site's standard `Button` at
+     `md` (px-8 py-3.5, 12px, 0.22em), so the widget's action matches every
+     other CTA on the page. */
+  .booking-widget .MbsSearchWidget > .searchBlock {
+    align-items: center;
+    border-left: 1px solid rgb(38 30 19 / 0.15);
+    display: flex !important;
+    padding: 14px 24px !important;
+  }
+
+  .booking-widget .MbsSearchWidget .btn.searchBtn {
+    height: auto !important;
+    padding: 14px 32px !important;
+    width: auto !important;
+  }
+
+  /* The guest control's `+`, drawn as the small outlined mark the card uses
+     rather than a bare glyph. Six classes deep because the vendor's own rule
+     for this span is five. */
+  .booking-widget
+    .MbsSearchWidget
+    .formGroup
+    .input.inputRoom
+    .checkinDate
+    > span {
+    align-items: center;
+    align-self: center;
+    border: 1px solid rgb(129 105 58 / 0.5);
+    color: var(--color-primary-deep) !important;
+    display: flex;
+    flex: 0 0 auto;
+    height: 24px;
+    justify-content: center;
+    width: 24px;
+  }
+
+  /* Flexible Dates as the card's closing strip, the width of the frame. The
+     vendor parks it under check-in inside `.calender-wrapper`; that element is
+     already absolute, so once `.checkInOutForm` is static its containing block
+     becomes the bar and it can span it. */
+  .booking-widget .MbsSearchWidget .calender-wrapper {
+    align-items: center;
+    border-top: 1px solid rgb(38 30 19 / 0.15);
+    inset: auto 0 0 0 !important;
+    padding: 10px 24px !important;
+    width: auto !important;
+  }
+
+  /* Type: the vendor sets 12px labels and 13px values; ours are the site's
+     eyebrow and a 15px medium value. */
+  .booking-widget .MbsSearchWidget .lbl {
+    font-size: 0.6875rem !important;
+    letter-spacing: 0.24em !important;
+  }
+
+  .booking-widget .MbsSearchWidget .checkinDate {
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* The calendar's month header, same contrast rule: the vendor sets white on
+   the brand gold. The calendar itself is left alone — its rates and sold-out
+   marks are the reason the widget is here at all. */
+.booking-widget .rdrMonth .rdrMonthName,
+.rdrCalendarWrapper .rdrMonth .rdrMonthName {
+  color: var(--color-ink) !important;
+}

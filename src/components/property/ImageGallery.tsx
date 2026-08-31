@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type ImageGalleryProps = {
   images: string[];
@@ -17,6 +17,16 @@ type ImageGalleryProps = {
   /** First gallery on a page can preload its opening frame. */
   priority?: boolean;
 };
+
+/** How long a slide is held before the gallery advances itself.
+ *
+ * Deliberately shorter than `PropertyHero`'s 6000ms: the hero is one large
+ * photograph a visitor lands on, while a gallery is something they have
+ * chosen to look at, often several to a page. 5s is long enough to read a
+ * room photograph without the movement becoming the thing you notice, and
+ * short enough that a six-photo set doesn't take half a minute to show
+ * itself. Paired with the 700ms crossfade below, a slide is still for ~4.3s. */
+const SLIDE_INTERVAL_MS = 5000;
 
 /**
  * A small multi-photo frame, shared by every page that shows a set of images
@@ -34,6 +44,13 @@ type ImageGalleryProps = {
  *    mix of landscape and portrait; letting the image set the height would make
  *    neighbouring cards in the same row disagree.
  *
+ * **It advances on its own**, again following the hero rather than inventing a
+ * second convention: same crossfade, same pause-on-hover, same
+ * `prefers-reduced-motion` opt-out, and the bullets stay the manual control.
+ * Before this, every gallery on the site sat on its first photo until someone
+ * clicked a 6px dot, so the other five photographs of a villa were, in
+ * practice, never seen.
+ *
  * A Client Component only because of the `useState` index — same
  * dependency-free carousel pattern as the hero and the testimonial, no library.
  */
@@ -45,11 +62,45 @@ export function ImageGallery({
   priority = false,
 }: ImageGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const isPausedRef = useRef(false);
   const hasMultiple = images.length > 1;
+
+  // A `setTimeout` keyed on `activeIndex` rather than one long-lived
+  // `setInterval`: picking a bullet restarts the wait, so a slide a visitor
+  // just chose isn't yanked away 200ms later. `isPausedRef` is read at fire
+  // time (not in the dependency list) so hovering can't restart the clock.
+  useEffect(() => {
+    if (!hasMultiple) return;
+
+    // Someone who has asked their OS to reduce motion should not be handed a
+    // carousel that moves on its own; they still get the bullet controls.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const timer = window.setTimeout(() => {
+      if (isPausedRef.current) return;
+      setActiveIndex((current) => (current + 1) % images.length);
+    }, SLIDE_INTERVAL_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [activeIndex, hasMultiple, images.length]);
 
   return (
     <div
       className={`group/gallery relative w-full overflow-hidden ${heightClassName}`}
+      // Pausing on focus as well as hover keeps a keyboard visitor from having
+      // the bullet they have tabbed to change meaning under them.
+      onMouseEnter={() => {
+        isPausedRef.current = true;
+      }}
+      onMouseLeave={() => {
+        isPausedRef.current = false;
+      }}
+      onFocus={() => {
+        isPausedRef.current = true;
+      }}
+      onBlur={() => {
+        isPausedRef.current = false;
+      }}
     >
       {images.map((src, index) => (
         <div

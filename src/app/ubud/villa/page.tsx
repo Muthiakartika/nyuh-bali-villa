@@ -24,7 +24,7 @@ import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
-import { BookingSearchBar } from "@/components/property/BookingSearchBar";
+import { BookingWidget } from "@/components/property/BookingWidget";
 import { RoomList, type Room } from "@/components/property/RoomList";
 import { AmenityGrid } from "@/components/property/AmenityGrid";
 import { AwardsRow } from "@/components/property/AwardsRow";
@@ -41,10 +41,13 @@ const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 // pages (see the brief: keep the existing hero layout), using the room
 // photography that already belongs to this page rather than introducing a new
 // image. Heading and eyebrow are strings the page already carries.
+// Each of the three is a photograph of a room this page lists, but one that
+// the room's own slider below does *not* use — a hero that reappears 400px
+// further down as a thumbnail reads as the page having run out of pictures.
 const HERO_IMAGES = [
-  `${UPLOADS}/2023/03/Honeymoon-Pool-Villa-5.webp`,
-  `${UPLOADS}/2023/03/ubud-One-Bedroom-Deluxe-Pool-Villa-6.webp`,
-  `${UPLOADS}/2023/03/Suite-6.webp`,
+  `${UPLOADS}/2023/03/Two-Bedroom-Pool-Villa-hero.webp`,
+  `${UPLOADS}/2023/03/ubud-One-Bedroom-Deluxe-Pool-Villa.webp`,
+  `${UPLOADS}/2023/03/Suite-3.webp`,
 ];
 
 // The live page splits its inventory into two categories, each with its own
@@ -67,10 +70,16 @@ const SUITES: Room[] = [
   },
   {
     name: "Honeymoon Suite",
+    // Re-synced with the live listing (Aug 2026), which now leads with the
+    // new `2026/08` shoot for this room. Six slides, not three — the live
+    // slider grew when the new photographs were added.
     images: [
       `${UPLOADS}/2023/03/Honeymoon-Suite-4.webp`,
-      `${UPLOADS}/2023/03/Honeymoon-Suite-6.webp`,
-      `${UPLOADS}/2023/03/Honeymoon-Suite-1.webp`,
+      `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-6-1.jpg`,
+      `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-32-1.jpg`,
+      `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-5-1.jpg`,
+      `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-3-1.jpg`,
+      `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-4-1.jpg`,
     ],
     bed: "1 King Size (1,8m x 2m)",
     size: "65 sqm",
@@ -112,10 +121,15 @@ const VILLAS: Room[] = [
   },
   {
     name: "Honeymoon Pool Villa",
+    // Re-synced with the live listing (Aug 2026) — same story as the
+    // Honeymoon Suite above.
     images: [
       `${UPLOADS}/2023/03/Honeymoon-Pool-Villa-5.webp`,
       `${UPLOADS}/2023/03/Honeymoon-Pool-Villa-3.webp`,
+      `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-8-1.jpg`,
       `${UPLOADS}/2023/03/Honeymoon-Pool-Villa-4.webp`,
+      `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-14-1.jpg`,
+      `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-12-1.jpg`,
     ],
     bed: "King Size (1,8m x 2m)",
     size: "250 sqm",
@@ -185,7 +199,7 @@ export default function UbudVillaPage() {
           eyebrow="Ubud"
           title="Luxury Suite & Villa in Ubud"
         />
-        <BookingSearchBar bookingHref={site.bookingHref} />
+        <BookingWidget site={site} />
 
         {/* The page's own opening paragraph carries the first RoomList's
             intro slot, so the copy keeps its position above the Suites without

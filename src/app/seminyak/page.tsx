@@ -3,7 +3,7 @@ import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
-import { BookingSearchBar } from "@/components/property/BookingSearchBar";
+import { BookingWidget } from "@/components/property/BookingWidget";
 import { AboutNarrative } from "@/components/property/AboutNarrative";
 import { LinkCardGrid } from "@/components/property/LinkCardGrid";
 import { TestimonialCarousel } from "@/components/property/TestimonialCarousel";
@@ -53,7 +53,7 @@ export default function SeminyakAboutPage() {
           eyebrow="Nyuh Bali Villas"
           title="Seminyak"
         />
-        <BookingSearchBar bookingHref={site.bookingHref} />
+        <BookingWidget site={site} />
 
         <AboutNarrative
           eyebrow="About Us"
@@ -146,7 +146,9 @@ export default function SeminyakAboutPage() {
               label: "Dreamy Honeymoon",
               href: "/seminyak/villa/honeymoon/packages",
               inScope: true,
-              imgSrc: `${UPLOADS}/2023/03/seminyak-slider.webp`,
+              // The hero already opens on `seminyak-slider`; this card is the
+              // honeymoon package's own photograph instead.
+              imgSrc: `${UPLOADS}/2023/02/Honeymoon-Getaway-Package.jpg`,
             },
             {
               label: "Culture Hideaway",
@@ -161,13 +163,17 @@ export default function SeminyakAboutPage() {
         <InstagramTeaser
           heading="What's happening @nyuhbalivillas"
           instagramHref="https://www.instagram.com/nyuhbalivillas/"
+          // Six of the property's own photographs that appear nowhere else on
+          // this page. The grid used to re-run the villa and Discover cards
+          // verbatim, so the page closed by showing every picture it had
+          // already shown — the opposite of "what's happening".
           images={[
-            `${UPLOADS}/2023/03/Seminyak-One-bedroom-pool-villa.webp`,
-            `${UPLOADS}/2023/03/Seminyak-slider-2.webp`,
-            `${UPLOADS}/2023/01/BBQ-seminyak-min-min-slider-1-_1__1.webp`,
-            `${UPLOADS}/2023/03/discover-spa.webp`,
-            `${UPLOADS}/2023/03/discover-explore-bali.webp`,
-            `${UPLOADS}/2023/01/stress-free-proposal-package.webp`,
+            `${UPLOADS}/2023/03/One-Bedroom-Pool-Villa-1.webp`,
+            `${UPLOADS}/2023/03/Honeymoon-Suite-Pool-Villa-4.webp`,
+            `${UPLOADS}/2023/03/Seminyak-Spa-1.webp`,
+            `${UPLOADS}/2023/03/Tour-Seminyak.webp`,
+            `${UPLOADS}/2023/03/seminyak-bbq.webp`,
+            `${UPLOADS}/2024/10/Sunset-Seminyak-1-Source_-Stephan-Despins.jpg`,
           ]}
         />
         <AwardsRow

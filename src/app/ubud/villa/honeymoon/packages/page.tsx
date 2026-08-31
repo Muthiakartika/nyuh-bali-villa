@@ -25,7 +25,7 @@ import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
-import { BookingSearchBar } from "@/components/property/BookingSearchBar";
+import { BookingWidget } from "@/components/property/BookingWidget";
 import { PackageList } from "@/components/property/PackageList";
 import { TestimonialCarousel } from "@/components/property/TestimonialCarousel";
 import { AwardsRow } from "@/components/property/AwardsRow";
@@ -38,9 +38,11 @@ export const metadata: Metadata = seo("/ubud/villa/honeymoon/packages");
 const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
+// Both of the old hero frames were also package photographs further down
+// the page. These two are the resort's own romance shots and appear only here.
 const HERO_IMAGES = [
-  `${UPLOADS}/2023/03/honeymoon-ubud.webp`,
-  `${UPLOADS}/2023/03/eat-pray-love.webp`,
+  `${UPLOADS}/2023/03/Honeymoon-Pool-Villa-1.webp`,
+  `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-28-1.jpg`,
 ];
 
 /**
@@ -62,7 +64,7 @@ export default function UbudRomancePage() {
           eyebrow="Offers"
           title="Ubud Romance"
         />
-        <BookingSearchBar bookingHref={site.bookingHref} />
+        <BookingWidget site={site} />
 
         <PackageList
           heading="Ubud Romance"

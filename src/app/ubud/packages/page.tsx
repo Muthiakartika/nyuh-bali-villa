@@ -24,7 +24,7 @@ import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
-import { BookingSearchBar } from "@/components/property/BookingSearchBar";
+import { BookingWidget } from "@/components/property/BookingWidget";
 import {
   PackageList,
   type PackageItem,
@@ -40,7 +40,9 @@ export const metadata: Metadata = seo("/ubud/packages");
 const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
-const HERO_IMAGES = [`${UPLOADS}/2023/03/honeymoon-ubud.webp`];
+// Not `honeymoon-ubud` — that is the Honeymoon Getaway Package's own
+// photograph, the first offer listed on this page.
+const HERO_IMAGES = [`${UPLOADS}/2025/01/ubud-slider-1-compress.webp`];
 
 // The live page's "Retreat" filter tab. These have no benefits list — each is
 // a pitch with an EXPLORE MORE link to a retreat detail page this project
@@ -134,7 +136,7 @@ export default function UbudPackagesPage() {
           eyebrow="Ubud"
           title="Offers"
         />
-        <BookingSearchBar bookingHref={site.bookingHref} />
+        <BookingWidget site={site} />
 
         <PackageList
           eyebrow="Offers"

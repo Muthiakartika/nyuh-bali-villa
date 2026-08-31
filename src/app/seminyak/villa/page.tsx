@@ -24,7 +24,7 @@ import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
-import { BookingSearchBar } from "@/components/property/BookingSearchBar";
+import { BookingWidget } from "@/components/property/BookingWidget";
 import { RoomList, type Room } from "@/components/property/RoomList";
 import { AmenityGrid } from "@/components/property/AmenityGrid";
 import { AwardsRow } from "@/components/property/AwardsRow";
@@ -36,9 +36,11 @@ export const metadata: Metadata = seo("/seminyak/villa");
 const site = PROPERTY_SITES.seminyak;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
+// One photograph of each villa type, chosen from outside the two sliders
+// below so the hero isn't a preview of the next screen.
 const HERO_IMAGES = [
-  `${UPLOADS}/2023/03/One-Bedroom-Pool-Villa-2.webp`,
-  `${UPLOADS}/2023/03/Honeymoon-Suite-Pool-Villa-1.webp`,
+  `${UPLOADS}/2023/03/One-Bedroom-Pool-Villa-3.webp`,
+  `${UPLOADS}/2023/03/Honeymoon-Suite-Pool-Villa-3.webp`,
 ];
 
 // Seminyak's inventory is two villa types, each a 3-photo slider on the live
@@ -90,7 +92,7 @@ export default function SeminyakVillaPage() {
           eyebrow="Seminyak"
           title="Seminyak Luxury Villas"
         />
-        <BookingSearchBar bookingHref={site.bookingHref} />
+        <BookingWidget site={site} />
 
         <RoomList
           eyebrow="Villas"

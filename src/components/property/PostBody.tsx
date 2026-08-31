@@ -240,7 +240,14 @@ function PointList({ ordered, items }: { ordered: boolean; items: PointItem[] })
  */
 export function PostBody({ post }: PostBodyProps) {
   const minutes = readingMinutes(post.blocks);
-  const blocks = toArticleBlocks(post.blocks);
+  // WordPress serves the featured image again as the article's first inline
+  // image on most posts. `PostPage` already runs it full-bleed as the hero, so
+  // rendering the block too put the same photograph on screen twice, a few
+  // hundred pixels apart. Drop it wherever it appears in the body — later
+  // photographs, which are genuinely different, are untouched.
+  const blocks = toArticleBlocks(post.blocks).filter(
+    (block) => !(block.kind === "image" && block.src === post.image),
+  );
   // The opening paragraph is set larger, as a lead-in. Anything after it is
   // ordinary body copy.
   const firstParagraph = blocks.findIndex((b) => b.kind === "paragraph");

@@ -24,6 +24,14 @@ type RoomDetailBodyProps = {
  * already used by `RoomList` on the listing pages.
  */
 export function RoomDetailBody({ room, site }: RoomDetailBodyProps) {
+  // The live gallery includes the photograph the page already opens on, so
+  // rendering it verbatim showed the same picture twice — full-bleed at the
+  // top and again as the gallery's first slide. The gallery keeps every other
+  // photograph, in the live order; nothing is lost from the page, it just
+  // isn't shown twice. Rooms whose hero sits outside the gallery are
+  // unaffected, so this is safe for all ten.
+  const gallery = room.gallery.filter((src) => src !== room.hero);
+
   return (
     <>
       <Section tone="sand">
@@ -44,7 +52,7 @@ export function RoomDetailBody({ room, site }: RoomDetailBodyProps) {
         <SectionHeading title="Gallery" />
         <Reveal delay={80} className="mt-8 md:mt-10">
           <ImageGallery
-            images={room.gallery}
+            images={gallery}
             alt={room.title}
             heightClassName="h-64 sm:h-80 md:h-[30rem]"
             sizes="(min-width: 1240px) 1240px, 100vw"
