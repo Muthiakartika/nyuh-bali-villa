@@ -37,11 +37,9 @@ export const metadata: Metadata = seo("/seminyak/villa/honeymoon/packages");
 const site = PROPERTY_SITES.seminyak;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
-// Not the Dreamy Honeymoon and Sweet Celebration photographs — those are the
-// first two packages listed below.
+// Photographs verified against this route on the live site, 2026-09-04.
 const HERO_IMAGES = [
-  `${UPLOADS}/2023/03/Honeymoon-Suite-Pool-Villa-6.webp`,
-  `${UPLOADS}/2023/03/Honeymoon-Suite-Pool-Villa-3.webp`,
+  `${UPLOADS}/2023/03/seminyak-slider.webp`,
 ];
 
 // The complimentary inclusions that close every Seminyak package verbatim.

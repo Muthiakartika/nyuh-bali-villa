@@ -8,6 +8,10 @@ import { AboutNarrative } from "@/components/property/AboutNarrative";
 import { LinkCardGrid } from "@/components/property/LinkCardGrid";
 import { TestimonialCarousel } from "@/components/property/TestimonialCarousel";
 import { InstagramTeaser } from "@/components/property/InstagramTeaser";
+import {
+  fetchInstagramPosts,
+  type InstagramPost,
+} from "@/components/property/instagramFeed";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { PROPERTY_SITES } from "@/data/properties";
 import { TESTIMONIALS } from "@/data/testimonials";
@@ -29,6 +33,59 @@ const HERO_IMAGES = [
   `${UPLOADS}/2023/03/home-seminyak.webp`,
 ];
 
+/**
+ * The Instagram grid until a Behold feed exists.
+ *
+ * Same relationship `BookingSearchBar` has to `BookingWidget`: a real,
+ * self-sufficient version of the thing, shown when the third party isn't
+ * there, rather than an empty strip where a section should be. It is replaced
+ * automatically the moment `instagramFeedUrl` is filled in — none of this
+ * needs deleting then, and it stays as the fallback if Behold is ever
+ * unreachable at build time.
+ *
+ * Every photograph is one the rest of this page doesn't use, per the
+ * no-image-twice rule — the hero, the "Best Price Guaranteed" plate and both
+ * card grids are drawn from different files entirely. The mix is deliberate:
+ * two villas, the spa, the in-villa BBQ and two of the island tours, so the
+ * row reads like the account it stands in for rather than six views of the
+ * same pool.
+ *
+ * No `permalink` on any of them — these are resort photographs, not posts we
+ * can point at, so each tile opens the profile instead.
+ */
+const INSTAGRAM_STILLS: InstagramPost[] = [
+  {
+    id: "still-honeymoon-suite-pool-villa",
+    imageUrl: `${UPLOADS}/2023/03/Honeymoon-Suite-Pool-Villa-1.webp`,
+    alt: "Private pool at the Honeymoon Suite Pool Villa, Nyuh Bali Villas Seminyak",
+  },
+  {
+    id: "still-one-bedroom-pool-villa",
+    imageUrl: `${UPLOADS}/2023/03/One-Bedroom-Pool-Villa-2.webp`,
+    alt: "One Bedroom Pool Villa at Nyuh Bali Villas Seminyak",
+  },
+  {
+    id: "still-seminyak-spa",
+    imageUrl: `${UPLOADS}/2023/03/Seminyak-Spa-2.webp`,
+    alt: "Treatment room at the Nyuh Bali Villas Seminyak spa",
+  },
+  {
+    id: "still-seminyak-bbq",
+    imageUrl: `${UPLOADS}/2023/03/seminyak-bbq.webp`,
+    alt: "BBQ dinner cooked by a private chef in the villa",
+  },
+  {
+    id: "still-tanah-lot",
+    imageUrl: `${UPLOADS}/2023/03/tanahlot.webp`,
+    alt: "Tanah Lot sea temple, a stop on the Exotic Sunset Tour",
+  },
+  {
+    id: "still-uluwatu",
+    imageUrl: `${UPLOADS}/2023/03/tour-uluwatu.webp`,
+    alt: "Uluwatu Temple above the Indian Ocean, a stop on the Romancing Uluwatu tour",
+  },
+];
+
 /*
  * Section order is unchanged from the original site, deliberately. The
  * redesign brief's whole premise is evolution rather than replacement: a
@@ -42,7 +99,20 @@ const HERO_IMAGES = [
  * dark is left to the chrome (the awards base and the footer) plus the small
  * offer plate inside the About section.
  */
-export default function SeminyakAboutPage() {
+/** One row of six, which is also the whole feed: Behold's free tier caps a
+ * feed at six posts, so this is not a slice of a longer one. */
+const INSTAGRAM_POST_COUNT = 6;
+
+export default async function SeminyakAboutPage() {
+  // Server-side and cached (see `fetchInstagramPosts`), so the photographs
+  // ship in this route's HTML and no Instagram request happens in the
+  // visitor's browser. Empty until `instagramFeedUrl` is filled in, or if
+  // Behold is unreachable at build time — `INSTAGRAM_STILLS` covers both.
+  const instagramPosts = await fetchInstagramPosts(
+    site.instagramFeedUrl,
+    INSTAGRAM_POST_COUNT,
+  );
+
   return (
     <>
       <PropertyHeader site={site} activeHref="/seminyak" />
@@ -72,6 +142,7 @@ export default function SeminyakAboutPage() {
             "Upgrade to floating breakfast",
           ]}
           contactEmail={site.contact.email}
+          imageSrc={`${UPLOADS}/2023/03/seminyak-best-price.webp`}
         />
 
         {/* The property's actual inventory, so it gets the widest cards — two
@@ -148,7 +219,7 @@ export default function SeminyakAboutPage() {
               inScope: true,
               // The hero already opens on `seminyak-slider`; this card is the
               // honeymoon package's own photograph instead.
-              imgSrc: `${UPLOADS}/2023/02/Honeymoon-Getaway-Package.jpg`,
+              imgSrc: `${UPLOADS}/2023/03/seminyak-slider.webp`,
             },
             {
               label: "Culture Hideaway",
@@ -163,18 +234,9 @@ export default function SeminyakAboutPage() {
         <InstagramTeaser
           heading="What's happening @nyuhbalivillas"
           instagramHref="https://www.instagram.com/nyuhbalivillas/"
-          // Six of the property's own photographs that appear nowhere else on
-          // this page. The grid used to re-run the villa and Discover cards
-          // verbatim, so the page closed by showing every picture it had
-          // already shown — the opposite of "what's happening".
-          images={[
-            `${UPLOADS}/2023/03/One-Bedroom-Pool-Villa-1.webp`,
-            `${UPLOADS}/2023/03/Honeymoon-Suite-Pool-Villa-4.webp`,
-            `${UPLOADS}/2023/03/Seminyak-Spa-1.webp`,
-            `${UPLOADS}/2023/03/Tour-Seminyak.webp`,
-            `${UPLOADS}/2023/03/seminyak-bbq.webp`,
-            `${UPLOADS}/2024/10/Sunset-Seminyak-1-Source_-Stephan-Despins.jpg`,
-          ]}
+          posts={
+            instagramPosts.length > 0 ? instagramPosts : INSTAGRAM_STILLS
+          }
         />
         <AwardsRow
           badges={[

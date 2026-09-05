@@ -76,6 +76,23 @@ export type PropertySite = {
     facebook: string;
     instagram: string;
   };
+  /**
+   * Behold feed URL backing this property's Instagram grid — the form is
+   * `https://feeds.behold.so/<id>`, copied from the feed's page in the Behold
+   * dashboard once the account is connected there.
+   *
+   * Public by design: it is the same URL Behold's own browser embeds fetch, so
+   * it belongs here beside the profile link rather than in an env file. There
+   * is no token and nothing to rotate.
+   *
+   * Empty or absent means no live feed. What the page does then is the page's
+   * call: Seminyak falls back to six hand-picked stills (`INSTAGRAM_STILLS` in
+   * its `page.tsx`), while Ubud and the spa — which have no grid at all — show
+   * just the heading and Follow button, as every property did before this
+   * existed. To light up Ubud (@nyuhbaliubud) or the spa (@mahamayaspa.ubud)
+   * later, give each its own feed and pass it the same way from its page.
+   */
+  instagramFeedUrl?: string;
   /** Property-specific booking-engine URL (each property has its own
    * `propertyId` query param), used by the "Book Your Stay" CTA and the
    * dismissible "Direct Booking Deals" corner widget. */
@@ -152,6 +169,12 @@ export const PROPERTY_SITES: Record<"seminyak" | "ubud", PropertySite> = {
       facebook: "https://www.facebook.com/nyuhbalivillas/",
       instagram: "https://www.instagram.com/nyuhbalivillas/",
     },
+    // ⬇ Paste the Behold feed URL between the quotes and the grid on
+    // /seminyak switches from its hand-picked stills to the live account —
+    // nothing else needs changing. It looks like
+    // "https://feeds.behold.so/zFgp2Jbbk23Ovf1ZUOhq". Behold's free tier caps a
+    // feed at 6 posts, which is exactly the single row the teaser renders.
+    instagramFeedUrl: "",
     bookingHref:
       "https://booking.nyuhbalivillas.com/inst/#home?propertyId=581MZlmJ8YVJgcICxbs034K4e3E7IANq0jI5ODU=&JDRN=Y",
     bookingWidgetId: "743MjIrhkhuhSVN3oZhK442Ix4NmBuZ8XKB6ByN9pQf5ODU=",

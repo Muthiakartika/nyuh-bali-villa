@@ -59,7 +59,6 @@ export const UBUD_ROMANCE_PACKAGES: PackageItem[] = [
   {
     name: "Stress-Free Proposal Package",
     images: [
-      `${UPLOADS}/2024/11/011A0124-Edit-min-min-min-1.jpg`,
       `${UPLOADS}/2023/03/ubud-dining-2.webp`,
     ],
     description:
@@ -80,7 +79,6 @@ export const UBUD_ROMANCE_PACKAGES: PackageItem[] = [
   {
     name: "Eat, Pray, and Love",
     images: [
-      `${UPLOADS}/2024/11/IMG_8918-Edit-min-1.jpg`,
       `${UPLOADS}/2023/03/eat-pray-love.webp`,
     ],
     description:

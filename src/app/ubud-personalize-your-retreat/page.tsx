@@ -20,7 +20,6 @@ import type { Metadata } from "next";
 import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
-import { PropertyHero } from "@/components/property/PropertyHero";
 import {
   InquiryForm,
   type InquiryField,
@@ -33,9 +32,7 @@ import { seo } from "@/data/seo";
 export const metadata: Metadata = seo("/ubud-personalize-your-retreat");
 
 const site = PROPERTY_SITES.ubud;
-const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
-const HERO_IMAGES = [`${UPLOADS}/2023/05/AW_06640-min.webp`];
 
 // The live form's seven numbered sections, field for field and in order. The
 // section numbers are kept in the labels because they are part of the live
@@ -197,12 +194,6 @@ export default function PersonalizeYourRetreatPage() {
     <>
       <PropertyHeader site={site} activeHref="/ubud/retreat/host-your-own" />
       <main>
-        <PropertyHero
-          images={HERO_IMAGES}
-          alt="Personalize your retreat at Ubud Nyuh Bali Resort"
-          eyebrow="Retreat"
-          title="Personalize Your Retreat"
-        />
 
         <Section tone="sand" width="narrow">
           <InquiryForm

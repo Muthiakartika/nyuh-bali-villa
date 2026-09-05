@@ -38,9 +38,10 @@ const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 const CULTURE_BASE = "/ubud/balinese-culture";
 
-// The rice-paddy drone shot belongs to the Complimentary Morning Walk entry
-// below, so the hero takes the temple pavilion instead of previewing it.
-const HERO_IMAGES = [`${UPLOADS}/2026/08/Nyuh-Bali-Ubud-31-1.jpg`];
+// Photographs verified against this route on the live site, 2026-09-04.
+const HERO_IMAGES = [
+  `${UPLOADS}/2024/11/DJI_0119-Edit-min-1.jpg`,
+];
 
 const ACTIVITIES: PackageItem[] = [
   {

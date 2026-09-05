@@ -4,6 +4,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
 import { InstagramIcon } from "@/components/ui/icons";
+import type { InstagramPost } from "@/components/property/instagramFeed";
 
 type InstagramTeaserProps = {
   heading: string;
@@ -12,25 +13,30 @@ type InstagramTeaserProps = {
    * follow link on each property's page rather than assuming they share
    * one account. */
   instagramHref: string;
-  /** A handful of photos already in use elsewhere on this property's pages,
-   * shown as a static Instagram-style grid. Deliberately a snapshot rather
-   * than a live feed — see the note below — so this is updated by hand and
-   * isn't expected to track the real account automatically. */
-  images?: string[];
+  /** The grid. Either the live feed fetched on the server by
+   * `fetchInstagramPosts`, or the hand-picked stills a page falls back to
+   * while no feed is connected — this component doesn't distinguish, which is
+   * what lets a page swap one for the other without touching this file.
+   *
+   * Omit it entirely and the section renders as heading + Follow button alone,
+   * which is what every property looked like before any grid existed. */
+  posts?: InstagramPost[];
 };
 
 /**
  * "What's happening @nyuhbalivillas" / "@nyuhbaliubud" / "@mahamayaspa.ubud".
  *
- * On the live site this is a Smash Balloon feed widget showing recent posts.
- * That needs an authenticated, ongoing connection to Instagram's API, which
- * this project doesn't have — so rather than faking a "live" feed, `images`
- * is an explicit, hand-picked snapshot (photos already used elsewhere on the
- * same property's pages, so no new assets are sourced for it). The client
- * plans to wire up a real feed later via Behold; this grid is a placeholder
- * with the same footprint, not a permanent scraping solution, so swapping it
- * out later is a one-line change at each call site rather than a rebuild of
- * this component.
+ * The live WordPress site runs a Smash Balloon widget here, which is a plugin
+ * and doesn't transfer. The replacement is Behold: it holds the authenticated
+ * Instagram connection and republishes the account as public JSON, which
+ * `instagramFeed.ts` reads on the server. The grid below is therefore ours —
+ * real posts, but rendered with this site's own tiles and in the server HTML,
+ * rather than drawn into the page by a vendor script.
+ *
+ * Only Seminyak carries a grid. Until its Behold feed exists it shows six
+ * hand-picked photographs of the resort in place of live posts — the page
+ * decides which, so nothing in here changes when the feed is connected. Ubud
+ * and the spa still render the heading-and-button form.
  *
  * The old version rendered a full dark band containing one heading and one
  * small text link floating in the middle of it: an almost-empty section that
@@ -47,7 +53,7 @@ type InstagramTeaserProps = {
 export function InstagramTeaser({
   heading,
   instagramHref,
-  images,
+  posts,
 }: InstagramTeaserProps) {
   return (
     // `space="none"` with explicit padding rather than the standard rhythm:
@@ -69,19 +75,22 @@ export function InstagramTeaser({
         </Reveal>
       </div>
 
-      {images?.length ? (
+      {posts?.length ? (
         <div className="mt-8 grid grid-cols-3 gap-1.5 sm:grid-cols-6 md:mt-10 md:gap-2">
-          {images.map((src, index) => (
-            <Reveal key={src} delay={index * 60}>
+          {posts.map((post, index) => (
+            <Reveal key={post.id} delay={index * 60}>
               <a
-                href={instagramHref}
+                // Stills carry no permalink (see `InstagramPost`), so they
+                // open the profile — the same destination as the button above,
+                // and the only honest one for a photograph that isn't a post.
+                href={post.permalink ?? instagramHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group/insta relative block aspect-square overflow-hidden"
               >
                 <Image
-                  src={src}
-                  alt=""
+                  src={post.imageUrl}
+                  alt={post.alt}
                   fill
                   sizes="(min-width: 640px) 16vw, 33vw"
                   className="object-cover transition-transform duration-700 ease-out group-hover/insta:scale-110"

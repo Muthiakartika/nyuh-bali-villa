@@ -43,11 +43,8 @@ export const metadata: Metadata = seo("/ubud/retreat/host-your-own");
 const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
-// Not `AW_06570-min-2`: that is the same photograph as the
-// `AW_06570-min.webp` the Rooftop Yoga Shala card carries below (the live
-// page runs it in both places), and one picture twice on a page is exactly
-// what the client asked us to stop doing.
-const HERO_IMAGES = [`${UPLOADS}/2023/10/how-to-host-retreat-4.jpg`];
+// Photographs verified against this route on the live site, 2026-09-04.
+const HERO_IMAGES = [`${UPLOADS}/2023/05/AW_06570-min-2.jpg`];
 
 const RETREAT_EMAIL = "retreat@ubudnyuhbali.com";
 
@@ -76,13 +73,13 @@ const INTRO: PackageItem[] = [
 const MEALS: PackageItem[] = [
   {
     name: "Healthy Meals",
-    images: [`${UPLOADS}/2023/11/One-of-our-healthy-food.png`],
+    images: [`${UPLOADS}/2023/04/bg-retreat.webp`],
     description:
       "Just like you, we agree that luxury retreats should provide both healthy and tasty food. Here at Nyuh Bali, we believe that good food should come from fresh ingredients with respect to nature. All meals are healthy and delicious and are served in our healthy dining restaurant, The Retreat. We provide a variety of cuisine options, including Balinese, western, vegan, vegetarian, gluten-free, and Mediterranean.",
   },
   {
     name: "Retreat Specialist",
-    images: [`${UPLOADS}/2023/10/how-to-host-retreat-8.jpg`],
+    images: [`${UPLOADS}/2023/05/AW_06640-min.webp`],
     description:
       "We are dedicated to supporting your retreat in many ways for a memorable experience for you and your students. Just tell us anything in your mind, and we will explore all possibilities.",
     benefitsHeading: "Some options that could be added to your program",

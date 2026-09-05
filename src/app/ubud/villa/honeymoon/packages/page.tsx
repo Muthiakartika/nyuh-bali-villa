@@ -38,11 +38,9 @@ export const metadata: Metadata = seo("/ubud/villa/honeymoon/packages");
 const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
-// Both of the old hero frames were also package photographs further down
-// the page. These two are the resort's own romance shots and appear only here.
+// Photographs verified against this route on the live site, 2026-09-04.
 const HERO_IMAGES = [
-  `${UPLOADS}/2023/03/Honeymoon-Pool-Villa-1.webp`,
-  `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-28-1.jpg`,
+  `${UPLOADS}/2023/03/honeymoon-ubud.webp`,
 ];
 
 /**

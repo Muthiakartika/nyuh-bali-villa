@@ -18,11 +18,7 @@ export const metadata: Metadata = seo("/ubud");
 const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
-// Unlike Seminyak's 3-slide hero, the live Ubud page's slider genuinely only
-// has one slide (confirmed: only one `[id^="slide-"]` element exists, reusing
-// the homepage's Ubud panel photo). PropertyHero now drops its controls and
-// auto-advance entirely for a single image, rather than rendering inert arrows
-// and a lone indicator the way the old slider did.
+// Photographs verified against this route on the live site, 2026-09-04.
 const HERO_IMAGES = [`${UPLOADS}/2025/01/home-ubud-compress.webp`];
 
 export default function UbudAboutPage() {
@@ -56,6 +52,7 @@ export default function UbudAboutPage() {
             "Upgrade to floating breakfast",
           ]}
           contactEmail={site.contact.email}
+          imageSrc={`${UPLOADS}/2026/08/Nyuh-Bali-Ubud-26-1.jpg`}
         />
 
         {/* All three of Ubud's grids genuinely run at three columns on the live
@@ -109,7 +106,7 @@ export default function UbudAboutPage() {
               label: "Experience",
               href: "/ubud/balinese-culture",
               inScope: true,
-              imgSrc: `${UPLOADS}/2023/03/ubud-walk-1.webp`,
+              imgSrc: `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-31-1.jpg`,
             },
           ]}
         />
@@ -152,17 +149,6 @@ export default function UbudAboutPage() {
         <InstagramTeaser
           heading="What's happening @nyuhbaliubud"
           instagramHref="https://www.instagram.com/nyuhbaliubud/"
-          // Six of the resort's own photographs that appear nowhere else on
-          // this page — the grid used to repeat the Stay and Discover cards
-          // one band later, so the page ended by showing everything twice.
-          images={[
-            `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-26-1.jpg`,
-            `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-18-1.jpg`,
-            `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-31-1.jpg`,
-            `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-28-1.jpg`,
-            `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-24-1.jpg`,
-            `${UPLOADS}/2024/11/DJI_0228-min.jpg`,
-          ]}
         />
         <AwardsRow
           variant="marquee"

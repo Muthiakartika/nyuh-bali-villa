@@ -36,11 +36,10 @@ export const metadata: Metadata = seo("/seminyak/villa");
 const site = PROPERTY_SITES.seminyak;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
-// One photograph of each villa type, chosen from outside the two sliders
-// below so the hero isn't a preview of the next screen.
+// Photographs verified against this route on the live site, 2026-09-04.
 const HERO_IMAGES = [
-  `${UPLOADS}/2023/03/One-Bedroom-Pool-Villa-3.webp`,
-  `${UPLOADS}/2023/03/Honeymoon-Suite-Pool-Villa-3.webp`,
+  `${UPLOADS}/2023/03/One-Bedroom-Pool-Villa-2.webp`,
+  `${UPLOADS}/2023/03/Honeymoon-Suite-Pool-Villa-1.webp`,
 ];
 
 // Seminyak's inventory is two villa types, each a 3-photo slider on the live

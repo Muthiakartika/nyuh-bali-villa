@@ -112,8 +112,7 @@ const RETREAT_STANDARD: BulletGroup[] = [
  * showing the other three, which is what `otherPersonalisedRetreats` builds.
  *
  * The live site uses a different thumbnail for the same retreat depending on
- * which page you are on; one image per retreat is used here instead, so no
- * photograph can end up on a page twice. */
+ * which page you are on; the two route-specific variants are preserved below. */
 export const PERSONALISED_RETREATS = [
   {
     slug: "retreat/couples",
@@ -141,7 +140,15 @@ export const PERSONALISED_RETREATS = [
  * empty array for anything that isn't one of the four. */
 export function otherPersonalisedRetreats(slug: string) {
   if (!PERSONALISED_RETREATS.some((item) => item.slug === slug)) return [];
-  return PERSONALISED_RETREATS.filter((item) => item.slug !== slug);
+  return PERSONALISED_RETREATS.filter((item) => item.slug !== slug).map((item) => {
+    if (slug === "retreat/luxury/balinese-healing" && item.slug === "retreat/luxury/holistic-balancing") {
+      return { ...item, image: `${U}2023/03/ubudspa.webp` };
+    }
+    if (slug === "retreat/luxury/new-beginning" && item.slug === "retreat/couples") {
+      return { ...item, image: `${U}2023/02/yoga-4.jpg` };
+    }
+    return item;
+  });
 }
 
 export const EXPERIENCES: Experience[] = [
@@ -1079,6 +1086,7 @@ export const EXPERIENCES: Experience[] = [
     eyebrow: "Wellness",
     title: "Sound Healing",
     paragraphs: [
+      "Private Sound Healing — The whole session will be 75 minutes and consists of : Foot Ritual, Consultation with Practitioner, Sound Healing Session, Ginger Tea with Lemongrass.",
       "Sound is known as one of the most natural forms of healing known to mankind and has long been realized to promote much deeper than just relaxation, like releasing emotional blockage, reducing stress, improving sleep, and inducing higher states of consciousness. The session will begin with a foot ritual followed by short consultation with our healing practitioner to understand your concern and deliver personalized therapy.. After that, simply lie down and close your eyes to receive the sounds in the private healing journey through the Tibetan singing bowl and various instruments. If you wish, our practitioner will place a singing bowl on your body for a deeper healing benefit.",
       "The public class will be held in our rooftop yoga shala on Thursday, Saturday, and Sunday from 17.00 - 18.00 exclusively for our in-house guests. For a more tailored experience, we suggest you to book the private session.",
       "Due to limited availability, we apologize that the Sound Healing is only exclusively available for our in-house guests. Please book one week in advance to retreat@ubudnyuhbali.com",
@@ -1159,19 +1167,23 @@ export const EXPERIENCES: Experience[] = [
     eyebrow: "Wellness",
     title: "Life Coach with Psychologist",
     paragraphs: [
+      "If you constantly feel anxious or overwhelmed",
       "If you want to improve yourself but don't know where to start",
+      "If you can't find your purpose & meaning in life",
+      "If you want to gain self-confidence",
       "Then this private life coach will be beneficial for you. Our certified psychologist will guide you through the intimate session to detach from what does not serve you anymore and live more mindfully afterward. To respect your privacy, the session will be held in your villa or room balcony or any place in our resort that your soul is comfortable with.",
       "Due to limited availability, we apologize that this counseling is only exclusively available for our in-house guests from May 2023. Please book one week in advance to retreat@ubudnyuhbali.com",
-      "Jane M is a wellness coach with a passionate commitment to a way of a healthy lifestyle, mental health, and well-being. Having a Master’s degree in Social Psychology from a prestigious university in Indonesia help her to understand better about human behavior and social environment. She has been practicing yoga for more than 10 years and deepen her knowledge in Northern India to be certified as 500-h Yoga Alliance yoga teacher.",
     ],
     inclusions: [],
     price: "Available at IDR 1.690.000 ++ for private session",
     faq: [
 
     ],
-    gallery: [
-      `${U}2023/07/IS_06591-min.jpg`,
-    ],
+    gallery: [],
+    team: {
+      heading: "Meet our Teacher",
+      members: [{ name: "Jane M", photo: `${U}2023/07/IS_06591-min.jpg`, bio: "Jane M is a wellness coach with a passionate commitment to a way of a healthy lifestyle, mental health, and well-being. Having a Master’s degree in Social Psychology from a prestigious university in Indonesia help her to understand better about human behavior and social environment. She has been practicing yoga for more than 10 years and deepen her knowledge in Northern India to be certified as 500-h Yoga Alliance yoga teacher." }],
+    },
     hero: `${U}2023/05/IS_06578-min.webp`,
   },
   {
@@ -1180,6 +1192,8 @@ export const EXPERIENCES: Experience[] = [
     eyebrow: "Wellness",
     title: "Reiki Healing",
     paragraphs: [
+      "How long is the session? The whole session will be 75 minutes and consists of : Foot Ritual, Reiki Healing, Consultation with Practitioner, Fresh Coconut Drink.",
+      "Who will get the benefit from Reiki Healing? Promoting deep relaxation and reduces stress and tension. Alleviates tiredness and aching muscles. Relieves pain and discomfort. Helps to overcome fear and anxiety.",
       "Reiki treatment combines the Universal Life Force with the warmth and reassurance of the human touch. Reiki is not a massage, the practitioner will place the palm of her hands gently in the different position on your body. Reiki heals by flowing through the affected parts of the energy field and charging them with positive energy. It raises the vibratory level of the energy field in and around the physical body where the negative thoughts and feelings are attached. This causes the negative energy to break apart and fall away.",
       "If you often feel anxiety, overthinking, easily agitated, or even sadness, you will get benefit by having reiki healing. It is recommended for :",
       "This spiritual journey welcomes you with a foot ritual by soaking and massaging your foot with our spa therapist in a flower-filled bath. The practitioner then will meet you privately for spiritual consultation to know your problem and what things may hold you back. The practitioner will then place them gently and passively in different positions over or on your body which usually begins at the head. Usually, you will feel a pleasant warming heat on and inside the body area that is being treated. This deeply warming relaxation will enable energy blockages within the body to be released and this can show in many ways, such as a desire to continually swallow, cough or sneeze, a rumbling stomach or a gentle rush of energy down the legs. These are great indications that the treatment is working and should not cause any concern. Most people feel nothing during the treatment because they have fallen asleep, but they will wake-up feeling deeply relaxed and refreshed.",
@@ -1204,6 +1218,7 @@ export const EXPERIENCES: Experience[] = [
     eyebrow: "Wellness",
     title: "Chakra Healing",
     paragraphs: [
+      "How long is the session? The whole session will be 75 minutes and consists of : Foot Ritual, Chakra Healing, Consultation with Practitioner, Fresh Coconut Drink.",
       "Immerse yourself in a transformative healing experience at Ubud Nyuh Bali Resort with our Chakra Healing Therapy. This unique practice utilizes seven Tibetan singing bowls, each specifically attuned to one of the body’s primary chakras, to restore harmony and balance to your energy centers. The session is handled by an experienced practitioner, who skillfully plays the bowls to produce therapeutic sound vibrations that resonate with each chakra. These soothing frequencies help to release blockages, realign your energy flow, and promote deep relaxation. The therapy works to rejuvenate your physical, emotional, and spiritual well-being, leaving you with a renewed sense of balance and clarity.",
       "Due to limited availability, we apologize that the Chakra Healing is only exclusively available for our in-house guests. Please book one week in advance to retreat@ubudnyuhbali.com",
       "Gusti is a native Balinese Yoga & Healing teacher. Born into a family where yoga is a daily ritual, yoga has been a strong influence in his life since childhood. He is passionate about exploring the power of breath and its connection to each yoga pose and your overall well-being. As a breathwork teacher and initiator of healing and vinyasa breathwork, he guides your breath to enable transformational processes to occur. Additionally, Gusti is skilled in chakra healing, utilizing his expertise to help restore harmony and balance to your energy centers.",
@@ -1224,7 +1239,7 @@ export const EXPERIENCES: Experience[] = [
     eyebrow: "Wellness",
     title: "Free Access to Our Home Gym",
     paragraphs: [
-      "Here at Nyuh Bali, we understand your regular workout cannot be put on standby just because you are away from home. We have created a home gym to keep you in shape during the holiday. Enjoy complimentary unlimited access to our fitness center that features a spectrum of weight and state of the art machinery such as treadmill, multi gym station, cross trainer, exercise bike, abs training bench, pilates ball, yoga matt and also some weights. Providing things you could need, our home gym is completed with mineral water, and towel.",
+      "Here at Nyuh Bali, we understand your regular workout cannot be put on standby just because you are away from home. We have created a home gym to keep you in shape during the holiday. Enjoy complimentary unlimited access to our fitness center that features a spectrum of weight and state of the art machinery such as treadmill, multi gym station, cross trainer, exercise bike, abs training bench, pilates ball, yoga matt and also some weights. Providing things you could need, our home gym is completed with mineral water, and towel. Proper fitness attire is required. No boots, no heels, no sandals, no street shoes, or bare feet are allowed.",
     ],
     inclusions: [],
     faq: [
@@ -1235,7 +1250,7 @@ export const EXPERIENCES: Experience[] = [
       `${U}2024/12/DW_03583-min-min.jpg`,
       `${U}2024/12/DW_03555-min.jpg`,
     ],
-    hero: `${U}2024/12/DW_03575-min-min.jpg`,
+    hero: `${U}2026/08/Nyuh-Bali-Ubud-23-1.jpg`,
   },
   {
     slug: "balinese-culture/balinese-class",
@@ -1243,6 +1258,7 @@ export const EXPERIENCES: Experience[] = [
     eyebrow: "Culture",
     title: "Daily Authentic Balinese Class",
     paragraphs: [
+      "Every day from 03.00 PM",
       "Instead of just giving information in the picture, nyuh bali presents a wealth of activities that reflect the heritage traditions of a Balinese village. We invite you to experience how becoming a Balinese.",
       "Discover how to make the canang sari, daily offering that made from young coconut leaves, and flowers. The handmade offerings are a sacred form of gratitude for what is and a wish for peace in the world. We praise to the God, Sang Hyang Widhi Wasa through this offering in every morning, surely you also can join with us.",
       "If you wonder how to make Balinese seasoning, we are more than happy to share the secret. Some boiled potatoes are provided so that you can taste the result of your own creation directly",
@@ -1267,8 +1283,14 @@ export const EXPERIENCES: Experience[] = [
     title: "Market Tour and Private Balinese Cooking Lesson",
     paragraphs: [
       "Although it seems that Balinese cooking is complicated, in fact, it is not true, if you know the types of herbs you are going to use in the cooking and how to use them. This learning adventure involves a visit to the local market, where our chef will share some information how to select the fresh ingredients you will need for cooking Balinese. You will be guided step by step to transform the ingredients into delicious Balinese food.",
-      "Balinese salad of steamed vegetables mixed with spiced grated coconut",
-      "Tofu, mushroom, Balinese yellow spices cooked using banana leaf wrapping",
+      "COOKING CLASS MENU",
+      "Sayur Urab — Balinese salad of steamed vegetables mixed with spiced grated coconut",
+      "Ayam Sambal Matah — Shredded chicken with raw balinese shallot salsa",
+      "Balinese Satay Lilit — Spiced minced chicken that wrapped around lemongrass sticks",
+      "Tofu & Mushroom Pepes — Tofu, mushroom, Balinese yellow spices cooked using banana leaf wrapping",
+      "Balinese Style Egg — Boiled Egg cooked with Balinese spices and sauce",
+      "Dadar Gulung — Indonesian rolled pancaked filled with grated coconut",
+      "*Vegetarian option is also available",
       "Get ready to surprise your friends by your ability in cooking Balinese. A certificate will be awarded to you at the end of the class. The class is also followed by a relaxing lunch eating your very own creations",
       "Available at IDR 1.500.000 ++ for up to 2 people in private session.",
       "Inclusions : A visit to to the local market, welcome drink, cooking class, dining with your own creation, certificate, and our signature recipe",
@@ -1311,6 +1333,7 @@ export const EXPERIENCES: Experience[] = [
     eyebrow: "Culture",
     title: "Complimentary Rice Paddies Walk",
     paragraphs: [
+      "Every day from 07.00 AM",
       "“ An early morning walk is a blessing for the whole day ”-Henry David Thoreau",
       "Start your awesome day by morning walking to the silungan village; it will be a good exercise and worth experience. You can inhale pure oxygen, enjoy rice field view and many of coconut (nyuh) trees. We invite you to see the other side of Bali, how locals live from your own perspective. You will learn and observe how rice is made as most of the farmer still do traditional ways in farming. For your comfort, we recommend you to wear anti-slip shoes because there are plenty of muddy paths",
     ],

@@ -50,10 +50,10 @@ const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 // tour booking, so linking to it is the honest reading of that intent.
 const BOOKING_ANCHOR = "#tour-booking";
 
-// `Tour-Seminyak` is the private-car photograph, which is what the two
-// open-ended charters below actually depict — so it goes to one of them
-// rather than being the hero *and* both of them, as it was.
-const HERO_IMAGES = [`${UPLOADS}/2024/10/Sunset-Seminyak-1-Source_-Stephan-Despins.jpg`];
+// Photographs verified against this route on the live site, 2026-09-04.
+const HERO_IMAGES = [
+  `${UPLOADS}/2023/03/Tour-Seminyak.webp`,
+];
 
 // The two open-ended charters. They have no photographs of their own on the
 // live page, which used the page header image for both; here they take one
@@ -78,7 +78,7 @@ const DAY_TRAVELLING: PackageItem[] = [
   },
   {
     name: "Full Day Travelling",
-    images: [`${UPLOADS}/2023/03/Campuhan-ridge-walk.jpeg`],
+    images: [`${UPLOADS}/2023/03/Tour-Seminyak.webp`],
     meta: [
       { label: "Price", value: "IDR 1.250.000 ++ / car" },
       { label: "Duration", value: "10 hours" },

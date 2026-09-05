@@ -53,7 +53,12 @@ export default function UbudContactPage() {
               />
             </div>
 
-            <ContactForm />
+            <div>
+              <p className="mb-6 text-[17px] leading-relaxed font-light text-text">
+                Please complete this form to reach us. Our team will get back to you within 24 hours.
+              </p>
+              <ContactForm />
+            </div>
           </div>
         </Section>
       </main>

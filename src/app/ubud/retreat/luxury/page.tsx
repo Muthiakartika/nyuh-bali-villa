@@ -104,7 +104,7 @@ const PROGRAMS: PackageItem[] = [
   },
   {
     name: "New Beginning",
-    images: [`${UPLOADS}/2023/04/New-Beginning-1-min-1.jpg`],
+    images: [`${UPLOADS}/2023/04/New-Beginning-min-min.jpg`],
     description:
       "When life seems doesn't favor you, most people can't stop blaming themselves and end up feeling worthless. We design the comprehensive retreat to reset through encouragement to love yourself again. You will be guided by a certified psychologist in the intimate session to detach from what does not serve you anymore. Embrace the life change by transforming into healthy lifestyle through healthy cooking class, private yoga class, spa treatment and flower bath",
     ctas: [

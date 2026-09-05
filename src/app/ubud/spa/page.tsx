@@ -42,14 +42,8 @@ const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
 // Mahamaya Spa takes bookings through Fresha, not the resort's own booking
 // engine, so every "Book Now" and the closing "Reserve Now" point here.
-// Each treatment category's thumbnail. The live page has no per-tab
-// photograph, so these are chosen here — and four of them are the resort's own
-// square category images (`spa-ubud-massage`, `-body-treatment`,
-// `-hair-therapy`, `-bathing`), which is what they were made for.
-//
-// They had drifted: MASSAGE and MEDI FACIAL shared one massage close-up, and
-// ROMANTIC SPA FOR COUPLE was showing the facial photograph. Each category now
-// shows its own treatment, and no photograph appears twice on the page.
+// Category thumbnails follow the live SPA tabs. Both package sections share
+// the live SPA PACKAGE photograph.
 const RESERVE_HREF =
   "https://www.fresha.com/a/mahamaya-spa-at-ubud-nyuh-bali-resort-bali-lodtunduh-gianyar-regency-jalan-raya-silungan-kgeujm85/booking?menu=true";
 
@@ -65,7 +59,7 @@ const at = (label: string) => ({ label, href: RESERVE_HREF });
 const TREATMENTS: TreatmentCategory[] = [
   {
     name: "MASSAGE",
-    image: `${UPLOADS}/2023/03/spa-ubud-massage.jpg`,
+    image: `${UPLOADS}/2024/11/011A0972-Edit-min-1.jpg`,
     treatments: [
       {
         name: "Bamboo Drainage Massage",
@@ -203,7 +197,7 @@ const TREATMENTS: TreatmentCategory[] = [
   },
   {
     name: "BATHING RITUAL",
-    image: `${UPLOADS}/2023/03/spa-ubud-bathing.jpg`,
+    image: `${UPLOADS}/2024/11/011A1131-Edit-min-1.jpg`,
     treatments: [
       {
         name: "Tropical Balinese Flower Bath",
@@ -312,7 +306,7 @@ const TREATMENTS: TreatmentCategory[] = [
   },
   {
     name: "SPA PACKAGE — ROMANTIC SPA FOR COUPLE",
-    image: `${UPLOADS}/2024/11/011A1009-Edit-min.jpg`,
+    image: `${UPLOADS}/2024/11/011A0857-Edit-min.jpg`,
     treatments: [
       {
         name: "Rama & Shinta Refresher",
@@ -446,6 +440,18 @@ const TREATMENTS: TreatmentCategory[] = [
         description:
           "A best friend for sensitive, this oxygen facial effectively quenches dehydrated, travel-weary, or sun-damaged skin. After deep cleansing, your skin will be exfoliated to remove the dead skin. Essential nutrients are infused to promote hydration following skin oxygenation to stimulate blood flow and encourage healthy production of newer skin cells. The session ends with double face mask and PDT light therapy to soothe and calm the sensitive skin.",
       },
+      {
+        name: "Bootylicious",
+        options: [at("75 mins | IDR 1.050.000")],
+        includes: ["Deep Cleansing with Oxygeneo – Jet Peel - Steam & Extraction - Soft Peel- ing – Booty Mask – Firming Body Serum with Ultrasound—Radiofrequency - Firming Body Cream with Booty Massage"],
+        description: "Wear your bikini worry-free. Our bootylicious facial comes with everything to treat your booty the love it deserves. This treatment involves deep cleanse, radiofrequency, extraction, booty massage, soft peeling, soothing hydro jelly mask, and firming body",
+      },
+      {
+        name: "Backne Care",
+        options: [at("75 mins | IDR 1.290.000")],
+        includes: ["Cleansing – Steam & Extraction – High Frequency - Soft Peeling – LED - Peel Off Mask – Se- rum Infusion with Ultrasound - Oil-Free Acne Moisturizer"],
+        description: "Calming and acne-preventing treatment that helps you to smooth and resurface your back. Our back acne treatment involves deep cleansing, extraction, and soft peels to exfoliate the dead skin gently and unclog the pores. Blue light therapy is also used to treat inflammation and accelerate the healing process. The treatment finished calming hydro mask and serum infusion. Get ready to rock and shine with your backless dress.",
+      },
     ],
   },
 ];
@@ -517,16 +523,6 @@ export default function UbudSpaPage() {
         <InstagramTeaser
           heading="What's happening @mahamayaspa.ubud"
           instagramHref="https://www.instagram.com/mahamayaspa.ubud/"
-          // Mahamaya's own photographs, none of which is one of the menu
-          // thumbnails above — the grid used to repeat all six of them.
-          images={[
-            `${UPLOADS}/2024/11/011A0972-Edit-min-1.jpg`,
-            `${UPLOADS}/2024/11/011A1131-Edit-min-1.jpg`,
-            `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-27-1.jpg`,
-            `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-29-1.jpg`,
-            `${UPLOADS}/2023/11/Website-Pictures-3.jpg`,
-            `${UPLOADS}/2023/05/Flower-bath-spa.webp`,
-          ]}
         />
 
         <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />

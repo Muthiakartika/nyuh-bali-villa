@@ -38,12 +38,10 @@ export const metadata: Metadata = seo("/seminyak/dining");
 const site = PROPERTY_SITES.seminyak;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
-// Both of these were also the Dining Experience and BBQ photographs further
-// down, so the page opened on two pictures it then repeated. These two are the
-// restaurant's own and appear only here.
+// Photographs verified against this route on the live site, 2026-09-04.
 const HERO_IMAGES = [
-  `${UPLOADS}/2023/02/Bbq.jpg`,
-  `${UPLOADS}/2023/01/Romantic-Dinner-honeymoon-gateway.webp`,
+  `${UPLOADS}/2023/03/ezgif.com-gif-maker-1.webp`,
+  `${UPLOADS}/2023/03/ezgif.com-gif-maker.webp`,
 ];
 
 // Menu PDFs, hosted on the WordPress uploads folder like the images.

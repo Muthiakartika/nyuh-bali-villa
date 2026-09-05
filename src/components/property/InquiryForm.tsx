@@ -26,7 +26,7 @@ export type InquiryField =
       required?: boolean;
     }
   /** Multiple choice — the wedding entertainment list. */
-  | { kind: "checkbox"; name: string; label: string; options: string[] };
+  | { kind: "checkbox"; name: string; label: string; options: string[]; required?: boolean };
 
 type InquiryFormProps = {
   heading: string;
@@ -129,14 +129,14 @@ export function InquiryForm({
                   {field.options.map((option) => (
                     <label
                       key={option}
-                      className="flex cursor-pointer items-center gap-2.5"
+                      className="flex cursor-pointer items-start gap-2.5"
                     >
                       <input
                         type={isRadio ? "radio" : "checkbox"}
                         name={field.name}
                         value={option}
-                        required={isRadio ? field.required : undefined}
-                        className="h-4 w-4 accent-primary"
+                        required={field.required}
+                        className="mt-1 h-4 w-4 shrink-0 accent-primary"
                       />
                       {option}
                     </label>

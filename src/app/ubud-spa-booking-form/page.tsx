@@ -20,67 +20,28 @@ import type { Metadata } from "next";
 import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
-import { PropertyHero } from "@/components/property/PropertyHero";
 import {
   InquiryForm,
-  type InquiryField,
 } from "@/components/property/InquiryForm";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { Section } from "@/components/ui/Section";
 import { PROPERTY_SITES } from "@/data/properties";
 import { seo } from "@/data/seo";
+import { SPA_RESERVATION_FIELDS } from "@/data/spa-reservations";
 
 export const metadata: Metadata = seo("/ubud-spa-booking-form");
 
 const site = PROPERTY_SITES.ubud;
-const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
-const HERO_IMAGES = [`${UPLOADS}/2023/03/ezgif.com-gif-maker-19.webp`];
 
-// Same CF7 field set as the Seminyak form. The treatment list here is the
-// category level rather than all ~40 individual treatments — the live form
-// groups them under seven tabs, and the full menu with every price lives on
-// /ubud/spa. As with Seminyak, the live "Reservation Review" running total is
-// deliberately not reproduced: it is a pricing calculator with no backend here.
-const FIELDS: InquiryField[] = [
-  {
-    kind: "checkbox",
-    name: "package",
-    label: "Treatment category",
-    options: [
-      "Massage",
-      "Body Treatment",
-      "Hair",
-      "Bath",
-      "Self Indulgence",
-      "Couple Package",
-      "Facial",
-    ],
-  },
-  { kind: "date", name: "preferred-date", label: "Date", required: true },
-  {
-    kind: "radio",
-    name: "nop",
-    label: "Number of persons",
-    options: ["1", "2", "3", "4", "5", "6"],
-  },
-  { kind: "textarea", name: "special-request", label: "Special Request" },
-  { kind: "text", name: "your-name", label: "Name", required: true },
-  { kind: "email", name: "your-email", label: "Email", required: true },
-  { kind: "tel", name: "your-phone", label: "Phone", required: true },
-];
+// Full treatment choices, rates, booking times, and agreement from this form.
+const FIELDS = SPA_RESERVATION_FIELDS["ubud-spa-booking-form"];
 
 export default function UbudSpaBookingFormPage() {
   return (
     <>
       <PropertyHeader site={site} activeHref="/ubud/spa" />
       <main>
-        <PropertyHero
-          images={HERO_IMAGES}
-          alt="Spa booking at Mahamaya Spa, Ubud Nyuh Bali Resort"
-          eyebrow="SPA"
-          title="Spa Booking"
-        />
 
         <Section tone="sand" width="narrow">
           <InquiryForm

@@ -16,6 +16,24 @@ const nextConfig: NextConfig = {
         hostname: "nyuhbalivillas.com",
         pathname: "/wp-content/uploads/**",
       },
+      // The Instagram grid on /seminyak. Behold re-encodes each post to WebP
+      // and serves it from its own CDN rather than passing Instagram's URLs
+      // through — which is what makes these safe to prerender at all:
+      // Instagram's own CDN links are signed and expire within days, so a
+      // statically generated page holding them would rot. Both hostnames
+      // appear in Behold's payloads. `pathname` stays open because that CDN
+      // keys by content hash, so there is no stable prefix to scope to the way
+      // the uploads folder gives one above.
+      {
+        protocol: "https",
+        hostname: "cdn.behold.pictures",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "behold.pictures",
+        pathname: "/**",
+      },
     ],
   },
 };

@@ -6,22 +6,18 @@
 // Current Next.js Route:
 // src/app/life-coach-retreat-benefits/page.tsx
 //
-// Post top-level, tanpa prefix blog — persis seperti di WordPress.
+// Legacy article URL now serves the same service as /ubud/wellness/life-coach.
 //
-// Jika slug berubah: ubah `path` di src/data/posts.ts dan rename folder ini.
+// Keep the legacy URL and service content aligned with WordPress.
 // ======================================================
 
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { PostPage, findPost } from "@/components/property/PostPage";
+import WellnessClassPage from "@/app/ubud/wellness/[...class]/page";
 import { seo } from "@/data/seo";
-
-const PATH = "/life-coach-retreat-benefits";
-const post = findPost(PATH);
 
 export const metadata: Metadata = seo("/life-coach-retreat-benefits");
 
-export default function StandalonePostPage() {
-  if (!post) notFound();
-  return <PostPage post={post} />;
+export default function LifeCoachBenefitsPage() {
+  // WordPress now serves the life-coach service at this legacy article URL.
+  return <WellnessClassPage params={Promise.resolve({ class: ["life-coach"] })} />;
 }

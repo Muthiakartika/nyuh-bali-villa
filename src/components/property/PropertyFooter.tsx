@@ -79,7 +79,7 @@ export function PropertyFooter({ site }: PropertyFooterProps) {
               className="relative h-[46px] w-[128px] shrink-0"
             >
               <Image
-                src={site.logoSrc}
+                src="https://nyuhbalivillas.com/wp-content/uploads/2022/12/Logo-Nyuh-Bali.png"
                 alt=""
                 fill
                 sizes="128px"

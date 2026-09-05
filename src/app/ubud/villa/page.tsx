@@ -36,18 +36,11 @@ export const metadata: Metadata = seo("/ubud/villa");
 const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
-// The live page opens straight onto the booking widget with no hero image at
-// all. This build gives every property page the same opening as the About
-// pages (see the brief: keep the existing hero layout), using the room
-// photography that already belongs to this page rather than introducing a new
-// image. Heading and eyebrow are strings the page already carries.
-// Each of the three is a photograph of a room this page lists, but one that
-// the room's own slider below does *not* use — a hero that reappears 400px
-// further down as a thumbnail reads as the page having run out of pictures.
+// Photographs verified against this route on the live site, 2026-09-04.
 const HERO_IMAGES = [
-  `${UPLOADS}/2023/03/Two-Bedroom-Pool-Villa-hero.webp`,
-  `${UPLOADS}/2023/03/ubud-One-Bedroom-Deluxe-Pool-Villa.webp`,
-  `${UPLOADS}/2023/03/Suite-3.webp`,
+  `${UPLOADS}/2023/03/Two-Bedroom-Pool-Villa-2.webp`,
+  `${UPLOADS}/2023/03/ubud-One-Bedroom-Deluxe-Pool-Villa-6.webp`,
+  `${UPLOADS}/2023/03/Suite-6.webp`,
 ];
 
 // The live page splits its inventory into two categories, each with its own

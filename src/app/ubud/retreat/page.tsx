@@ -36,8 +36,8 @@ export const metadata: Metadata = seo("/ubud/retreat");
 const site = PROPERTY_SITES.ubud;
 const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
 
-// Kept off the Personalised Luxury Retreat photograph immediately below it.
-const HERO_IMAGES = [`${UPLOADS}/2023/05/AW_06575-min.webp`];
+// Photographs verified against this route on the live site, 2026-09-04.
+const HERO_IMAGES = [`${UPLOADS}/2023/04/Photo-15-01-23-14.18.24-1-min.jpg`];
 
 // The live page is three programmes, each a photograph, a pitch and an
 // EXPLORE MORE link. All three destinations are now built here, and they are
@@ -54,7 +54,7 @@ const RETREAT_PROGRAMS: PackageItem[] = [
   },
   {
     name: "Host your Retreat",
-    images: [`${UPLOADS}/2023/05/AW_06640-min-Copy.jpg`],
+    images: [`${UPLOADS}/2023/05/TD004090-min-Copy.jpg`],
     description:
       "Inspired by the philosophy of the coconut tree, or Nyuh in the Balinese language, which has many functions to shore up people’s lives, we aim to provide a one-stop service to create the luxury retreat ambiance you are looking for. Presenting you with two spacious yoga shala, five-star accommodations, two swimming pools, healthy foods, and spa service, we ensure that you and your students will feel the power of positive transformation. With an experienced and caring team member, you could focus on delivering your retreat program, and we would be pleased to take care of the rest.",
     ctas: [
@@ -67,7 +67,7 @@ const RETREAT_PROGRAMS: PackageItem[] = [
   },
   {
     name: "Wellness Facilities",
-    images: [`${UPLOADS}/2023/05/TD004090-min-Copy.jpg`],
+    images: [`${UPLOADS}/2026/08/Nyuh-Bali-Ubud-24-1.jpg`],
     description:
       "Whether you wish to heal your trauma, rejuvenate, or just relax, Ubud has something for everyone. Discover our Ubud luxury wellness and retreat facilities to provide a wide range of opportunities for you to find your inner peace",
     ctas: [{ label: "Explore More", href: "/ubud/wellness", inScope: true }],

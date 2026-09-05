@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
@@ -24,6 +25,7 @@ type AboutNarrativeProps = {
   promoCode: string;
   perks: string[];
   contactEmail: string;
+  imageSrc?: string;
 };
 
 /**
@@ -57,6 +59,7 @@ export function AboutNarrative({
   promoCode,
   perks,
   contactEmail,
+  imageSrc,
 }: AboutNarrativeProps) {
   return (
     // The one band whose top and bottom are *not* meant to match. Its `pt` isn't
@@ -155,6 +158,11 @@ export function AboutNarrative({
               line, so it reads as a roomier card rather than as a gap. At the
               widths where the plate is the taller column it's a no-op. */}
           <div className="flex h-full flex-col justify-center bg-ink p-5 md:p-6">
+            {imageSrc ? (
+              <div className="relative mb-6 aspect-[3/2] overflow-hidden">
+                <Image src={imageSrc} alt={heading} fill sizes="(min-width: 1024px) 480px, 100vw" className="object-cover" />
+              </div>
+            ) : null}
             <h3 className="font-heading text-[22px] leading-tight font-light text-white md:text-[26px]">
               Best Price Guaranteed
             </h3>
