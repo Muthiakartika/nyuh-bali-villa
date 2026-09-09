@@ -1,21 +1,22 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
-import { ContactForm } from "@/components/property/ContactForm";
-import { PROPERTY_SITES } from "@/data/properties";
-import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { seo } from "@/data/seo";
+import { ContactPanel } from "@/components/property/ContactPanel";
+import ManagedPage from "@/components/sanity/ManagedPage";
+import { getPropertySite } from "@/sanity/lib/content";
+import { resolvePageMetadata } from "@/sanity/lib/metadata";
 
-const site = PROPERTY_SITES.ubud;
 
 // Not copied verbatim — the live /ubud/contact/ never actually renders its
 // own <title> (see the routing-bug note below), so this follows the exact
 // naming pattern Seminyak's real title uses ("Seminyak - Contact Us -
 // Nyuh Bali") rather than leaving it untitled.
-export const metadata: Metadata = seo("/ubud/contact");
+export async function generateMetadata(): Promise<Metadata> {
+  // A published `page` document's SEO wins; otherwise this stays
+  // exactly the live site's title and description from src/data/seo.ts.
+  return resolvePageMetadata("/ubud/contact");
+}
 
 // The live nyuhbalivillas.com/ubud/contact/ currently misroutes — every
 // navigation method (direct URL, clicking the real footer link) lands on the
@@ -26,41 +27,24 @@ export const metadata: Metadata = seo("/ubud/contact");
 // WordPress REST API (wp-json/wp/v2/media?search=contact-us), which returned a
 // real "contact-us-ubud.webp" attachment uploaded specifically for this page —
 // so this uses that real asset with Ubud's own header/footer/form.
-export default function UbudContactPage() {
+export default async function UbudContactPage() {
+  const site = await getPropertySite("ubud");
   return (
     <>
       <PropertyHeader site={site} activeHref="/ubud/contact" />
       <main>
-        <Section tone="sand" space="loose">
-          <SectionHeading
+        {/* The page body is one component so a CMS-authored contact
+            page renders the same markup — publish a `page` document at
+            this path and its sections take over. */}
+        <ManagedPage path="/ubud/contact" fallbackProperty="ubud">
+          <ContactPanel
             eyebrow={site.label}
-            title="Contact Us"
-            as="h1"
-            size="display"
+            heading="Contact Us"
+            imageSrc="https://nyuhbalivillas.com/wp-content/uploads/2023/03/contact-us-ubud.webp"
+            imageAlt="Nyuh Bali Villas Ubud"
+            intro={"Please complete this form to reach us. Our team will get back to you within 24 hours."}
           />
-
-          {/* Splits at `lg`, not `md` — see the note on Seminyak's contact
-              page: at 768 the photo became a 288×540 sliver. */}
-          <div className="mt-10 grid gap-9 md:mt-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
-            <div className="relative min-h-[380px] w-full overflow-hidden lg:sticky lg:top-24 lg:h-[540px] lg:self-start">
-              <Image
-                src="https://nyuhbalivillas.com/wp-content/uploads/2023/03/contact-us-ubud.webp"
-                alt="Nyuh Bali Villas Ubud"
-                fill
-                sizes="(min-width: 768px) 560px, 100vw"
-                className="object-cover"
-                priority
-              />
-            </div>
-
-            <div>
-              <p className="mb-6 text-[17px] leading-relaxed font-light text-text">
-                Please complete this form to reach us. Our team will get back to you within 24 hours.
-              </p>
-              <ContactForm />
-            </div>
-          </div>
-        </Section>
+        </ManagedPage>
       </main>
       <PropertyFooter site={site} />
       <DirectBookingDeals bookingHref={site.bookingHref} />

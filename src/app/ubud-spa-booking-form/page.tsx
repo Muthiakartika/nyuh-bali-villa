@@ -25,19 +25,23 @@ import {
 } from "@/components/property/InquiryForm";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { Section } from "@/components/ui/Section";
-import { PROPERTY_SITES } from "@/data/properties";
-import { seo } from "@/data/seo";
 import { SPA_RESERVATION_FIELDS } from "@/data/spa-reservations";
+import { getPropertySite } from "@/sanity/lib/content";
+import { resolvePageMetadata } from "@/sanity/lib/metadata";
 
-export const metadata: Metadata = seo("/ubud-spa-booking-form");
+export async function generateMetadata(): Promise<Metadata> {
+  // A published `page` document's SEO wins; otherwise this stays
+  // exactly the live site's title and description from src/data/seo.ts.
+  return resolvePageMetadata("/ubud-spa-booking-form");
+}
 
-const site = PROPERTY_SITES.ubud;
 
 
 // Full treatment choices, rates, booking times, and agreement from this form.
 const FIELDS = SPA_RESERVATION_FIELDS["ubud-spa-booking-form"];
 
-export default function UbudSpaBookingFormPage() {
+export default async function UbudSpaBookingFormPage() {
+  const site = await getPropertySite("ubud");
   return (
     <>
       <PropertyHeader site={site} activeHref="/ubud/spa" />
@@ -45,6 +49,8 @@ export default function UbudSpaBookingFormPage() {
 
         <Section tone="sand" width="narrow">
           <InquiryForm
+            // The only heading on this page, so it is the page title.
+            headingAs="h1"
             heading="Spa Booking"
             fields={FIELDS}
             submitLabel="Send"

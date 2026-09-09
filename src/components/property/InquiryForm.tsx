@@ -30,6 +30,17 @@ export type InquiryField =
 
 type InquiryFormProps = {
   heading: string;
+  /**
+   * Which heading level the title takes. `h2` by default, because on the
+   * wedding and tour pages this form is one band among several and the hero
+   * already carries the page's `h1`.
+   *
+   * The three standalone form pages have no hero, so their form title *is* the
+   * page title and must be the `h1` — a page with no `h1` gives a screen
+   * reader nothing to announce it by. It changes the level only: the size and
+   * the gold rule stay exactly as they are.
+   */
+  headingAs?: "h1" | "h2";
   fields: InquiryField[];
   submitLabel?: string;
   /** Shown in place of the form once it has been "sent". */
@@ -54,6 +65,7 @@ type InquiryFormProps = {
  */
 export function InquiryForm({
   heading,
+  headingAs = "h2",
   fields,
   submitLabel = "Send",
   confirmation = "Thank you for reaching out — we'll get back to you shortly.",
@@ -67,7 +79,7 @@ export function InquiryForm({
     setIsSubmitted(true);
   }
 
-  const title = <SectionHeading title={heading} />;
+  const title = <SectionHeading title={heading} as={headingAs} />;
 
   if (isSubmitted) {
     return (

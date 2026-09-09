@@ -34,6 +34,15 @@ const nextConfig: NextConfig = {
         hostname: "behold.pictures",
         pathname: "/**",
       },
+      // Sanity's image pipeline, for anything an editor uploads rather than
+      // hotlinks. Scoped to the image asset path rather than the whole host,
+      // for the same reason the uploads folder above is scoped: keeping the
+      // allow-list as narrow as what is actually referenced.
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+        pathname: "/images/**",
+      },
     ],
   },
 };

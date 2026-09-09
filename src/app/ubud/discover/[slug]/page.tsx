@@ -17,16 +17,23 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostPage, findPost } from "@/components/property/PostPage";
-import { POSTS } from "@/data/posts";
-import { seo } from "@/data/seo";
+import { getPostPaths } from "@/sanity/lib/content";
+import { resolveDocumentMetadata } from "@/sanity/lib/metadata";
 
 const PREFIX = "/ubud/discover";
-const ITEMS = POSTS.filter((p) => p.path.startsWith(PREFIX + "/"));
-
 type Params = { slug: string };
 
-export function generateStaticParams(): Params[] {
-  return ITEMS.map((p) => ({ slug: p.path.slice(PREFIX.length + 1) }));
+/**
+ * Paths come from Sanity when posts are published there and from
+ * src/data/posts.ts otherwise — see getPostPaths. `dynamicParams = false`
+ * makes this list authoritative, so a post published only in the CMS has to
+ * appear here or it would 404.
+ */
+export async function generateStaticParams(): Promise<Params[]> {
+  const paths = await getPostPaths();
+  return paths
+    .filter((path) => path.startsWith(PREFIX + "/"))
+    .map((path) => ({ slug: path.slice(PREFIX.length + 1) }));
 }
 
 export const dynamicParams = false;
@@ -36,9 +43,10 @@ export async function generateMetadata({
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  // Title and description come from the live site, keyed by published
-  // path — see src/data/seo.ts.
-  return seo(`${PREFIX}/${(await params).slug}`);
+  // The published post's own SEO fields win; anything it leaves empty falls
+  // back to the live site's title and description in src/data/seo.ts.
+  const path = `${PREFIX}/${(await params).slug}`;
+  return resolveDocumentMetadata(path, await findPost(path));
 }
 
 export default async function BlogPostPage({
@@ -46,7 +54,7 @@ export default async function BlogPostPage({
 }: {
   params: Promise<Params>;
 }) {
-  const post = findPost(`${PREFIX}/${(await params).slug}`);
+  const post = await findPost(`${PREFIX}/${(await params).slug}`);
   if (!post) notFound();
   return <PostPage post={post} />;
 }

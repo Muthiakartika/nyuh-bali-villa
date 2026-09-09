@@ -2,19 +2,24 @@ import type { Metadata } from "next";
 import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { LegalSection } from "@/components/legal/LegalSection";
-import { PROPERTY_SITES } from "@/data/properties";
-import { PRIVACY_POLICY_SECTIONS } from "@/data/legal";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { seo } from "@/data/seo";
+import { getLegalPage, getPropertySite } from "@/sanity/lib/content";
+import { resolvePageMetadata } from "@/sanity/lib/metadata";
 
-export const metadata: Metadata = seo("/privacy-policy");
+export async function generateMetadata(): Promise<Metadata> {
+  // A published `page` document's SEO wins; otherwise this stays
+  // exactly the live site's title and description from src/data/seo.ts.
+  return resolvePageMetadata("/privacy-policy");
+}
 
 // See terms-conditions/page.tsx for why this hard-codes the Ubud site rather
 // than taking a `site` prop — same reasoning applies here.
-const site = PROPERTY_SITES.ubud;
 
-export default function PrivacyPolicyPage() {
+export default async function PrivacyPolicyPage() {
+  const site = await getPropertySite("ubud");
+  // Published legal copy wins; otherwise src/data/legal.ts.
+  const { sections } = await getLegalPage("/privacy-policy");
   return (
     <>
       <PropertyHeader site={site} activeHref="/privacy-policy" />
@@ -24,7 +29,7 @@ export default function PrivacyPolicyPage() {
           <SectionHeading title="Privacy Policy" as="h1" size="display" />
 
           <div className="mt-11 flex flex-col gap-10 md:mt-14">
-            {PRIVACY_POLICY_SECTIONS.map((section) => (
+            {sections.map((section) => (
               <LegalSection key={section.heading} section={section} />
             ))}
           </div>

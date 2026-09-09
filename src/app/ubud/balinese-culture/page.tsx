@@ -26,110 +26,53 @@ import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
 import {
   PackageList,
-  type PackageItem,
+  
 } from "@/components/property/PackageList";
 import { AwardsRow } from "@/components/property/AwardsRow";
-import { PROPERTY_SITES } from "@/data/properties";
-import { seo } from "@/data/seo";
+import ManagedPage from "@/components/sanity/ManagedPage";
+import { getPropertySite } from "@/sanity/lib/content";
+import { resolvePageMetadata } from "@/sanity/lib/metadata";
+import {
+  
+  
+  HERO_IMAGES,
+  ACTIVITIES,
+} from "@/data/pages/ubud-culture";
 
-export const metadata: Metadata = seo("/ubud/balinese-culture");
-
-const site = PROPERTY_SITES.ubud;
-const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
-const CULTURE_BASE = "/ubud/balinese-culture";
-
-// Photographs verified against this route on the live site, 2026-09-04.
-const HERO_IMAGES = [
-  `${UPLOADS}/2024/11/DJI_0119-Edit-min-1.jpg`,
-];
-
-const ACTIVITIES: PackageItem[] = [
-  {
-    name: "Balinese Cultural Night",
-    images: [`${UPLOADS}/2024/10/Balinese-Dance.jpg`],
-    meta: [
-      { label: "When", value: "Every Saturday from 19.30-20.30" },
-      { label: "Price", value: "at IDR 490.000++/person" },
-    ],
-    description:
-      "Experience the charm of Balinese culture at our Cultural Night. Enjoy a delectable four-course dinner of mouthwatering Balinese cuisine. Be captivated by traditional dance performances, and join in the fun with a lively Joget. Immerse yourself in an unforgettable evening where every bite and every dance celebrates the spirit of Bali.",
-  },
-  {
-    name: "Balinese Rindik Performance",
-    images: [`${UPLOADS}/2025/07/Rindik-2-1.jpg`],
-    meta: [
-      { label: "When", value: "Every Tuesday from 19.00-21.00" },
-      {
-        label: "Price",
-        value: "Complimentary for guests dining at Lumbini Restaurant",
-      },
-    ],
-    description:
-      "Immerse yourself in the calming sounds of Balinese Rindik and bamboo flute, performed live every Tuesday at Ubud Nyuh Bali Resort. Rindik, a traditional Balinese bamboo xylophone, blends beautifully with the soft notes of the flute to create a soothing atmosphere that reflects the island’s harmony and grace. This experience is complimentary for guests dining at Lumbini Restaurant.",
-  },
-  {
-    name: "Melukat - Balinese Purification Ceremony",
-    images: [`${UPLOADS}/2023/03/melukat-1.webp`],
-    description:
-      "Derived from lukat, which means purify, Melukat aims to refine mind inside human body from the bad elements. This ceremony is mostly held after bad things happened to someone, like they got sick, had been in an accident, or merely feel restless.",
-    ctas: [
-      {
-        label: "Details",
-        href: `${CULTURE_BASE}/melukat-purification-ceremony`,
-        inScope: true,
-      },
-    ],
-  },
-  {
-    name: "Complimentary Morning Walk",
-    images: [`${UPLOADS}/2024/11/DJI_0119-Edit-min-1.jpg`],
-    description:
-      "Every day from 07.00 AM. “An early morning walk is a blessing for the whole day? -Henry David Thoreau. Start your awesome day by morning walking to the silungan village; it will be a good exercise and worth experience.",
-    ctas: [
-      {
-        label: "Details",
-        href: `${CULTURE_BASE}/rice-field-walk`,
-        inScope: true,
-      },
-    ],
-  },
-  {
-    name: "Daily Authentic Balinese Class",
-    images: [`${UPLOADS}/2023/05/IS_06654-min.webp`],
-    description:
-      "Every day from 03.00 PM Instead of just giving information in the picture, nyuh bali presents a wealth of activities that reflect the heritage traditions of a Balinese village. We invite you to experience how becoming a Balinese.",
-    ctas: [
-      {
-        label: "Details",
-        href: `${CULTURE_BASE}/balinese-class`,
-        inScope: true,
-      },
-    ],
-  },
-];
+export async function generateMetadata(): Promise<Metadata> {
+  // A published `page` document's SEO wins; otherwise this stays
+  // exactly the live site's title and description from src/data/seo.ts.
+  return resolvePageMetadata("/ubud/balinese-culture");
+}
 
 /** Ubud — Culture (titled "Experience" in WordPress). Five cultural
  * activities rendered through the shared `PackageList`. */
-export default function UbudCulturePage() {
+export default async function UbudCulturePage() {
+  const site = await getPropertySite("ubud");
   return (
     <>
       <PropertyHeader site={site} activeHref="/ubud/balinese-culture" />
       <main>
-        <PropertyHero
-          images={HERO_IMAGES}
-          alt="Authentic Balinese activities at Ubud Nyuh Bali Resort"
-          eyebrow="Ubud"
-          title="Authentic Balinese Activity"
-        />
+        {/* Everything below is the fallback: publish a `page`
+            document at this path and its sections render
+            instead, with the chrome unchanged. */}
+        <ManagedPage path="/ubud/balinese-culture" fallbackProperty="ubud">
+          <PropertyHero
+            images={HERO_IMAGES}
+            alt="Authentic Balinese activities at Ubud Nyuh Bali Resort"
+            eyebrow="Ubud"
+            title="Authentic Balinese Activity"
+          />
 
-        <PackageList
-          eyebrow="Culture"
-          heading="Authentic Balinese Activity"
-          packages={ACTIVITIES}
-          tone="sand"
-        />
+          <PackageList
+            eyebrow="Culture"
+            heading="Authentic Balinese Activity"
+            packages={ACTIVITIES}
+            tone="sand"
+          />
 
-        <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
+          <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
+        </ManagedPage>
       </main>
       <PropertyFooter site={site} />
       <DirectBookingDeals bookingHref={site.bookingHref} />

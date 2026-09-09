@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { InstagramFeedGrid } from "@/components/property/InstagramFeedGrid";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
@@ -21,6 +22,10 @@ type InstagramTeaserProps = {
    * Omit it entirely and the section renders as heading + Follow button alone,
    * which is what every property looked like before any grid existed. */
   posts?: InstagramPost[];
+  /** Live feed path. When set, `posts` becomes the loading/failure fallback. */
+  feedEndpoint?: string;
+  feedLimit?: number;
+  feedColumns?: 3 | 4 | 6;
 };
 
 /**
@@ -54,7 +59,43 @@ export function InstagramTeaser({
   heading,
   instagramHref,
   posts,
+  feedEndpoint,
+  feedLimit,
+  feedColumns,
 }: InstagramTeaserProps) {
+  // The stills (or Behold posts) this band already had, kept as the fallback
+  // the live grid shows while it loads and if the feed is unreachable.
+  const staticGrid = posts?.length ? (
+    <div className="mt-8 grid grid-cols-3 gap-1.5 sm:grid-cols-6 md:mt-10 md:gap-2">
+      {posts.map((post, index) => (
+        <Reveal key={post.id} delay={index * 60}>
+          <a
+            // Stills carry no permalink (see `InstagramPost`), so they open
+            // the profile — the same destination as the button above, and the
+            // only honest one for a photograph that isn't a post.
+            href={post.permalink ?? instagramHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group/insta relative block aspect-square overflow-hidden"
+          >
+            <Image
+              src={post.imageUrl}
+              alt={post.alt}
+              fill
+              sizes="(min-width: 640px) 16vw, 33vw"
+              className="object-cover transition-transform duration-700 ease-out group-hover/insta:scale-110"
+            />
+            <span
+              aria-hidden
+              className="absolute inset-0 flex items-center justify-center bg-ink/0 opacity-0 transition-all duration-300 group-hover/insta:bg-ink/50 group-hover/insta:opacity-100"
+            >
+              <InstagramIcon className="h-6 w-6 text-white" />
+            </span>
+          </a>
+        </Reveal>
+      ))}
+    </div>
+  ) : null;
   return (
     // `space="none"` with explicit padding rather than the standard rhythm:
     // this band is the lead-in to the awards row below it, so it is
@@ -75,37 +116,17 @@ export function InstagramTeaser({
         </Reveal>
       </div>
 
-      {posts?.length ? (
-        <div className="mt-8 grid grid-cols-3 gap-1.5 sm:grid-cols-6 md:mt-10 md:gap-2">
-          {posts.map((post, index) => (
-            <Reveal key={post.id} delay={index * 60}>
-              <a
-                // Stills carry no permalink (see `InstagramPost`), so they
-                // open the profile — the same destination as the button above,
-                // and the only honest one for a photograph that isn't a post.
-                href={post.permalink ?? instagramHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group/insta relative block aspect-square overflow-hidden"
-              >
-                <Image
-                  src={post.imageUrl}
-                  alt={post.alt}
-                  fill
-                  sizes="(min-width: 640px) 16vw, 33vw"
-                  className="object-cover transition-transform duration-700 ease-out group-hover/insta:scale-110"
-                />
-                <span
-                  aria-hidden
-                  className="absolute inset-0 flex items-center justify-center bg-ink/0 opacity-0 transition-all duration-300 group-hover/insta:bg-ink/50 group-hover/insta:opacity-100"
-                >
-                  <InstagramIcon className="h-6 w-6 text-white" />
-                </span>
-              </a>
-            </Reveal>
-          ))}
-        </div>
-      ) : null}
+      {feedEndpoint ? (
+        <InstagramFeedGrid
+          endpoint={feedEndpoint}
+          instagramHref={instagramHref}
+          limit={feedLimit}
+          columns={feedColumns}
+          fallback={staticGrid}
+        />
+      ) : (
+        staticGrid
+      )}
     </Section>
   );
 }

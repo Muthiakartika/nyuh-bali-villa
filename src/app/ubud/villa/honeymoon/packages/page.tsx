@@ -29,19 +29,21 @@ import { BookingWidget } from "@/components/property/BookingWidget";
 import { PackageList } from "@/components/property/PackageList";
 import { TestimonialCarousel } from "@/components/property/TestimonialCarousel";
 import { AwardsRow } from "@/components/property/AwardsRow";
-import { PROPERTY_SITES } from "@/data/properties";
+import ManagedPage from "@/components/sanity/ManagedPage";
 import { UBUD_OFFER_QUOTES, UBUD_ROMANCE_PACKAGES } from "@/data/packages";
-import { seo } from "@/data/seo";
+import { getPackageSet } from "@/sanity/lib/content";
+import { getPropertySite } from "@/sanity/lib/content";
+import { resolvePageMetadata } from "@/sanity/lib/metadata";
+import {
+  
+  HERO_IMAGES,
+} from "@/data/pages/ubud-romance";
 
-export const metadata: Metadata = seo("/ubud/villa/honeymoon/packages");
-
-const site = PROPERTY_SITES.ubud;
-const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
-
-// Photographs verified against this route on the live site, 2026-09-04.
-const HERO_IMAGES = [
-  `${UPLOADS}/2023/03/honeymoon-ubud.webp`,
-];
+export async function generateMetadata(): Promise<Metadata> {
+  // A published `page` document's SEO wins; otherwise this stays
+  // exactly the live site's title and description from src/data/seo.ts.
+  return resolvePageMetadata("/ubud/villa/honeymoon/packages");
+}
 
 /**
  * Ubud — Romance. The live page is the Offers page's Romance tab published on
@@ -49,30 +51,40 @@ const HERO_IMAGES = [
  * heading. Both routes are kept because the WordPress site has both, and both
  * read their content from data/packages.ts.
  */
-export default function UbudRomancePage() {
+export default async function UbudRomancePage() {
+  const site = await getPropertySite("ubud");
+  // One published set feeds both romance routes, exactly as
+  // UBUD_ROMANCE_PACKAGES does today — see src/data/packages.ts.
+  const romancePackages =
+    (await getPackageSet("ubud-romance")) ?? UBUD_ROMANCE_PACKAGES;
   return (
     <>
       {/* No nav item matches this route, so nothing is marked current — the
           same situation as the Contact pages, which the Ubud menu also omits. */}
       <PropertyHeader site={site} activeHref="/ubud/villa/honeymoon/packages" />
       <main>
-        <PropertyHero
-          images={HERO_IMAGES}
-          alt="Romantic honeymoon packages at Ubud Nyuh Bali Resort"
-          eyebrow="Offers"
-          title="Ubud Romance"
-        />
-        <BookingWidget site={site} />
+        {/* Everything below is the fallback: publish a `page`
+            document at this path and its sections render
+            instead, with the chrome unchanged. */}
+        <ManagedPage path="/ubud/villa/honeymoon/packages" fallbackProperty="ubud">
+          <PropertyHero
+            images={HERO_IMAGES}
+            alt="Romantic honeymoon packages at Ubud Nyuh Bali Resort"
+            eyebrow="Offers"
+            title="Ubud Romance"
+          />
+          <BookingWidget site={site} />
 
-        <PackageList
-          heading="Ubud Romance"
-          packages={UBUD_ROMANCE_PACKAGES}
-          tone="sand"
-        />
+          <PackageList
+            heading="Ubud Romance"
+            packages={romancePackages}
+            tone="sand"
+          />
 
-        <TestimonialCarousel testimonials={UBUD_OFFER_QUOTES} />
+          <TestimonialCarousel testimonials={UBUD_OFFER_QUOTES} />
 
-        <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
+          <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
+        </ManagedPage>
       </main>
       <PropertyFooter site={site} />
       <DirectBookingDeals bookingHref={site.bookingHref} />

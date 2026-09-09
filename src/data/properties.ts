@@ -5,8 +5,15 @@
 // Centralizing it here means a page component just looks up `PROPERTY_SITES.seminyak`
 // instead of every component re-typing addresses and phone numbers.
 
+/**
+ * The two resorts, named once. Every type below that is keyed by property —
+ * and every Sanity document that belongs to one — refers to this rather than
+ * respelling the union, so adding a third property is a single edit.
+ */
+export type PropertySlug = "seminyak" | "ubud";
+
 export type Property = {
-  slug: "seminyak" | "ubud";
+  slug: PropertySlug;
   label: string;
   href: string;
 };

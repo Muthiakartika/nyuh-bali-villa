@@ -91,16 +91,24 @@ export function AboutNarrative({
         {/* Right column, spanning both rows: the narrative, its closing
             tagline, and the CTA.
 
-            `lg:justify-between` is what lands the button on the same baseline
-            as the offer plate opposite it. The column is a stretched grid item,
-            so its height is the full two rows; pushing the CTA block to the
-            bottom means the button's bottom edge and the plate's bottom edge
-            are the same line at any width, instead of the button floating a
-            dozen pixels short wherever the narrative happened to stop. The
-            `mt-6` below stays as the *minimum* gap — `justify-between` only
-            ever adds to it, so this can't collapse the narrative onto the
-            tagline on a narrow column. */}
-        <div className="flex flex-col lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:justify-between">
+            **It used to carry `lg:justify-between`**, which pushed the CTA to
+            the bottom of the column so the button's bottom edge landed exactly
+            on the offer plate's. That held only while the two columns were
+            close in height. Once the plate gained a photograph the left column
+            grew ~300px taller, and because *all* the spare height pools into
+            one gap, the Ubud page opened a **432px void** between the last line
+            of the narrative and "Plan Now" — measured at 1440, and the first
+            thing the client asked about. Aligned edges are not worth a hole
+            that size, so the closing block now simply follows the narrative at
+            `mt-6` and the plate is allowed to run lower than the button.
+
+            **It sits in row 2, beside the plate — it does not span both rows.**
+            Spanning started the narrative level with the heading, which put its
+            first line a heading's height *above* the top edge of the offer
+            plate opposite; the client asked for the text to line up with that
+            box. The heading now has row 1 to itself and the two tall blocks
+            share row 2, so their top edges are the same line. */}
+        <div className="flex flex-col lg:col-start-2 lg:row-start-2">
           {/* The measure is capped only while the section is stacked: at 768 the
               paragraphs would otherwise run the full 704px container, ~83
               characters a line. Above `lg` the column itself is the measure, so
@@ -119,10 +127,11 @@ export function AboutNarrative({
             ))}
           </Reveal>
 
-          {/* The tagline and the button are one closing block: `mt-6` is the
-              minimum distance from the narrative above (see `justify-between`
-              on the column — any spare column height lands here), and the `gap`
-              is the distance between the line and the button itself. */}
+          {/* The tagline and the button are one closing block: `mt-6` is its
+              distance from the narrative above — a real gap now, not a minimum
+              that spare column height pours into (see the note on the column
+              above) — and the `gap` is the distance between the line and the
+              button itself. */}
           <Reveal delay={200} className="mt-6 flex flex-col items-start gap-8">
             {tagline ? (
               // Set in the handwriting face rather than the heading face: this

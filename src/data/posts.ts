@@ -6,7 +6,11 @@
 // raw HTML keeps the blog inside this site's own typography and avoids
 // dangerouslySetInnerHTML.
 //
-// GENERATED from the live site. Files that consume this:
+// GENERATED from the live site, with one exception: `categories` and
+// `POST_CATEGORIES` are hand-assigned here, because WordPress has no topical
+// taxonomy to import (see the comment on `PostCategory`).
+//
+// Files that consume this:
 //   src/components/property/PostBody.tsx
 //   src/components/property/PostGrid.tsx
 //   src/app/**/discover/[slug]/page.tsx and the standalone post routes
@@ -21,6 +25,68 @@ export type PostBlock =
   | { kind: "list"; items: string[] }
   | { kind: "image"; src: string };
 
+/**
+ * A blog category.
+ *
+ * **Not the live site's taxonomy.** WordPress has exactly two categories here,
+ * `ubud-news` (16 posts) and `seminyak-news` (2), and no tags at all — a split
+ * that duplicates `Post.property` and reads as nothing on a card. These are
+ * topical instead, and every label is a string the site already uses in its own
+ * navigation ("Stay", "Wellness", "Retreat", "SPA", "Romance", "Explore Bali",
+ * "About Us"), so the blog gains a taxonomy without inventing brand copy.
+ *
+ * The same seven become `category` documents in Sanity, and a post document
+ * references them; `toPost` in src/sanity/lib/content.ts hands whatever the CMS
+ * returns straight through, so an editor can add or rename one without a code
+ * change.
+ */
+export type PostCategory = {
+  /** URL-safe id, and the Sanity document's slug. */
+  slug: string;
+  /** The label a card shows. */
+  title: string;
+  /** Studio-only helper text — nothing on the site renders it. */
+  description?: string;
+};
+
+export const POST_CATEGORIES = {
+  stay: {
+    slug: "stay",
+    title: "Stay",
+    description: "The resorts themselves — rooms, villas and what a stay includes.",
+  },
+  wellness: {
+    slug: "wellness",
+    title: "Wellness",
+    description: "Yoga, breathwork, healing and the daily practice at the resort.",
+  },
+  retreat: {
+    slug: "retreat",
+    title: "Retreat",
+    description: "The multi-night retreat programmes and what they involve.",
+  },
+  spa: {
+    slug: "spa",
+    title: "SPA",
+    description: "Mahamaya Spa treatments, rituals and the flower bath.",
+  },
+  romance: {
+    slug: "romance",
+    title: "Romance",
+    description: "Honeymoons, proposals and the packages built for two.",
+  },
+  exploreBali: {
+    slug: "explore-bali",
+    title: "Explore Bali",
+    description: "Beyond the resort — places, tours and things to do on the island.",
+  },
+  aboutUs: {
+    slug: "about-us",
+    title: "About Us",
+    description: "News from Nyuh Bali itself, including awards.",
+  },
+} as const satisfies Record<string, PostCategory>;
+
 export type Post = {
   /** Full live path, e.g. "/ubud/discover/hatha-yoga". */
   path: string;
@@ -30,6 +96,9 @@ export type Post = {
   date: string;
   excerpt: string;
   image: string;
+  /** Usually one. An array because the Sanity field is one, and because a
+   * piece that genuinely sits in two sections should be able to say so. */
+  categories?: PostCategory[];
   blocks: PostBlock[];
 };
 
@@ -41,6 +110,7 @@ export const POSTS: Post[] = [
     date: "2025-01-06",
     excerpt: "Ever wondered why Bali's 5-star resorts are the ultimate in luxury? They're not just about fancy amenities. They offer an experience that goes beyond the usual, blending modern luxury with Bali's rich culture. Here, you'll find spacious suites and villas starting at 65 sqm in a tropical paradise. What Makes Our Bali Resorts Unique Get",
     image: "https://nyuhbalivillas.com/wp-content/uploads/2023/03/Two-Bedroom-Pool-Villa-2.webp",
+    categories: [POST_CATEGORIES.stay],
     blocks: [
       { kind: "paragraph", text: "Ever wondered why Bali's 5-star resorts are the ultimate in luxury? They're not just about fancy amenities. They offer an experience that goes beyond the usual, blending modern luxury with Bali's rich culture. Here, you'll find spacious suites and villas starting at 65 sqm in a tropical paradise." },
       { kind: "image", src: "https://nyuhbalivillas.com/wp-content/uploads/2023/03/Two-Bedroom-Pool-Villa-2.webp" },
@@ -128,6 +198,7 @@ export const POSTS: Post[] = [
     date: "2024-11-22",
     excerpt: "Did you know Hatha yoga today mixes old traditions with new gymnastics and contortionism? This mix makes Hatha yoga special. It aims to balance the body and mind with physical poses and breathing. Unlike fast yoga, Hatha is slower, focusing on breath and deep connections. We highlight Hatha Yoga's full benefits. We guide you in",
     image: "https://nyuhbalivillas.com/wp-content/uploads/2023/10/how-to-host-retreat-3.png",
+    categories: [POST_CATEGORIES.wellness],
     blocks: [
       { kind: "paragraph", text: "Did you know Hatha yoga today mixes old traditions with new gymnastics and contortionism? This mix makes Hatha yoga special. It aims to balance the body and mind with physical poses and breathing. Unlike fast yoga, Hatha is slower, focusing on breath and deep connections." },
       { kind: "paragraph", text: "We highlight Hatha Yoga's full benefits. We guide you in practices to keep and use your life energy, or prana. Our peaceful Ubud location is ideal for exploring these practices and relaxing. Let's dive deep into the world of Hatha Yoga to know everything." },
@@ -267,6 +338,7 @@ export const POSTS: Post[] = [
     date: "2024-11-22",
     excerpt: "Did you know over 2.300 yoga instructors have been certified in Bali since 2009? This island paradise is a global hotspot for yoga lovers. We provide a serene setting for your yoga journey. Our programs focus on asana practice and the spiritual aspects of yoga. Bali is more than a destination; it's an experience. Our",
     image: "https://nyuhbalivillas.com/wp-content/uploads/2023/05/TD004090-min.webp",
+    categories: [POST_CATEGORIES.wellness],
     blocks: [
       { kind: "paragraph", text: "Did you know over 2.300 yoga instructors have been certified in Bali since 2009? This island paradise is a global hotspot for yoga lovers. We provide a serene setting for your yoga journey. Our programs focus on asana practice and the spiritual aspects of yoga." },
       { kind: "paragraph", text: "Bali is more than a destination; it's an experience. Our yoga teacher training in Bali programs teach you to teach yoga and understand its deeper meaning. The island's natural beauty adds to your learning, blending spiritual growth with breathtaking views. Whether you're after a Bali yoga certification or a peaceful retreat, we've got you covered." },
@@ -360,6 +432,7 @@ export const POSTS: Post[] = [
     date: "2024-10-04",
     excerpt: "Imagine warm stones moving over your skin, easing tension and stress. Our hot stone massage is more than just a treatment. It's a chance to refresh your body and mind, leaving you feeling new. Once you enter our spa, Bali's calm wraps around you. It's a journey to deep relaxation. As we work on your",
     image: "https://nyuhbalivillas.com/wp-content/uploads/2024/10/Hot-Stone-Massage-Ubud-2-Source_-Nyuh-Bali.jpg",
+    categories: [POST_CATEGORIES.spa],
     blocks: [
       { kind: "paragraph", text: "Imagine warm stones moving over your skin, easing tension and stress. Our hot stone massage is more than just a treatment. It's a chance to refresh your body and mind, leaving you feeling new." },
       { kind: "paragraph", text: "Once you enter our spa, Bali's calm wraps around you. It's a journey to deep relaxation. As we work on your muscles, your worries fade away. You'll feel like you're in a peaceful paradise, making your Bali trip perfect." },
@@ -431,6 +504,7 @@ export const POSTS: Post[] = [
     date: "2024-10-04",
     excerpt: "Witnessing a Seminyak sunset is truly magical. As the sun sets, the sky turns into a canvas of orange, pink, and purple. This creates a scene that touches our hearts and souls deeply. Those who've experienced it remember it vividly, feeling a deep sense of peace and beauty. Things to do in Seminyak Best Locations",
     image: "https://nyuhbalivillas.com/wp-content/uploads/2024/10/sunset-seminyak.png",
+    categories: [POST_CATEGORIES.exploreBali],
     blocks: [
       { kind: "paragraph", text: "Witnessing a Seminyak sunset is truly magical. As the sun sets, the sky turns into a canvas of orange, pink, and purple. This creates a scene that touches our hearts and souls deeply. Those who've experienced it remember it vividly, feeling a deep sense of peace and beauty." },
       { kind: "image", src: "https://nyuhbalivillas.com/wp-content/uploads/2024/10/sunset-seminyak.png" },
@@ -493,6 +567,7 @@ export const POSTS: Post[] = [
     date: "2024-07-04",
     excerpt: "Located in the middle of the tranquil village of Ubud, Ubud Nyuh Bali Resort offers a delightful Detox Retreat. Empowering individuals to progress to their next stage and attain the life they aspire to through a diverse array of private consultations and programs, Weight Loss and Body Modulation, Cleanse and Relaxation, and Personalized Whole Life",
     image: "https://nyuhbalivillas.com/wp-content/uploads/2024/07/DETOX-RETREAT-BALI-Source_-Alena-Ozerova.jpg",
+    categories: [POST_CATEGORIES.retreat],
     blocks: [
       { kind: "image", src: "https://nyuhbalivillas.com/wp-content/uploads/2024/07/DETOX-RETREAT-BALI-Source_-Alena-Ozerova.jpg" },
       { kind: "paragraph", text: "Located in the middle of the tranquil village of Ubud, Ubud Nyuh Bali Resort offers a delightful Detox Retreat. Empowering individuals to progress to their next stage and attain the life they aspire to through a diverse array of private consultations and programs, Weight Loss and Body Modulation, Cleanse and Relaxation, and Personalized Whole Life Detox. Our program not only covers the psychological benefits of traditional Balinese healing but also integrates a scientific approach to treating the biological aspects of the body. At Nyuh Bali retreats, our aim is to assist you in reprogramming yourself and your future, establishing control of your life, and effecting positive transformation in your surroundings. Amidst the suburban green gardens and tropical forests, you'll feel the years go by before you even enjoy our refreshing Detox treatment." },
@@ -530,6 +605,7 @@ export const POSTS: Post[] = [
     date: "2024-07-04",
     excerpt: "Experience the transformative power of a wellness retreat at our luxury villa Ubud Nyuh Bali Resort. The retreats offer a unique opportunity to immerse yourself in Yoga Class, Sound Healing, Breathwork, reiki Healing, and weight loss retreat while surrounded by the serene and tranquil environment of our resort. Through our carefully curated programs, participants can",
     image: "https://nyuhbalivillas.com/wp-content/uploads/2024/07/WELLNESS-RETREAT-BALI-Source-Nyuh-Bali.jpg",
+    categories: [POST_CATEGORIES.retreat],
     blocks: [
       { kind: "image", src: "https://nyuhbalivillas.com/wp-content/uploads/2024/07/WELLNESS-RETREAT-BALI-Source-Nyuh-Bali.jpg" },
       { kind: "paragraph", text: "Experience the transformative power of a wellness retreat at our luxury villa Ubud Nyuh Bali Resort. The retreats offer a unique opportunity to immerse yourself in Yoga Class, Sound Healing, Breathwork, reiki Healing, and weight loss retreat while surrounded by the serene and tranquil environment of our resort. Through our carefully curated programs, participants can embark on a journey of personal growth and transformation." },
@@ -581,6 +657,7 @@ export const POSTS: Post[] = [
     date: "2024-04-01",
     excerpt: "At Ubud Nyuh Bali Resort, we've thoughtfully crafted our honeymoon packages in Ubud to provide our guests with a truly romantic and immersive experience. With a conscientious nod to honeymooners seeking the sublime blend of luxury and culture, our offerings are designed to encapsulate the beautiful essence of a honeymoon in Indonesia. Whether you long",
     image: "https://nyuhbalivillas.com/wp-content/uploads/2024/04/Couple-having-a-romantic-dinner-at-Nyuh-Bali.jpg",
+    categories: [POST_CATEGORIES.romance],
     blocks: [
       { kind: "image", src: "https://nyuhbalivillas.com/wp-content/uploads/2024/04/Couple-having-a-romantic-dinner-at-Nyuh-Bali.jpg" },
       { kind: "paragraph", text: "At Ubud Nyuh Bali Resort, we've thoughtfully crafted our honeymoon packages in Ubud to provide our guests with a truly romantic and immersive experience. With a conscientious nod to honeymooners seeking the sublime blend of luxury and culture, our offerings are designed to encapsulate the beautiful essence of a honeymoon in Indonesia. Whether you long for the serenity of a honeymoon villa with yoga, the rejuvenation of a honeymoon spa, or the delight of a honeymoon dessert, we assure to curate your honeymoon itinerary for an indelible retreat." },
@@ -632,6 +709,7 @@ export const POSTS: Post[] = [
     date: "2024-04-01",
     excerpt: "Located in the southern part of Ubud, Mahamaya Spa at Ubud Nyuh Bali Resort is a peaceful and luxurious space for anyone looking to relax and rejuvenate. Our spa is well-known for its luxury standards and uses the best natural products to provide a complete and nourishing couples massage experience in Ubud. Discover Intimate Wellness",
     image: "https://nyuhbalivillas.com/wp-content/uploads/2024/04/Couple-having-a-massage-at-Nyuh-Bali.jpg",
+    categories: [POST_CATEGORIES.spa],
     blocks: [
       { kind: "image", src: "https://nyuhbalivillas.com/wp-content/uploads/2024/04/Couple-having-a-massage-at-Nyuh-Bali.jpg" },
       { kind: "paragraph", text: "Located in the southern part of Ubud, Mahamaya Spa at Ubud Nyuh Bali Resort is a peaceful and luxurious space for anyone looking to relax and rejuvenate. Our spa is well-known for its luxury standards and uses the best natural products to provide a complete and nourishing couples massage experience in Ubud." },
@@ -687,6 +765,7 @@ export const POSTS: Post[] = [
     date: "2023-12-27",
     excerpt: "Join us at Nyuh Bali Resort & Spa as we celebrate a triumphant moment with three prestigious titles at the 2023 World Luxury Hotel Awards. We're honored to be recognized as the Asia continent winner for Luxury Boutique Retreat, showcasing our unwavering commitment to excellence in the luxury hospitality industry. Additionally, we're delighted to achieve",
     image: "https://nyuhbalivillas.com/wp-content/uploads/2023/12/2023-Hotel-Winner202-1.png",
+    categories: [POST_CATEGORIES.aboutUs],
     blocks: [
       { kind: "paragraph", text: "Join us at Nyuh Bali Resort & Spa as we celebrate a triumphant moment with three prestigious titles at the 2023 World Luxury Hotel Awards. We're honored to be recognized as the Asia continent winner for Luxury Boutique Retreat, showcasing our unwavering commitment to excellence in the luxury hospitality industry. Additionally, we're delighted to achieve the title of Luxury Wellness Resort and Luxury Yoga & Wellness Retreat in Asia. This recognition marks a significant milestone in our journey, and we invite you to share in the joy of our success as we continue to provide unparalleled luxury experiences in 2023." },
       { kind: "heading", text: "Luxury Boutique Retreat Award" },
@@ -712,6 +791,7 @@ export const POSTS: Post[] = [
     date: "2023-11-24",
     excerpt: "Finding the right environment is crucial in the journey of self-improvement and personal growth. A life coach retreat at Ubud Nyuh Bali Resort offers a structured yet comforting space to reflect, learn, and evolve. Here, the combination of expert sessions and comforting amenities ensures that guests are nurtured and challenged, making it a great place",
     image: "https://nyuhbalivillas.com/wp-content/uploads/2023/11/Our-customers-do-life-coaching-with-our-certified-psychologist.png",
+    categories: [POST_CATEGORIES.retreat],
     blocks: [
       { kind: "paragraph", text: "Finding the right environment is crucial in the journey of self-improvement and personal growth. A life coach retreat at Ubud Nyuh Bali Resort offers a structured yet comforting space to reflect, learn, and evolve. Here, the combination of expert sessions and comforting amenities ensures that guests are nurtured and challenged, making it a great place for your transformative experiences." },
       { kind: "paragraph", text: "Located in a serene setting, this retreat is not only about relaxation but provides a tailored, enriching journey with a range of wellness activities. Whether you are seeking clarity, wanting to overcome challenges, or simply hoping to recharge, the life coach retreat offers the perfect blend of professional guidance and luxury. Ubud Nyuh Bali Resort promises a balanced experience, not just a memorable stay but a journey of meaningful transformation." },
@@ -748,6 +828,7 @@ export const POSTS: Post[] = [
     date: "2023-09-28",
     excerpt: "The modern world, with its relentless pace and distractions, often leaves people feeling disconnected from themselves, their bodies, and the world around them. Wellness retreats have emerged as sanctuaries; places where individuals can step away from daily life and reconnect with their inner selves. True wellness is a deeply personal endeavor, requiring us to nurture",
     image: "https://nyuhbalivillas.com/wp-content/uploads/2023/09/restoring-body-balance-1.webp",
+    categories: [POST_CATEGORIES.wellness],
     blocks: [
       { kind: "image", src: "https://nyuhbalivillas.com/wp-content/uploads/2023/09/restoring-body-balance-1.webp" },
       { kind: "paragraph", text: "The modern world, with its relentless pace and distractions, often leaves people feeling disconnected from themselves, their bodies, and the world around them. Wellness retreats have emerged as sanctuaries; places where individuals can step away from daily life and reconnect with their inner selves. True wellness is a deeply personal endeavor, requiring us to nurture our minds, bodies, and souls. It's not just about feeling good momentarily but fostering a sustained sense of well-being." },
@@ -783,6 +864,7 @@ export const POSTS: Post[] = [
     date: "2023-08-23",
     excerpt: "Its outstanding spa scene emphasizes Ubud's reputation as a wellness destination. Offering far more than typical beauty treatments, the spa in Ubud experience is an immersive journey of relaxation, healing, and self-exploration. Drawing from Bali's ancient wellness traditions and the gift of its natural environment, spas in Ubud provide an array of treatments designed to",
     image: "https://nyuhbalivillas.com/wp-content/uploads/2023/08/Picture1.webp",
+    categories: [POST_CATEGORIES.spa],
     blocks: [
       { kind: "image", src: "https://nyuhbalivillas.com/wp-content/uploads/2023/08/Picture1-2.webp" },
       { kind: "paragraph", text: "Its outstanding spa scene emphasizes Ubud's reputation as a wellness destination. Offering far more than typical beauty treatments, the spa in Ubud experience is an immersive journey of relaxation, healing, and self-exploration. Drawing from Bali's ancient wellness traditions and the gift of its natural environment, spas in Ubud provide an array of treatments designed to soothe the body, calm the mind, and nourish the spirit." },
@@ -820,6 +902,7 @@ export const POSTS: Post[] = [
     date: "2023-04-29",
     excerpt: "Ubud is a destination that has long been associated with wellness and spiritual rejuvenation, making it an ideal location for a yoga retreat. The lush greenery, calming sound of nature, and rich cultural heritage of Ubud makes it a perfect destination for a spiritual and luxury yoga retreat in Ubud. The latter offers you an",
     image: "https://nyuhbalivillas.com/wp-content/uploads/2023/07/AW_06603-1-min.jpg",
+    categories: [POST_CATEGORIES.retreat],
     blocks: [
       { kind: "paragraph", text: "Ubud is a destination that has long been associated with wellness and spiritual rejuvenation, making it an ideal location for a yoga retreat. The lush greenery, calming sound of nature, and rich cultural heritage of Ubud makes it a perfect destination for a spiritual and luxury yoga retreat in Ubud. The latter offers you an opportunity to rejuvenate, relax, and explore the depths of your soul. Immerse yourself in daily yoga classes, meditation sessions, and spiritual healing practices, all while surrounded by the natural beauty of Ubud. Take a stroll through the rice paddies, visit ancient temples, and indulge in organic farm-to-table cuisine that nourishes your body and soul. The spiritual energy of Ubud is palpable and will leave you feeling more centered and peaceful. Whether you're a seasoned retreat-goer or a newbie, a yoga retreat in Ubud is a must-do for anyone seeking spiritual growth and rejuvenation." },
       { kind: "image", src: "https://nyuhbalivillas.com/wp-content/uploads/2023/06/image-7-1024x683-1.webp" },
@@ -866,6 +949,7 @@ export const POSTS: Post[] = [
     date: "2022-10-12",
     excerpt: "",
     image: "https://nyuhbalivillas.com/wp-content/uploads/2023/04/image-5.png",
+    categories: [POST_CATEGORIES.exploreBali],
     blocks: [
       { kind: "paragraph", text: "If you want to experience a breathtaking destination that offers both relaxation and adventure, you can’t go wrong with Ubud, Bali. This picturesque town is nestled among rice paddies and jungle-covered hills, providing the perfect setting for a peaceful and luxurious getaway." },
       { kind: "paragraph", text: "Within the town limits, you’ll find museums, temples, and markets selling everything from handmade Batik fabrics to locally grown coffee. And just a short drive away are some of Bali’s most popular beaches, where you can surf, snorkel, or simply enjoy stunning sunset views. If you’re looking for an enchanting and luxurious experience, these are some of the best activities to enjoy in Ubud, Bali!" },
@@ -899,6 +983,7 @@ export const POSTS: Post[] = [
     date: "2022-10-12",
     excerpt: "",
     image: "https://nyuhbalivillas.com/wp-content/uploads/2023/03/5-2.png",
+    categories: [POST_CATEGORIES.romance],
     blocks: [
       { kind: "paragraph", text: "Looking for some fun and romantic honeymoon ideas in Seminyak? You’re in luck! Here are some of our favorite activities to enjoy with your loved one. From exploring the beautiful beaches to enjoying amazing cuisine, there’s something for everyone here. So come and explore this wonderful part of Bali with us!" },
       { kind: "paragraph", text: "- Choose Nyuh Villas for a romantic stay at the Honeymoon Suite pool Villa." },
@@ -938,6 +1023,7 @@ export const POSTS: Post[] = [
     date: "2019-10-31",
     excerpt: "Ubud is one of the most prominent places in Bali where you can undoubtedly discover a graceful blend of culture and nature. It is a small town with a tremendous sense of tranquility, a suitable place to recharge and refresh. It’s the place where you can run into a laid-back rural experience and relax from",
     image: "https://nyuhbalivillas.com/wp-content/uploads/2023/03/ubud-slider-3.webp",
+    categories: [POST_CATEGORIES.exploreBali],
     blocks: [
       { kind: "paragraph", text: "Ubud is one of the most prominent places in Bali where you can undoubtedly discover a graceful blend of culture and nature. It is a small town with a tremendous sense of tranquility, a suitable place to recharge and refresh. It’s the place where you can run into a laid-back rural experience and relax from your hectic everyday routine. This town offers breathtaking scenery of nature and a profound Balinese culture atmosphere which can develop a lasting impression on people’s memory." },
       { kind: "paragraph", text: "The serene vibe that fits to rejuvenate the mind and soul is not the only highlight of this ancient tropical town, but Ubud is also abundant with many gorgeous ‘Instagram-worthy’ places where you can generate great photography and share your vibrant holiday stories. Besides witnessing beautiful traditional Balinese culture, doing meditation, trying tasty culinary, or doing much more interesting activities, taking photos is definitely something that you can’t resist doing." },

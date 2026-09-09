@@ -26,13 +26,16 @@ import {
 } from "@/components/property/InquiryForm";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { Section } from "@/components/ui/Section";
-import { PROPERTY_SITES } from "@/data/properties";
-import { seo } from "@/data/seo";
 import { SPA_RESERVATION_FIELDS } from "@/data/spa-reservations";
+import { getPropertySite } from "@/sanity/lib/content";
+import { resolvePageMetadata } from "@/sanity/lib/metadata";
 
-export const metadata: Metadata = seo("/spa-reservation-seminyak");
+export async function generateMetadata(): Promise<Metadata> {
+  // A published `page` document's SEO wins; otherwise this stays
+  // exactly the live site's title and description from src/data/seo.ts.
+  return resolvePageMetadata("/spa-reservation-seminyak");
+}
 
-const site = PROPERTY_SITES.seminyak;
 
 
 // Field names and options taken from the live WPForms/CF7 form: package[],
@@ -49,7 +52,8 @@ const FIELDS = SPA_RESERVATION_FIELDS["spa-reservation-seminyak"];
 
 /** Seminyak — Spa Reservation. The form the SPA page's every "Book Now" and
  * its closing "Reserve Now" lead to. */
-export default function SeminyakSpaReservationPage() {
+export default async function SeminyakSpaReservationPage() {
+  const site = await getPropertySite("seminyak");
   return (
     <>
       <PropertyHeader site={site} activeHref="/seminyak/spa" />
@@ -57,6 +61,8 @@ export default function SeminyakSpaReservationPage() {
 
         <Section tone="sand" width="narrow">
           <InquiryForm
+            // The only heading on this page, so it is the page title.
+            headingAs="h1"
             heading="Spa Reservation"
             fields={FIELDS}
             submitLabel="Send"

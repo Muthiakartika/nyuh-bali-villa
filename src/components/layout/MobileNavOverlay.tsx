@@ -81,9 +81,17 @@ export function MobileNavOverlay({
 
       {/* `overflow-y-auto` matters once submenus are expanded: the Ubud menu
           is 8 top-level items plus 8 children, which is taller than a phone
-          screen. `justify-center` only centres the list while it still fits. */}
-      <nav className="flex flex-1 flex-col justify-center overflow-y-auto">
-        <ul className="flex flex-col">
+          screen.
+
+          The centring lives on the *list* (`min-h-full` + `justify-center`),
+          never on the scroll container. A scroll container that centres its
+          own overflowing content pushes the first rows above its top edge,
+          where no amount of scrolling reaches them — that is exactly what hid
+          "About Us" and "Stay" on the Ubud menu, the two entries a visitor
+          most needs. With the rule on the list instead, a short menu still
+          centres and a long one simply starts at the top and scrolls. */}
+      <nav className="flex-1 overflow-y-auto">
+        <ul className="flex min-h-full flex-col justify-center">
           {/* Flattened so the entrance stagger keeps running across parents and
               children instead of restarting inside each sub-list. */}
           {links

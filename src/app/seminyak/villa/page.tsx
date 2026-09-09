@@ -25,94 +25,69 @@ import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
 import { BookingWidget } from "@/components/property/BookingWidget";
-import { RoomList, type Room } from "@/components/property/RoomList";
+import { RoomList } from "@/components/property/RoomList";
 import { AmenityGrid } from "@/components/property/AmenityGrid";
 import { AwardsRow } from "@/components/property/AwardsRow";
-import { PROPERTY_SITES } from "@/data/properties";
-import { seo } from "@/data/seo";
+import ManagedPage from "@/components/sanity/ManagedPage";
+import { getPropertySite } from "@/sanity/lib/content";
+import { resolvePageMetadata } from "@/sanity/lib/metadata";
+import {
+  
+  HERO_IMAGES,
+  villas,
+  VILLAS_INTRO,
+} from "@/data/pages/seminyak-villa";
 
-export const metadata: Metadata = seo("/seminyak/villa");
-
-const site = PROPERTY_SITES.seminyak;
-const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
-
-// Photographs verified against this route on the live site, 2026-09-04.
-const HERO_IMAGES = [
-  `${UPLOADS}/2023/03/One-Bedroom-Pool-Villa-2.webp`,
-  `${UPLOADS}/2023/03/Honeymoon-Suite-Pool-Villa-1.webp`,
-];
-
-// Seminyak's inventory is two villa types, each a 3-photo slider on the live
-// page. Unlike Ubud there is no second category, so one RoomList covers it.
-const VILLAS: Room[] = [
-  {
-    name: "One-bedroom Pool Villa",
-    images: [
-      `${UPLOADS}/2023/03/One-Bedroom-Pool-Villa-2.webp`,
-      `${UPLOADS}/2023/03/seminyak-best-price.webp`,
-      `${UPLOADS}/2023/03/One-Bedroom-Pool-Villa-5.webp`,
-    ],
-    bed: "King Size (1,8m x 2m)",
-    size: "120 sqm",
-    occupancy: "2 adults and one child (under five years old)",
-    ratesHref: site.bookingHref,
-    detailsHref: "/seminyak/villa/honeymoon/pool",
-    detailsInScope: true,
-  },
-  {
-    name: "Honeymoon Suite Pool Villa",
-    images: [
-      `${UPLOADS}/2023/03/Honeymoon-Suite-Pool-Villa-1.webp`,
-      `${UPLOADS}/2023/03/Honeymoon-Suite-Pool-Villa-2.webp`,
-      `${UPLOADS}/2023/03/Honeymoon-Suite-Pool-Villa-5.webp`,
-    ],
-    bed: "King Size (1,8m x 2m)",
-    size: "150 sqm",
-    occupancy: "2 adults and one child (under five years old)",
-    ratesHref: site.bookingHref,
-    detailsHref: "/seminyak/villa/honeymoon",
-    detailsInScope: true,
-  },
-];
+export async function generateMetadata(): Promise<Metadata> {
+  // A published `page` document's SEO wins; otherwise this stays
+  // exactly the live site's title and description from src/data/seo.ts.
+  return resolvePageMetadata("/seminyak/villa");
+}
 
 /**
  * Seminyak — Villas. Section order follows the live page: the villa listing
  * with its intro, then Featured Amenities. Shares `RoomList` and `AmenityGrid`
  * with the Ubud Stay page; only the content differs.
  */
-export default function SeminyakVillaPage() {
+export default async function SeminyakVillaPage() {
+  const site = await getPropertySite("seminyak");
   return (
     <>
       <PropertyHeader site={site} activeHref="/seminyak/villa" />
       <main>
-        <PropertyHero
-          images={HERO_IMAGES}
-          alt="Private pool villas at Nyuh Bali Villas Seminyak"
-          eyebrow="Seminyak"
-          title="Seminyak Luxury Villas"
-        />
-        <BookingWidget site={site} />
+        {/* Everything below is the fallback: publish a `page`
+            document at this path and its sections render
+            instead, with the chrome unchanged. */}
+        <ManagedPage path="/seminyak/villa" fallbackProperty="seminyak">
+          <PropertyHero
+            images={HERO_IMAGES}
+            alt="Private pool villas at Nyuh Bali Villas Seminyak"
+            eyebrow="Seminyak"
+            title="Seminyak Luxury Villas"
+          />
+          <BookingWidget site={site} />
 
-        <RoomList
-          eyebrow="Villas"
-          heading="Seminyak Luxury Villas"
-          intro="What's better than living in private villa with your own pool? Each villa is completed with pool and sundeck to be enjoyed anytime at your convenience. After dipping in your pool, dance freely in the outdoor shower while smelling the natural sunlight."
-          rooms={VILLAS}
-          tone="sand"
-        />
+          <RoomList
+            eyebrow="Villas"
+            heading="Seminyak Luxury Villas"
+            intro={VILLAS_INTRO}
+            rooms={villas(site.bookingHref)}
+            tone="sand"
+          />
 
-        <AmenityGrid
-          tone="sand-deep"
-          amenities={[
-            { icon: "wifi", title: "Complimentary", subtitle: "WIFI" },
-            { icon: "spa", title: "SPA" },
-            { icon: "dining", title: "16-Hour", subtitle: "In Room Dining" },
-            { icon: "romance", title: "Romantic Villa" },
-            { icon: "service", title: "Personalised", subtitle: "Service" },
-          ]}
-        />
+          <AmenityGrid
+            tone="sand-deep"
+            amenities={[
+              { icon: "wifi", title: "Complimentary", subtitle: "WIFI" },
+              { icon: "spa", title: "SPA" },
+              { icon: "dining", title: "16-Hour", subtitle: "In Room Dining" },
+              { icon: "romance", title: "Romantic Villa" },
+              { icon: "service", title: "Personalised", subtitle: "Service" },
+            ]}
+          />
 
-        <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
+          <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
+        </ManagedPage>
       </main>
       <PropertyFooter site={site} />
       <DirectBookingDeals bookingHref={site.bookingHref} />

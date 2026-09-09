@@ -6,10 +6,10 @@ import { PostBody } from "@/components/property/PostBody";
 import { PostGrid } from "@/components/property/PostGrid";
 import { ReadingProgress } from "@/components/property/ReadingProgress";
 import { AwardsRow } from "@/components/property/AwardsRow";
-import { PROPERTY_SITES } from "@/data/properties";
-import { POSTS, type Post } from "@/data/posts";
+import { getPostByPath, getPosts, getPropertySite } from "@/sanity/lib/content";
+import type { ResolvedPost } from "@/sanity/lib/content";
 
-type PostPageProps = { post: Post };
+type PostPageProps = { post: ResolvedPost };
 
 /**
  * A whole blog-post page — chrome, hero, body and "more from the blog".
@@ -20,14 +20,18 @@ type PostPageProps = { post: Post };
  * segment to keep the published URL identical, so the *page* lives here once
  * and every route file is a thin wrapper that looks the post up and renders
  * this.
+ *
+ * It resolves its own chrome and related posts rather than taking them as
+ * props, so the five route files that render it did not each have to learn
+ * how to ask Sanity for them.
  */
-export function PostPage({ post }: PostPageProps) {
-  const site = PROPERTY_SITES[post.property];
+export async function PostPage({ post }: PostPageProps) {
+  const site = await getPropertySite(post.property);
 
   // Three more posts from the same property, newest first, excluding this one.
-  const related = POSTS.filter(
-    (p) => p.property === post.property && p.path !== post.path,
-  ).slice(0, 3);
+  const related = (await getPosts(post.property))
+    .filter((item) => item.path !== post.path)
+    .slice(0, 3);
 
   return (
     <>
@@ -64,7 +68,10 @@ export function PostPage({ post }: PostPageProps) {
   );
 }
 
-/** Shared lookup so every post route resolves paths the same way. */
+/**
+ * Shared lookup so every post route resolves paths the same way. Prefers a
+ * published Sanity post and falls back to src/data/posts.ts.
+ */
 export function findPost(path: string) {
-  return POSTS.find((p) => p.path === path);
+  return getPostByPath(path);
 }

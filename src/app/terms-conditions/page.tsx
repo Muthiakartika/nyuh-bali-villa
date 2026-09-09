@@ -2,13 +2,16 @@ import type { Metadata } from "next";
 import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { LegalSection } from "@/components/legal/LegalSection";
-import { PROPERTY_SITES } from "@/data/properties";
-import { TERMS_CONDITIONS_SECTIONS } from "@/data/legal";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { seo } from "@/data/seo";
+import { getLegalPage, getPropertySite } from "@/sanity/lib/content";
+import { resolvePageMetadata } from "@/sanity/lib/metadata";
 
-export const metadata: Metadata = seo("/terms-conditions");
+export async function generateMetadata(): Promise<Metadata> {
+  // A published `page` document's SEO wins; otherwise this stays
+  // exactly the live site's title and description from src/data/seo.ts.
+  return resolvePageMetadata("/terms-conditions");
+}
 
 // Global, not per-property — the live site renders this (and Privacy Policy)
 // with the Ubud site's header/footer regardless of which property a visitor
@@ -16,7 +19,6 @@ export const metadata: Metadata = seo("/terms-conditions");
 // `site` prop the way About/Contact do. No nav item matches this page, so
 // PropertyHeader's active-item marker naturally shows nothing selected, which
 // is correct here.
-const site = PROPERTY_SITES.ubud;
 
 /**
  * Legal copy is the densest reading on the site, so it runs at the `narrow`
@@ -25,7 +27,10 @@ const site = PROPERTY_SITES.ubud;
  * text was one of the small mismatches that made the old pages feel assembled
  * rather than designed.
  */
-export default function TermsConditionsPage() {
+export default async function TermsConditionsPage() {
+  const site = await getPropertySite("ubud");
+  // Published legal copy wins; otherwise src/data/legal.ts.
+  const { sections } = await getLegalPage("/terms-conditions");
   return (
     <>
       <PropertyHeader site={site} activeHref="/terms-conditions" />
@@ -34,7 +39,7 @@ export default function TermsConditionsPage() {
           <SectionHeading title="Terms & Conditions" as="h1" size="display" />
 
           <div className="mt-11 flex flex-col gap-10 md:mt-14">
-            {TERMS_CONDITIONS_SECTIONS.map((section) => (
+            {sections.map((section) => (
               <LegalSection key={section.heading} section={section} />
             ))}
           </div>

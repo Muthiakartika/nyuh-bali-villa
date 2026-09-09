@@ -26,34 +26,42 @@ import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
 import { ExperienceDetailBody } from "@/components/property/ExperienceDetail";
 import { AwardsRow } from "@/components/property/AwardsRow";
-import { PROPERTY_SITES } from "@/data/properties";
-import { EXPERIENCES } from "@/data/experiences";
-import { seo } from "@/data/seo";
+import { getExperience, getExperiences, getPropertySite } from "@/sanity/lib/content";
+import { resolveDocumentMetadata } from "@/sanity/lib/metadata";
 
-const site = PROPERTY_SITES.ubud;
-const ITEMS = EXPERIENCES.filter((e) => e.slug.startsWith("wellness/"));
+const PREFIX = "wellness/";
 
 type Params = { class: string[] };
 
-export function generateStaticParams(): Params[] {
-  return ITEMS.map((e) => ({
-    class: e.slug.replace("wellness/", "").split("/"),
-  }));
+/**
+ * Slugs come from Sanity when experiences are published there and from
+ * src/data/experiences.ts otherwise. `dynamicParams = false` makes this list
+ * authoritative, so an experience published only in the CMS has to appear
+ * here or it would 404.
+ */
+export async function generateStaticParams(): Promise<Params[]> {
+  const experiences = await getExperiences();
+  return experiences
+    .filter((experience) => experience.slug.startsWith(PREFIX))
+    .map((experience) => ({
+      class: experience.slug.slice(PREFIX.length).split("/"),
+    }));
 }
 
 export const dynamicParams = false;
-
-const find = (s: string[]) =>
-  ITEMS.find((e) => e.slug === "wellness/" + s.join("/"));
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  // Title and description come from the live site, keyed by published
-  // path — see src/data/seo.ts.
-  return seo(`/ubud/wellness/${(await params).class.join("/")}`);
+  // The published experience's own SEO fields win; anything it leaves empty
+  // falls back to the live site's title and description in src/data/seo.ts.
+  const tail = (await params).class.join("/");
+  return resolveDocumentMetadata(
+    `/ubud/wellness/${tail}`,
+    await getExperience(PREFIX + tail),
+  );
 }
 
 export default async function WellnessClassPage({
@@ -61,8 +69,9 @@ export default async function WellnessClassPage({
 }: {
   params: Promise<Params>;
 }) {
-  const item = find((await params).class);
+  const item = await getExperience(PREFIX + (await params).class.join("/"));
   if (!item) notFound();
+  const site = await getPropertySite("ubud");
 
   return (
     <>

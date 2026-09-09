@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Open_Sans, Source_Sans_3, Dancing_Script } from "next/font/google";
 import { seo } from "@/data/seo";
+import SanityRuntime from "@/components/sanity/SanityRuntime";
 import "./globals.css";
 
 // The live site self-hosts two webfonts via a WordPress plugin: "Open Sans"
@@ -73,7 +74,10 @@ export default function RootLayout({
       lang="en"
       className={`${openSans.variable} ${sourceSans.variable} ${dancingScript.variable}`}
     >
-      <body className="flex min-h-screen flex-col">{children}</body>
+      <body className="flex min-h-screen flex-col">
+        {children}
+        <SanityRuntime />
+      </body>
     </html>
   );
 }

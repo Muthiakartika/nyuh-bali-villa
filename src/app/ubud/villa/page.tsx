@@ -25,155 +25,26 @@ import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
 import { BookingWidget } from "@/components/property/BookingWidget";
-import { RoomList, type Room } from "@/components/property/RoomList";
+import { RoomList } from "@/components/property/RoomList";
 import { AmenityGrid } from "@/components/property/AmenityGrid";
 import { AwardsRow } from "@/components/property/AwardsRow";
-import { PROPERTY_SITES } from "@/data/properties";
-import { seo } from "@/data/seo";
+import ManagedPage from "@/components/sanity/ManagedPage";
+import { getPropertySite } from "@/sanity/lib/content";
+import { resolvePageMetadata } from "@/sanity/lib/metadata";
+import {
+  
+  HERO_IMAGES,
+  suites,
+  villas,
+  SUITES_INTRO,
+  VILLAS_INTRO,
+} from "@/data/pages/ubud-villa";
 
-export const metadata: Metadata = seo("/ubud/villa");
-
-const site = PROPERTY_SITES.ubud;
-const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
-
-// Photographs verified against this route on the live site, 2026-09-04.
-const HERO_IMAGES = [
-  `${UPLOADS}/2023/03/Two-Bedroom-Pool-Villa-2.webp`,
-  `${UPLOADS}/2023/03/ubud-One-Bedroom-Deluxe-Pool-Villa-6.webp`,
-  `${UPLOADS}/2023/03/Suite-6.webp`,
-];
-
-// The live page splits its inventory into two categories, each with its own
-// intro paragraph — Suites (2) and Villas (6). Both keep their own 3-photo
-// slider per room, which is why `RoomList` renders through `ImageGallery`.
-const SUITES: Room[] = [
-  {
-    name: "Suite",
-    images: [
-      `${UPLOADS}/2023/03/Suite-6.webp`,
-      `${UPLOADS}/2023/03/Suite-4.webp`,
-      `${UPLOADS}/2023/03/Suite-2.webp`,
-    ],
-    bed: "1 King Size (1,8m x 2m) or 2 Hollywood twins (1,2m x 2m each)",
-    size: "65 sqm",
-    occupancy: "2 adults and one child (under five years old)",
-    ratesHref: site.bookingHref,
-    detailsHref: "/ubud/villa/suite",
-    detailsInScope: true,
-  },
-  {
-    name: "Honeymoon Suite",
-    // Re-synced with the live listing (Aug 2026), which now leads with the
-    // new `2026/08` shoot for this room. Six slides, not three — the live
-    // slider grew when the new photographs were added.
-    images: [
-      `${UPLOADS}/2023/03/Honeymoon-Suite-4.webp`,
-      `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-6-1.jpg`,
-      `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-32-1.jpg`,
-      `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-5-1.jpg`,
-      `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-3-1.jpg`,
-      `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-4-1.jpg`,
-    ],
-    bed: "1 King Size (1,8m x 2m)",
-    size: "65 sqm",
-    occupancy: "2 adults and one child (under five years old)",
-    ratesHref: site.bookingHref,
-    detailsHref: "/ubud/villa/honeymoon/pool",
-    detailsInScope: true,
-  },
-];
-
-const VILLAS: Room[] = [
-  {
-    name: "One Bedroom Deluxe Pool Villa",
-    images: [
-      `${UPLOADS}/2023/03/ubud-One-Bedroom-Deluxe-Pool-Villa-6.webp`,
-      `${UPLOADS}/2023/03/ubud-One-Bedroom-Deluxe-Pool-Villa-5.webp`,
-      `${UPLOADS}/2023/03/ubud-One-Bedroom-Deluxe-Pool-Villa-2-1.webp`,
-    ],
-    bed: "King Size (1,8m x 2m)",
-    size: "240 sqm",
-    occupancy: "2 adults and one child (under five years old)",
-    ratesHref: site.bookingHref,
-    detailsHref: "/ubud/villa/1-bedroom-pool-deluxe",
-    detailsInScope: true,
-  },
-  {
-    name: "One Bedroom Royal Pool Villa",
-    images: [
-      `${UPLOADS}/2023/03/One-Bedroom-Royal-Pool-Villa-4.webp`,
-      `${UPLOADS}/2023/03/One-Bedroom-Royal-Pool-Villa-5.webp`,
-      `${UPLOADS}/2023/03/One-Bedroom-Royal-Pool-Villa-6.webp`,
-    ],
-    bed: "1 King Size (1,8m x 2m) or 2 Hollywood twins (1,2m x 2m each)",
-    size: "250 sqm",
-    occupancy: "2 adults and one child (under five years old)",
-    ratesHref: site.bookingHref,
-    detailsHref: "/ubud/villa/1-bedroom-pool-royal",
-    detailsInScope: true,
-  },
-  {
-    name: "Honeymoon Pool Villa",
-    // Re-synced with the live listing (Aug 2026) — same story as the
-    // Honeymoon Suite above.
-    images: [
-      `${UPLOADS}/2023/03/Honeymoon-Pool-Villa-5.webp`,
-      `${UPLOADS}/2023/03/Honeymoon-Pool-Villa-3.webp`,
-      `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-8-1.jpg`,
-      `${UPLOADS}/2023/03/Honeymoon-Pool-Villa-4.webp`,
-      `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-14-1.jpg`,
-      `${UPLOADS}/2026/08/Nyuh-Bali-Ubud-12-1.jpg`,
-    ],
-    bed: "King Size (1,8m x 2m)",
-    size: "250 sqm",
-    occupancy: "2 adults and one child (under five years old)",
-    ratesHref: site.bookingHref,
-    detailsHref: "/ubud/villa/honeymoon",
-    detailsInScope: true,
-  },
-  {
-    name: "Two Bedroom Pool Villa",
-    images: [
-      `${UPLOADS}/2023/03/Two-Bedroom-Pool-Villa-2.webp`,
-      `${UPLOADS}/2023/03/Two-Bedroom-Pool-Villa-5.webp`,
-      `${UPLOADS}/2023/03/Two-Bedroom-Pool-Villa-4.webp`,
-    ],
-    bed: "Two King Size (1,8m x 2m) OR 1 King Size + 2 Holywood twins",
-    size: "300 sqm",
-    occupancy: "4 adults and two children (below five years old)",
-    ratesHref: site.bookingHref,
-    detailsHref: "/ubud/villa/2-bedroom-pool",
-    detailsInScope: true,
-  },
-  {
-    name: "Three Bedroom Pool Villa",
-    images: [
-      `${UPLOADS}/2023/03/Three-Bedroom-Pool-Villa-4.webp`,
-      `${UPLOADS}/2023/03/Two-Bedroom-Pool-Villa-6.webp`,
-      `${UPLOADS}/2023/03/Three-Bedroom-Pool-Villa-5.webp`,
-    ],
-    bed: "2 King Size (1,8m x 2m) + 2 Holywood Twins",
-    size: "540 sqm",
-    occupancy: "6 adults and two children (under five years old)",
-    ratesHref: site.bookingHref,
-    detailsHref: "/ubud/villa/3-bedroom-pool",
-    detailsInScope: true,
-  },
-  {
-    name: "Four-Bedroom Pool Villa",
-    images: [
-      `${UPLOADS}/2023/03/Four-Bedroom-Pool-Villa-4.webp`,
-      `${UPLOADS}/2023/03/Four-Bedroom-Pool-Villa-3.webp`,
-      `${UPLOADS}/2023/03/Four-Bedroom-Pool-Villa-5.webp`,
-    ],
-    bed: "3 King Size (1,8m x 2m) + 2 Holywood twins",
-    size: "450 sqm",
-    occupancy: "8 adults and two children (under five years old)",
-    ratesHref: site.bookingHref,
-    detailsHref: "/ubud/villa/4-bedroom-pool",
-    detailsInScope: true,
-  },
-];
+export async function generateMetadata(): Promise<Metadata> {
+  // A published `page` document's SEO wins; otherwise this stays
+  // exactly the live site's title and description from src/data/seo.ts.
+  return resolvePageMetadata("/ubud/villa");
+}
 
 /**
  * Ubud — Stay. Section order follows the live page exactly: page intro,
@@ -181,52 +52,58 @@ const VILLAS: Room[] = [
  * three consecutive listings don't read as one texture, the same device the
  * About page uses for its three card grids.
  */
-export default function UbudVillaPage() {
+export default async function UbudVillaPage() {
+  const site = await getPropertySite("ubud");
   return (
     <>
       <PropertyHeader site={site} activeHref="/ubud/villa" />
       <main>
-        <PropertyHero
-          images={HERO_IMAGES}
-          alt="Luxury suites and villas at Ubud Nyuh Bali Resort"
-          eyebrow="Ubud"
-          title="Luxury Suite & Villa in Ubud"
-        />
-        <BookingWidget site={site} />
+        {/* Everything below is the fallback: publish a `page`
+            document at this path and its sections render
+            instead, with the chrome unchanged. */}
+        <ManagedPage path="/ubud/villa" fallbackProperty="ubud">
+          <PropertyHero
+            images={HERO_IMAGES}
+            alt="Luxury suites and villas at Ubud Nyuh Bali Resort"
+            eyebrow="Ubud"
+            title="Luxury Suite & Villa in Ubud"
+          />
+          <BookingWidget site={site} />
 
-        {/* The page's own opening paragraph carries the first RoomList's
-            intro slot, so the copy keeps its position above the Suites without
-            needing a separate text-only band. */}
-        <RoomList
-          eyebrow="Stay"
-          heading="Suites"
-          intro="Feel the spirit of Bali, personalized service, and the authentic Balinese culture in the villas and suites at our Ubud Resort. As part of our effort to respect the Earth, our Ubud resort is designed to harmonize with nature, built by following the land contour and keeping the existing trees as many as possible. Wake up in Ubud while eyes open to a profusion of color from our tropical garden, inhale the fresh morning breeze, and hear the groups of birds singing. Presenting our newest collection category, our suites, which just opened in April 2023. Step inside our suite in Ubud, and you’ll find rooms that have been created unlike any of the usual hotel rooms. Expect a large glass window to catch the tropical sunshine and a shaded balcony to enjoy Bali’s breeze. Each suite is built across 60 sqm featuring a natural concept and Balinese artisanal design from the contemporary teak furniture, a large stone bathtub, and luxurious local touches to retreat from your busy routine."
-          rooms={SUITES}
-          tone="sand"
-        />
+          {/* The page's own opening paragraph carries the first RoomList's
+              intro slot, so the copy keeps its position above the Suites without
+              needing a separate text-only band. */}
+          <RoomList
+            eyebrow="Stay"
+            heading="Suites"
+            intro={SUITES_INTRO}
+            rooms={suites(site.bookingHref)}
+            tone="sand"
+          />
 
-        <RoomList
-          heading="Villas"
-          intro="Escape to our Luxury Villa in Ubud to revitalize yourself. A private swimming pool adds the luxury ambiance of our villas in Ubud, while a large natural stone bathtub creates a memorable bathing experience for one to pamper. Set around a peaceful tropical garden, our breathtaking Balinese pool villa also features an outdoor rainshower and a separate semi-open dining area. Harmoniously blending traditional Balinese touches with modern amenities, our villas in Ubud are mindfully created for both comfort and beauty."
-          rooms={VILLAS}
-          tone="sand-deep"
-        />
+          <RoomList
+            heading="Villas"
+            intro={VILLAS_INTRO}
+            rooms={villas(site.bookingHref)}
+            tone="sand-deep"
+          />
 
-        <AmenityGrid
-          tone="sand"
-          amenities={[
-            { icon: "wifi", title: "Complimentary", subtitle: "WIFI" },
-            { icon: "spa", title: "SPA" },
-            { icon: "dining", title: "16-Hour", subtitle: "In Room Dining" },
-            { icon: "romance", title: "Romance" },
-            { icon: "service", title: "Personalised", subtitle: "Service" },
-            { icon: "yoga", title: "Yoga" },
-            { icon: "gym", title: "Gym" },
-            { icon: "class", title: "Balinese Class" },
-          ]}
-        />
+          <AmenityGrid
+            tone="sand"
+            amenities={[
+              { icon: "wifi", title: "Complimentary", subtitle: "WIFI" },
+              { icon: "spa", title: "SPA" },
+              { icon: "dining", title: "16-Hour", subtitle: "In Room Dining" },
+              { icon: "romance", title: "Romance" },
+              { icon: "service", title: "Personalised", subtitle: "Service" },
+              { icon: "yoga", title: "Yoga" },
+              { icon: "gym", title: "Gym" },
+              { icon: "class", title: "Balinese Class" },
+            ]}
+          />
 
-        <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
+          <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
+        </ManagedPage>
       </main>
       <PropertyFooter site={site} />
       <DirectBookingDeals bookingHref={site.bookingHref} />

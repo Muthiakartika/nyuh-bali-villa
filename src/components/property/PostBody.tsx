@@ -6,6 +6,7 @@ import { FaqAccordion, type FaqEntry } from "@/components/property/FaqAccordion"
 import {
   parseInline,
   toArticleBlocks,
+  type ArticleBlock,
   type PointItem,
 } from "@/components/property/postBlocks";
 import type { Post, PostBlock } from "@/data/posts";
@@ -116,7 +117,13 @@ function InlineText({ text }: { text: string }) {
   );
 }
 
-type PostBodyProps = { post: Post };
+/**
+ * `articleBlocks` is what a Sanity-authored post carries: the editor picks
+ * `points`, `faq` and `price` blocks directly, so there is nothing to
+ * recover. A post still coming from src/data has only `blocks`, and the
+ * recovery passes run over it as before.
+ */
+type PostBodyProps = { post: Post & { articleBlocks?: ArticleBlock[] } };
 
 /** "2024-06-18" -> "18 June 2024". Fixed locale so the server and the client
  * can't disagree about the format and trigger a hydration mismatch. */
@@ -129,14 +136,57 @@ export function formatPostDate(iso: string) {
   });
 }
 
+const wordsIn = (text: string) => text.trim().split(/\s+/).filter(Boolean).length;
+
+/**
+ * Every word the article actually publishes, whatever shape it is stored in.
+ *
+ * It has to walk the recovered blocks, not just the flat ones: a post whose
+ * listicle is a `points` block or whose tail is a `faq` block keeps all that
+ * copy inside those structures. Counting only the flat kinds made the same
+ * article read as "4 min" from the CMS and "6 min" from src/data — the words
+ * had not gone anywhere, the counter had simply stopped looking at them.
+ */
+function countWords(blocks: ArticleBlock[]): number {
+  return blocks.reduce((total, block) => {
+    switch (block.kind) {
+      case "image":
+        return total;
+      case "list":
+        return total + wordsIn(block.items.join(" "));
+      case "points":
+        return (
+          total +
+          block.items.reduce(
+            (sum, item) => sum + wordsIn(item.label) + countWords(item.body),
+            0,
+          )
+        );
+      case "faq":
+        return (
+          total +
+          wordsIn(block.heading) +
+          block.items.reduce(
+            (sum, item) => sum + wordsIn(item.question) + wordsIn(item.answer),
+            0,
+          )
+        );
+      case "price":
+        return (
+          total +
+          wordsIn(block.columns.join(" ")) +
+          block.rows.reduce((sum, row) => sum + wordsIn(row.join(" ")), 0)
+        );
+      default:
+        return total + wordsIn(block.text);
+    }
+  }, 0);
+}
+
 /** Derived from the post's own words — metadata, not written copy. 200 wpm is
  * the usual figure for adult reading of general prose. */
-export function readingMinutes(blocks: PostBlock[]) {
-  const words = blocks.reduce((total, block) => {
-    if (block.kind === "list") return total + block.items.join(" ").split(/\s+/).length;
-    if (block.kind === "image") return total;
-    return total + block.text.split(/\s+/).length;
-  }, 0);
+export function readingMinutes(blocks: PostBlock[] | ArticleBlock[]) {
+  const words = countWords(toArticleBlocks(blocks as PostBlock[]));
   return Math.max(1, Math.round(words / 200));
 }
 
@@ -239,13 +289,13 @@ function PointList({ ordered, items }: { ordered: boolean; items: PointItem[] })
  * list rather than injecting CMS HTML.
  */
 export function PostBody({ post }: PostBodyProps) {
-  const minutes = readingMinutes(post.blocks);
+  const minutes = readingMinutes(post.articleBlocks ?? post.blocks);
   // WordPress serves the featured image again as the article's first inline
   // image on most posts. `PostPage` already runs it full-bleed as the hero, so
   // rendering the block too put the same photograph on screen twice, a few
   // hundred pixels apart. Drop it wherever it appears in the body — later
   // photographs, which are genuinely different, are untouched.
-  const blocks = toArticleBlocks(post.blocks).filter(
+  const blocks = (post.articleBlocks ?? toArticleBlocks(post.blocks)).filter(
     (block) => !(block.kind === "image" && block.src === post.image),
   );
   // The opening paragraph is set larger, as a lead-in. Anything after it is
@@ -256,6 +306,16 @@ export function PostBody({ post }: PostBodyProps) {
     <Section tone="sand" width="read">
       <Reveal>
         <p className="text-eyebrow font-body flex flex-wrap items-center gap-x-3 gap-y-1 text-primary-deep uppercase">
+          {/* Same row, same order as the blog cards' `PostMeta` — a reader
+              arriving from the index should meet the article's category where
+              they just left it. Absent when the post carries none. */}
+          {post.categories?.[0] ? (
+            <>
+              <span>{post.categories[0].title}</span>
+              <span className="sr-only">, </span>
+              <span aria-hidden className="block h-px w-4 bg-primary" />
+            </>
+          ) : null}
           <time dateTime={post.date}>{formatPostDate(post.date)}</time>
           {/* The gold rule is the *visual* separator, but it's aria-hidden and
               carries no text — without this the two run together for a screen

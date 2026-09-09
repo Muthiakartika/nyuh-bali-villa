@@ -26,12 +26,15 @@ import {
 } from "@/components/property/InquiryForm";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { Section } from "@/components/ui/Section";
-import { PROPERTY_SITES } from "@/data/properties";
-import { seo } from "@/data/seo";
+import { getPropertySite } from "@/sanity/lib/content";
+import { resolvePageMetadata } from "@/sanity/lib/metadata";
 
-export const metadata: Metadata = seo("/ubud-personalize-your-retreat");
+export async function generateMetadata(): Promise<Metadata> {
+  // A published `page` document's SEO wins; otherwise this stays
+  // exactly the live site's title and description from src/data/seo.ts.
+  return resolvePageMetadata("/ubud-personalize-your-retreat");
+}
 
-const site = PROPERTY_SITES.ubud;
 
 
 // The live form's seven numbered sections, field for field and in order. The
@@ -189,7 +192,8 @@ const FIELDS: InquiryField[] = [
   },
 ];
 
-export default function PersonalizeYourRetreatPage() {
+export default async function PersonalizeYourRetreatPage() {
+  const site = await getPropertySite("ubud");
   return (
     <>
       <PropertyHeader site={site} activeHref="/ubud/retreat/host-your-own" />
@@ -197,6 +201,8 @@ export default function PersonalizeYourRetreatPage() {
 
         <Section tone="sand" width="narrow">
           <InquiryForm
+            // The only heading on this page, so it is the page title.
+            headingAs="h1"
             heading="Personalize Your Retreat"
             fields={FIELDS}
             submitLabel="Send"

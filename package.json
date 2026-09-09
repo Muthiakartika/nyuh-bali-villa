@@ -6,12 +6,28 @@
     "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "sanity": "sanity",
+    "sanity:deploy": "sanity deploy",
+    "sanity:typegen": "sanity schema extract --path=./src/sanity/schema.json --force && sanity typegen generate",
+    "sanity:migrate": "sanity exec scripts/sanity/migrate.ts --with-user-token --",
+    "sanity:migrate:dry": "sanity exec scripts/sanity/migrate.ts -- --dry-run",
+    "sanity:migrate:token": "sanity exec scripts/sanity/migrate.ts --",
+    "sanity:seed-demo": "sanity exec scripts/sanity/seed-demo-page.ts --"
   },
   "dependencies": {
+    "@portabletext/react": "^8.0.1",
+    "@portabletext/types": "^4.0.2",
+    "@sanity/image-url": "^2.1.1",
+    "@sanity/vision": "^6.12.0",
+    "@seoboost/instagram-feed": "github:algosbiz/ig-library#v0.2.0",
     "next": "16.2.10",
+    "next-sanity": "^13.3.4",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "sanity": "^6.12.0",
+    "server-only": "^0.0.1",
+    "styled-components": "^6.5.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

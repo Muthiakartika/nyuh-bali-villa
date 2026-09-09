@@ -153,3 +153,32 @@ function altTextFor(post: BeholdPost): string {
   if (source.length <= MAX_ALT_LENGTH) return source;
   return `${source.slice(0, MAX_ALT_LENGTH).trimEnd()}…`;
 }
+
+// ── Live feed endpoints ────────────────────────────────────────────────
+
+/**
+ * The three accounts the site shows a grid for. Not two: Mahamaya Spa
+ * (`/ubud/spa`) posts as @mahamayaspa.ubud, separately from either resort.
+ * `spa` is not a property — it is an Ubud page — but it is a feed, which is
+ * what this key names.
+ */
+export type InstagramFeedKey = "seminyak" | "ubud" | "spa";
+
+const FEED_ENV: Record<InstagramFeedKey, string | undefined> = {
+  // Read as a static property access, never `process.env[key]`: Next inlines
+  // these at build time by matching the literal expression, and a computed
+  // lookup would leave all three undefined in a production bundle.
+  seminyak: process.env.INSTAGRAM_FEED_SEMINYAK,
+  ubud: process.env.INSTAGRAM_FEED_UBUD,
+  spa: process.env.INSTAGRAM_FEED_SPA,
+};
+
+/**
+ * Server-side only — the browser calls `/api/instagram/<feed>` instead.
+ * One endpoint per account: they are three different Instagram accounts, so a
+ * shared endpoint would publish one account's posts under another's name.
+ * Empty means no live grid and the band keeps its stills.
+ */
+export function instagramFeedEndpoint(feed: InstagramFeedKey): string | undefined {
+  return FEED_ENV[feed]?.trim() || undefined;
+}

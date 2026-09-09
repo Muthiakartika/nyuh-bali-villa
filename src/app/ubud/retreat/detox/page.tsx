@@ -15,14 +15,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostPage, findPost } from "@/components/property/PostPage";
-import { seo } from "@/data/seo";
+import { resolveDocumentMetadata } from "@/sanity/lib/metadata";
 
 const PATH = "/ubud/retreat/detox";
-const post = findPost(PATH);
 
-export const metadata: Metadata = seo("/ubud/retreat/detox");
+export async function generateMetadata(): Promise<Metadata> {
+  // The published post's own SEO fields win; anything it leaves empty falls
+  // back to the live site's title and description in src/data/seo.ts.
+  return resolveDocumentMetadata(PATH, await findPost(PATH));
+}
 
-export default function StandalonePostPage() {
+export default async function StandalonePostPage() {
+  const post = await findPost(PATH);
   if (!post) notFound();
   return <PostPage post={post} />;
 }

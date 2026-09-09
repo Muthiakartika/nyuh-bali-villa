@@ -4,18 +4,35 @@ import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { formatPostDate, readingMinutes } from "@/components/property/PostBody";
+import type { ArticleBlock } from "@/components/property/postBlocks";
 import type { Post } from "@/data/posts";
 
-/** `18 June 2024 · 7 min read`. The gold rule is the visual separator but
- * carries no text, so a comma is voiced in its place — otherwise a screen
- * reader runs the two together as "2024 7 min read". */
-function PostMeta({ post }: { post: Post }) {
+/** A post from src/data or, with its recovered blocks, from the CMS. */
+type GridPost = Post & { articleBlocks?: ArticleBlock[] };
+
+/** `WELLNESS · 18 June 2024 · 7 min read`. The gold rule is the visual
+ * separator but carries no text, so a comma is voiced in its place —
+ * otherwise a screen reader runs the two together as "2024 7 min read".
+ *
+ * The category leads because it is the one part a reader scans for; it is set
+ * in the meta row rather than as a badge over the photograph so the blog keeps
+ * exactly one label treatment. A post with no category simply starts on its
+ * date, which is what every card looked like before the taxonomy existed. */
+function PostMeta({ post }: { post: GridPost }) {
+  const category = post.categories?.[0];
   return (
     <p className="text-eyebrow font-body flex flex-wrap items-center gap-x-3 gap-y-1 text-primary-deep uppercase">
+      {category ? (
+        <>
+          <span>{category.title}</span>
+          <span className="sr-only">, </span>
+          <span aria-hidden className="block h-px w-4 bg-primary" />
+        </>
+      ) : null}
       <time dateTime={post.date}>{formatPostDate(post.date)}</time>
       <span className="sr-only">, </span>
       <span aria-hidden className="block h-px w-4 bg-primary" />
-      <span>{readingMinutes(post.blocks)} min read</span>
+      <span>{readingMinutes(post.articleBlocks ?? post.blocks)} min read</span>
     </p>
   );
 }
@@ -23,7 +40,7 @@ function PostMeta({ post }: { post: Post }) {
 type PostGridProps = {
   eyebrow?: string;
   heading: string;
-  posts: Post[];
+  posts: GridPost[];
   tone?: "sand" | "sand-deep";
   /**
    * Lead with one large post, then run the rest as a grid. Defaults on when
@@ -35,7 +52,7 @@ type PostGridProps = {
 
 /** One card in the lower grid. Kept in one place so the two grids below the
  * lead can't drift apart. */
-function PostCard({ post, priority = false }: { post: Post; priority?: boolean }) {
+function PostCard({ post, priority = false }: { post: GridPost; priority?: boolean }) {
   return (
     <article className="h-full">
       <Link href={post.path} className="group/card flex h-full flex-col">

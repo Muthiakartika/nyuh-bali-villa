@@ -34,34 +34,34 @@ import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
 import { RoomDetailBody } from "@/components/property/RoomDetail";
 import { AwardsRow } from "@/components/property/AwardsRow";
-import { PROPERTY_SITES } from "@/data/properties";
-import { ROOM_DETAILS } from "@/data/rooms";
-import { seo } from "@/data/seo";
-
-const site = PROPERTY_SITES.ubud;
-const ROOMS = ROOM_DETAILS.filter((r) => r.property === "ubud");
+import { getPropertySite, getRoom, getRooms } from "@/sanity/lib/content";
+import { resolveDocumentMetadata } from "@/sanity/lib/metadata";
 
 type Params = { room: string[] };
 
-export function generateStaticParams(): Params[] {
-  return ROOMS.map((r) => ({ room: r.slug.split("/") }));
+/**
+ * Slugs come from Sanity when rooms are published there and from
+ * src/data/rooms.ts otherwise. `dynamicParams = false` makes this list
+ * authoritative, so a room published only in the CMS has to appear here or
+ * it would 404.
+ */
+export async function generateStaticParams(): Promise<Params[]> {
+  const rooms = await getRooms("ubud");
+  return rooms.map((room) => ({ room: room.slug.split("/") }));
 }
 
-/** Nothing outside the eight known slugs should render. */
+/** Nothing outside the known slugs should render. */
 export const dynamicParams = false;
-
-function findRoom(segments: string[]) {
-  return ROOMS.find((r) => r.slug === segments.join("/"));
-}
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  // Title and description come from the live site, keyed by published
-  // path — see src/data/seo.ts.
-  return seo(`/ubud/villa/${(await params).room.join("/")}`);
+  // The published room's own SEO fields win; anything it leaves empty falls
+  // back to the live site's title and description in src/data/seo.ts.
+  const slug = (await params).room.join("/");
+  return resolveDocumentMetadata(`/ubud/villa/${slug}`, await getRoom("ubud", slug));
 }
 
 export default async function UbudRoomDetailPage({
@@ -69,8 +69,9 @@ export default async function UbudRoomDetailPage({
 }: {
   params: Promise<Params>;
 }) {
-  const room = findRoom((await params).room);
+  const room = await getRoom("ubud", (await params).room.join("/"));
   if (!room) notFound();
+  const site = await getPropertySite("ubud");
 
   return (
     <>

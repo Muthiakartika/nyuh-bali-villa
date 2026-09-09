@@ -104,6 +104,10 @@ marks a parent and flips when open.
 On mobile the overlay is a page, not a dropdown, so children are simply indented
 one level behind a short gold rule and set smaller — and the list gains
 `overflow-y-auto`, because 8 parents plus 8 children is taller than a phone.
+The vertical centring lives on that list (`min-h-full` + `justify-center`),
+never on the scrolling element: a scroll container that centres content taller
+than itself pushes the first rows above its top edge, where nothing can scroll
+them back into view. Short menus still centre; long ones start at the top.
 
 ### Header (`property/PropertyHeader.tsx`) — **always solid, never transparent**
 One `sticky` `ink` bar on every page: 68px (72px at `lg`), a gold hairline
@@ -165,10 +169,13 @@ The "About Us" narrative and the "Best Price Guaranteed" offer are **one
 section**. Explicit grid: heading top-left, a dark offer plate bottom-left
 (dark so the gold promo code keeps contrast on the light band), narrative
 spanning the right. DOM order heading → narrative → offer so the mobile stack
-reads sensibly. The **CTA button's bottom edge sits on the plate's bottom edge**
-— `lg:justify-between` on the text column pushes the closing block down, `h-full`
-+ `justify-center` on the plate makes it reach the same line. Splits at `lg`;
-below that it stacks and the paragraphs cap at `34rem`.
+reads sensibly. The closing block (tagline + CTA) follows the narrative at a
+plain `mt-6`. It used to be pushed to the bottom of the column so the button's
+edge lined up with the plate's, but that pools every pixel of height difference
+into one gap — and once the plate gained a photograph it became a 432px hole on
+the Ubud page. The plate keeps `h-full` + `justify-center`, which stop it
+stretching raggedly, and is simply allowed to run lower than the button. Splits
+at `lg`; below that it stacks and the paragraphs cap at `34rem`.
 
 ### Footer (`property/PropertyFooter.tsx`) — **compact, single row**
 Everything that differs between the two properties comes from the `site` object
