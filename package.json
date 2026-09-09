@@ -20,7 +20,6 @@
     "@portabletext/types": "^4.0.2",
     "@sanity/image-url": "^2.1.1",
     "@sanity/vision": "^6.12.0",
-    "@seoboost/instagram-feed": "github:algosbiz/ig-library#v0.2.0",
     "next": "16.2.10",
     "next-sanity": "^13.3.4",
     "react": "19.2.4",
