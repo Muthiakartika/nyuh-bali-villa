@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { InstagramFeedGrid } from "@/components/property/InstagramFeedGrid";
+import { InstagramEmbed } from "@/components/property/InstagramEmbed";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
@@ -22,26 +22,26 @@ type InstagramTeaserProps = {
    * Omit it entirely and the section renders as heading + Follow button alone,
    * which is what every property looked like before any grid existed. */
   posts?: InstagramPost[];
-  /** Live feed path. When set, `posts` becomes the loading/failure fallback. */
-  feedEndpoint?: string;
-  feedLimit?: number;
-  feedColumns?: 3 | 4 | 6;
+  /** The feed app's workspace id. When set, the app's own `<seoboost-feed>`
+   *  embed renders the grid and `posts` becomes the fallback for a page with
+   *  no workspace configured. Appearance is the workspace's own settings —
+   *  see `InstagramEmbed`. */
+  widget?: string;
 };
 
 /**
  * "What's happening @nyuhbalivillas" / "@nyuhbaliubud" / "@mahamayaspa.ubud".
  *
  * The live WordPress site runs a Smash Balloon widget here, which is a plugin
- * and doesn't transfer. The replacement is Behold: it holds the authenticated
- * Instagram connection and republishes the account as public JSON, which
- * `instagramFeed.ts` reads on the server. The grid below is therefore ours —
- * real posts, but rendered with this site's own tiles and in the server HTML,
- * rather than drawn into the page by a vendor script.
+ * and doesn't transfer. The replacement is the feed app's own `<seoboost-feed>`
+ * embed (see `InstagramEmbed`), which the client asked for in place of the
+ * grid this file used to render itself: the app defines how the band looks and
+ * behaves, so there is nothing here to keep in step with it.
  *
- * Only Seminyak carries a grid. Until its Behold feed exists it shows six
- * hand-picked photographs of the resort in place of live posts — the page
- * decides which, so nothing in here changes when the feed is connected. Ubud
- * and the spa still render the heading-and-button form.
+ * The heading and the "Follow on Instagram" button stay ours, and stay in the
+ * server HTML. A page with no workspace configured falls back to whatever
+ * stills it passes, which is what every property showed before any feed
+ * existed.
  *
  * The old version rendered a full dark band containing one heading and one
  * small text link floating in the middle of it: an almost-empty section that
@@ -59,9 +59,7 @@ export function InstagramTeaser({
   heading,
   instagramHref,
   posts,
-  feedEndpoint,
-  feedLimit,
-  feedColumns,
+  widget,
 }: InstagramTeaserProps) {
   // The stills (or Behold posts) this band already had, kept as the fallback
   // the live grid shows while it loads and if the feed is unreachable.
@@ -116,17 +114,7 @@ export function InstagramTeaser({
         </Reveal>
       </div>
 
-      {feedEndpoint ? (
-        <InstagramFeedGrid
-          endpoint={feedEndpoint}
-          instagramHref={instagramHref}
-          limit={feedLimit}
-          columns={feedColumns}
-          fallback={staticGrid}
-        />
-      ) : (
-        staticGrid
-      )}
+      <InstagramEmbed widget={widget} fallback={staticGrid} />
     </Section>
   );
 }

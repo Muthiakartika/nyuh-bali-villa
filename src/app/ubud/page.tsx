@@ -10,7 +10,7 @@ import { TestimonialCarousel } from "@/components/property/TestimonialCarousel";
 import { InstagramTeaser } from "@/components/property/InstagramTeaser";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import ManagedPage from "@/components/sanity/ManagedPage";
-import { getPropertySite, getTestimonials } from "@/sanity/lib/content";
+import { getPropertySite, getTestimonials, getInstagramWidget } from "@/sanity/lib/content";
 import { resolvePageMetadata } from "@/sanity/lib/metadata";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -26,6 +26,7 @@ const HERO_IMAGES = [`${UPLOADS}/2025/01/home-ubud-compress.webp`];
 
 export default async function UbudAboutPage() {
   const site = await getPropertySite("ubud");
+  const instagramWidget = await getInstagramWidget("ubud");
   const testimonials = await getTestimonials("ubud");
   return (
     <>
@@ -158,12 +159,10 @@ export default async function UbudAboutPage() {
           <InstagramTeaser
             heading="What's happening @nyuhbaliubud"
             instagramHref="https://www.instagram.com/nyuhbaliubud/"
-            // Always the proxy path: whether a feed exists is the route's
-            // call, because the URL lives in Sanity and can be published
-            // without touching this file.
-            feedEndpoint="/api/instagram/ubud"
-            feedLimit={9}
-            feedColumns={3}
+            // The workspace id, resolved from the same Studio field the JSON
+            // endpoint came from — so a workspace swapped in Sanity swaps the
+            // embed too, with no redeploy.
+            widget={instagramWidget}
           />
           <AwardsRow
             variant="marquee"

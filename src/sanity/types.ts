@@ -270,7 +270,15 @@ export type SanitySection =
       variant?: "grid" | "marquee";
     })
   | (SectionBase & { _type: "dealsSection"; bookingHref?: string })
-  | (SectionBase & { _type: "instagramSection"; heading?: string; feedUrl?: string })
+  | (SectionBase & {
+      _type: "instagramSection";
+      heading?: string;
+      /** A feed key ("seminyak" | "ubud" | "spa"), not a URL — the grid can only
+       *  call this site's own proxy. Empty means the page's own property. */
+      feed?: string;
+      /** The "Follow on Instagram" target. Empty means the page's own property. */
+      profileUrl?: string;
+    })
   | (SectionBase & {
       _type: "bookingWidgetSection";
       heading?: string;

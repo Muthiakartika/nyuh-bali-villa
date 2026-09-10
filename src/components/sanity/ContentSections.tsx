@@ -14,6 +14,8 @@ import { FaqList } from "@/components/property/FaqList";
 import { ImageGallery } from "@/components/property/ImageGallery";
 import { InquiryForm } from "@/components/property/InquiryForm";
 import { InstagramTeaser } from "@/components/property/InstagramTeaser";
+import type { InstagramFeedKey } from "@/components/property/instagramFeed";
+import { getInstagramWidget } from "@/sanity/lib/content";
 import { LinkCardGrid } from "@/components/property/LinkCardGrid";
 import { PackageList } from "@/components/property/PackageList";
 import { ProgramList } from "@/components/property/ProgramList";
@@ -539,7 +541,7 @@ export function DealsBlock({
   return <DirectBookingDeals bookingHref={section.bookingHref || site.bookingHref} />;
 }
 
-export function InstagramBlock({
+export async function InstagramBlock({
   section,
   site,
 }: {
@@ -549,12 +551,19 @@ export function InstagramBlock({
   // The live grid, not just the heading and the Follow button: the proxy path
   // is derived from the property, exactly as the hand-written routes derive
   // it, so a CMS-authored page keeps the feed instead of quietly losing it.
+  //
+  // `section.feed` overrides that default, and one page needs it: /ubud/spa is
+  // an Ubud page wearing Ubud's chrome, so `site.slug` is "ubud" and the band
+  // published the resort's posts under "What's happening @mahamayaspa.ubud".
+  // The hand-written route had always passed "/api/instagram/spa" explicitly;
+  // the section had no way to say so until this field existed.
+  const feed = (section.feed || site.slug) as InstagramFeedKey;
+  const widget = await getInstagramWidget(feed);
   return (
     <InstagramTeaser
       heading={section.heading || "Follow Us"}
-      instagramHref={site.social.instagram}
-      feedEndpoint={`/api/instagram/${site.slug}`}
-      feedLimit={9}
+      instagramHref={section.profileUrl || site.social.instagram}
+      widget={widget}
     />
   );
 }

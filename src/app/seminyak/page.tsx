@@ -8,13 +8,10 @@ import { AboutNarrative } from "@/components/property/AboutNarrative";
 import { LinkCardGrid } from "@/components/property/LinkCardGrid";
 import { TestimonialCarousel } from "@/components/property/TestimonialCarousel";
 import { InstagramTeaser } from "@/components/property/InstagramTeaser";
-import {
-  fetchInstagramPosts,
-  type InstagramPost,
-} from "@/components/property/instagramFeed";
+import { type InstagramPost } from "@/components/property/instagramFeed";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import ManagedPage from "@/components/sanity/ManagedPage";
-import { getPropertySite, getTestimonials } from "@/sanity/lib/content";
+import { getPropertySite, getTestimonials, getInstagramWidget } from "@/sanity/lib/content";
 import { resolvePageMetadata } from "@/sanity/lib/metadata";
 
 
@@ -102,21 +99,11 @@ const INSTAGRAM_STILLS: InstagramPost[] = [
  * dark is left to the chrome (the awards base and the footer) plus the small
  * offer plate inside the About section.
  */
-/** One row of six, which is also the whole feed: Behold's free tier caps a
- * feed at six posts, so this is not a slice of a longer one. */
-const INSTAGRAM_POST_COUNT = 6;
 
 export default async function SeminyakAboutPage() {
   const site = await getPropertySite("seminyak");
+  const instagramWidget = await getInstagramWidget("seminyak");
   const testimonials = await getTestimonials("seminyak");
-  // Server-side and cached (see `fetchInstagramPosts`), so the photographs
-  // ship in this route's HTML and no Instagram request happens in the
-  // visitor's browser. Empty until `instagramFeedUrl` is filled in, or if
-  // Behold is unreachable at build time — `INSTAGRAM_STILLS` covers both.
-  const instagramPosts = await fetchInstagramPosts(
-    site.instagramFeedUrl,
-    INSTAGRAM_POST_COUNT,
-  );
 
   return (
     <>
@@ -243,15 +230,14 @@ export default async function SeminyakAboutPage() {
           <InstagramTeaser
             heading="What's happening @nyuhbalivillas"
             instagramHref="https://www.instagram.com/nyuhbalivillas/"
-            posts={
-              instagramPosts.length > 0 ? instagramPosts : INSTAGRAM_STILLS
-            }
-            // Always the proxy path: whether a feed exists is the route's
-            // call, because the URL lives in Sanity and can be published
-            // without touching this file.
-            feedEndpoint="/api/instagram/seminyak"
-            feedLimit={9}
-            feedColumns={3}
+            // Local photographs, not a feed — shown only if no workspace is
+            // configured. Nothing here fetches Instagram: the band is the
+            // library's embed and its data is the library's alone.
+            posts={INSTAGRAM_STILLS}
+            // The workspace id, resolved from the same Studio field the JSON
+            // endpoint came from — so a workspace swapped in Sanity swaps the
+            // embed too, with no redeploy.
+            widget={instagramWidget}
           />
           <AwardsRow
             badges={[

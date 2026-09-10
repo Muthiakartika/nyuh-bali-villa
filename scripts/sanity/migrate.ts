@@ -980,10 +980,20 @@ const inquiryFormSection = (
   })),
 });
 
-const instagramSection = (heading: string): SectionValue => ({
+/**
+ * `feed`/`profileUrl` are omitted on the two About pages, where the band is the
+ * page's own property and the default is right. /ubud/spa is the exception: it
+ * is an Ubud page, so both would resolve to the resort's account and the band
+ * published @nyuhbaliubud's posts under the spa's heading.
+ */
+const instagramSection = (
+  heading: string,
+  account?: { feed: string; profileUrl: string },
+): SectionValue => ({
   _type: "instagramSection",
   _key: nextKey(),
   heading,
+  ...(account ?? {}),
 });
 
 async function awardsSection(slug: PropertySlug): Promise<SectionValue> {
@@ -1294,7 +1304,10 @@ async function migratePages() {
       tone: "sand",
     }),
     quotesSection(ubudSpaQuotes, "ubud"),
-    instagramSection("What's happening @mahamayaspa.ubud"),
+    instagramSection("What's happening @mahamayaspa.ubud", {
+      feed: "spa",
+      profileUrl: "https://www.instagram.com/mahamayaspa.ubud/",
+    }),
     await awardsSection("ubud"),
   ]);
 

@@ -68,10 +68,38 @@ export const instagramSection = defineType({
   fields: [
     defineField({ name: "heading", title: "Heading", type: "string" }),
     defineField({
-      name: "feedUrl",
-      title: "Feed URL",
+      name: "feed",
+      title: "Which account",
+      type: "string",
+      options: {
+        list: [
+          { title: "Seminyak resort (@nyuhbalivillas)", value: "seminyak" },
+          { title: "Ubud resort (@nyuhbaliubud)", value: "ubud" },
+          { title: "Mahamaya Spa (@mahamayaspa.ubud)", value: "spa" },
+        ],
+        layout: "radio",
+      },
+      // A feed key, not a URL. The grid fetches it in the browser, and the
+      // feed service sends no CORS headers — so it can only ever call this
+      // site's own /api/instagram/<key> proxy, never the feed directly. The
+      // field this replaces was a `url`, which could not have worked.
+      //
+      // Empty means "this property's own account", which is right on the two
+      // About pages and wrong on exactly one page: /ubud/spa is an Ubud page,
+      // so the default resolved to the resort's feed and published
+      // @nyuhbaliubud's posts under the spa's heading.
+      description:
+        "Leave empty to use this property's own account. Set it only where the band belongs to a different account than the page's property — /ubud/spa is the one such page.",
+    }),
+    defineField({
+      name: "profileUrl",
+      title: "Profile link",
       type: "url",
-      description: "Leave empty to use the property's own feed.",
+      // The "Follow on Instagram" button and the fallback permalink on every
+      // tile. It has to move with `feed`: on /ubud/spa the button pointed at
+      // @nyuhbaliubud while the heading above it said @mahamayaspa.ubud.
+      description:
+        "Leave empty to use this property's own Instagram. Set it wherever 'Which account' is set, so the button matches the posts.",
     }),
     ...sectionSettingsFields,
   ],

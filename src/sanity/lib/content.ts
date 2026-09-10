@@ -21,7 +21,11 @@ import type { PropertySite, PropertySlug } from "@/data/properties";
 import type { RoomDetail } from "@/data/rooms";
 import type { Testimonial } from "@/data/testimonials";
 import type { PackageItem } from "@/components/property/PackageList";
-import type { InstagramFeedKey } from "@/components/property/instagramFeed";
+import {
+  instagramFeedWidget,
+  instagramWidgetId,
+  type InstagramFeedKey,
+} from "@/components/property/instagramFeed";
 import type { ArticleBlock } from "@/components/property/postBlocks";
 
 import { EXPERIENCES } from "@/data/experiences";
@@ -201,6 +205,21 @@ export async function getInstagramApiUrl(
   const value =
     feed === "spa" ? document?.spaInstagramApiUrl : document?.instagramApiUrl;
   return orUndefined(value)?.trim() || undefined;
+}
+
+/**
+ * The same setting, read as the feed app's workspace id instead of a URL —
+ * which is what its own `<seoboost-feed widget="…">` embed takes.
+ *
+ * Same Studio field, same precedence (published value wins over the env), so
+ * there is still exactly one place a workspace is chosen. See
+ * `instagramWidgetId` for why one value can serve both forms.
+ */
+export async function getInstagramWidget(
+  feed: InstagramFeedKey,
+): Promise<string | undefined> {
+  const published = instagramWidgetId(await getInstagramApiUrl(feed));
+  return published ?? instagramFeedWidget(feed);
 }
 
 // ── Rooms ──────────────────────────────────────────────────────────────

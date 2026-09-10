@@ -33,7 +33,7 @@ import { InstagramTeaser } from "@/components/property/InstagramTeaser";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import ManagedPage from "@/components/sanity/ManagedPage";
 import type { } from "@/data/testimonials";
-import { getPropertySite } from "@/sanity/lib/content";
+import { getPropertySite, getInstagramWidget } from "@/sanity/lib/content";
 import { resolvePageMetadata } from "@/sanity/lib/metadata";
 import {
   
@@ -63,6 +63,7 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default async function UbudSpaPage() {
   const site = await getPropertySite("ubud");
+  const instagramWidget = await getInstagramWidget("spa");
   return (
     <>
       <PropertyHeader site={site} activeHref="/ubud/spa" />
@@ -96,14 +97,14 @@ export default async function UbudSpaPage() {
           <InstagramTeaser
             heading="What's happening @mahamayaspa.ubud"
             instagramHref="https://www.instagram.com/mahamayaspa.ubud/"
-            // The spa's own account, not either resort's — its endpoint is a
-            // separate field on Ubud's property document (see
-            // getInstagramApiUrl). No stills behind it: this band has never
-            // carried any, so an unreachable feed leaves it as heading + button,
-            // exactly as before.
-            feedEndpoint="/api/instagram/spa"
-            feedLimit={9}
-            feedColumns={3}
+            // The spa's own account, not either resort's — its workspace is a
+            // separate field on Ubud's property document (see getInstagramWidget).
+            // No stills behind it: this band has never carried any, so an
+            // unconfigured feed leaves it as heading + button, exactly as before.
+            // The workspace id, resolved from the same Studio field the JSON
+            // endpoint came from — so a workspace swapped in Sanity swaps the
+            // embed too, with no redeploy.
+            widget={instagramWidget}
           />
 
           <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
