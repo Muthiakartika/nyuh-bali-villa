@@ -3,10 +3,10 @@ import DynamicCollectionSection from "@/components/sanity/DynamicCollectionSecti
 import {
   AboutNarrativeBlock,
   AmenityBlock,
-  ContactBlock,
   AwardsBlock,
   BookingWidgetBlock,
   BulletListBlock,
+  ContactBlock,
   CtaBlock,
   DealsBlock,
   FaqBlock,
@@ -18,6 +18,7 @@ import {
   PackageListBlock,
   PriceTableBlock,
   ProgramListBlock,
+  PropertyPickerBlock,
   ProseBlock,
   RichTextBlock,
   RoomListBlock,
@@ -39,6 +40,8 @@ function renderSection(section: SanitySection, site: PropertySite) {
   switch (section._type) {
     case "heroSection":
       return <HeroBlock section={section} />;
+    case "propertyPickerSection":
+      return <PropertyPickerBlock section={section} />;
     case "aboutNarrativeSection":
       return <AboutNarrativeBlock section={section} site={site} />;
     case "proseSection":

@@ -2,6 +2,16 @@ import type { StructureResolver } from "sanity/structure";
 
 const singletonTypes = new Set(["siteSettings"]);
 
+/**
+ * Required on any `documentTypeList` carrying a custom `.filter()`.
+ *
+ * Without it the Studio logs "No apiVersion specified for document type list
+ * with custom filter … This will be required in the future" once per list on
+ * every load — five of them here, which is most of the console noise an editor
+ * sees. Matches the version the rest of the project queries with.
+ */
+const STRUCTURE_API_VERSION = "2023-05-03";
+
 export const structure: StructureResolver = (S) =>
   S.list()
     .title("Content")
@@ -36,14 +46,16 @@ export const structure: StructureResolver = (S) =>
                 .child(
                   S.documentTypeList("room")
                     .title("Seminyak rooms")
-                    .filter('_type == "room" && property == "seminyak"'),
+                    .filter('_type == "room" && property == "seminyak"')
+                    .apiVersion(STRUCTURE_API_VERSION),
                 ),
               S.listItem()
                 .title("Ubud")
                 .child(
                   S.documentTypeList("room")
                     .title("Ubud rooms")
-                    .filter('_type == "room" && property == "ubud"'),
+                    .filter('_type == "room" && property == "ubud"')
+                    .apiVersion(STRUCTURE_API_VERSION),
                 ),
             ]),
         ),
@@ -59,21 +71,24 @@ export const structure: StructureResolver = (S) =>
                 .child(
                   S.documentTypeList("experience")
                     .title("Retreats")
-                    .filter('_type == "experience" && group == "retreat"'),
+                    .filter('_type == "experience" && group == "retreat"')
+                    .apiVersion(STRUCTURE_API_VERSION),
                 ),
               S.listItem()
                 .title("Wellness")
                 .child(
                   S.documentTypeList("experience")
                     .title("Wellness")
-                    .filter('_type == "experience" && group == "wellness"'),
+                    .filter('_type == "experience" && group == "wellness"')
+                    .apiVersion(STRUCTURE_API_VERSION),
                 ),
               S.listItem()
                 .title("Balinese culture")
                 .child(
                   S.documentTypeList("experience")
                     .title("Balinese culture")
-                    .filter('_type == "experience" && group == "culture"'),
+                    .filter('_type == "experience" && group == "culture"')
+                    .apiVersion(STRUCTURE_API_VERSION),
                 ),
             ]),
         ),

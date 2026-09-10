@@ -20,6 +20,7 @@ async function isUniquePath(
 
 const sectionMembers = [
   "heroSection",
+  "propertyPickerSection",
   "aboutNarrativeSection",
   "richTextSection",
   "proseSection",

@@ -119,6 +119,7 @@ import {
   SERVICES_INTRO as servicesIntro,
   SERVICES as servicesList,
 } from "../../src/data/pages/complimentary-services";
+import { HOME_PANELS } from "../../src/data/pages/home";
 import {
   HERO_IMAGES as seminyakTourHero,
   DAY_TRAVELLING as seminyakDayTravelling,
@@ -1609,6 +1610,32 @@ async function migratePages() {
       tone: "sand-deep",
     },
     await awardsSection("ubud"),
+  ]);
+
+
+  // ── Home ─────────────────────────────────────────────────────────
+  //
+  // The one hand-written route that was never handed to the Studio: it has no
+  // property, so none of the per-property sections fit and it was skipped when
+  // the other 23 went in. An editor looking for "the page where you pick which
+  // resort" found nothing in the Pages list, which is what this fixes. The
+  // `property` is "ubud" only because a page document carries one and
+  // ManagedPage resolves a site from it; the picker section never reads it.
+  sectionSeq = 0;
+  add("/", "Home — property picker", "ubud", [
+    {
+      _type: "propertyPickerSection",
+      _key: nextKey(),
+      panels: await Promise.all(
+        HOME_PANELS.map(async (panel, index) => ({
+          _key: `panel-${index + 1}`,
+          name: panel.name,
+          description: panel.description,
+          image: await migratedImage(panel.imageSrc, `Nyuh Bali Villas ${panel.name}`),
+          href: panel.href,
+        })),
+      ),
+    },
   ]);
 
   for (const page of pages) {

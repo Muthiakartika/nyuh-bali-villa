@@ -92,6 +92,16 @@ type SectionBase = {
   tone?: "sand" | "sand-deep";
 };
 
+/** One half of the homepage picker. `image` is the shared upload-or-hotlink
+ *  shape, so a photograph can move into Sanity without a code change. */
+export type SanityPropertyPanel = {
+  _key?: string;
+  name?: string;
+  description?: string;
+  image?: SanityImage;
+  href?: string;
+};
+
 export type SanitySection =
   | (SectionBase & {
       _type: "heroSection";
@@ -270,6 +280,10 @@ export type SanitySection =
       variant?: "grid" | "marquee";
     })
   | (SectionBase & { _type: "dealsSection"; bookingHref?: string })
+  | (SectionBase & {
+      _type: "propertyPickerSection";
+      panels?: SanityPropertyPanel[];
+    })
   | (SectionBase & {
       _type: "instagramSection";
       heading?: string;

@@ -55,6 +55,10 @@ import { linkCardGridSection } from "./objects/sections/linkCardGridSection";
 import { packageListSection } from "./objects/sections/packageListSection";
 import { programListSection } from "./objects/sections/programListSection";
 import { proseSection } from "./objects/sections/proseSection";
+import {
+  propertyPanel,
+  propertyPickerSection,
+} from "./objects/sections/propertyPickerSection";
 import { richTextSection } from "./objects/sections/richTextSection";
 import { roomListSection } from "./objects/sections/roomListSection";
 import { splitContentSection } from "./objects/sections/splitContentSection";
@@ -90,6 +94,7 @@ export const schemaTypes = [
   experienceProgram,
   teamMember,
   bulletBlock,
+  propertyPanel,
 
   // Article body blocks
   articleHeading,
@@ -103,6 +108,7 @@ export const schemaTypes = [
 
   // Controlled page-builder sections
   heroSection,
+  propertyPickerSection,
   aboutNarrativeSection,
   richTextSection,
   proseSection,

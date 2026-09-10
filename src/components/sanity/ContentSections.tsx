@@ -14,6 +14,7 @@ import { FaqList } from "@/components/property/FaqList";
 import { ImageGallery } from "@/components/property/ImageGallery";
 import { InquiryForm } from "@/components/property/InquiryForm";
 import { InstagramTeaser } from "@/components/property/InstagramTeaser";
+import { PropertyPanel } from "@/components/home/PropertyPanel";
 import type { InstagramFeedKey } from "@/components/property/instagramFeed";
 import { getInstagramWidget } from "@/sanity/lib/content";
 import { LinkCardGrid } from "@/components/property/LinkCardGrid";
@@ -539,6 +540,39 @@ export function DealsBlock({
   site: PropertySite;
 }) {
   return <DirectBookingDeals bookingHref={section.bookingHref || site.bookingHref} />;
+}
+
+export function PropertyPickerBlock({
+  section,
+}: {
+  section: Narrow<"propertyPickerSection">;
+}) {
+  // The homepage's two panels. They are direct children of the route's
+  // `<main className="grid md:grid-cols-2">`, so this renders them as
+  // siblings and adds no wrapper of its own — a wrapper here would become the
+  // single grid cell and put both photographs in one column.
+  //
+  // The first panel carries the `<h1>`: exactly one per page is an invariant
+  // here, and deriving it from the array's order is what makes it impossible
+  // to author two.
+  return (
+    <>
+      {(section.panels ?? []).map((panel, index) => {
+        const imageSrc = resolveImageUrl(panel.image);
+        if (!imageSrc || !panel.name || !panel.href) return null;
+        return (
+          <PropertyPanel
+            key={panel._key ?? panel.href}
+            headingLevel={index === 0 ? "h1" : "h2"}
+            name={panel.name}
+            description={panel.description ?? ""}
+            imageSrc={imageSrc}
+            href={panel.href}
+          />
+        );
+      })}
+    </>
+  );
 }
 
 export async function InstagramBlock({
