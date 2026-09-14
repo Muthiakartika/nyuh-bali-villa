@@ -1,13 +1,25 @@
 import { Reveal } from "@/components/ui/Reveal";
 
+/**
+ * Which tag a heading is written as.
+ *
+ * Only the tag: every band heading keeps the same `text-section` scale
+ * whichever of these it uses, so this changes the document outline that
+ * search engines and screen readers read and changes nothing on screen. The
+ * CMS exposes h2/h3/h4 (see `headingLevelField`); `h1` stays reachable from
+ * code for the one heading a page opens with.
+ */
+export type HeadingLevel = "h1" | "h2" | "h3" | "h4";
+
 type SectionHeadingProps = {
   /** Small letter-spaced label above the heading. Optional — only used where
    * an existing word from the site can carry it (a property name, an existing
    * nav label). No new copy is invented for it. */
   eyebrow?: string;
   title: string;
-  /** One `<h1>` per page; every other section heading is an `<h2>`. */
-  as?: "h1" | "h2";
+  /** One `<h1>` per page; every other section heading is an `<h2>` unless it
+   * deliberately sits under the band above it. */
+  as?: HeadingLevel;
   /** Whether this sits on a light surface (`sand`/`white`) or a dark one
    * (`ink`). Drives which gold is safe to use — see the contrast note on
    * `primary-deep` in globals.css. */

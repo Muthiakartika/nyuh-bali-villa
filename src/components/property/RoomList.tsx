@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button, buttonClassName } from "@/components/ui/Button";
 import { ImageGallery } from "@/components/property/ImageGallery";
@@ -28,6 +28,9 @@ type RoomListProps = {
   /** Small letter-spaced label above the heading. */
   eyebrow?: string;
   heading: string;
+  /** Which tag this band's heading is written as. The size never changes —
+   * see HeadingLevel. Editors set it per section in the CMS. */
+  headingAs?: HeadingLevel;
   /** The paragraph the live page runs under each category heading. */
   intro?: string;
   rooms: Room[];
@@ -52,13 +55,14 @@ type RoomListProps = {
 export function RoomList({
   eyebrow,
   heading,
+  headingAs = "h2",
   intro,
   rooms,
   tone = "sand",
 }: RoomListProps) {
   return (
     <Section tone={tone}>
-      <SectionHeading eyebrow={eyebrow} title={heading} />
+      <SectionHeading eyebrow={eyebrow} title={heading} as={headingAs} />
 
       {intro ? (
         <Reveal delay={80}>

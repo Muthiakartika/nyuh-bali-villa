@@ -8,7 +8,7 @@
 import type { PackageItem } from "@/components/property/PackageList";
 import type { Testimonial } from "@/data/testimonials";
 
-export const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
+export const UPLOADS = "/uploads";
 
 export const MENU_ALA_CARTE = `${UPLOADS}/2025/06/All-Day-Menu-Villa.pdf`;
 

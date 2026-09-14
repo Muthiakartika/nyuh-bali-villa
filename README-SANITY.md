@@ -61,7 +61,7 @@ That path builds its own client from the token and never asks the CLI for a sess
 |---|---|
 | *(none)* | Creates missing documents only. Editor changes survive a rerun. |
 | `--dry-run` | Prints the plan, writes nothing, needs no credentials. |
-| `--upload-images` | Downloads each image and uploads it to Sanity instead of hotlinking. Off by default. |
+| `--upload-images` | Uploads each image to Sanity instead of recording its `/uploads/…` path. Off by default. Reads the file from `public/uploads/` — **to convert an existing dataset use `npm run sanity:images`, not this**, because this script reaches documents through `--replace`. |
 | `--only=posts,legal` | Runs just those steps. Step names: `properties`, `settings`, `testimonials`, `rooms`, `experiences`, `packages`, `categories`, `pages`, `posts`, `legal`. The `pages` step is the one to rerun with `--replace` after editing a route's content file — it is a seed, and `createIfNotExists` would leave the published document as it was. |
 | `--replace` | `createOrReplace` instead of `createIfNotExists` — **discards editor changes**. |
 
@@ -94,9 +94,18 @@ Content in the browser and any public API consumer.
 
 *Posts are stored as recovered blocks.* `src/components/property/postBlocks.ts` says its three recovery passes "are what a migration would run once", so the script runs `toArticleBlocks` and writes the result. The dry run confirms it lands as that file predicts — **9 FAQ blocks** ("nine of the seventeen posts"), **3 point lists** ("three posts write their points as marker punctuation") and **1 rate table** ("one table found, no false positives"). After this the listicles are real lists and the 88 question/answer pairs are real FAQ blocks in the CMS, not paragraph runs re-derived by heuristics on every render.
 
-*Images stay hotlinked.* The site points every `<Image>` at nyuhbalivillas.com's own CDN (see `next.config.ts` and CLAUDE.md), and the migration keeps it that way: each image field is written with the live URL in `externalUrl` and no uploaded asset. Nothing is copied into Sanity, a migrated page renders the exact photograph it renders today, and the import needs no bandwidth or asset storage.
+*Images are written as `/uploads/…` paths.* Every photograph and menu PDF is served by this site now (`public/uploads/`, see `next.config.ts` and CLAUDE.md); the migration records that path in `externalUrl` and uploads nothing, so a migrated page renders exactly what the code renders and an import that was only asked for content copies no files.
 
-Moving an image into Sanity later needs no migration and no code change — drop a file onto the image field in the Studio and the upload wins, because `imageUrl` in `src/sanity/lib/content.ts` prefers an asset over `externalUrl`. To move everything at once, rerun with `--upload-images --replace`; uploads are keyed on the source URL, so an interrupted run resumes rather than starting over, and any download that fails keeps its hotlink instead of leaving the field empty.
+Moving one image into Sanity needs no migration and no code change — drop a file onto the image field in the Studio and the upload wins, because the resolver prefers an asset over `externalUrl`.
+
+**To move them all, `npm run sanity:images`** (`npm run sanity:images:dry` first — it writes nothing and prints exactly what would change). Read `scripts/sanity/upload-images.mjs` before running it; the short version:
+
+- It is **not** `migrate.ts --upload-images --replace`. That path rebuilds each document from `src/data/` and would discard every edit an author has made in the Studio since the import. This script reads whatever is published right now, adds an `asset` to the image objects inside it, and writes that same document back — so an editor's copy, a swapped heading, a reordered section all survive.
+- **`externalUrl` is kept, never replaced.** The asset wins at render time; the path stays as a second line of defence. Nothing is deleted.
+- **Idempotent**, keyed on `source.id`, so a rerun reuses assets and an interrupted run resumes. A field that already holds an editor's own upload is left alone. An image that cannot be read leaves that one field on its path and is named in the summary — a failure never blanks a field.
+- A document whose images did not change is not written at all, so the publish webhook does not fire for documents that did not change.
+
+One thing to expect: it writes ~72 documents, and each write fires the publish webhook, so the Cloudflare purge runs that many times. Harmless — the purges are idempotent — but the log is noisy.
 
 ## 4. How a page actually gets its content
 
@@ -138,11 +147,19 @@ editor clicks Publish
    │
    ├── Sanity Live pushes to any open page               (seconds, no deploy)
    └── webhook → POST /api/revalidate/sanity
-                    → revalidateTag("sanity:post:/ubud/…", { expire: 0 })
+                    ├── revalidateTag("sanity:post:/ubud/…", { expire: 0 })
+                    └── purgeCloudflare(…)               (only once a zone is configured)
 ```
 
 A 60-second ISR fallback sits under both, so a webhook that never arrives
 delays a change rather than freezing it.
+
+Behind a live domain there is a **second** cache, and it has no such floor: the
+Cloudflare edge answers most visitors without ever asking the origin, so
+`revalidateTag` alone changes nothing for them. The same webhook drops the edge
+copy in the same request — see **README-CLOUDFLARE.md**, which also carries the
+zone's cache rules. With no zone configured that step reports `not-configured`
+and this page is the whole story, exactly as before.
 
 ### Where a change lands
 
@@ -171,7 +188,7 @@ Background and layout choices are controlled enums. Editors cannot enter CSS cla
 
 Four modelling decisions worth knowing:
 
-- **Image fields hold either an upload or a hotlink.** `imageWithAlt` carries an optional `externalUrl` alongside the usual asset, and the resolver prefers the asset. That is what lets the content move into Sanity now while the photographs stay on the live CDN until someone decides otherwise — see section 3.
+- **Image fields hold an upload, a path, or both.** `imageWithAlt` carries an optional `externalUrl` alongside the usual asset, and the resolver prefers the asset. Every field now holds both: the uploaded asset that renders, and the `/uploads/…` path it came from. That is what makes a photograph swappable in the Studio without a deploy — see section 3.
 - **Blog categories are ours, not WordPress's.** The live site's taxonomy is two
   buckets — `ubud-news` (16 posts) and `seminyak-news` (2), no tags — which just
   restates `Post.property` and reads as nothing on a card. The seven categories
@@ -218,7 +235,7 @@ changes until someone publishes a `page` at that path:
 </ManagedPage>
 ```
 
-**Every hand-written route uses it — 23 of them, with a seeded `page`
+**Every hand-written route uses it — 31 of them, with a seeded `page`
 document each.** Both About pages, both Stay/Villas, both Dining, both SPA, all
 three Offers/Romance, both blog indexes, both Contact, plus Retreat, Luxury
 Retreat, Host Your Retreat, Explore Bali, Culture, Wellness, Wedding and
@@ -309,6 +326,76 @@ npm run sanity:seed-demo -- --remove
 
 It is a demonstration, not content — do not leave it in a deployed dataset.
 
+### What the CMS audit pass changed
+
+The system above was already in place; this pass closed the gaps an editor
+would actually hit. Seven of them were the same failure — content visible on
+the website that could only be changed by editing a `.tsx` file.
+
+**Every page is now a document.** The count went from 24 to **31**. The seven
+that were missing: the three standalone enquiry forms
+(`/spa-reservation-seminyak`, `/ubud-spa-booking-form`,
+`/ubud-personalize-your-retreat`) and the four in-room / staff pages
+(`/seminyak-directory`, `/ubud-directory`, `/suite-directory`,
+`/welcomeaboard`). The four directories had been wrapped in `ManagedPage`
+since they were built and never seeded, so the Pages list showed no trace of
+the menus a guest reaches by scanning the QR code beside the bed. The forms
+had never been wrapped at all: heading, submit label, confirmation and every
+field label lived in the route.
+
+**`siteSettings` was read by nothing.** `getSiteSettings()` existed and no
+caller ever called it, so an editor could fill the document in and watch the
+site ignore all of it — worse than having no document, because it looks like
+it works. `PropertyFooter`, `HomeFooter`, `BookNowRibbon`,
+`DirectBookingDeals` and the root layout read it now, and the document gained
+the fields they need: the footer's column headings, its menu links, its logo,
+the copyright line, the legal links, the Book Now tab label, and the
+direct-booking offer.
+
+**The promo bar's offer is content, not code.** "Direct Booking Deals 66% Off"
+and `Code : "ilovenyuh"` were literals inside `DirectBookingDeals`, on a bar
+that renders on all 78 pages — and the same code was already an editable field
+on the About band, so the two could drift apart. `DirectBookingDeals` is now a
+server component that resolves all three strings and renders the client bar
+(`DirectBookingDealsBar`), which is presentation only.
+
+**Rich text where the design already has it.** `packageItem.description` and
+`packageListSection.intro` became `inlineRichText` — one paragraph, with bold,
+italic and links. Not full portable text, because both render inside a `<p>`
+the layout draws and anything block-level there is invalid HTML. Bold was
+already in the design: the in-room directory pages set their instructions in
+it. `portableText` itself gained **H4** and internal-reference links.
+
+**Internal links are references.** `link` and both rich-text types now take
+either a reference to a published `page` / `post` / `room` / `experience` /
+`legalPage`, or a typed path. `linkProjection` in `lib/queries.ts` resolves
+the reference to a path in GROQ, so every renderer still sees one `href`
+string and none of them learned a second shape.
+
+**Heading levels are editable, within the one rule that matters.**
+`headingLevelField` offers H2 / H3 / H4 on every band — the tag only, never
+the size, so it changes the outline a screen reader and a search engine read
+and nothing a sighted visitor sees. H1 is offered on exactly two section types
+(`contactSection`, `inquiryFormSection`), which are the only ones that can be
+a page's title, and `page.sections` warns when a document ends up with none or
+with two.
+
+**SEO gained the social pair and a canonical.** `seo` now carries `ogTitle`,
+`ogDescription` and `canonicalUrl`, each falling back to the search pair and
+to the page's own path.
+
+**`npm run sanity:rich-text`** is the migration the rich-text change needed —
+71 fields across 14 documents. It reads what is published and writes it back,
+like `sanity:images` and unlike `--replace`, so editor changes survive; it is
+idempotent, and it converts drafts too. Run `npm run sanity:rich-text:dry`
+first.
+
+**Nothing about the site moved.** Verified by building twice — once against
+the dataset and once with `NEXT_PUBLIC_SANITY_PROJECT_ID` emptied so every
+route falls back to its own JSX — and diffing both the visible text of
+`<main>` and the sequence of heading tags inside it: **78 of 78 pages
+identical on both measures**, with exactly one `<h1>` each.
+
 ## 7. Preview and publishing
 
 The Presentation tool loads `SANITY_STUDIO_PREVIEW_ORIGIN` and enables Next.js Draft Mode through `/api/draft-mode/enable`.
@@ -361,9 +448,28 @@ npm run build
 
 `src/sanity/types.generated.ts` is machine-written; `eslint.config.mjs` exempts it from `no-empty-object-type` rather than hand-patching output that regeneration would overwrite.
 
-## 10. Not done yet
+## 10. Not done yet, and deliberately not done
 
-- **No route uses `ManagedPage`.** All 44 keep rendering their own JSX, which is why they still diff clean against the pre-Sanity build. Handing one over is a per-route decision, and should be made per route rather than in bulk.
+- ~~**No route uses `ManagedPage`.**~~ **Superseded:** all 31 hand-written
+  routes use it and each has a seeded document.
 - **New CMS pages need a redeploy** to be reachable — see section 8 for the one-line change that removes that constraint.
+- **FAQ answers, section intros and paragraph arrays stay plain text.** Every
+  one of them feeds a component that takes a `string` or a `string[]` —
+  `FaqEntry`, `ProseBand`, `AboutNarrative`, `RoomList`, `TreatmentList`.
+  Making them portable text would mean either changing the markup of bands
+  nobody asked to change, or flattening the blocks back to strings on the way
+  out, which buys the editor nothing. `richTextSection` already exists for
+  prose that genuinely needs formatting, and can be added to any page.
+- **`experience` and `room` descriptions stay plain text** for the same
+  reason, with one extra: `ExperienceDetailBody` renders six different kinds
+  of structured block (`sections`, `blocks`, `programs`, `highlights`, `team`)
+  in the live pages' own order. That structure *is* the formatting, and it is
+  already editable field by field.
+- **Article bodies stay typed `ArticleBlock`s**, not portable text — see the
+  note in section 5.
+- **No per-section layout or spacing controls.** `tone` and `columns` exist
+  because the site already alternates them. Anything further would let an
+  editor break the band rhythm documented in DESIGN.md, which is measured to
+  the pixel.
 - **`UBUD_OFFER_QUOTES`** stays in `src/data/packages.ts`. It is a curated set for the offers pages, distinct from the general Ubud testimonials, and folding the two together would change what renders.
-- **The migration's `--upload-images` path has never been run.** Hotlinking is the default and what is in the dataset; the upload branch is only dry-run verified.
+- ~~The migration's `--upload-images` path has never been run.~~ **Superseded:** the dataset's 301 photographs were uploaded with `npm run sanity:images` (580 image fields across 72 documents). `migrate.ts --upload-images` remains dry-run verified only, and is the wrong tool for an existing dataset anyway — see section 3.

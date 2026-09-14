@@ -1,13 +1,20 @@
 import Image from "next/image";
 import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { ContactForm } from "@/components/property/ContactForm";
+import type { PropertySlug } from "@/data/properties";
 
 type ContactPanelProps = {
+  /** Which resort's inbox this page's form emails. Passed through to
+   * `ContactForm`; the server maps the slug to an address it already knows. */
+  property: PropertySlug;
   /** The property name, which is what both contact pages put above the
    * heading. */
   eyebrow?: string;
   heading: string;
+  /** Which tag this band's heading is written as. The size never changes —
+   * see HeadingLevel. Editors set it per section in the CMS. */
+  headingAs?: HeadingLevel;
   imageSrc: string;
   imageAlt: string;
   /** Ubud's page opens the form column with a line of copy; Seminyak's does
@@ -32,8 +39,10 @@ type ContactPanelProps = {
  * heading, so the two pages read as one design.
  */
 export function ContactPanel({
+  property,
   eyebrow,
   heading,
+  headingAs = "h1",
   imageSrc,
   imageAlt,
   intro,
@@ -41,7 +50,7 @@ export function ContactPanel({
 }: ContactPanelProps) {
   return (
     <Section tone="sand" space="loose" id={anchor}>
-      <SectionHeading eyebrow={eyebrow} title={heading} as="h1" size="display" />
+      <SectionHeading eyebrow={eyebrow} title={heading} as={headingAs} size="display" />
 
       <div className="mt-10 grid gap-9 md:mt-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
         <div className="relative min-h-[380px] w-full overflow-hidden lg:sticky lg:top-24 lg:h-[540px] lg:self-start">
@@ -60,10 +69,10 @@ export function ContactPanel({
             <p className="mb-6 text-[17px] leading-relaxed font-light text-text">
               {intro}
             </p>
-            <ContactForm />
+            <ContactForm property={property} />
           </div>
         ) : (
-          <ContactForm />
+          <ContactForm property={property} />
         )}
       </div>
     </Section>

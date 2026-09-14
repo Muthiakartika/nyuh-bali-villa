@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { eyebrowField, sectionSettingsFields, toneField } from "./shared";
+import { eyebrowField, headingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 export const ctaSection = defineType({
   name: "ctaSection",
@@ -23,6 +23,7 @@ export const ctaSection = defineType({
     }),
     defineField({ name: "image", title: "Background image", type: "imageWithAlt" }),
     toneField,
+    headingLevelField,
     ...sectionSettingsFields,
   ],
   preview: {

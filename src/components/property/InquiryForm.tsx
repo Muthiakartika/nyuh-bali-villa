@@ -1,8 +1,10 @@
 "use client";
 
 import { useId, useState, type FormEvent } from "react";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { buttonClassName } from "@/components/ui/Button";
+import { useFormDelivery } from "@/components/property/FormDelivery";
+import type { PropertySlug } from "@/data/properties";
 
 /**
  * One field on an inquiry form. Pages describe their form as data rather than
@@ -40,23 +42,32 @@ type InquiryFormProps = {
    * reader nothing to announce it by. It changes the level only: the size and
    * the gold rule stay exactly as they are.
    */
-  headingAs?: "h1" | "h2";
+  headingAs?: HeadingLevel;
   fields: InquiryField[];
   submitLabel?: string;
-  /** Shown in place of the form once it has been "sent". */
+  /** Shown in place of the form once the property has been emailed. */
   confirmation?: string;
+  /** Which resort's inbox this form's submissions belong to. Required rather
+   * than defaulted: the standalone form pages sit at top-level slugs and the
+   * retreat Inquiry appears on Ubud pages, so there is no path convention a
+   * default could safely read the property from. */
+  property: PropertySlug;
 };
 
 /**
  * The configurable inquiry form, used by `/ubud/wedding` ("Personalize your
  * Wedding", 20 fields) and `/seminyak/tour` (the tour booking form).
  *
- * **Same simplification as `ContactForm`, and for the same reason.** The live
- * site posts these to WPForms, which emails the property. This project has no
- * server to receive a submission, so `handleSubmit` prevents the native reload
- * and swaps in a confirmation — the part of the interaction a visitor actually
- * experiences. A real deployment replaces the body of `handleSubmit` with a
- * call to a Server Action.
+ * **Same shape as `ContactForm`, and for the same reasons.** The live site
+ * posts these to WPForms, behind a captcha, and WPForms emails the property;
+ * here that is Cloudflare Turnstile and SendGrid, both handled by
+ * `useFormDelivery`. Each form gets its own Turnstile action and its own email
+ * subject, derived from its heading, so the wedding form and the tour form are
+ * separable both in Cloudflare's dashboard and in the inbox they land in.
+ *
+ * **Field labels travel with the answers.** The email is built from the same
+ * `InquiryField[]` the form renders, so a question reworded here is reworded
+ * in the message the property reads — there is no second copy to update.
  *
  * It is a sibling of `ContactForm`, not a replacement for it: that component
  * is the Contact pages' own fixed five-field form and is left untouched. Both
@@ -69,14 +80,30 @@ export function InquiryForm({
   fields,
   submitLabel = "Send",
   confirmation = "Thank you for reaching out — we'll get back to you shortly.",
+  property,
 }: InquiryFormProps) {
   const [isSubmitted, setIsSubmitted] = useState(false);
   // Namespaces every input id, so two forms on one page can never collide.
   const formId = useId();
+  const delivery = useFormDelivery({ formName: heading, property });
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setIsSubmitted(true);
+    const data = new FormData(event.currentTarget);
+
+    const sent = await delivery.send(
+      fields.map((field) => ({
+        label: field.label,
+        // `getAll`, not `get`: a checkbox group is several entries under one
+        // name, and the wedding form's entertainment list is exactly that.
+        value: data
+          .getAll(field.name)
+          .filter((entry): entry is string => typeof entry === "string")
+          .join(", "),
+      })),
+    );
+
+    if (sent) setIsSubmitted(true);
   }
 
   const title = <SectionHeading title={heading} as={headingAs} />;
@@ -97,7 +124,11 @@ export function InquiryForm({
   const labelClassName = "text-eyebrow font-body text-primary-deep uppercase";
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={(event) => {
+        void handleSubmit(event);
+      }}
+    >
       {title}
 
       <div className="mt-9 flex flex-col gap-7">
@@ -175,11 +206,23 @@ export function InquiryForm({
           );
         })}
 
+        {/* The bot check and any delivery message, directly above the action
+            they guard. The widget renders nothing at all when Turnstile has no
+            site key configured. */}
+        {delivery.field}
+
         {/* Shared button classes rather than a hand-rolled copy, so this can't
-            drift away from the booking CTAs it sits alongside. */}
+            drift away from the booking CTAs it sits alongside. `disabled` while
+            the enquiry is in flight, so one press cannot become two. */}
         <button
           type="submit"
-          className={buttonClassName("solid", "md", "mt-2 w-fit")}
+          disabled={delivery.isSending}
+          aria-busy={delivery.isSending}
+          className={buttonClassName(
+            "solid",
+            "md",
+            "mt-2 w-fit disabled:cursor-not-allowed disabled:opacity-60",
+          )}
         >
           {submitLabel}
         </button>

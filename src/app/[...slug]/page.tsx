@@ -24,7 +24,7 @@ import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import PageBuilder from "@/components/sanity/PageBuilder";
 import { getPropertySite, getSanityPage, getSanityPagePaths } from "@/sanity/lib/content";
-import { ROUTE_SEO } from "@/data/seo";
+import { ROUTE_SEO, seo } from "@/data/seo";
 import { resolveDocumentMetadata } from "@/sanity/lib/metadata";
 
 type Params = { slug: string[] };
@@ -58,7 +58,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const path = `/${(await params).slug.join("/")}`;
   const page = await getSanityPage(path);
+  // `seo(path)` finds nothing for a path only Sanity knows about — that is the
+  // whole point of this route — but it still supplies the canonical link and
+  // the Open Graph block for it, which a CMS-authored page needs as much as a
+  // hand-written one. The document's own title fills the one field `ROUTE_SEO`
+  // cannot.
   return resolveDocumentMetadata(path, page, {
+    ...seo(path),
     title: page?.title,
   });
 }

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
 
@@ -9,6 +9,9 @@ type AboutNarrativeProps = {
    * already exists on the site. */
   eyebrow: string;
   heading: string;
+  /** Which tag this band's heading is written as. The size never changes —
+   * see HeadingLevel. Editors set it per section in the CMS. */
+  headingAs?: HeadingLevel;
   paragraphs: string[];
   /** Seminyak's page has a short tagline between the narrative and the
    * button ("We serve with smile and sincerity"); Ubud's doesn't have one
@@ -22,6 +25,13 @@ type AboutNarrativeProps = {
   /** The "Best Price Guaranteed" offer, folded in from what used to be its own
    * separate dark band below this one — same content, verbatim from the live
    * site. */
+  /** The plate's own heading. Marketing copy, so it is a CMS field; the
+   *  default is the wording both About pages have always carried. */
+  offerHeading?: string;
+  /** The line under it. Same rule. */
+  offerSubtitle?: string;
+  /** The gold label over the code. */
+  offerCodeLabel?: string;
   promoCode: string;
   perks: string[];
   contactEmail: string;
@@ -52,10 +62,14 @@ type AboutNarrativeProps = {
 export function AboutNarrative({
   eyebrow,
   heading,
+  headingAs = "h2",
   paragraphs,
   tagline,
   bookingHref,
   buttonLabel,
+  offerHeading = "Best Price Guaranteed",
+  offerSubtitle = "Exclusive privileges for booking on our website.",
+  offerCodeLabel = "Promo code",
   promoCode,
   perks,
   contactEmail,
@@ -85,6 +99,7 @@ export function AboutNarrative({
         <SectionHeading
           eyebrow={eyebrow}
           title={heading}
+          as={headingAs}
           className="lg:col-start-1 lg:row-start-1"
         />
 
@@ -173,16 +188,16 @@ export function AboutNarrative({
               </div>
             ) : null}
             <h3 className="font-heading text-[22px] leading-tight font-light text-white md:text-[26px]">
-              Best Price Guaranteed
+              {offerHeading}
             </h3>
             <span aria-hidden className="mt-3 block h-px w-10 bg-primary" />
 
             <p className="mt-4 text-[15px] leading-relaxed font-light text-white/70">
-              Exclusive privileges for booking on our website.
+              {offerSubtitle}
             </p>
 
             <p className="text-eyebrow font-body mt-5 text-primary uppercase">
-              Promo code
+              {offerCodeLabel}
             </p>
             <p className="font-heading mt-2 text-[34px] leading-none font-light tracking-[0.12em] text-primary md:text-[40px]">
               &ldquo;{promoCode}&rdquo;

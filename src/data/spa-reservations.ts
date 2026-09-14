@@ -236,3 +236,27 @@ export const SPA_RESERVATION_FIELDS: Record<string, InquiryField[]> = {
     }
   ]
 };
+
+/**
+ * The wording around each form, kept here for the same reason the fields are:
+ * the Sanity migration seeds each page's `page` document from these
+ * constants, and a plain Node script cannot import a module that pulls in
+ * React. The routes import them back, so there is one copy of each string.
+ */
+export const SPA_RESERVATION_COPY: Record<
+  string,
+  { heading: string; submitLabel: string; confirmation: string }
+> = {
+  "spa-reservation-seminyak": {
+    heading: "Spa Reservation",
+    submitLabel: "Send",
+    confirmation:
+      "Thank you — we have received your spa reservation request and will confirm it by email shortly.",
+  },
+  "ubud-spa-booking-form": {
+    heading: "Spa Booking",
+    submitLabel: "Send",
+    confirmation:
+      "Thank you — we have received your spa booking request and will confirm it by email shortly.",
+  },
+};

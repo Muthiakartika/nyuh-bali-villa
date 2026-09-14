@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata("/seminyak");
 }
 
-const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
+const UPLOADS = "/uploads";
 
 const HERO_IMAGES = [
   `${UPLOADS}/2023/03/Seminyak-slider-3.webp`,

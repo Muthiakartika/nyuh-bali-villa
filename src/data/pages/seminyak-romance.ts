@@ -8,7 +8,7 @@
 import type { PackageItem } from "@/components/property/PackageList";
 import type { Testimonial } from "@/data/testimonials";
 
-export const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
+export const UPLOADS = "/uploads";
 
 // Photographs verified against this route on the live site, 2026-09-04.
 export const HERO_IMAGES = [

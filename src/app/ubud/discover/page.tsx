@@ -35,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata("/ubud/discover");
 }
 
-const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
+const UPLOADS = "/uploads";
 
 export default async function UbudBlogPage() {
   const site = await getPropertySite("ubud");

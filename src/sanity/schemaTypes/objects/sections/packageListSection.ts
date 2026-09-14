@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { eyebrowField, sectionSettingsFields, toneField } from "./shared";
+import { eyebrowField, headingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 export const packageListSection = defineType({
   name: "packageListSection",
@@ -8,7 +8,12 @@ export const packageListSection = defineType({
   fields: [
     eyebrowField,
     defineField({ name: "heading", title: "Heading", type: "string" }),
-    defineField({ name: "intro", title: "Intro", type: "text", rows: 3 }),
+    defineField({
+      name: "intro",
+      title: "Intro",
+      type: "inlineRichText",
+      description: "One paragraph under the heading. Bold, italic and links are available.",
+    }),
     defineField({
       name: "source",
       title: "Where the packages come from",
@@ -40,6 +45,7 @@ export const packageListSection = defineType({
       hidden: ({ parent }) => parent?.source !== "reference",
     }),
     toneField,
+    headingLevelField,
     ...sectionSettingsFields,
   ],
   preview: {

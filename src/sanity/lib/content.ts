@@ -37,6 +37,7 @@ import { TESTIMONIALS } from "@/data/testimonials";
 
 import { sanityFetch } from "@/sanity/lib/client";
 import { resolveImageUrl, resolveImageUrls } from "@/sanity/lib/image";
+import { toRuns } from "@/sanity/lib/richText";
 import {
   allExperiencesQuery,
   allPackageSetsQuery,
@@ -486,7 +487,9 @@ export function toPackageItems(
   return (packages ?? []).map((item) => ({
     name: item.name,
     images: imageUrls(item.images),
-    description: item.description,
+    // Rich text since the CMS audit pass; `toRuns` accepts the string every
+    // document held before the migration, so both shapes render.
+    description: toRuns(item.description),
     benefitsHeading: item.benefitsHeading,
     benefits: [...(item.benefits ?? []), ...alwaysIncluded],
     meta: item.meta?.map((fact) => ({ label: fact.label, value: fact.value })),
@@ -551,4 +554,114 @@ export function portableTextToPlainText(blocks: PortableTextBlock[] | undefined)
     })
     .filter(Boolean)
     .join("\n\n");
+}
+
+// ── Footer and chrome copy ─────────────────────────────────────────────
+
+/** Everything `PropertyFooter` renders that is not the property's own. */
+export type FooterSettings = {
+  logo: { src: string; alt: string };
+  bookingLabel: string;
+  menuHeading: string;
+  menuLinks: { label: string; href: string; inScope: boolean; external?: boolean }[];
+  blogHeading: string;
+  note: string;
+  legalLinks: { label: string; href: string; external?: boolean }[];
+};
+
+/** The wordmark the footer has always shipped, when nothing is published. */
+const FOOTER_LOGO_SRC = "/uploads/2022/12/Logo-Nyuh-Bali.png";
+
+/**
+ * The footer's own wording, resolved once per render.
+ *
+ * Every one of these was a literal inside `PropertyFooter` — the column
+ * headings, the five menu labels, the copyright line, both legal links — so a
+ * client wanting "Villas" to read "Accommodation" needed a code change and a
+ * deploy. `siteSettings` had fields for some of it already and **nothing read
+ * them**, which is the worse failure: a document an editor can fill in and
+ * watch the site ignore.
+ *
+ * Falls back field by field, like `getPropertySite`, and the menu falls back
+ * to the property's own paths — those differ per resort (`offersHref`), which
+ * is why an empty list is not the same as an empty menu.
+ */
+export async function getFooterSettings(site: PropertySite): Promise<FooterSettings> {
+  const settings = await getSiteSettings();
+
+  const defaultMenu = [
+    { label: "about", href: `/${site.slug}`, inScope: true },
+    { label: "villas", href: `/${site.slug}/villa`, inScope: true },
+    { label: "offers", href: site.offersHref, inScope: true },
+    { label: "Blog", href: `/${site.slug}/discover`, inScope: true },
+    { label: "contact", href: `/${site.slug}/contact`, inScope: true },
+  ];
+
+  const defaultLegal = [
+    { label: "Terms & Conditions", href: "/terms-conditions" },
+    { label: "Privacy & Policy", href: "/privacy-policy" },
+  ];
+
+  return {
+    logo: {
+      src: imageUrl(settings?.footerLogo, 400) || FOOTER_LOGO_SRC,
+      // The mark is decorative here — the link already announces where it
+      // goes — so an empty alt is correct and is what the footer shipped.
+      alt: "",
+    },
+    bookingLabel: settings?.footerBookingLabel || "Book Now",
+    menuHeading: settings?.footerMenuHeading || "Nyuh Bali Villas",
+    menuLinks: settings?.footerMenuLinks?.length
+      ? settings.footerMenuLinks.map((item) => ({
+          label: item.label,
+          href: item.href,
+          inScope: item.inScope ?? true,
+          external: item.external,
+        }))
+      : defaultMenu,
+    blogHeading: settings?.footerBlogHeading || "Our Blog",
+    note: settings?.footerNote || "All Rights Reserved",
+    legalLinks: settings?.legalLinks?.length
+      ? settings.legalLinks.map((item) => ({
+          label: item.label,
+          href: item.href,
+          external: item.external,
+        }))
+      : defaultLegal,
+  };
+}
+
+/** The homepage's vertical booking tab. Two short words, one per column. */
+export async function getBookNowLabel(): Promise<string> {
+  const settings = await getSiteSettings();
+  return settings?.bookNowLabel?.trim() || "BOOK NOW";
+}
+
+/** The wording on the direct-booking bar docked to every page. */
+export type DirectBookingDeal = {
+  headline: string;
+  code?: string;
+  buttonLabel: string;
+};
+
+/**
+ * The offer, its promo code and its button label.
+ *
+ * All three were literals inside `DirectBookingDeals` — on a bar that renders
+ * on all 78 pages, carrying a discount percentage and a promo code. A client
+ * running a different offer needed a developer, and the same code was already
+ * an editable field on the About band (`aboutNarrativeSection.promoCode`), so
+ * the two could drift apart with nothing to catch it.
+ *
+ * `code` distinguishes "not set" from "deliberately empty": an offer with no
+ * promo code is a real thing to publish, and `?? ` rather than `||` is what
+ * lets an editor clear the line rather than being given the default back.
+ */
+export async function getDirectBookingDeal(): Promise<DirectBookingDeal> {
+  const settings = await getSiteSettings();
+  return {
+    headline: settings?.dealHeadline || "Direct Booking Deals 66% Off",
+    code: settings?.dealCode ?? 'Code : "ilovenyuh"',
+    buttonLabel: settings?.dealButtonLabel || "Book Now",
+  };
 }

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
 import { ChevronIcon } from "@/components/ui/icons";
@@ -26,6 +26,9 @@ export type TreatmentCategory = {
 type TreatmentListProps = {
   eyebrow?: string;
   heading: string;
+  /** Which tag this band's heading is written as. The size never changes —
+   * see HeadingLevel. Editors set it per section in the CMS. */
+  headingAs?: HeadingLevel;
   intro?: string;
   /** Short facts under the intro — opening hours, the early-booking discount. */
   notes?: string[];
@@ -71,6 +74,7 @@ type TreatmentListProps = {
 export function TreatmentList({
   eyebrow,
   heading,
+  headingAs = "h2",
   intro,
   notes,
   categories,
@@ -79,7 +83,7 @@ export function TreatmentList({
 }: TreatmentListProps) {
   return (
     <Section tone={tone}>
-      <SectionHeading eyebrow={eyebrow} title={heading} />
+      <SectionHeading eyebrow={eyebrow} title={heading} as={headingAs} />
 
       {intro ? (
         <Reveal delay={80}>

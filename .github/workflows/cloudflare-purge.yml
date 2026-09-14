@@ -1,0 +1,38 @@
+# Drop Cloudflare's copy of the site once Vercel has finished deploying.
+#
+# Publishing in the Studio purges on its own — the Sanity webhook calls
+# /api/revalidate/sanity, which purges as part of the same request. A deploy
+# publishes nothing in Sanity and still changes every page (new HTML, new asset
+# hashes), so it needs this.
+#
+# Inert until both repository secrets exist:
+#   Settings → Secrets and variables → Actions
+#     CLOUDFLARE_ZONE_ID       Overview → right sidebar, on the zone
+#     CLOUDFLARE_PURGE_TOKEN   a token whose ONLY permission is
+#                              Zone → Cache Purge → Purge, this zone only
+#
+# `deployment_status` is what Vercel's GitHub integration emits; the job skips
+# preview deployments, which are not behind Cloudflare.
+name: Purge Cloudflare cache
+
+on:
+  deployment_status:
+
+jobs:
+  purge:
+    if: >-
+      github.event.deployment_status.state == 'success' &&
+      (github.event.deployment_status.environment == 'Production' ||
+       github.event.deployment_status.environment == 'production')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Purge everything
+        run: node scripts/cloudflare/cache.mjs purge
+        env:
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CLOUDFLARE_PURGE_TOKEN: ${{ secrets.CLOUDFLARE_PURGE_TOKEN }}
+          SITE_URL: ${{ vars.SITE_URL }}

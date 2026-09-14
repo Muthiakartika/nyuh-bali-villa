@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { sectionSettingsFields, toneField } from "./shared";
+import { headingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 export const amenityGridSection = defineType({
   name: "amenityGridSection",
@@ -15,6 +15,7 @@ export const amenityGridSection = defineType({
       validation: (Rule) => Rule.required().min(1),
     }),
     toneField,
+    headingLevelField,
     ...sectionSettingsFields,
   ],
   preview: {

@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata("/ubud");
 }
 
-const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
+const UPLOADS = "/uploads";
 
 // Photographs verified against this route on the live site, 2026-09-04.
 const HERO_IMAGES = [`${UPLOADS}/2025/01/home-ubud-compress.webp`];

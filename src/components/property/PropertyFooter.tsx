@@ -11,27 +11,11 @@ import {
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { CurrentYear } from "@/components/ui/CurrentYear";
+import { getFooterSettings } from "@/sanity/lib/content";
 
 type PropertyFooterProps = {
   site: PropertySite;
 };
-
-// The primary footer nav. Terms & Conditions and Privacy Policy live in the
-// legal bar, not here, so two pieces of boilerplate don't carry the same weight
-// as "villas" and "contact".
-//
-// Every entry is a real link now that the blog is built too. Both properties
-// use /<slug>/villa and /<slug>/discover, but their Offers slugs differ, so
-// that one comes from the property data (see `offersHref`).
-function buildFooterLinks(site: PropertySite) {
-  return [
-    { label: "about", href: `/${site.slug}`, inScope: true },
-    { label: "villas", href: `/${site.slug}/villa`, inScope: true },
-    { label: "offers", href: site.offersHref, inScope: true },
-    { label: "Blog", href: `/${site.slug}/discover`, inScope: true },
-    { label: "contact", href: `/${site.slug}/contact`, inScope: true },
-  ];
-}
 
 const columnHeadingClassName = "text-eyebrow font-body block text-primary uppercase";
 
@@ -51,8 +35,12 @@ const columnHeadingClassName = "text-eyebrow font-body block text-primary upperc
  * `border-t-2` and the gold eyebrow headings keep it premium without spending
  * vertical space on it.
  */
-export function PropertyFooter({ site }: PropertyFooterProps) {
-  const footerLinks = buildFooterLinks(site);
+export async function PropertyFooter({ site }: PropertyFooterProps) {
+  // Async because the footer's own wording is Site settings' now, not this
+  // file's. Unpublished or unconfigured it resolves to exactly the literals
+  // this component used to hold, so nothing about the rendered footer moved.
+  const footer = await getFooterSettings(site);
+  const footerLinks = footer.menuLinks;
   const mailHref = `mailto:${site.contact.email}`;
 
   const socialLinkClassName =
@@ -79,8 +67,8 @@ export function PropertyFooter({ site }: PropertyFooterProps) {
               className="relative h-[46px] w-[128px] shrink-0"
             >
               <Image
-                src="https://nyuhbalivillas.com/wp-content/uploads/2022/12/Logo-Nyuh-Bali.png"
-                alt=""
+                src={footer.logo.src}
+                alt={footer.logo.alt}
                 fill
                 sizes="128px"
                 className="object-contain object-left"
@@ -88,7 +76,7 @@ export function PropertyFooter({ site }: PropertyFooterProps) {
             </Link>
 
             <Button href={site.bookingHref} external className="mt-5">
-              Book Now
+              {footer.bookingLabel}
             </Button>
 
             {/* All three come from the property, not from here. They used to be
@@ -131,14 +119,20 @@ export function PropertyFooter({ site }: PropertyFooterProps) {
           {/* Menu — every heading here is a string already on the site; no copy
               was written to manufacture a hierarchy. */}
           <div>
-            <span className={columnHeadingClassName}>Nyuh Bali Villas</span>
+            <span className={columnHeadingClassName}>{footer.menuHeading}</span>
             <nav className="mt-3.5">
               <ul className="flex flex-col gap-0.5">
                 {footerLinks.map((link) => (
-                  <li key={link.label}>
+                  <li key={`${link.label}-${link.href}`}>
                     {link.inScope ? (
                       <Link
                         href={link.href}
+                        // `noreferrer` implies `noopener`, which is what
+                        // closes the reverse-tabnabbing hole a bare
+                        // target="_blank" opens.
+                        {...(link.external
+                          ? { target: "_blank", rel: "noreferrer" }
+                          : {})}
                         className="inline-block py-1 text-[15px] text-white/70 uppercase transition-colors duration-300 hover:text-primary"
                       >
                         {link.label}
@@ -194,7 +188,7 @@ export function PropertyFooter({ site }: PropertyFooterProps) {
           {/* Our Blog — real links now that the posts are built. */}
           <div>
             <Link href={`/${site.slug}/discover`} className={columnHeadingClassName}>
-              Our Blog
+              {footer.blogHeading}
             </Link>
             <ul className="mt-3.5 flex flex-col divide-y divide-white/10 border-t border-white/10">
               {site.blogPosts.map((post) => (
@@ -226,26 +220,21 @@ export function PropertyFooter({ site }: PropertyFooterProps) {
               would otherwise bake in whichever year it was compiled, which is
               the same maintenance problem as writing the number by hand. */}
           <p className="text-[13px] text-white/40">
-            © Copyright <CurrentYear /> - All Rights Reserved
+            © Copyright <CurrentYear /> - {footer.note}
           </p>
           <nav>
             <ul className="flex flex-wrap gap-x-7">
-              <li>
-                <Link
-                  href="/terms-conditions"
-                  className="inline-block py-1 text-[13px] text-white/40 transition-colors duration-300 hover:text-primary"
-                >
-                  Terms &amp; Conditions
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/privacy-policy"
-                  className="inline-block py-1 text-[13px] text-white/40 transition-colors duration-300 hover:text-primary"
-                >
-                  Privacy &amp; Policy
-                </Link>
-              </li>
+              {footer.legalLinks.map((link) => (
+                <li key={`${link.label}-${link.href}`}>
+                  <Link
+                    href={link.href}
+                    {...(link.external ? { target: "_blank", rel: "noreferrer" } : {})}
+                    className="inline-block py-1 text-[13px] text-white/40 transition-colors duration-300 hover:text-primary"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
         </div>

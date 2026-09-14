@@ -13,9 +13,86 @@ const imageProjection = `{
 const seoProjection = `{
   title,
   description,
+  ogTitle,
+  ogDescription,
   image ${imageProjection},
+  canonicalUrl,
   noIndex
 }`;
+
+/**
+ * A link, with its internal reference already resolved to a path.
+ *
+ * The reference wins over the typed `href` here rather than in the renderer,
+ * so everything downstream — the section blocks, the footer, portable text —
+ * sees one `href` string and never has to know which way it was authored.
+ *
+ * Each branch of the `select` is the URL this project actually builds for
+ * that document type: `page`, `post` and `legalPage` carry an explicit path,
+ * a room lives under its property's /villa/, and every experience is an Ubud
+ * page whose slug already carries its group ("retreat/couples").
+ */
+const referenceHref = `{"resolved": select(
+  _type == "room" => "/" + property + "/villa/" + slug.current,
+  _type == "experience" => "/ubud/" + slug,
+  defined(path) => path
+)}.resolved`;
+
+/**
+ * `->` cannot be followed by a function call — `reference->select(…)` is a
+ * parse error — so the branch runs inside a projection and the one attribute
+ * it computes is read straight back off it. Verified against the dataset.
+ */
+const linkProjection = `{
+  ...,
+  "href": select(
+    linkType == "internal" && defined(reference) => reference->${referenceHref},
+    href
+  )
+}`;
+
+/**
+ * A rich-text value whose link annotations have had their references
+ * resolved, and which survives being pointed at a plain string.
+ *
+ * `packageItem.description` and `packageListSection.intro` became rich text
+ * in this pass and their existing values are strings until the migration has
+ * run (`npm run sanity:rich-text`). Projecting `field[]{…}` at a string
+ * yields `null` — a blanked paragraph rather than a visible error — so the
+ * guard checks for a block first and passes anything else through untouched.
+ * That makes the projection correct before, during and after the migration,
+ * which is the same property `localizeUploads` was built for.
+ *
+ * **Written out once per field rather than built by a helper.** A function
+ * call inside these template literals is the one thing `sanity typegen`
+ * cannot evaluate — it reports "Unsupported expression type" and skips the
+ * whole query, which silently costs the project the GROQ-against-schema check
+ * that is the reason typegen is run at all. Identifiers it follows; calls it
+ * does not.
+ */
+const descriptionProjection = `"description": select(
+  description[0]._type == "block" => description[]{
+    ...,
+    markDefs[] ${linkProjection}
+  },
+  description
+)`;
+
+const introProjection = `"intro": select(
+  intro[0]._type == "block" => intro[]{
+    ...,
+    markDefs[] ${linkProjection}
+  },
+  intro
+)`;
+
+const bodyProjection = `"body": select(
+  body[0]._type == "block" => body[]{
+    ...,
+    markDefs[] ${linkProjection}
+  },
+  body
+)`;
 
 /**
  * Sections are projected with `...` plus explicit image resolution, so a new
@@ -34,19 +111,28 @@ const sectionProjection = `{
   },
   packages[]{
     ...,
-    images[] ${imageProjection}
+    images[] ${imageProjection},
+    ctas[] ${linkProjection},
+    ${descriptionProjection}
   },
   categories[]{
     ...,
     image ${imageProjection}
   },
+  action ${linkProjection},
+  actions[] ${linkProjection},
+  cta ${linkProjection},
+  ${bodyProjection},
+  ${introProjection},
   packageSet->{
     _id,
     title,
     alwaysIncluded,
     packages[]{
       ...,
-      images[] ${imageProjection}
+      images[] ${imageProjection},
+      ctas[] ${linkProjection},
+      ${descriptionProjection}
     }
   }
 }`;
@@ -202,7 +288,9 @@ export const allPackageSetsQuery = defineQuery(`
     alwaysIncluded,
     packages[]{
       ...,
-      images[] ${imageProjection}
+      images[] ${imageProjection},
+      ctas[] ${linkProjection},
+      ${descriptionProjection}
     }
   }
 `);
@@ -265,8 +353,16 @@ export const siteSettingsQuery = defineQuery(`
     description,
     favicon ${imageProjection},
     bookNowLabel,
+    dealHeadline,
+    dealCode,
+    dealButtonLabel,
+    footerLogo ${imageProjection},
+    footerBookingLabel,
+    footerMenuHeading,
+    footerMenuLinks[] ${linkProjection},
+    footerBlogHeading,
     footerNote,
-    legalLinks,
+    legalLinks[] ${linkProjection},
     defaultSeo ${seoProjection}
   }
 `);

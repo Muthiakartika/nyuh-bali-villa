@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { eyebrowField, sectionSettingsFields, toneField } from "./shared";
+import { eyebrowField, headingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 /**
  * A heading with plain paragraphs under it — the Explore Bali page's "You are
@@ -33,6 +33,7 @@ export const proseSection = defineType({
       validation: (Rule) => Rule.required().min(1),
     }),
     toneField,
+    headingLevelField,
     ...sectionSettingsFields,
   ],
   preview: {

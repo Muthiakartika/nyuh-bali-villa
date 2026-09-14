@@ -8,7 +8,7 @@
 import type { PackageItem } from "@/components/property/PackageList";
 import type { InquiryField } from "@/components/property/InquiryForm";
 
-export const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
+export const UPLOADS = "/uploads";
 
 // Every tour's "Book Now" points here — the live page's buttons have no
 // destination at all (href="http://"); the form below is what actually takes a

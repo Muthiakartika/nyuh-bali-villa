@@ -8,7 +8,7 @@
 //   src/app/seminyak/villa/[room]/page.tsx
 //   src/components/property/RoomDetail.tsx
 
-const U = "https://nyuhbalivillas.com/wp-content/uploads/";
+const U = "/uploads/";
 
 export type RoomDetail = {
   /** URL segment(s) under /<property>/villa/ */

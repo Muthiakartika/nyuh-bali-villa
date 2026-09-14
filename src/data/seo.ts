@@ -37,6 +37,30 @@ import type { Metadata } from "next";
  */
 export type RouteSeo = { title: string; description?: string };
 
+/**
+ * The origin every absolute URL this site publishes is built from — the
+ * canonical link, `og:url`, the sitemap's `<loc>` and robots.txt's `Sitemap:`.
+ *
+ * `SITE_URL` already exists for the Cloudflare purge (see .env.example), and
+ * it means the same thing here: the public domain, not `VERCEL_URL`.
+ *
+ * **The fallback is the production domain on purpose.** A preview deployment
+ * with nothing set therefore points its canonicals at the live site rather
+ * than at itself, which is the safe direction to be wrong in — a preview that
+ * nominates itself as canonical can outrank the page it is previewing. Vercel
+ * sends `X-Robots-Tag: noindex` on preview deployments anyway, so this is the
+ * second of two guards rather than the only one.
+ */
+export const SITE_ORIGIN = ((): string => {
+  const raw = process.env.SITE_URL?.trim();
+  if (!raw) return "https://nyuhbalivillas.com";
+  try {
+    return new URL(raw.startsWith("http") ? raw : `https://${raw}`).origin;
+  } catch {
+    return "https://nyuhbalivillas.com";
+  }
+})();
+
 export const ROUTE_SEO: Record<string, RouteSeo> = {
   "/": {
     title: "Nyuh Bali Villas & Resort - 5 Star Luxury Bali Villa",
@@ -62,6 +86,11 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
     title: "Nyuh Bali - Luxury Villas Seminyak - Romantic Honeymoons",
     description:
       "Romanticise in luxury Seminyak villas, blending Balinese tradition and wellness activities. Enjoy candle lit dinners with your very own chef.",
+  },
+  "/seminyak-directory": {
+    title: "Seminyak - Directory - Nyuh Bali",
+    description:
+      "Your in-villa directory at Nyuh Bali Villas Seminyak: enhance your stay, the dining experience at Nyuh Restaurant, spa and tour menus, and useful information about our facilities and services.",
   },
   "/seminyak/contact": {
     title: "Seminyak - Contact Us - Nyuh Bali",
@@ -123,6 +152,11 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
     description:
       "Reserve your treatment at Nyuh Bali Villas Seminyak — Balinese massage, warm stone, holistic body treatment and romantic couple packages.",
   },
+  "/suite-directory": {
+    title: "Suite Directory - Nyuh Bali",
+    description:
+      "Your in-room directory for the suites at Ubud Nyuh Bali Resort: relax and indulge at Mahamaya SPA, the dining experience at Lumbini Restaurant, and useful information about our facilities and services.",
+  },
   "/terms-conditions": {
     title: "Terms & Conditions - Nyuh Bali Villas",
     description:
@@ -132,6 +166,11 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
     title: "Ubud Luxury Villas - Private Villa and Suite - Book a Retreat",
     description:
       "Nyuh Bali provides luxury villas in Ubud for couples and families. Inspired by coconut philosophy, wellness activities are also available.",
+  },
+  "/ubud-directory": {
+    title: "Ubud - Directory - Nyuh Bali",
+    description:
+      "Your in-villa directory at Ubud Nyuh Bali Resort: Healthy Look Aesthetic, relax and indulge at Mahamaya SPA, the dining experience, and useful information about our facilities and services.",
   },
   "/ubud-personalize-your-retreat": {
     title: "Ubud - Personalize Your Retreat Form - Nyuh Bali",
@@ -408,17 +447,58 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
     description:
       "Experience luxury at Nyuh's Yoga Hotel in Ubud with daily meditation classes and spa treatments, surrounded by lush greenery and temples.",
   },
+  "/welcomeaboard": {
+    title: "Welcome Aboard - Nyuh Bali",
+    description:
+      "The five steps to complete to officially become a member of our team at Ubud Nyuh Bali Resort: basic product knowledge, the Nyuh Bali Manner, the knowledge test, the house rules and the staff database.",
+  },
 };
 
 /**
- * Metadata for a route. An unknown path returns an empty object, which leaves
- * the root layout's title and description in place rather than shipping a
- * blank head — a missing entry is a build-time omission, not a runtime error.
+ * Metadata for a route: its title and description, plus the canonical link and
+ * the Open Graph block that go with them.
+ *
+ * **An unknown path still gets the canonical and the Open Graph block**, and
+ * only loses its title and description — which leaves the root layout's in
+ * place, exactly as before. A missing entry is a build-time omission, not a
+ * runtime error, and it is no reason for that page to stop declaring which URL
+ * it is.
+ *
+ * The Open Graph fields mirror what Yoast publishes on the live site, value for
+ * value: `og:locale` `en_US`, `og:site_name` "Nyuh Bali", and `og:type`
+ * `website` for the landing page against `article` for every inner page. Title
+ * and description are the same two strings again, because that is what the live
+ * site sends — `og:title` there is never a second, punchier headline.
+ *
+ * **No `og:image`, deliberately.** The live site publishes none on any page,
+ * and picking one would mean choosing a photograph to represent the whole
+ * business — a brand decision, not a technical default, and this project does
+ * not invent brand copy or brand imagery (see the Design state section of
+ * CLAUDE.md). An editor can set one per page in the Studio, and
+ * `resolvePageMetadata` will use it; that is the right place for the choice.
+ *
+ * `twitter:card` is not set here. It is one value for the whole site, so it
+ * lives once in the root layout and every route inherits it — Next merges
+ * metadata a field at a time, and a route that never mentions `twitter` keeps
+ * the layout's.
+ *
+ * Both `alternates.canonical` and `openGraph.url` are relative on purpose:
+ * Next resolves them against `metadataBase`, so `SITE_ORIGIN` is stated once
+ * in the layout instead of being baked into 74 strings here.
  */
 export function seo(path: string): Metadata {
   const entry = ROUTE_SEO[path];
-  if (!entry) return {};
-  return entry.description
-    ? { title: entry.title, description: entry.description }
-    : { title: entry.title };
+  return {
+    ...(entry ? { title: entry.title } : {}),
+    ...(entry?.description ? { description: entry.description } : {}),
+    alternates: { canonical: path },
+    openGraph: {
+      type: path === "/" ? "website" : "article",
+      locale: "en_US",
+      siteName: "Nyuh Bali",
+      url: path,
+      ...(entry ? { title: entry.title } : {}),
+      ...(entry?.description ? { description: entry.description } : {}),
+    },
+  };
 }

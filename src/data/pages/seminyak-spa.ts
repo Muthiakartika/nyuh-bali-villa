@@ -8,7 +8,7 @@
 import type { TreatmentCategory } from "@/components/property/TreatmentList";
 import type { Testimonial } from "@/data/testimonials";
 
-export const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
+export const UPLOADS = "/uploads";
 
 export const SPA_RESERVATION_HREF = "/spa-reservation-seminyak";
 

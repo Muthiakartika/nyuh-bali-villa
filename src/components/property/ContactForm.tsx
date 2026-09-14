@@ -3,17 +3,28 @@
 import { useState, type FormEvent } from "react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { buttonClassName } from "@/components/ui/Button";
+import { useFormDelivery } from "@/components/property/FormDelivery";
+import type { PropertySlug } from "@/data/properties";
+
+/** The five labels, written once: the visible `<label>` and the row that
+ * reaches the property's inbox are the same string by construction, so an
+ * email can never disagree with the form it came from. */
+const LABELS = {
+  name: "Name",
+  email: "Email",
+  hasReservation: "Do you already have the reservation with us?",
+  bookingNumber: "Your Booking Number",
+  message: "Message",
+} as const;
 
 /**
  * The "Please fill in the form below" contact form.
  *
- * The live site submits this to a real backend (WPForms, plus a captcha bot
- * check) that emails the property's reservations inbox. This project has no
- * server to receive that submission and no captcha keys to configure, so
- * `handleSubmit` doesn't send anywhere — it prevents the native page reload
- * and swaps the form for a confirmation, which is the part of the interaction
- * a visitor actually sees. A real deployment would replace `handleSubmit`'s
- * body with a call to a Server Action that sends the email.
+ * The live site submits this to WPForms behind a captcha, and WPForms emails
+ * the property's reservations inbox. **Both halves are real here**: Cloudflare
+ * Turnstile, and SendGrid — `useFormDelivery` posts to `/api/contact`, which
+ * checks the token and sends the mail in one request. The confirmation appears
+ * only once that request has succeeded.
  *
  * Redesign note: fields were boxed inputs with a hard outline on white. They're
  * now underlined — a single hairline that turns gold on focus. Boxes draw the
@@ -21,12 +32,27 @@ import { buttonClassName } from "@/components/ui/Button";
  * on a warm surface they leave the form looking like stationery rather than
  * like a web form. No copy or field changed.
  */
-export function ContactForm() {
+export function ContactForm({ property }: { property: PropertySlug }) {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const delivery = useFormDelivery({ formName: "Contact Us", property });
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setIsSubmitted(true);
+    const data = new FormData(event.currentTarget);
+    const value = (name: string) => {
+      const entry = data.get(name);
+      return typeof entry === "string" ? entry : "";
+    };
+
+    const sent = await delivery.send([
+      { label: LABELS.name, value: value("name") },
+      { label: LABELS.email, value: value("email") },
+      { label: LABELS.hasReservation, value: value("hasReservation") },
+      { label: LABELS.bookingNumber, value: value("bookingNumber") },
+      { label: LABELS.message, value: value("message") },
+    ]);
+
+    if (sent) setIsSubmitted(true);
   }
 
   // Shared so the heading is identical in the form and in the confirmation
@@ -51,28 +77,44 @@ export function ContactForm() {
   const labelClassName = "text-eyebrow font-body text-primary-deep uppercase";
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={(event) => {
+        void handleSubmit(event);
+      }}
+    >
       {heading}
 
       <div className="mt-9 flex flex-col gap-7">
         <div className="flex flex-col gap-2">
           <label htmlFor="contact-name" className={labelClassName}>
-            Name <span className="text-error">*</span>
+            {LABELS.name} <span className="text-error">*</span>
           </label>
-          <input id="contact-name" type="text" required className={inputClassName} />
+          <input
+            id="contact-name"
+            name="name"
+            type="text"
+            required
+            autoComplete="name"
+            className={inputClassName}
+          />
         </div>
 
         <div className="flex flex-col gap-2">
           <label htmlFor="contact-email" className={labelClassName}>
-            Email <span className="text-error">*</span>
+            {LABELS.email} <span className="text-error">*</span>
           </label>
-          <input id="contact-email" type="email" required className={inputClassName} />
+          <input
+            id="contact-email"
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            className={inputClassName}
+          />
         </div>
 
         <fieldset className="flex flex-col gap-2">
-          <legend className={labelClassName}>
-            Do you already have the reservation with us?
-          </legend>
+          <legend className={labelClassName}>{LABELS.hasReservation}</legend>
           <div className="mt-3 flex gap-8 text-[16px] text-ink">
             <label className="flex cursor-pointer items-center gap-2.5">
               <input
@@ -97,27 +139,52 @@ export function ContactForm() {
 
         <div className="flex flex-col gap-2">
           <label htmlFor="contact-booking-number" className={labelClassName}>
-            Your Booking Number (optional)
+            {LABELS.bookingNumber} (optional)
           </label>
-          <input id="contact-booking-number" type="text" className={inputClassName} />
+          <input
+            id="contact-booking-number"
+            name="bookingNumber"
+            type="text"
+            className={inputClassName}
+          />
         </div>
 
         <div className="flex flex-col gap-2">
           <label htmlFor="contact-message" className={labelClassName}>
-            Message <span className="text-error">*</span>
+            {LABELS.message} <span className="text-error">*</span>
           </label>
           <textarea
             id="contact-message"
+            name="message"
             required
             rows={5}
             className={`${inputClassName} resize-y`}
           />
         </div>
 
+        {/* The bot check and any delivery message, directly above the action
+            they guard. The widget renders nothing at all when Turnstile has no
+            site key configured. */}
+        {delivery.field}
+
         {/* Uses the shared button classes rather than a hand-rolled copy, so
             the form's primary action can never drift away from the booking
-            CTAs it sits alongside. */}
-        <button type="submit" className={buttonClassName("solid", "md", "mt-2 w-fit")}>
+            CTAs it sits alongside.
+
+            `disabled:opacity-60` is the one place opacity is the right answer:
+            the CTA's hover was deliberately moved off opacity because a dimmed
+            button reads as disabled — which is exactly what it is while the
+            enquiry is in flight. */}
+        <button
+          type="submit"
+          disabled={delivery.isSending}
+          aria-busy={delivery.isSending}
+          className={buttonClassName(
+            "solid",
+            "md",
+            "mt-2 w-fit disabled:cursor-not-allowed disabled:opacity-60",
+          )}
+        >
           Send
         </button>
       </div>

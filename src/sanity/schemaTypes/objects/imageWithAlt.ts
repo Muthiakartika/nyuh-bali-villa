@@ -33,6 +33,9 @@ export const imageWithAlt = defineType({
       name: "caption",
       title: "Caption",
       type: "string",
+      description:
+        "Printed under the picture, in the gold small-caps treatment. Most images need none — leave it empty unless the caption says something the picture does not.",
+      validation: (Rule) => Rule.max(140),
     }),
     defineField({
       name: "externalUrl",
@@ -51,6 +54,15 @@ export const imageWithAlt = defineType({
     }),
   ],
   preview: {
-    select: { title: "alt", subtitle: "caption", media: "asset" },
+    select: { title: "alt", caption: "caption", externalUrl: "externalUrl", media: "asset" },
+    prepare: ({ title, caption, externalUrl, media }) => ({
+      title: title || "No description yet",
+      // Says which of the two sources is actually rendering. An uploaded
+      // asset always wins (see resolveImageUrl), and knowing which you are
+      // looking at is the difference between "my new photo isn't showing" and
+      // "I dropped it on the wrong field".
+      subtitle: caption || (media ? "Uploaded" : externalUrl ? "From /uploads" : "No image"),
+      media,
+    }),
   },
 });

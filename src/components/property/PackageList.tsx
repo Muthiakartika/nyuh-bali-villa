@@ -1,15 +1,33 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button, buttonClassName } from "@/components/ui/Button";
 import { ReadMore } from "@/components/ui/ReadMore";
 import { ImageGallery } from "@/components/property/ImageGallery";
 
+/**
+ * One stretch of body copy with the formatting the source gave it.
+ *
+ * The in-room directory pages set their instructions in bold, and CMS copy
+ * carries the same three marks the rich-text field offers. Everything here is
+ * inline — the value is rendered inside a `<p>` the layout already draws, so
+ * there is no block-level anything to represent.
+ */
+export type PackageRun = {
+  text: string;
+  bold?: boolean;
+  italic?: boolean;
+  /** An `href` turns the run into a link; internal ones go through `Link`. */
+  href?: string;
+  external?: boolean;
+};
+
 export type PackageItem = {
   name: string;
   images: string[];
-  description?: string;
+  description?: string | PackageRun[];
   /** The live pages label this list "Discover Benefits"; the tour pages label
    * the equivalent block "Inclusions". */
   benefitsHeading?: string;
@@ -40,10 +58,53 @@ export type PackageCta = {
 type PackageListProps = {
   eyebrow?: string;
   heading: string;
-  intro?: string;
+  /** `h2` everywhere this band follows a hero, which is all five original
+   * pages. The in-room directories have no hero and open on this band, so
+   * their heading is the page title — the same arrangement, and the same
+   * prop, that `InquiryForm` carries for the standalone form pages. */
+  headingAs?: HeadingLevel;
+  intro?: string | PackageRun[];
   packages: PackageItem[];
   tone?: "sand" | "sand-deep";
 };
+
+/**
+ * Body copy that may carry the source's own emphasis.
+ *
+ * A plain string is passed straight through, which is what every page but the
+ * in-room directories writes. The `strong` treatment is the one
+ * SanityPortableText already gives that mark, so page copy and CMS copy
+ * emphasise identically.
+ */
+function renderRuns(value: string | PackageRun[]) {
+  if (typeof value === "string") return value;
+  return value.map((run, index) => {
+    // The `strong` and `em` treatments are SanityPortableText's, so page copy
+    // and CMS copy emphasise identically rather than drifting apart.
+    let node: ReactNode = run.text;
+    if (run.bold) node = <strong className="font-semibold text-ink">{node}</strong>;
+    if (run.italic) node = <em className="italic">{node}</em>;
+
+    if (run.href) {
+      const className =
+        "text-primary-deep underline decoration-primary/40 underline-offset-[5px] transition-colors duration-300 hover:decoration-primary";
+      if (run.external || /^(https?:\/\/|mailto:|tel:)/.test(run.href)) {
+        return (
+          <a key={index} href={run.href} target="_blank" rel="noreferrer" className={className}>
+            {node}
+          </a>
+        );
+      }
+      return (
+        <Link key={index} href={run.href} className={className}>
+          {node}
+        </Link>
+      );
+    }
+
+    return <span key={index}>{node}</span>;
+  });
+}
 
 /**
  * The offer/package listing, shared by five pages: Ubud's Offers and Romance,
@@ -63,18 +124,19 @@ type PackageListProps = {
 export function PackageList({
   eyebrow,
   heading,
+  headingAs = "h2",
   intro,
   packages,
   tone = "sand",
 }: PackageListProps) {
   return (
     <Section tone={tone}>
-      <SectionHeading eyebrow={eyebrow} title={heading} />
+      <SectionHeading eyebrow={eyebrow} title={heading} as={headingAs} />
 
       {intro ? (
         <Reveal delay={80}>
           <p className="mt-8 max-w-[62rem] text-[17px] leading-[1.7] font-light text-text">
-            {intro}
+            {renderRuns(intro)}
           </p>
         </Reveal>
       ) : null}
@@ -104,7 +166,10 @@ export function PackageList({
                   <h3 className="font-heading text-[26px] leading-tight font-light text-ink md:text-[32px]">
                     {item.name}
                   </h3>
-                  <span aria-hidden className="mt-4 block h-px w-12 bg-primary" />
+                  <span
+                    aria-hidden
+                    className="mt-4 block h-px w-12 bg-primary"
+                  />
 
                   {item.meta?.length ? (
                     <dl className="mt-5 flex flex-col gap-2">
@@ -126,7 +191,7 @@ export function PackageList({
 
                   {item.description ? (
                     <p className="mt-5 text-[17px] leading-[1.7] font-light text-text">
-                      {item.description}
+                      {renderRuns(item.description)}
                     </p>
                   ) : null}
 
@@ -167,7 +232,9 @@ export function PackageList({
                                   a label and a sentence separated by a `<br>` on
                                   the live site. Single-line bullets, which is
                                   almost all of them, are unaffected. */}
-                              <span className="whitespace-pre-line">{benefit}</span>
+                              <span className="whitespace-pre-line">
+                                {benefit}
+                              </span>
                             </li>
                           ))}
                         </ul>

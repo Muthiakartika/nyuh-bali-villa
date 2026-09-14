@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 
 export type LinkCardItem = {
@@ -21,6 +21,9 @@ type LinkCardGridProps = {
   /** Optional small label above the heading. */
   eyebrow?: string;
   heading: string;
+  /** Which tag this band's heading is written as. The size never changes —
+   * see HeadingLevel. Editors set it per section in the CMS. */
+  headingAs?: HeadingLevel;
   items: LinkCardItem[];
   columns: 2 | 3 | 4;
   tone?: GridTone;
@@ -73,6 +76,7 @@ const LABEL_CLASS: Record<2 | 3 | 4, string> = {
 export function LinkCardGrid({
   eyebrow,
   heading,
+  headingAs = "h2",
   items,
   columns,
   tone = "sand",
@@ -84,6 +88,7 @@ export function LinkCardGrid({
       <SectionHeading
         eyebrow={eyebrow}
         title={heading}
+        as={headingAs}
         surface={isDark ? "dark" : "light"}
       />
 

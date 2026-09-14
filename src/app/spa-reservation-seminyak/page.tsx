@@ -21,22 +21,22 @@ import type { Metadata } from "next";
 import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
-import {
-  InquiryForm,
-} from "@/components/property/InquiryForm";
+import { InquiryForm } from "@/components/property/InquiryForm";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { Section } from "@/components/ui/Section";
-import { SPA_RESERVATION_FIELDS } from "@/data/spa-reservations";
+import {
+  SPA_RESERVATION_COPY,
+  SPA_RESERVATION_FIELDS,
+} from "@/data/spa-reservations";
 import { getPropertySite } from "@/sanity/lib/content";
 import { resolvePageMetadata } from "@/sanity/lib/metadata";
+import ManagedPage from "@/components/sanity/ManagedPage";
 
 export async function generateMetadata(): Promise<Metadata> {
   // A published `page` document's SEO wins; otherwise this stays
   // exactly the live site's title and description from src/data/seo.ts.
   return resolvePageMetadata("/spa-reservation-seminyak");
 }
-
-
 
 // Field names and options taken from the live WPForms/CF7 form: package[],
 // preferred-date, preferred-time, nop, special-request, your-name,
@@ -49,6 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
 // guest a number the business never agreed to. The treatment prices themselves
 // are shown verbatim in each option label, and on /seminyak/spa.
 const FIELDS = SPA_RESERVATION_FIELDS["spa-reservation-seminyak"];
+const COPY = SPA_RESERVATION_COPY["spa-reservation-seminyak"];
 
 /** Seminyak — Spa Reservation. The form the SPA page's every "Book Now" and
  * its closing "Reserve Now" lead to. */
@@ -58,19 +59,27 @@ export default async function SeminyakSpaReservationPage() {
     <>
       <PropertyHeader site={site} activeHref="/seminyak/spa" />
       <main>
+        <ManagedPage
+          path="/spa-reservation-seminyak"
+          fallbackProperty="seminyak"
+        >
+          <Section tone="sand" width="narrow">
+            <InquiryForm
+              property="seminyak"
+              // The only heading on this page, so it is the page title.
+              headingAs="h1"
+              heading={COPY.heading}
+              fields={FIELDS}
+              submitLabel={COPY.submitLabel}
+              confirmation={COPY.confirmation}
+            />
+          </Section>
 
-        <Section tone="sand" width="narrow">
-          <InquiryForm
-            // The only heading on this page, so it is the page title.
-            headingAs="h1"
-            heading="Spa Reservation"
-            fields={FIELDS}
-            submitLabel="Send"
-            confirmation="Thank you — we have received your spa reservation request and will confirm it by email shortly."
+          <AwardsRow
+            variant={site.awards.variant}
+            badges={site.awards.badges}
           />
-        </Section>
-
-        <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
+        </ManagedPage>
       </main>
       <PropertyFooter site={site} />
       <DirectBookingDeals bookingHref={site.bookingHref} />

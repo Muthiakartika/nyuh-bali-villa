@@ -23,14 +23,26 @@ export type SiteSettings = {
   _rev: string;
   title?: string;
   description?: string;
-  favicon?: ImageWithAlt;
   bookNowLabel?: string;
+  dealHeadline?: string;
+  dealCode?: string;
+  dealButtonLabel?: string;
+  footerLogo?: ImageWithAlt;
+  footerBookingLabel?: string;
+  footerMenuHeading?: string;
+  footerMenuLinks?: Array<
+    {
+      _key: string;
+    } & Link
+  >;
+  footerBlogHeading?: string;
   footerNote?: string;
   legalLinks?: Array<
     {
       _key: string;
     } & Link
   >;
+  favicon?: ImageWithAlt;
   defaultSeo?: Seo;
 };
 
@@ -38,7 +50,10 @@ export type Seo = {
   _type: "seo";
   title?: string;
   description?: string;
+  ogTitle?: string;
+  ogDescription?: string;
   image?: ImageWithAlt;
+  canonicalUrl?: string;
   noIndex?: boolean;
 };
 
@@ -91,6 +106,7 @@ export type Property = {
   facebook?: string;
   instagram?: string;
   instagramApiUrl?: string;
+  spaInstagramApiUrl?: string;
   instagramFeedUrl?: string;
   bookingHref?: string;
   bookingWidgetId?: string;
@@ -107,6 +123,834 @@ export type Property = {
     } & ImageWithAlt
   >;
   awardVariant?: "grid" | "marquee";
+};
+
+export type Testimonial = {
+  _id: string;
+  _type: "testimonial";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  quote?: string;
+  author?: string;
+  property?: "seminyak" | "ubud";
+  order?: number;
+};
+
+export type Category = {
+  _id: string;
+  _type: "category";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  description?: string;
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
+export type BookingWidgetSection = {
+  _type: "bookingWidgetSection";
+  heading?: string;
+  widgetId?: string;
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type InstagramSection = {
+  _type: "instagramSection";
+  heading?: string;
+  feed?: "seminyak" | "ubud" | "spa";
+  profileUrl?: string;
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type DealsSection = {
+  _type: "dealsSection";
+  bookingHref?: string;
+  headline?: string;
+  code?: string;
+  buttonLabel?: string;
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type AwardsSection = {
+  _type: "awardsSection";
+  heading?: string;
+  badges?: Array<
+    {
+      _key: string;
+    } & ImageWithAlt
+  >;
+  variant?: "" | "grid" | "marquee";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type ContactSection = {
+  _type: "contactSection";
+  eyebrow?: string;
+  heading?: string;
+  intro?: string;
+  image?: ImageWithAlt;
+  headingLevel?: "h1" | "h2" | "h3";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type InquiryFormSection = {
+  _type: "inquiryFormSection";
+  heading?: string;
+  fields?: Array<{
+    kind?:
+      | "text"
+      | "email"
+      | "tel"
+      | "number"
+      | "date"
+      | "textarea"
+      | "radio"
+      | "checkbox";
+    label?: string;
+    name?: string;
+    options?: Array<string>;
+    required?: boolean;
+    _type: "inquiryField";
+    _key: string;
+  }>;
+  submitLabel?: string;
+  confirmation?: string;
+  headingLevel?: "h1" | "h2" | "h3";
+  tone?: "sand" | "sand-deep";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type CtaSection = {
+  _type: "ctaSection";
+  eyebrow?: string;
+  heading?: string;
+  body?: string;
+  actions?: Array<
+    {
+      _key: string;
+    } & Link
+  >;
+  image?: ImageWithAlt;
+  tone?: "sand" | "sand-deep";
+  headingLevel?: "h2" | "h3" | "h4";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type FaqSection = {
+  _type: "faqSection";
+  heading?: string;
+  faqs?: Array<
+    {
+      _key: string;
+    } & FaqItem
+  >;
+  tone?: "sand" | "sand-deep";
+  headingLevel?: "h2" | "h3" | "h4";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type PriceTableSection = {
+  _type: "priceTableSection";
+  heading?: string;
+  table?: PriceTable;
+  headingLevel?: "h2" | "h3" | "h4";
+  tone?: "sand" | "sand-deep";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type BulletListSection = {
+  _type: "bulletListSection";
+  eyebrow?: string;
+  heading?: string;
+  intro?: string;
+  groups?: Array<
+    {
+      _key: string;
+    } & BulletGroup
+  >;
+  headingLevel?: "h2" | "h3" | "h4";
+  tone?: "sand" | "sand-deep";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type TreatmentListSection = {
+  _type: "treatmentListSection";
+  eyebrow?: string;
+  heading?: string;
+  intro?: string;
+  notes?: Array<string>;
+  categories?: Array<
+    {
+      _key: string;
+    } & TreatmentCategory
+  >;
+  cta?: Link;
+  tone?: "sand" | "sand-deep";
+  headingLevel?: "h2" | "h3" | "h4";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type ProgramListSection = {
+  _type: "programListSection";
+  heading?: string;
+  tiers?: Array<
+    {
+      _key: string;
+    } & ExperienceProgram
+  >;
+  tone?: "sand" | "sand-deep";
+  headingLevel?: "h2" | "h3" | "h4";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type PackageSetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "packageSet";
+};
+
+export type PackageListSection = {
+  _type: "packageListSection";
+  eyebrow?: string;
+  heading?: string;
+  intro?: InlineRichText;
+  source?: "inline" | "reference";
+  packages?: Array<
+    {
+      _key: string;
+    } & PackageItem
+  >;
+  packageSet?: PackageSetReference;
+  tone?: "sand" | "sand-deep";
+  headingLevel?: "h2" | "h3" | "h4";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type PackageSet = {
+  _id: string;
+  _type: "packageSet";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  property?: "seminyak" | "ubud";
+  alwaysIncluded?: Array<string>;
+  packages?: Array<
+    {
+      _key: string;
+    } & PackageItem
+  >;
+};
+
+export type RoomListSection = {
+  _type: "roomListSection";
+  eyebrow?: string;
+  heading?: string;
+  intro?: string;
+  rooms?: Array<{
+    name?: string;
+    images?: Array<
+      {
+        _key: string;
+      } & ImageWithAlt
+    >;
+    bed?: string;
+    size?: string;
+    occupancy?: string;
+    detailsHref?: string;
+    detailsInScope?: boolean;
+    _type: "roomListItem";
+    _key: string;
+  }>;
+  tone?: "sand" | "sand-deep";
+  headingLevel?: "h2" | "h3" | "h4";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type CollectionSection = {
+  _type: "collectionSection";
+  eyebrow?: string;
+  heading?: string;
+  intro?: string;
+  collection?: "room" | "post" | "experience" | "testimonial";
+  property?: "" | "seminyak" | "ubud";
+  group?: "" | "retreat" | "wellness" | "culture";
+  slugs?: Array<string>;
+  quotes?: Array<{
+    quote?: string;
+    author?: string;
+    _type: "quoteItem";
+    _key: string;
+  }>;
+  limit?: number;
+  action?: Link;
+  tone?: "sand" | "sand-deep";
+  headingLevel?: "h2" | "h3" | "h4";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type LinkCardGridSection = {
+  _type: "linkCardGridSection";
+  eyebrow?: string;
+  heading?: string;
+  items?: Array<{
+    label?: string;
+    href?: string;
+    image?: ImageWithAlt;
+    inScope?: boolean;
+    _type: "linkCard";
+    _key: string;
+  }>;
+  columns?: 2 | 3 | 4;
+  tone?: "sand" | "sand-deep";
+  headingLevel?: "h2" | "h3" | "h4";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type AmenityGridSection = {
+  _type: "amenityGridSection";
+  heading?: string;
+  amenities?: Array<
+    {
+      _key: string;
+    } & Amenity
+  >;
+  tone?: "sand" | "sand-deep";
+  headingLevel?: "h2" | "h3" | "h4";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type GallerySection = {
+  _type: "gallerySection";
+  eyebrow?: string;
+  heading?: string;
+  images?: Array<
+    {
+      _key: string;
+    } & ImageWithAlt
+  >;
+  alt?: string;
+  tone?: "sand" | "sand-deep";
+  headingLevel?: "h2" | "h3" | "h4";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type SplitContentSection = {
+  _type: "splitContentSection";
+  eyebrow?: string;
+  heading?: string;
+  paragraphs?: Array<string>;
+  script?: string;
+  image?: ImageWithAlt;
+  imageSide?: "right" | "left";
+  action?: Link;
+  tone?: "sand" | "sand-deep";
+  headingLevel?: "h2" | "h3" | "h4";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type ProseSection = {
+  _type: "proseSection";
+  eyebrow?: string;
+  heading?: string;
+  paragraphs?: Array<string>;
+  tone?: "sand" | "sand-deep";
+  headingLevel?: "h2" | "h3" | "h4";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type RichTextSection = {
+  _type: "richTextSection";
+  eyebrow?: string;
+  heading?: string;
+  body?: PortableText;
+  tone?: "sand" | "sand-deep";
+  headingLevel?: "h2" | "h3" | "h4";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type AboutNarrativeSection = {
+  _type: "aboutNarrativeSection";
+  eyebrow?: string;
+  heading?: string;
+  paragraphs?: Array<string>;
+  tagline?: string;
+  buttonLabel?: string;
+  offerHeading?: string;
+  offerSubtitle?: string;
+  offerCodeLabel?: string;
+  promoCode?: string;
+  perks?: Array<string>;
+  image?: ImageWithAlt;
+  headingLevel?: "h2" | "h3" | "h4";
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type PropertyPickerSection = {
+  _type: "propertyPickerSection";
+  panels?: Array<
+    {
+      _key: string;
+    } & PropertyPanel
+  >;
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type HeroSection = {
+  _type: "heroSection";
+  images?: Array<
+    {
+      _key: string;
+    } & ImageWithAlt
+  >;
+  eyebrow?: string;
+  title?: string;
+  alt?: string;
+  anchor?: string;
+  isHidden?: boolean;
+};
+
+export type ArticlePrice = {
+  _type: "articlePrice";
+  table?: PriceTable;
+};
+
+export type ArticleFaq = {
+  _type: "articleFaq";
+  heading?: string;
+  items?: Array<
+    {
+      _key: string;
+    } & FaqItem
+  >;
+};
+
+export type ArticlePoints = {
+  _type: "articlePoints";
+  ordered?: boolean;
+  items?: Array<
+    {
+      _key: string;
+    } & ArticlePointItem
+  >;
+};
+
+export type ArticlePointItem = {
+  _type: "articlePointItem";
+  label?: string;
+  body?: Array<
+    | ({
+        _key: string;
+      } & ArticleParagraph)
+    | ({
+        _key: string;
+      } & ArticleImage)
+  >;
+};
+
+export type ArticleImage = {
+  _type: "articleImage";
+  image?: ImageWithAlt;
+};
+
+export type ArticleList = {
+  _type: "articleList";
+  items?: Array<string>;
+};
+
+export type ArticleParagraph = {
+  _type: "articleParagraph";
+  text?: string;
+};
+
+export type ArticleHeading = {
+  _type: "articleHeading";
+  text?: string;
+};
+
+export type PropertyPanel = {
+  _type: "propertyPanel";
+  name?: string;
+  description?: string;
+  image?: ImageWithAlt;
+  href?: string;
+};
+
+export type BulletBlock = {
+  _type: "bulletBlock";
+  heading?: string;
+  intro?: string;
+  groups?: Array<
+    {
+      _key: string;
+    } & BulletGroup
+  >;
+};
+
+export type TeamMember = {
+  _type: "teamMember";
+  name?: string;
+  photo?: ImageWithAlt;
+  bio?: string;
+};
+
+export type ExperienceProgram = {
+  _type: "experienceProgram";
+  name?: string;
+  groups?: Array<
+    {
+      _key: string;
+    } & BulletGroup
+  >;
+};
+
+export type ExperienceHighlight = {
+  _type: "experienceHighlight";
+  icon?: ImageWithAlt;
+  title?: string;
+  body?: string;
+};
+
+export type ExperienceSection = {
+  _type: "experienceSection";
+  heading?: string;
+  body?: Array<string>;
+  image?: ImageWithAlt;
+};
+
+export type TreatmentCategory = {
+  _type: "treatmentCategory";
+  name?: string;
+  image?: ImageWithAlt;
+  treatments?: Array<
+    {
+      _key: string;
+    } & TreatmentItem
+  >;
+};
+
+export type TreatmentItem = {
+  _type: "treatmentItem";
+  name?: string;
+  description?: string;
+  options?: Array<
+    {
+      _key: string;
+    } & TreatmentOption
+  >;
+  includes?: Array<string>;
+};
+
+export type TreatmentOption = {
+  _type: "treatmentOption";
+  label?: string;
+  href?: string;
+};
+
+export type PackageItem = {
+  _type: "packageItem";
+  name?: string;
+  images?: Array<
+    {
+      _key: string;
+    } & ImageWithAlt
+  >;
+  description?: InlineRichText;
+  meta?: Array<
+    {
+      _key: string;
+    } & PackageMeta
+  >;
+  benefitsHeading?: string;
+  benefits?: Array<string>;
+  notes?: Array<string>;
+  ctas?: Array<
+    {
+      _key: string;
+    } & Link
+  >;
+};
+
+export type PackageMeta = {
+  _type: "packageMeta";
+  label?: string;
+  value?: string;
+};
+
+export type PriceTable = {
+  _type: "priceTable";
+  columns?: Array<string>;
+  rows?: Array<
+    {
+      _key: string;
+    } & PriceRow
+  >;
+};
+
+export type PriceRow = {
+  _type: "priceRow";
+  cells?: Array<string>;
+};
+
+export type Amenity = {
+  _type: "amenity";
+  icon?:
+    | "wifi"
+    | "spa"
+    | "dining"
+    | "romance"
+    | "service"
+    | "yoga"
+    | "gym"
+    | "class";
+  title?: string;
+  subtitle?: string;
+};
+
+export type DetailRow = {
+  _type: "detailRow";
+  label?: string;
+  value?: string;
+};
+
+export type BulletGroup = {
+  _type: "bulletGroup";
+  heading?: string;
+  items?: Array<string>;
+};
+
+export type FaqItem = {
+  _type: "faqItem";
+  question?: string;
+  answer?: string;
+};
+
+export type PageReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "page";
+};
+
+export type PostReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "post";
+};
+
+export type RoomReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "room";
+};
+
+export type ExperienceReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "experience";
+};
+
+export type LegalPageReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "legalPage";
+};
+
+export type InlineRichText = Array<{
+  children?: Array<{
+    marks?: Array<string>;
+    text?: string;
+    _type: "span";
+    _key: string;
+  }>;
+  style?: "normal";
+  listItem?: never;
+  markDefs?: Array<{
+    linkType?: "internal" | "custom";
+    reference?:
+      | PageReference
+      | PostReference
+      | RoomReference
+      | ExperienceReference
+      | LegalPageReference;
+    href?: string;
+    blank?: boolean;
+    _type: "textLink";
+    _key: string;
+  }>;
+  level?: number;
+  _type: "block";
+  _key: string;
+}>;
+
+export type PortableText = Array<
+  | {
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "normal" | "h2" | "h3" | "h4" | "blockquote";
+      listItem?: "bullet" | "number";
+      markDefs?: Array<{
+        linkType?: "internal" | "custom";
+        reference?:
+          | PageReference
+          | PostReference
+          | RoomReference
+          | ExperienceReference
+          | LegalPageReference;
+        href?: string;
+        blank?: boolean;
+        _type: "textLink";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }
+  | ({
+      _key: string;
+    } & ImageWithAlt)
+>;
+
+export type Link = {
+  _type: "link";
+  label?: string;
+  linkType?: "internal" | "custom";
+  reference?:
+    | PageReference
+    | PostReference
+    | RoomReference
+    | ExperienceReference
+    | LegalPageReference;
+  href?: string;
+  external?: boolean;
+  inScope?: boolean;
+  variant?: "solid" | "outline";
+};
+
+export type Page = {
+  _id: string;
+  _type: "page";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  path?: string;
+  property?: "seminyak" | "ubud";
+  sections?: Array<
+    | ({
+        _key: string;
+      } & HeroSection)
+    | ({
+        _key: string;
+      } & PropertyPickerSection)
+    | ({
+        _key: string;
+      } & AboutNarrativeSection)
+    | ({
+        _key: string;
+      } & RichTextSection)
+    | ({
+        _key: string;
+      } & ProseSection)
+    | ({
+        _key: string;
+      } & SplitContentSection)
+    | ({
+        _key: string;
+      } & GallerySection)
+    | ({
+        _key: string;
+      } & AmenityGridSection)
+    | ({
+        _key: string;
+      } & LinkCardGridSection)
+    | ({
+        _key: string;
+      } & CollectionSection)
+    | ({
+        _key: string;
+      } & RoomListSection)
+    | ({
+        _key: string;
+      } & PackageListSection)
+    | ({
+        _key: string;
+      } & ProgramListSection)
+    | ({
+        _key: string;
+      } & TreatmentListSection)
+    | ({
+        _key: string;
+      } & BulletListSection)
+    | ({
+        _key: string;
+      } & PriceTableSection)
+    | ({
+        _key: string;
+      } & FaqSection)
+    | ({
+        _key: string;
+      } & CtaSection)
+    | ({
+        _key: string;
+      } & InquiryFormSection)
+    | ({
+        _key: string;
+      } & ContactSection)
+    | ({
+        _key: string;
+      } & AwardsSection)
+    | ({
+        _key: string;
+      } & DealsSection)
+    | ({
+        _key: string;
+      } & InstagramSection)
+    | ({
+        _key: string;
+      } & BookingWidgetSection)
+  >;
+  seo?: Seo;
 };
 
 export type LegalPage = {
@@ -134,18 +978,6 @@ export type LegalPage = {
   >;
   updatedAt?: string;
   seo?: Seo;
-};
-
-export type Testimonial = {
-  _id: string;
-  _type: "testimonial";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  quote?: string;
-  author?: string;
-  property?: "seminyak" | "ubud";
-  order?: number;
 };
 
 export type Experience = {
@@ -234,23 +1066,6 @@ export type Room = {
   seo?: Seo;
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
-export type Category = {
-  _id: string;
-  _type: "category";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  slug?: Slug;
-  description?: string;
-};
-
 export type CategoryReference = {
   _ref: string;
   _type: "reference";
@@ -300,604 +1115,6 @@ export type Post = {
       } & ArticleFaq)
   >;
   seo?: Seo;
-};
-
-export type Page = {
-  _id: string;
-  _type: "page";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  path?: string;
-  property?: "seminyak" | "ubud";
-  sections?: Array<
-    | ({
-        _key: string;
-      } & HeroSection)
-    | ({
-        _key: string;
-      } & RichTextSection)
-    | ({
-        _key: string;
-      } & SplitContentSection)
-    | ({
-        _key: string;
-      } & GallerySection)
-    | ({
-        _key: string;
-      } & AmenityGridSection)
-    | ({
-        _key: string;
-      } & LinkCardGridSection)
-    | ({
-        _key: string;
-      } & CollectionSection)
-    | ({
-        _key: string;
-      } & PackageListSection)
-    | ({
-        _key: string;
-      } & ProgramListSection)
-    | ({
-        _key: string;
-      } & TreatmentListSection)
-    | ({
-        _key: string;
-      } & BulletListSection)
-    | ({
-        _key: string;
-      } & PriceTableSection)
-    | ({
-        _key: string;
-      } & FaqSection)
-    | ({
-        _key: string;
-      } & CtaSection)
-    | ({
-        _key: string;
-      } & InquiryFormSection)
-    | ({
-        _key: string;
-      } & AwardsSection)
-    | ({
-        _key: string;
-      } & DealsSection)
-    | ({
-        _key: string;
-      } & InstagramSection)
-    | ({
-        _key: string;
-      } & BookingWidgetSection)
-  >;
-  seo?: Seo;
-};
-
-export type BookingWidgetSection = {
-  _type: "bookingWidgetSection";
-  heading?: string;
-  widgetId?: string;
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type InstagramSection = {
-  _type: "instagramSection";
-  heading?: string;
-  feedUrl?: string;
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type DealsSection = {
-  _type: "dealsSection";
-  bookingHref?: string;
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type AwardsSection = {
-  _type: "awardsSection";
-  heading?: string;
-  badges?: Array<
-    {
-      _key: string;
-    } & ImageWithAlt
-  >;
-  variant?: "grid" | "marquee";
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type InquiryFormSection = {
-  _type: "inquiryFormSection";
-  heading?: string;
-  fields?: Array<{
-    kind?:
-      | "text"
-      | "email"
-      | "tel"
-      | "number"
-      | "date"
-      | "textarea"
-      | "radio"
-      | "checkbox";
-    label?: string;
-    name?: string;
-    options?: Array<string>;
-    required?: boolean;
-    _type: "inquiryField";
-    _key: string;
-  }>;
-  submitLabel?: string;
-  confirmation?: string;
-  tone?: "sand" | "sand-deep";
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type CtaSection = {
-  _type: "ctaSection";
-  eyebrow?: string;
-  heading?: string;
-  body?: string;
-  actions?: Array<
-    {
-      _key: string;
-    } & Link
-  >;
-  image?: ImageWithAlt;
-  tone?: "sand" | "sand-deep";
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type FaqSection = {
-  _type: "faqSection";
-  heading?: string;
-  faqs?: Array<
-    {
-      _key: string;
-    } & FaqItem
-  >;
-  tone?: "sand" | "sand-deep";
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type PriceTableSection = {
-  _type: "priceTableSection";
-  heading?: string;
-  table?: PriceTable;
-  tone?: "sand" | "sand-deep";
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type PriceTable = {
-  _type: "priceTable";
-  columns?: Array<string>;
-  rows?: Array<
-    {
-      _key: string;
-    } & PriceRow
-  >;
-};
-
-export type BulletListSection = {
-  _type: "bulletListSection";
-  eyebrow?: string;
-  heading?: string;
-  intro?: string;
-  groups?: Array<
-    {
-      _key: string;
-    } & BulletGroup
-  >;
-  tone?: "sand" | "sand-deep";
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type TreatmentListSection = {
-  _type: "treatmentListSection";
-  eyebrow?: string;
-  heading?: string;
-  intro?: string;
-  notes?: Array<string>;
-  categories?: Array<
-    {
-      _key: string;
-    } & TreatmentCategory
-  >;
-  cta?: Link;
-  tone?: "sand" | "sand-deep";
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type Link = {
-  _type: "link";
-  label?: string;
-  href?: string;
-  external?: boolean;
-  inScope?: boolean;
-  variant?: "solid" | "outline";
-};
-
-export type ProgramListSection = {
-  _type: "programListSection";
-  heading?: string;
-  tiers?: Array<
-    {
-      _key: string;
-    } & ExperienceProgram
-  >;
-  tone?: "sand" | "sand-deep";
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type PackageSetReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "packageSet";
-};
-
-export type PackageListSection = {
-  _type: "packageListSection";
-  eyebrow?: string;
-  heading?: string;
-  intro?: string;
-  source?: "inline" | "reference";
-  packages?: Array<
-    {
-      _key: string;
-    } & PackageItem
-  >;
-  packageSet?: PackageSetReference;
-  tone?: "sand" | "sand-deep";
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type PackageSet = {
-  _id: string;
-  _type: "packageSet";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  slug?: Slug;
-  property?: "seminyak" | "ubud";
-  alwaysIncluded?: Array<string>;
-  packages?: Array<
-    {
-      _key: string;
-    } & PackageItem
-  >;
-};
-
-export type CollectionSection = {
-  _type: "collectionSection";
-  eyebrow?: string;
-  heading?: string;
-  intro?: string;
-  collection?: "room" | "post" | "experience" | "testimonial";
-  property?: "" | "seminyak" | "ubud";
-  group?: "" | "retreat" | "wellness" | "culture";
-  limit?: number;
-  action?: Link;
-  tone?: "sand" | "sand-deep";
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type LinkCardGridSection = {
-  _type: "linkCardGridSection";
-  eyebrow?: string;
-  heading?: string;
-  items?: Array<{
-    label?: string;
-    href?: string;
-    image?: ImageWithAlt;
-    inScope?: boolean;
-    _type: "linkCard";
-    _key: string;
-  }>;
-  columns?: 2 | 3 | 4;
-  tone?: "sand" | "sand-deep";
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type AmenityGridSection = {
-  _type: "amenityGridSection";
-  heading?: string;
-  amenities?: Array<
-    {
-      _key: string;
-    } & Amenity
-  >;
-  tone?: "sand" | "sand-deep";
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type GallerySection = {
-  _type: "gallerySection";
-  eyebrow?: string;
-  heading?: string;
-  images?: Array<
-    {
-      _key: string;
-    } & ImageWithAlt
-  >;
-  alt?: string;
-  tone?: "sand" | "sand-deep";
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type SplitContentSection = {
-  _type: "splitContentSection";
-  eyebrow?: string;
-  heading?: string;
-  paragraphs?: Array<string>;
-  script?: string;
-  image?: ImageWithAlt;
-  imageSide?: "right" | "left";
-  action?: Link;
-  tone?: "sand" | "sand-deep";
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type RichTextSection = {
-  _type: "richTextSection";
-  eyebrow?: string;
-  heading?: string;
-  body?: PortableText;
-  tone?: "sand" | "sand-deep";
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type PortableText = Array<
-  | {
-      children?: Array<{
-        marks?: Array<string>;
-        text?: string;
-        _type: "span";
-        _key: string;
-      }>;
-      style?: "normal" | "h2" | "h3" | "blockquote";
-      listItem?: "bullet" | "number";
-      markDefs?: Array<{
-        href?: string;
-        blank?: boolean;
-        _type: "textLink";
-        _key: string;
-      }>;
-      level?: number;
-      _type: "block";
-      _key: string;
-    }
-  | ({
-      _key: string;
-    } & ImageWithAlt)
->;
-
-export type HeroSection = {
-  _type: "heroSection";
-  images?: Array<
-    {
-      _key: string;
-    } & ImageWithAlt
-  >;
-  eyebrow?: string;
-  title?: string;
-  alt?: string;
-  anchor?: string;
-  isHidden?: boolean;
-};
-
-export type ArticlePrice = {
-  _type: "articlePrice";
-  table?: PriceTable;
-};
-
-export type ArticleFaq = {
-  _type: "articleFaq";
-  heading?: string;
-  items?: Array<
-    {
-      _key: string;
-    } & FaqItem
-  >;
-};
-
-export type ArticlePoints = {
-  _type: "articlePoints";
-  ordered?: boolean;
-  items?: Array<
-    {
-      _key: string;
-    } & ArticlePointItem
-  >;
-};
-
-export type ArticlePointItem = {
-  _type: "articlePointItem";
-  label?: string;
-  body?: Array<
-    | ({
-        _key: string;
-      } & ArticleParagraph)
-    | ({
-        _key: string;
-      } & ArticleImage)
-  >;
-};
-
-export type ArticleImage = {
-  _type: "articleImage";
-  image?: ImageWithAlt;
-};
-
-export type ArticleList = {
-  _type: "articleList";
-  items?: Array<string>;
-};
-
-export type ArticleParagraph = {
-  _type: "articleParagraph";
-  text?: string;
-};
-
-export type ArticleHeading = {
-  _type: "articleHeading";
-  text?: string;
-};
-
-export type BulletBlock = {
-  _type: "bulletBlock";
-  heading?: string;
-  intro?: string;
-  groups?: Array<
-    {
-      _key: string;
-    } & BulletGroup
-  >;
-};
-
-export type TeamMember = {
-  _type: "teamMember";
-  name?: string;
-  photo?: ImageWithAlt;
-  bio?: string;
-};
-
-export type ExperienceProgram = {
-  _type: "experienceProgram";
-  name?: string;
-  groups?: Array<
-    {
-      _key: string;
-    } & BulletGroup
-  >;
-};
-
-export type ExperienceHighlight = {
-  _type: "experienceHighlight";
-  icon?: ImageWithAlt;
-  title?: string;
-  body?: string;
-};
-
-export type ExperienceSection = {
-  _type: "experienceSection";
-  heading?: string;
-  body?: Array<string>;
-  image?: ImageWithAlt;
-};
-
-export type TreatmentCategory = {
-  _type: "treatmentCategory";
-  name?: string;
-  image?: ImageWithAlt;
-  treatments?: Array<
-    {
-      _key: string;
-    } & TreatmentItem
-  >;
-};
-
-export type TreatmentItem = {
-  _type: "treatmentItem";
-  name?: string;
-  description?: string;
-  options?: Array<
-    {
-      _key: string;
-    } & TreatmentOption
-  >;
-  includes?: Array<string>;
-};
-
-export type TreatmentOption = {
-  _type: "treatmentOption";
-  label?: string;
-  href?: string;
-};
-
-export type PackageItem = {
-  _type: "packageItem";
-  name?: string;
-  images?: Array<
-    {
-      _key: string;
-    } & ImageWithAlt
-  >;
-  description?: string;
-  meta?: Array<
-    {
-      _key: string;
-    } & PackageMeta
-  >;
-  benefitsHeading?: string;
-  benefits?: Array<string>;
-  notes?: Array<string>;
-  ctas?: Array<
-    {
-      _key: string;
-    } & Link
-  >;
-};
-
-export type PackageMeta = {
-  _type: "packageMeta";
-  label?: string;
-  value?: string;
-};
-
-export type PriceRow = {
-  _type: "priceRow";
-  cells?: Array<string>;
-};
-
-export type Amenity = {
-  _type: "amenity";
-  icon?:
-    | "wifi"
-    | "spa"
-    | "dining"
-    | "romance"
-    | "service"
-    | "yoga"
-    | "gym"
-    | "class";
-  title?: string;
-  subtitle?: string;
-};
-
-export type DetailRow = {
-  _type: "detailRow";
-  label?: string;
-  value?: string;
-};
-
-export type BulletGroup = {
-  _type: "bulletGroup";
-  heading?: string;
-  items?: Array<string>;
-};
-
-export type FaqItem = {
-  _type: "faqItem";
-  question?: string;
-  answer?: string;
 };
 
 export type SanityImageCrop = {
@@ -1019,38 +1236,34 @@ export type AllSanitySchemaTypes =
   | SanityImageAssetReference
   | ImageWithAlt
   | Property
-  | LegalPage
   | Testimonial
-  | Experience
-  | Room
-  | Slug
   | Category
-  | CategoryReference
-  | Post
-  | Page
+  | Slug
   | BookingWidgetSection
   | InstagramSection
   | DealsSection
   | AwardsSection
+  | ContactSection
   | InquiryFormSection
   | CtaSection
   | FaqSection
   | PriceTableSection
-  | PriceTable
   | BulletListSection
   | TreatmentListSection
-  | Link
   | ProgramListSection
   | PackageSetReference
   | PackageListSection
   | PackageSet
+  | RoomListSection
   | CollectionSection
   | LinkCardGridSection
   | AmenityGridSection
   | GallerySection
   | SplitContentSection
+  | ProseSection
   | RichTextSection
-  | PortableText
+  | AboutNarrativeSection
+  | PropertyPickerSection
   | HeroSection
   | ArticlePrice
   | ArticleFaq
@@ -1060,6 +1273,7 @@ export type AllSanitySchemaTypes =
   | ArticleList
   | ArticleParagraph
   | ArticleHeading
+  | PropertyPanel
   | BulletBlock
   | TeamMember
   | ExperienceProgram
@@ -1070,11 +1284,26 @@ export type AllSanitySchemaTypes =
   | TreatmentOption
   | PackageItem
   | PackageMeta
+  | PriceTable
   | PriceRow
   | Amenity
   | DetailRow
   | BulletGroup
   | FaqItem
+  | PageReference
+  | PostReference
+  | RoomReference
+  | ExperienceReference
+  | LegalPageReference
+  | InlineRichText
+  | PortableText
+  | Link
+  | Page
+  | LegalPage
+  | Experience
+  | Room
+  | CategoryReference
+  | Post
   | SanityImageCrop
   | SanityImageHotspot
   | SanityImagePaletteSwatch
@@ -1088,7 +1317,7 @@ export type AllSanitySchemaTypes =
 
 // Source: src/sanity/lib/queries.ts
 // Variable: pageByPathQuery
-// Query: *[_type == "page" && path == $path][0]{    _id,    _type,    title,    path,    property,    seo {  title,  description,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  noIndex},    sections[] {  ...,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  images[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  badges[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  items[]{    ...,    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  packages[]{    ...,    images[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  categories[]{    ...,    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  packageSet->{    _id,    title,    alwaysIncluded,    packages[]{      ...,      images[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}    }  }}  }
+// Query: *[_type == "page" && path == $path][0]{    _id,    _type,    title,    path,    property,    seo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex},    sections[] {  ...,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  images[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  badges[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  items[]{    ...,    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  packages[]{    ...,    images[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    ctas[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},    "description": select(  description[0]._type == "block" => description[]{    ...,    markDefs[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )}  },  description)  },  categories[]{    ...,    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  action {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},  actions[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},  cta {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},  "body": select(  body[0]._type == "block" => body[]{    ...,    markDefs[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )}  },  body),  "intro": select(  intro[0]._type == "block" => intro[]{    ...,    markDefs[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )}  },  intro),  packageSet->{    _id,    title,    alwaysIncluded,    packages[]{      ...,      images[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},      ctas[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},      "description": select(  description[0]._type == "block" => description[]{    ...,    markDefs[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )}  },  description)    }  }}  }
 export type PageByPathQueryResult = {
   _id: string;
   _type: "page";
@@ -1098,6 +1327,8 @@ export type PageByPathQueryResult = {
   seo: {
     title: string | null;
     description: string | null;
+    ogTitle: string | null;
+    ogDescription: string | null;
     image: {
       _type: "imageWithAlt";
       asset: SanityImageAssetReference | null;
@@ -1107,9 +1338,47 @@ export type PageByPathQueryResult = {
       crop: SanityImageCrop | null;
       hotspot: SanityImageHotspot | null;
     } | null;
+    canonicalUrl: string | null;
     noIndex: boolean | null;
   } | null;
   sections: Array<
+    | {
+        _key: string;
+        _type: "aboutNarrativeSection";
+        eyebrow?: string;
+        heading?: string;
+        paragraphs?: Array<string>;
+        tagline?: string;
+        buttonLabel?: string;
+        offerHeading?: string;
+        offerSubtitle?: string;
+        offerCodeLabel?: string;
+        promoCode?: string;
+        perks?: Array<string>;
+        image: {
+          _type: "imageWithAlt";
+          asset: SanityImageAssetReference | null;
+          alt: string | null;
+          caption: string | null;
+          externalUrl: string | null;
+          crop: SanityImageCrop | null;
+          hotspot: SanityImageHotspot | null;
+        } | null;
+        headingLevel?: "h2" | "h3" | "h4";
+        anchor?: string;
+        isHidden?: boolean;
+        images: null;
+        badges: null;
+        items: null;
+        packages: null;
+        categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
+        intro: null;
+        packageSet: null;
+      }
     | {
         _key: string;
         _type: "amenityGridSection";
@@ -1120,6 +1389,7 @@ export type PageByPathQueryResult = {
           } & Amenity
         >;
         tone?: "sand-deep" | "sand";
+        headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
         image: null;
@@ -1128,6 +1398,11 @@ export type PageByPathQueryResult = {
         items: null;
         packages: null;
         categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
+        intro: null;
         packageSet: null;
       }
     | {
@@ -1143,7 +1418,7 @@ export type PageByPathQueryResult = {
           crop: SanityImageCrop | null;
           hotspot: SanityImageHotspot | null;
         }> | null;
-        variant?: "grid" | "marquee";
+        variant?: "" | "grid" | "marquee";
         anchor?: string;
         isHidden?: boolean;
         image: null;
@@ -1151,6 +1426,11 @@ export type PageByPathQueryResult = {
         items: null;
         packages: null;
         categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
+        intro: null;
         packageSet: null;
       }
     | {
@@ -1166,6 +1446,11 @@ export type PageByPathQueryResult = {
         items: null;
         packages: null;
         categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
+        intro: null;
         packageSet: null;
       }
     | {
@@ -1173,12 +1458,13 @@ export type PageByPathQueryResult = {
         _type: "bulletListSection";
         eyebrow?: string;
         heading?: string;
-        intro?: string;
+        intro: string | null;
         groups?: Array<
           {
             _key: string;
           } & BulletGroup
         >;
+        headingLevel?: "h2" | "h3" | "h4";
         tone?: "sand-deep" | "sand";
         anchor?: string;
         isHidden?: boolean;
@@ -1188,6 +1474,10 @@ export type PageByPathQueryResult = {
         items: null;
         packages: null;
         categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
         packageSet: null;
       }
     | {
@@ -1195,13 +1485,35 @@ export type PageByPathQueryResult = {
         _type: "collectionSection";
         eyebrow?: string;
         heading?: string;
-        intro?: string;
+        intro: string | null;
         collection?: "experience" | "post" | "room" | "testimonial";
         property?: "" | "seminyak" | "ubud";
         group?: "" | "culture" | "retreat" | "wellness";
+        slugs?: Array<string>;
+        quotes?: Array<{
+          quote?: string;
+          author?: string;
+          _type: "quoteItem";
+          _key: string;
+        }>;
         limit?: number;
-        action?: Link;
+        action: {
+          _type: "link";
+          label?: string;
+          linkType?: "custom" | "internal";
+          reference?:
+            | ExperienceReference
+            | LegalPageReference
+            | PageReference
+            | PostReference
+            | RoomReference;
+          href: string | null | "/privacy-policy" | "/terms-conditions";
+          external?: boolean;
+          inScope?: boolean;
+          variant?: "outline" | "solid";
+        } | null;
         tone?: "sand-deep" | "sand";
+        headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
         image: null;
@@ -1210,6 +1522,38 @@ export type PageByPathQueryResult = {
         items: null;
         packages: null;
         categories: null;
+        actions: null;
+        cta: null;
+        body: null;
+        packageSet: null;
+      }
+    | {
+        _key: string;
+        _type: "contactSection";
+        eyebrow?: string;
+        heading?: string;
+        intro: string | null;
+        image: {
+          _type: "imageWithAlt";
+          asset: SanityImageAssetReference | null;
+          alt: string | null;
+          caption: string | null;
+          externalUrl: string | null;
+          crop: SanityImageCrop | null;
+          hotspot: SanityImageHotspot | null;
+        } | null;
+        headingLevel?: "h1" | "h2" | "h3";
+        anchor?: string;
+        isHidden?: boolean;
+        images: null;
+        badges: null;
+        items: null;
+        packages: null;
+        categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
         packageSet: null;
       }
     | {
@@ -1217,12 +1561,23 @@ export type PageByPathQueryResult = {
         _type: "ctaSection";
         eyebrow?: string;
         heading?: string;
-        body?: string;
-        actions?: Array<
-          {
-            _key: string;
-          } & Link
-        >;
+        body: string | null;
+        actions: Array<{
+          _key: string;
+          _type: "link";
+          label?: string;
+          linkType?: "custom" | "internal";
+          reference?:
+            | ExperienceReference
+            | LegalPageReference
+            | PageReference
+            | PostReference
+            | RoomReference;
+          href: string | null | "/privacy-policy" | "/terms-conditions";
+          external?: boolean;
+          inScope?: boolean;
+          variant?: "outline" | "solid";
+        }> | null;
         image: {
           _type: "imageWithAlt";
           asset: SanityImageAssetReference | null;
@@ -1233,6 +1588,7 @@ export type PageByPathQueryResult = {
           hotspot: SanityImageHotspot | null;
         } | null;
         tone?: "sand-deep" | "sand";
+        headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
         images: null;
@@ -1240,12 +1596,18 @@ export type PageByPathQueryResult = {
         items: null;
         packages: null;
         categories: null;
+        action: null;
+        cta: null;
+        intro: null;
         packageSet: null;
       }
     | {
         _key: string;
         _type: "dealsSection";
         bookingHref?: string;
+        headline?: string;
+        code?: string;
+        buttonLabel?: string;
         anchor?: string;
         isHidden?: boolean;
         image: null;
@@ -1254,6 +1616,11 @@ export type PageByPathQueryResult = {
         items: null;
         packages: null;
         categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
+        intro: null;
         packageSet: null;
       }
     | {
@@ -1266,6 +1633,7 @@ export type PageByPathQueryResult = {
           } & FaqItem
         >;
         tone?: "sand-deep" | "sand";
+        headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
         image: null;
@@ -1274,6 +1642,11 @@ export type PageByPathQueryResult = {
         items: null;
         packages: null;
         categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
+        intro: null;
         packageSet: null;
       }
     | {
@@ -1292,6 +1665,7 @@ export type PageByPathQueryResult = {
         }> | null;
         alt?: string;
         tone?: "sand-deep" | "sand";
+        headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
         image: null;
@@ -1299,6 +1673,11 @@ export type PageByPathQueryResult = {
         items: null;
         packages: null;
         categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
+        intro: null;
         packageSet: null;
       }
     | {
@@ -1323,6 +1702,11 @@ export type PageByPathQueryResult = {
         items: null;
         packages: null;
         categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
+        intro: null;
         packageSet: null;
       }
     | {
@@ -1348,6 +1732,7 @@ export type PageByPathQueryResult = {
         }>;
         submitLabel?: string;
         confirmation?: string;
+        headingLevel?: "h1" | "h2" | "h3";
         tone?: "sand-deep" | "sand";
         anchor?: string;
         isHidden?: boolean;
@@ -1357,13 +1742,19 @@ export type PageByPathQueryResult = {
         items: null;
         packages: null;
         categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
+        intro: null;
         packageSet: null;
       }
     | {
         _key: string;
         _type: "instagramSection";
         heading?: string;
-        feedUrl?: string;
+        feed?: "seminyak" | "spa" | "ubud";
+        profileUrl?: string;
         anchor?: string;
         isHidden?: boolean;
         image: null;
@@ -1372,6 +1763,11 @@ export type PageByPathQueryResult = {
         items: null;
         packages: null;
         categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
+        intro: null;
         packageSet: null;
       }
     | {
@@ -1397,6 +1793,7 @@ export type PageByPathQueryResult = {
         }> | null;
         columns?: 2 | 3 | 4;
         tone?: "sand-deep" | "sand";
+        headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
         image: null;
@@ -1404,6 +1801,11 @@ export type PageByPathQueryResult = {
         badges: null;
         packages: null;
         categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
+        intro: null;
         packageSet: null;
       }
     | {
@@ -1411,7 +1813,35 @@ export type PageByPathQueryResult = {
         _type: "packageListSection";
         eyebrow?: string;
         heading?: string;
-        intro?: string;
+        intro:
+          | Array<{
+              children?: Array<{
+                marks?: Array<string>;
+                text?: string;
+                _type: "span";
+                _key: string;
+              }>;
+              style?: "normal";
+              listItem?: never;
+              markDefs: Array<{
+                linkType?: "custom" | "internal";
+                reference?:
+                  | ExperienceReference
+                  | LegalPageReference
+                  | PageReference
+                  | PostReference
+                  | RoomReference;
+                href: string | null | "/privacy-policy" | "/terms-conditions";
+                blank?: boolean;
+                _type: "textLink";
+                _key: string;
+              }> | null;
+              level?: number;
+              _type: "block";
+              _key: string;
+            }>
+          | InlineRichText
+          | null;
         source?: "inline" | "reference";
         packages: Array<{
           _key: string;
@@ -1426,7 +1856,35 @@ export type PageByPathQueryResult = {
             crop: SanityImageCrop | null;
             hotspot: SanityImageHotspot | null;
           }> | null;
-          description?: string;
+          description:
+            | Array<{
+                children?: Array<{
+                  marks?: Array<string>;
+                  text?: string;
+                  _type: "span";
+                  _key: string;
+                }>;
+                style?: "normal";
+                listItem?: never;
+                markDefs: Array<{
+                  linkType?: "custom" | "internal";
+                  reference?:
+                    | ExperienceReference
+                    | LegalPageReference
+                    | PageReference
+                    | PostReference
+                    | RoomReference;
+                  href: string | null | "/privacy-policy" | "/terms-conditions";
+                  blank?: boolean;
+                  _type: "textLink";
+                  _key: string;
+                }> | null;
+                level?: number;
+                _type: "block";
+                _key: string;
+              }>
+            | InlineRichText
+            | null;
           meta?: Array<
             {
               _key: string;
@@ -1435,11 +1893,22 @@ export type PageByPathQueryResult = {
           benefitsHeading?: string;
           benefits?: Array<string>;
           notes?: Array<string>;
-          ctas?: Array<
-            {
-              _key: string;
-            } & Link
-          >;
+          ctas: Array<{
+            _key: string;
+            _type: "link";
+            label?: string;
+            linkType?: "custom" | "internal";
+            reference?:
+              | ExperienceReference
+              | LegalPageReference
+              | PageReference
+              | PostReference
+              | RoomReference;
+            href: string | null | "/privacy-policy" | "/terms-conditions";
+            external?: boolean;
+            inScope?: boolean;
+            variant?: "outline" | "solid";
+          }> | null;
         }> | null;
         packageSet: {
           _id: string;
@@ -1458,7 +1927,36 @@ export type PageByPathQueryResult = {
               crop: SanityImageCrop | null;
               hotspot: SanityImageHotspot | null;
             }> | null;
-            description?: string;
+            description:
+              | Array<{
+                  children?: Array<{
+                    marks?: Array<string>;
+                    text?: string;
+                    _type: "span";
+                    _key: string;
+                  }>;
+                  style?: "normal";
+                  listItem?: never;
+                  markDefs: Array<{
+                    linkType?: "custom" | "internal";
+                    reference?:
+                      | ExperienceReference
+                      | LegalPageReference
+                      | PageReference
+                      | PostReference
+                      | RoomReference;
+                    href:
+                      string | null | "/privacy-policy" | "/terms-conditions";
+                    blank?: boolean;
+                    _type: "textLink";
+                    _key: string;
+                  }> | null;
+                  level?: number;
+                  _type: "block";
+                  _key: string;
+                }>
+              | InlineRichText
+              | null;
             meta?: Array<
               {
                 _key: string;
@@ -1467,14 +1965,26 @@ export type PageByPathQueryResult = {
             benefitsHeading?: string;
             benefits?: Array<string>;
             notes?: Array<string>;
-            ctas?: Array<
-              {
-                _key: string;
-              } & Link
-            >;
+            ctas: Array<{
+              _key: string;
+              _type: "link";
+              label?: string;
+              linkType?: "custom" | "internal";
+              reference?:
+                | ExperienceReference
+                | LegalPageReference
+                | PageReference
+                | PostReference
+                | RoomReference;
+              href: string | null | "/privacy-policy" | "/terms-conditions";
+              external?: boolean;
+              inScope?: boolean;
+              variant?: "outline" | "solid";
+            }> | null;
           }> | null;
         } | null;
         tone?: "sand-deep" | "sand";
+        headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
         image: null;
@@ -1482,12 +1992,17 @@ export type PageByPathQueryResult = {
         badges: null;
         items: null;
         categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
       }
     | {
         _key: string;
         _type: "priceTableSection";
         heading?: string;
         table?: PriceTable;
+        headingLevel?: "h2" | "h3" | "h4";
         tone?: "sand-deep" | "sand";
         anchor?: string;
         isHidden?: boolean;
@@ -1497,6 +2012,11 @@ export type PageByPathQueryResult = {
         items: null;
         packages: null;
         categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
+        intro: null;
         packageSet: null;
       }
     | {
@@ -1509,6 +2029,7 @@ export type PageByPathQueryResult = {
           } & ExperienceProgram
         >;
         tone?: "sand-deep" | "sand";
+        headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
         image: null;
@@ -1517,6 +2038,57 @@ export type PageByPathQueryResult = {
         items: null;
         packages: null;
         categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
+        intro: null;
+        packageSet: null;
+      }
+    | {
+        _key: string;
+        _type: "propertyPickerSection";
+        panels?: Array<
+          {
+            _key: string;
+          } & PropertyPanel
+        >;
+        anchor?: string;
+        isHidden?: boolean;
+        image: null;
+        images: null;
+        badges: null;
+        items: null;
+        packages: null;
+        categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
+        intro: null;
+        packageSet: null;
+      }
+    | {
+        _key: string;
+        _type: "proseSection";
+        eyebrow?: string;
+        heading?: string;
+        paragraphs?: Array<string>;
+        tone?: "sand-deep" | "sand";
+        headingLevel?: "h2" | "h3" | "h4";
+        anchor?: string;
+        isHidden?: boolean;
+        image: null;
+        images: null;
+        badges: null;
+        items: null;
+        packages: null;
+        categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
+        intro: null;
         packageSet: null;
       }
     | {
@@ -1524,8 +2096,52 @@ export type PageByPathQueryResult = {
         _type: "richTextSection";
         eyebrow?: string;
         heading?: string;
-        body?: PortableText;
+        body:
+          | Array<
+              | {
+                  children?: Array<{
+                    marks?: Array<string>;
+                    text?: string;
+                    _type: "span";
+                    _key: string;
+                  }>;
+                  style?: "blockquote" | "h2" | "h3" | "h4" | "normal";
+                  listItem?: "bullet" | "number";
+                  markDefs: Array<{
+                    linkType?: "custom" | "internal";
+                    reference?:
+                      | ExperienceReference
+                      | LegalPageReference
+                      | PageReference
+                      | PostReference
+                      | RoomReference;
+                    href:
+                      string | null | "/privacy-policy" | "/terms-conditions";
+                    blank?: boolean;
+                    _type: "textLink";
+                    _key: string;
+                  }> | null;
+                  level?: number;
+                  _type: "block";
+                  _key: string;
+                }
+              | {
+                  _key: string;
+                  _type: "imageWithAlt";
+                  asset?: SanityImageAssetReference;
+                  media?: unknown;
+                  hotspot?: SanityImageHotspot;
+                  crop?: SanityImageCrop;
+                  alt?: string;
+                  caption?: string;
+                  externalUrl?: string;
+                  markDefs: null;
+                }
+            >
+          | PortableText
+          | null;
         tone?: "sand-deep" | "sand";
+        headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
         image: null;
@@ -1534,6 +2150,47 @@ export type PageByPathQueryResult = {
         items: null;
         packages: null;
         categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        intro: null;
+        packageSet: null;
+      }
+    | {
+        _key: string;
+        _type: "roomListSection";
+        eyebrow?: string;
+        heading?: string;
+        intro: string | null;
+        rooms?: Array<{
+          name?: string;
+          images?: Array<
+            {
+              _key: string;
+            } & ImageWithAlt
+          >;
+          bed?: string;
+          size?: string;
+          occupancy?: string;
+          detailsHref?: string;
+          detailsInScope?: boolean;
+          _type: "roomListItem";
+          _key: string;
+        }>;
+        tone?: "sand-deep" | "sand";
+        headingLevel?: "h2" | "h3" | "h4";
+        anchor?: string;
+        isHidden?: boolean;
+        image: null;
+        images: null;
+        badges: null;
+        items: null;
+        packages: null;
+        categories: null;
+        action: null;
+        actions: null;
+        cta: null;
+        body: null;
         packageSet: null;
       }
     | {
@@ -1553,8 +2210,23 @@ export type PageByPathQueryResult = {
           hotspot: SanityImageHotspot | null;
         } | null;
         imageSide?: "left" | "right";
-        action?: Link;
+        action: {
+          _type: "link";
+          label?: string;
+          linkType?: "custom" | "internal";
+          reference?:
+            | ExperienceReference
+            | LegalPageReference
+            | PageReference
+            | PostReference
+            | RoomReference;
+          href: string | null | "/privacy-policy" | "/terms-conditions";
+          external?: boolean;
+          inScope?: boolean;
+          variant?: "outline" | "solid";
+        } | null;
         tone?: "sand-deep" | "sand";
+        headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
         images: null;
@@ -1562,6 +2234,10 @@ export type PageByPathQueryResult = {
         items: null;
         packages: null;
         categories: null;
+        actions: null;
+        cta: null;
+        body: null;
+        intro: null;
         packageSet: null;
       }
     | {
@@ -1569,7 +2245,7 @@ export type PageByPathQueryResult = {
         _type: "treatmentListSection";
         eyebrow?: string;
         heading?: string;
-        intro?: string;
+        intro: string | null;
         notes?: Array<string>;
         categories: Array<{
           _key: string;
@@ -1590,8 +2266,23 @@ export type PageByPathQueryResult = {
             } & TreatmentItem
           >;
         }> | null;
-        cta?: Link;
+        cta: {
+          _type: "link";
+          label?: string;
+          linkType?: "custom" | "internal";
+          reference?:
+            | ExperienceReference
+            | LegalPageReference
+            | PageReference
+            | PostReference
+            | RoomReference;
+          href: string | null | "/privacy-policy" | "/terms-conditions";
+          external?: boolean;
+          inScope?: boolean;
+          variant?: "outline" | "solid";
+        } | null;
         tone?: "sand-deep" | "sand";
+        headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
         image: null;
@@ -1599,6 +2290,9 @@ export type PageByPathQueryResult = {
         badges: null;
         items: null;
         packages: null;
+        action: null;
+        actions: null;
+        body: null;
         packageSet: null;
       }
   > | null;
@@ -1611,7 +2305,7 @@ export type AllPagePathsQueryResult = Array<string>;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: postByPathQuery
-// Query: *[_type == "post" && path == $path][0] {  _id,  _type,  title,  path,  property,  date,  order,  excerpt,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  "categories": categories[]->{_id, title, "slug": slug.current},  blocks[] {  ...,  _type == "articleImage" => {    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  _type == "articlePoints" => {    items[]{      ...,      body[]{        ...,        image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}      }    }  }},  seo {  title,  description,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  noIndex}}
+// Query: *[_type == "post" && path == $path][0] {  _id,  _type,  title,  path,  property,  date,  order,  excerpt,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  "categories": categories[]->{_id, title, "slug": slug.current},  blocks[] {  ...,  _type == "articleImage" => {    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  _type == "articlePoints" => {    items[]{      ...,      body[]{        ...,        image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}      }    }  }},  seo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}}
 export type PostByPathQueryResult = {
   _id: string;
   _type: "post";
@@ -1714,6 +2408,8 @@ export type PostByPathQueryResult = {
   seo: {
     title: string | null;
     description: string | null;
+    ogTitle: string | null;
+    ogDescription: string | null;
     image: {
       _type: "imageWithAlt";
       asset: SanityImageAssetReference | null;
@@ -1723,13 +2419,14 @@ export type PostByPathQueryResult = {
       crop: SanityImageCrop | null;
       hotspot: SanityImageHotspot | null;
     } | null;
+    canonicalUrl: string | null;
     noIndex: boolean | null;
   } | null;
 } | null;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: allPostsQuery
-// Query: *[_type == "post" && defined(path)] | order(date desc, order asc) {  _id,  _type,  title,  path,  property,  date,  order,  excerpt,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  "categories": categories[]->{_id, title, "slug": slug.current},  blocks[] {  ...,  _type == "articleImage" => {    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  _type == "articlePoints" => {    items[]{      ...,      body[]{        ...,        image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}      }    }  }},  seo {  title,  description,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  noIndex}}
+// Query: *[_type == "post" && defined(path)] | order(date desc, order asc) {  _id,  _type,  title,  path,  property,  date,  order,  excerpt,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  "categories": categories[]->{_id, title, "slug": slug.current},  blocks[] {  ...,  _type == "articleImage" => {    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  _type == "articlePoints" => {    items[]{      ...,      body[]{        ...,        image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}      }    }  }},  seo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}}
 export type AllPostsQueryResult = Array<{
   _id: string;
   _type: "post";
@@ -1832,6 +2529,8 @@ export type AllPostsQueryResult = Array<{
   seo: {
     title: string | null;
     description: string | null;
+    ogTitle: string | null;
+    ogDescription: string | null;
     image: {
       _type: "imageWithAlt";
       asset: SanityImageAssetReference | null;
@@ -1841,13 +2540,14 @@ export type AllPostsQueryResult = Array<{
       crop: SanityImageCrop | null;
       hotspot: SanityImageHotspot | null;
     } | null;
+    canonicalUrl: string | null;
     noIndex: boolean | null;
   } | null;
 }>;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: postsByPropertyQuery
-// Query: *[_type == "post" && property == $property && defined(path)] | order(date desc, order asc) {  _id,  _type,  title,  path,  property,  date,  order,  excerpt,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  "categories": categories[]->{_id, title, "slug": slug.current},  blocks[] {  ...,  _type == "articleImage" => {    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  _type == "articlePoints" => {    items[]{      ...,      body[]{        ...,        image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}      }    }  }},  seo {  title,  description,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  noIndex}}
+// Query: *[_type == "post" && property == $property && defined(path)] | order(date desc, order asc) {  _id,  _type,  title,  path,  property,  date,  order,  excerpt,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  "categories": categories[]->{_id, title, "slug": slug.current},  blocks[] {  ...,  _type == "articleImage" => {    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  _type == "articlePoints" => {    items[]{      ...,      body[]{        ...,        image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}      }    }  }},  seo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}}
 export type PostsByPropertyQueryResult = Array<{
   _id: string;
   _type: "post";
@@ -1950,6 +2650,8 @@ export type PostsByPropertyQueryResult = Array<{
   seo: {
     title: string | null;
     description: string | null;
+    ogTitle: string | null;
+    ogDescription: string | null;
     image: {
       _type: "imageWithAlt";
       asset: SanityImageAssetReference | null;
@@ -1959,6 +2661,7 @@ export type PostsByPropertyQueryResult = Array<{
       crop: SanityImageCrop | null;
       hotspot: SanityImageHotspot | null;
     } | null;
+    canonicalUrl: string | null;
     noIndex: boolean | null;
   } | null;
 }>;
@@ -1970,7 +2673,7 @@ export type AllPostPathsQueryResult = Array<string>;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: allRoomsQuery
-// Query: *[_type == "room" && defined(slug.current)] | order(property asc, order asc, title asc) {  _id,  _type,  title,  "slug": slug.current,  property,  description,  details,  amenities,  facilities,  hero {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  gallery[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  order,  seo {  title,  description,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  noIndex}}
+// Query: *[_type == "room" && defined(slug.current)] | order(property asc, order asc, title asc) {  _id,  _type,  title,  "slug": slug.current,  property,  description,  details,  amenities,  facilities,  hero {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  gallery[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  order,  seo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}}
 export type AllRoomsQueryResult = Array<{
   _id: string;
   _type: "room";
@@ -2007,6 +2710,8 @@ export type AllRoomsQueryResult = Array<{
   seo: {
     title: string | null;
     description: string | null;
+    ogTitle: string | null;
+    ogDescription: string | null;
     image: {
       _type: "imageWithAlt";
       asset: SanityImageAssetReference | null;
@@ -2016,13 +2721,14 @@ export type AllRoomsQueryResult = Array<{
       crop: SanityImageCrop | null;
       hotspot: SanityImageHotspot | null;
     } | null;
+    canonicalUrl: string | null;
     noIndex: boolean | null;
   } | null;
 }>;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: roomsByPropertyQuery
-// Query: *[_type == "room" && property == $property && defined(slug.current)] | order(order asc, title asc) {  _id,  _type,  title,  "slug": slug.current,  property,  description,  details,  amenities,  facilities,  hero {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  gallery[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  order,  seo {  title,  description,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  noIndex}}
+// Query: *[_type == "room" && property == $property && defined(slug.current)] | order(order asc, title asc) {  _id,  _type,  title,  "slug": slug.current,  property,  description,  details,  amenities,  facilities,  hero {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  gallery[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  order,  seo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}}
 export type RoomsByPropertyQueryResult = Array<{
   _id: string;
   _type: "room";
@@ -2059,6 +2765,8 @@ export type RoomsByPropertyQueryResult = Array<{
   seo: {
     title: string | null;
     description: string | null;
+    ogTitle: string | null;
+    ogDescription: string | null;
     image: {
       _type: "imageWithAlt";
       asset: SanityImageAssetReference | null;
@@ -2068,13 +2776,14 @@ export type RoomsByPropertyQueryResult = Array<{
       crop: SanityImageCrop | null;
       hotspot: SanityImageHotspot | null;
     } | null;
+    canonicalUrl: string | null;
     noIndex: boolean | null;
   } | null;
 }>;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: allExperiencesQuery
-// Query: *[_type == "experience" && defined(slug)] | order(group asc, title asc) {  _id,  _type,  title,  slug,  group,  eyebrow,  paragraphs,  recommendedFor,  note,  sections[]{    ...,    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  blocks,  programsHeading,  programs,  inclusions,  price,  highlightsHeading,  highlights[]{    ...,    icon {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  closingCta,  teamHeading,  team[]{    ...,    photo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  faqHeading,  faq,  hero {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  gallery[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  seo {  title,  description,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  noIndex}}
+// Query: *[_type == "experience" && defined(slug)] | order(group asc, title asc) {  _id,  _type,  title,  slug,  group,  eyebrow,  paragraphs,  recommendedFor,  note,  sections[]{    ...,    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  blocks,  programsHeading,  programs,  inclusions,  price,  highlightsHeading,  highlights[]{    ...,    icon {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  closingCta,  teamHeading,  team[]{    ...,    photo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  faqHeading,  faq,  hero {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  gallery[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  seo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}}
 export type AllExperiencesQueryResult = Array<{
   _id: string;
   _type: "experience";
@@ -2173,6 +2882,8 @@ export type AllExperiencesQueryResult = Array<{
   seo: {
     title: string | null;
     description: string | null;
+    ogTitle: string | null;
+    ogDescription: string | null;
     image: {
       _type: "imageWithAlt";
       asset: SanityImageAssetReference | null;
@@ -2182,13 +2893,14 @@ export type AllExperiencesQueryResult = Array<{
       crop: SanityImageCrop | null;
       hotspot: SanityImageHotspot | null;
     } | null;
+    canonicalUrl: string | null;
     noIndex: boolean | null;
   } | null;
 }>;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: experienceBySlugQuery
-// Query: *[_type == "experience" && slug == $slug][0] {  _id,  _type,  title,  slug,  group,  eyebrow,  paragraphs,  recommendedFor,  note,  sections[]{    ...,    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  blocks,  programsHeading,  programs,  inclusions,  price,  highlightsHeading,  highlights[]{    ...,    icon {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  closingCta,  teamHeading,  team[]{    ...,    photo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  faqHeading,  faq,  hero {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  gallery[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  seo {  title,  description,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  noIndex}}
+// Query: *[_type == "experience" && slug == $slug][0] {  _id,  _type,  title,  slug,  group,  eyebrow,  paragraphs,  recommendedFor,  note,  sections[]{    ...,    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  blocks,  programsHeading,  programs,  inclusions,  price,  highlightsHeading,  highlights[]{    ...,    icon {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  closingCta,  teamHeading,  team[]{    ...,    photo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  faqHeading,  faq,  hero {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  gallery[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  seo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}}
 export type ExperienceBySlugQueryResult = {
   _id: string;
   _type: "experience";
@@ -2287,6 +2999,8 @@ export type ExperienceBySlugQueryResult = {
   seo: {
     title: string | null;
     description: string | null;
+    ogTitle: string | null;
+    ogDescription: string | null;
     image: {
       _type: "imageWithAlt";
       asset: SanityImageAssetReference | null;
@@ -2296,13 +3010,14 @@ export type ExperienceBySlugQueryResult = {
       crop: SanityImageCrop | null;
       hotspot: SanityImageHotspot | null;
     } | null;
+    canonicalUrl: string | null;
     noIndex: boolean | null;
   } | null;
 } | null;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: allPackageSetsQuery
-// Query: *[_type == "packageSet" && defined(slug.current)]{    _id,    _type,    title,    "slug": slug.current,    property,    alwaysIncluded,    packages[]{      ...,      images[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}    }  }
+// Query: *[_type == "packageSet" && defined(slug.current)]{    _id,    _type,    title,    "slug": slug.current,    property,    alwaysIncluded,    packages[]{      ...,      images[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},      ctas[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},      "description": select(  description[0]._type == "block" => description[]{    ...,    markDefs[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )}  },  description)    }  }
 export type AllPackageSetsQueryResult = Array<{
   _id: string;
   _type: "packageSet";
@@ -2323,7 +3038,35 @@ export type AllPackageSetsQueryResult = Array<{
       crop: SanityImageCrop | null;
       hotspot: SanityImageHotspot | null;
     }> | null;
-    description?: string;
+    description:
+      | Array<{
+          children?: Array<{
+            marks?: Array<string>;
+            text?: string;
+            _type: "span";
+            _key: string;
+          }>;
+          style?: "normal";
+          listItem?: never;
+          markDefs: Array<{
+            linkType?: "custom" | "internal";
+            reference?:
+              | ExperienceReference
+              | LegalPageReference
+              | PageReference
+              | PostReference
+              | RoomReference;
+            href: string | null | "/privacy-policy" | "/terms-conditions";
+            blank?: boolean;
+            _type: "textLink";
+            _key: string;
+          }> | null;
+          level?: number;
+          _type: "block";
+          _key: string;
+        }>
+      | InlineRichText
+      | null;
     meta?: Array<
       {
         _key: string;
@@ -2332,11 +3075,22 @@ export type AllPackageSetsQueryResult = Array<{
     benefitsHeading?: string;
     benefits?: Array<string>;
     notes?: Array<string>;
-    ctas?: Array<
-      {
-        _key: string;
-      } & Link
-    >;
+    ctas: Array<{
+      _key: string;
+      _type: "link";
+      label?: string;
+      linkType?: "custom" | "internal";
+      reference?:
+        | ExperienceReference
+        | LegalPageReference
+        | PageReference
+        | PostReference
+        | RoomReference;
+      href: string | null | "/privacy-policy" | "/terms-conditions";
+      external?: boolean;
+      inScope?: boolean;
+      variant?: "outline" | "solid";
+    }> | null;
   }> | null;
 }>;
 
@@ -2354,7 +3108,7 @@ export type AllTestimonialsQueryResult = Array<{
 
 // Source: src/sanity/lib/queries.ts
 // Variable: legalPageByPathQuery
-// Query: *[_type == "legalPage" && path == $path][0]{    _id,    _type,    title,    path,    intro,    sections,    updatedAt,    seo {  title,  description,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  noIndex}  }
+// Query: *[_type == "legalPage" && path == $path][0]{    _id,    _type,    title,    path,    intro,    sections,    updatedAt,    seo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}  }
 export type LegalPageByPathQueryResult = {
   _id: string;
   _type: "legalPage";
@@ -2379,6 +3133,8 @@ export type LegalPageByPathQueryResult = {
   seo: {
     title: string | null;
     description: string | null;
+    ogTitle: string | null;
+    ogDescription: string | null;
     image: {
       _type: "imageWithAlt";
       asset: SanityImageAssetReference | null;
@@ -2388,13 +3144,14 @@ export type LegalPageByPathQueryResult = {
       crop: SanityImageCrop | null;
       hotspot: SanityImageHotspot | null;
     } | null;
+    canonicalUrl: string | null;
     noIndex: boolean | null;
   } | null;
 } | null;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: propertyBySlugQuery
-// Query: *[_type == "property" && slug == $slug][0]{    _id,    _type,    slug,    label,    logo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    navItems,    addressLines,    phones,    email,    maps,    facebook,    instagram,    instagramFeedUrl,    instagramApiUrl,    bookingHref,    bookingWidgetId,    offersHref,    blogPosts,    awardBadges[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    awardVariant  }
+// Query: *[_type == "property" && slug == $slug][0]{    _id,    _type,    slug,    label,    logo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    navItems,    addressLines,    phones,    email,    maps,    facebook,    instagram,    instagramFeedUrl,    instagramApiUrl,    spaInstagramApiUrl,    bookingHref,    bookingWidgetId,    offersHref,    blogPosts,    awardBadges[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    awardVariant  }
 export type PropertyBySlugQueryResult = {
   _id: string;
   _type: "property";
@@ -2432,6 +3189,7 @@ export type PropertyBySlugQueryResult = {
   instagram: string | null;
   instagramFeedUrl: string | null;
   instagramApiUrl: string | null;
+  spaInstagramApiUrl: string | null;
   bookingHref: string | null;
   bookingWidgetId: string | null;
   offersHref: string | null;
@@ -2455,7 +3213,7 @@ export type PropertyBySlugQueryResult = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: siteSettingsQuery
-// Query: *[_type == "siteSettings"][0]{    _id,    _type,    title,    description,    favicon {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    bookNowLabel,    footerNote,    legalLinks,    defaultSeo {  title,  description,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  noIndex}  }
+// Query: *[_type == "siteSettings"][0]{    _id,    _type,    title,    description,    favicon {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    bookNowLabel,    dealHeadline,    dealCode,    dealButtonLabel,    footerLogo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    footerBookingLabel,    footerMenuHeading,    footerMenuLinks[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},    footerBlogHeading,    footerNote,    legalLinks[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},    defaultSeo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}  }
 export type SiteSettingsQueryResult = {
   _id: string;
   _type: "siteSettings";
@@ -2471,15 +3229,59 @@ export type SiteSettingsQueryResult = {
     hotspot: SanityImageHotspot | null;
   } | null;
   bookNowLabel: string | null;
+  dealHeadline: string | null;
+  dealCode: string | null;
+  dealButtonLabel: string | null;
+  footerLogo: {
+    _type: "imageWithAlt";
+    asset: SanityImageAssetReference | null;
+    alt: string | null;
+    caption: string | null;
+    externalUrl: string | null;
+    crop: SanityImageCrop | null;
+    hotspot: SanityImageHotspot | null;
+  } | null;
+  footerBookingLabel: string | null;
+  footerMenuHeading: string | null;
+  footerMenuLinks: Array<{
+    _key: string;
+    _type: "link";
+    label?: string;
+    linkType?: "custom" | "internal";
+    reference?:
+      | ExperienceReference
+      | LegalPageReference
+      | PageReference
+      | PostReference
+      | RoomReference;
+    href: string | null | "/privacy-policy" | "/terms-conditions";
+    external?: boolean;
+    inScope?: boolean;
+    variant?: "outline" | "solid";
+  }> | null;
+  footerBlogHeading: string | null;
   footerNote: string | null;
-  legalLinks: Array<
-    {
-      _key: string;
-    } & Link
-  > | null;
+  legalLinks: Array<{
+    _key: string;
+    _type: "link";
+    label?: string;
+    linkType?: "custom" | "internal";
+    reference?:
+      | ExperienceReference
+      | LegalPageReference
+      | PageReference
+      | PostReference
+      | RoomReference;
+    href: string | null | "/privacy-policy" | "/terms-conditions";
+    external?: boolean;
+    inScope?: boolean;
+    variant?: "outline" | "solid";
+  }> | null;
   defaultSeo: {
     title: string | null;
     description: string | null;
+    ogTitle: string | null;
+    ogDescription: string | null;
     image: {
       _type: "imageWithAlt";
       asset: SanityImageAssetReference | null;
@@ -2489,6 +3291,7 @@ export type SiteSettingsQueryResult = {
       crop: SanityImageCrop | null;
       hotspot: SanityImageHotspot | null;
     } | null;
+    canonicalUrl: string | null;
     noIndex: boolean | null;
   } | null;
 } | null;
@@ -2496,21 +3299,21 @@ export type SiteSettingsQueryResult = {
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '\n  *[_type == "page" && path == $path][0]{\n    _id,\n    _type,\n    title,\n    path,\n    property,\n    seo {\n  title,\n  description,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  noIndex\n},\n    sections[] {\n  ...,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  badges[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  items[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  packages[]{\n    ...,\n    images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  categories[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  packageSet->{\n    _id,\n    title,\n    alwaysIncluded,\n    packages[]{\n      ...,\n      images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n    }\n  }\n}\n  }\n': PageByPathQueryResult;
+    '\n  *[_type == "page" && path == $path][0]{\n    _id,\n    _type,\n    title,\n    path,\n    property,\n    seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n},\n    sections[] {\n  ...,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  badges[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  items[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  packages[]{\n    ...,\n    images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    ctas[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n    "description": select(\n  description[0]._type == "block" => description[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n}\n  },\n  description\n)\n  },\n  categories[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  action {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n  actions[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n  cta {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n  "body": select(\n  body[0]._type == "block" => body[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n}\n  },\n  body\n),\n  "intro": select(\n  intro[0]._type == "block" => intro[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n}\n  },\n  intro\n),\n  packageSet->{\n    _id,\n    title,\n    alwaysIncluded,\n    packages[]{\n      ...,\n      images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n      ctas[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n      "description": select(\n  description[0]._type == "block" => description[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n}\n  },\n  description\n)\n    }\n  }\n}\n  }\n': PageByPathQueryResult;
     '\n  *[_type == "page" && defined(path)].path\n': AllPagePathsQueryResult;
-    '\n  *[_type == "post" && path == $path][0] {\n  _id,\n  _type,\n  title,\n  path,\n  property,\n  date,\n  order,\n  excerpt,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  "categories": categories[]->{_id, title, "slug": slug.current},\n  blocks[] {\n  ...,\n  _type == "articleImage" => {\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  _type == "articlePoints" => {\n    items[]{\n      ...,\n      body[]{\n        ...,\n        image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n      }\n    }\n  }\n},\n  seo {\n  title,\n  description,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  noIndex\n}\n}\n': PostByPathQueryResult;
-    '\n  *[_type == "post" && defined(path)] | order(date desc, order asc) {\n  _id,\n  _type,\n  title,\n  path,\n  property,\n  date,\n  order,\n  excerpt,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  "categories": categories[]->{_id, title, "slug": slug.current},\n  blocks[] {\n  ...,\n  _type == "articleImage" => {\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  _type == "articlePoints" => {\n    items[]{\n      ...,\n      body[]{\n        ...,\n        image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n      }\n    }\n  }\n},\n  seo {\n  title,\n  description,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  noIndex\n}\n}\n': AllPostsQueryResult;
-    '\n  *[_type == "post" && property == $property && defined(path)] | order(date desc, order asc) {\n  _id,\n  _type,\n  title,\n  path,\n  property,\n  date,\n  order,\n  excerpt,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  "categories": categories[]->{_id, title, "slug": slug.current},\n  blocks[] {\n  ...,\n  _type == "articleImage" => {\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  _type == "articlePoints" => {\n    items[]{\n      ...,\n      body[]{\n        ...,\n        image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n      }\n    }\n  }\n},\n  seo {\n  title,\n  description,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  noIndex\n}\n}\n': PostsByPropertyQueryResult;
+    '\n  *[_type == "post" && path == $path][0] {\n  _id,\n  _type,\n  title,\n  path,\n  property,\n  date,\n  order,\n  excerpt,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  "categories": categories[]->{_id, title, "slug": slug.current},\n  blocks[] {\n  ...,\n  _type == "articleImage" => {\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  _type == "articlePoints" => {\n    items[]{\n      ...,\n      body[]{\n        ...,\n        image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n      }\n    }\n  }\n},\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': PostByPathQueryResult;
+    '\n  *[_type == "post" && defined(path)] | order(date desc, order asc) {\n  _id,\n  _type,\n  title,\n  path,\n  property,\n  date,\n  order,\n  excerpt,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  "categories": categories[]->{_id, title, "slug": slug.current},\n  blocks[] {\n  ...,\n  _type == "articleImage" => {\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  _type == "articlePoints" => {\n    items[]{\n      ...,\n      body[]{\n        ...,\n        image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n      }\n    }\n  }\n},\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': AllPostsQueryResult;
+    '\n  *[_type == "post" && property == $property && defined(path)] | order(date desc, order asc) {\n  _id,\n  _type,\n  title,\n  path,\n  property,\n  date,\n  order,\n  excerpt,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  "categories": categories[]->{_id, title, "slug": slug.current},\n  blocks[] {\n  ...,\n  _type == "articleImage" => {\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  _type == "articlePoints" => {\n    items[]{\n      ...,\n      body[]{\n        ...,\n        image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n      }\n    }\n  }\n},\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': PostsByPropertyQueryResult;
     '\n  *[_type == "post" && defined(path)].path\n': AllPostPathsQueryResult;
-    '\n  *[_type == "room" && defined(slug.current)] | order(property asc, order asc, title asc) {\n  _id,\n  _type,\n  title,\n  "slug": slug.current,\n  property,\n  description,\n  details,\n  amenities,\n  facilities,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  order,\n  seo {\n  title,\n  description,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  noIndex\n}\n}\n': AllRoomsQueryResult;
-    '\n  *[_type == "room" && property == $property && defined(slug.current)] | order(order asc, title asc) {\n  _id,\n  _type,\n  title,\n  "slug": slug.current,\n  property,\n  description,\n  details,\n  amenities,\n  facilities,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  order,\n  seo {\n  title,\n  description,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  noIndex\n}\n}\n': RoomsByPropertyQueryResult;
-    '\n  *[_type == "experience" && defined(slug)] | order(group asc, title asc) {\n  _id,\n  _type,\n  title,\n  slug,\n  group,\n  eyebrow,\n  paragraphs,\n  recommendedFor,\n  note,\n  sections[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  blocks,\n  programsHeading,\n  programs,\n  inclusions,\n  price,\n  highlightsHeading,\n  highlights[]{\n    ...,\n    icon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  closingCta,\n  teamHeading,\n  team[]{\n    ...,\n    photo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  faqHeading,\n  faq,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  seo {\n  title,\n  description,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  noIndex\n}\n}\n': AllExperiencesQueryResult;
-    '\n  *[_type == "experience" && slug == $slug][0] {\n  _id,\n  _type,\n  title,\n  slug,\n  group,\n  eyebrow,\n  paragraphs,\n  recommendedFor,\n  note,\n  sections[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  blocks,\n  programsHeading,\n  programs,\n  inclusions,\n  price,\n  highlightsHeading,\n  highlights[]{\n    ...,\n    icon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  closingCta,\n  teamHeading,\n  team[]{\n    ...,\n    photo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  faqHeading,\n  faq,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  seo {\n  title,\n  description,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  noIndex\n}\n}\n': ExperienceBySlugQueryResult;
-    '\n  *[_type == "packageSet" && defined(slug.current)]{\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    property,\n    alwaysIncluded,\n    packages[]{\n      ...,\n      images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n    }\n  }\n': AllPackageSetsQueryResult;
+    '\n  *[_type == "room" && defined(slug.current)] | order(property asc, order asc, title asc) {\n  _id,\n  _type,\n  title,\n  "slug": slug.current,\n  property,\n  description,\n  details,\n  amenities,\n  facilities,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  order,\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': AllRoomsQueryResult;
+    '\n  *[_type == "room" && property == $property && defined(slug.current)] | order(order asc, title asc) {\n  _id,\n  _type,\n  title,\n  "slug": slug.current,\n  property,\n  description,\n  details,\n  amenities,\n  facilities,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  order,\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': RoomsByPropertyQueryResult;
+    '\n  *[_type == "experience" && defined(slug)] | order(group asc, title asc) {\n  _id,\n  _type,\n  title,\n  slug,\n  group,\n  eyebrow,\n  paragraphs,\n  recommendedFor,\n  note,\n  sections[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  blocks,\n  programsHeading,\n  programs,\n  inclusions,\n  price,\n  highlightsHeading,\n  highlights[]{\n    ...,\n    icon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  closingCta,\n  teamHeading,\n  team[]{\n    ...,\n    photo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  faqHeading,\n  faq,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': AllExperiencesQueryResult;
+    '\n  *[_type == "experience" && slug == $slug][0] {\n  _id,\n  _type,\n  title,\n  slug,\n  group,\n  eyebrow,\n  paragraphs,\n  recommendedFor,\n  note,\n  sections[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  blocks,\n  programsHeading,\n  programs,\n  inclusions,\n  price,\n  highlightsHeading,\n  highlights[]{\n    ...,\n    icon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  closingCta,\n  teamHeading,\n  team[]{\n    ...,\n    photo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  faqHeading,\n  faq,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': ExperienceBySlugQueryResult;
+    '\n  *[_type == "packageSet" && defined(slug.current)]{\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    property,\n    alwaysIncluded,\n    packages[]{\n      ...,\n      images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n      ctas[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n      "description": select(\n  description[0]._type == "block" => description[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n}\n  },\n  description\n)\n    }\n  }\n': AllPackageSetsQueryResult;
     '\n  *[_type == "testimonial"] | order(order asc){\n    _id,\n    _type,\n    quote,\n    author,\n    property,\n    order\n  }\n': AllTestimonialsQueryResult;
-    '\n  *[_type == "legalPage" && path == $path][0]{\n    _id,\n    _type,\n    title,\n    path,\n    intro,\n    sections,\n    updatedAt,\n    seo {\n  title,\n  description,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  noIndex\n}\n  }\n': LegalPageByPathQueryResult;
-    '\n  *[_type == "property" && slug == $slug][0]{\n    _id,\n    _type,\n    slug,\n    label,\n    logo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    navItems,\n    addressLines,\n    phones,\n    email,\n    maps,\n    facebook,\n    instagram,\n    instagramFeedUrl,\n    instagramApiUrl,\n    bookingHref,\n    bookingWidgetId,\n    offersHref,\n    blogPosts,\n    awardBadges[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    awardVariant\n  }\n': PropertyBySlugQueryResult;
-    '\n  *[_type == "siteSettings"][0]{\n    _id,\n    _type,\n    title,\n    description,\n    favicon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    bookNowLabel,\n    footerNote,\n    legalLinks,\n    defaultSeo {\n  title,\n  description,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  noIndex\n}\n  }\n': SiteSettingsQueryResult;
+    '\n  *[_type == "legalPage" && path == $path][0]{\n    _id,\n    _type,\n    title,\n    path,\n    intro,\n    sections,\n    updatedAt,\n    seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n': LegalPageByPathQueryResult;
+    '\n  *[_type == "property" && slug == $slug][0]{\n    _id,\n    _type,\n    slug,\n    label,\n    logo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    navItems,\n    addressLines,\n    phones,\n    email,\n    maps,\n    facebook,\n    instagram,\n    instagramFeedUrl,\n    instagramApiUrl,\n    spaInstagramApiUrl,\n    bookingHref,\n    bookingWidgetId,\n    offersHref,\n    blogPosts,\n    awardBadges[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    awardVariant\n  }\n': PropertyBySlugQueryResult;
+    '\n  *[_type == "siteSettings"][0]{\n    _id,\n    _type,\n    title,\n    description,\n    favicon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    bookNowLabel,\n    dealHeadline,\n    dealCode,\n    dealButtonLabel,\n    footerLogo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    footerBookingLabel,\n    footerMenuHeading,\n    footerMenuLinks[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n    footerBlogHeading,\n    footerNote,\n    legalLinks[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n    defaultSeo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n': SiteSettingsQueryResult;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

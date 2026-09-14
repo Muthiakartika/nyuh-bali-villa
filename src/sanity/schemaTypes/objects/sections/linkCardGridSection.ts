@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { eyebrowField, sectionSettingsFields, toneField } from "./shared";
+import { eyebrowField, headingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 /** The photo-card grids that route visitors deeper into a property. */
 export const linkCardGridSection = defineType({
@@ -26,15 +26,23 @@ export const linkCardGridSection = defineType({
           fields: [
             defineField({
               name: "label",
-              title: "Label",
+              title: "Card label",
               type: "string",
-              validation: (Rule) => Rule.required(),
+              description: "The word set over the photograph. One or two words.",
+              validation: (Rule) => Rule.required().max(40),
             }),
             defineField({
               name: "href",
               title: "Destination",
               type: "string",
-              validation: (Rule) => Rule.required(),
+              description: "A path on this site such as /ubud/spa, or a complete https:// address.",
+              validation: (Rule) =>
+                Rule.required().custom((value) => {
+                  if (!value) return true;
+                  if (value.startsWith("/") || value.startsWith("#")) return true;
+                  if (/^(https?:\/\/|mailto:|tel:)/.test(value)) return true;
+                  return "Use a site path beginning with / or a complete http(s) address.";
+                }),
             }),
             defineField({
               name: "image",
@@ -71,6 +79,7 @@ export const linkCardGridSection = defineType({
       validation: (Rule) => Rule.required(),
     }),
     toneField,
+    headingLevelField,
     ...sectionSettingsFields,
   ],
   preview: {

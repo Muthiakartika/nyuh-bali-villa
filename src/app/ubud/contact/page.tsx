@@ -38,9 +38,10 @@ export default async function UbudContactPage() {
             this path and its sections take over. */}
         <ManagedPage path="/ubud/contact" fallbackProperty="ubud">
           <ContactPanel
+            property="ubud"
             eyebrow={site.label}
             heading="Contact Us"
-            imageSrc="https://nyuhbalivillas.com/wp-content/uploads/2023/03/contact-us-ubud.webp"
+            imageSrc="/uploads/2023/03/contact-us-ubud.webp"
             imageAlt="Nyuh Bali Villas Ubud"
             intro={"Please complete this form to reach us. Our team will get back to you within 24 hours."}
           />

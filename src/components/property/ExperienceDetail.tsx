@@ -423,7 +423,11 @@ export function ExperienceDetailBody({
 
       {hasInquiry ? (
         <Section tone={nextTone()} id={INQUIRY_ANCHOR}>
-          <InquiryForm heading="Inquiry" fields={RETREAT_INQUIRY_FIELDS} />
+          <InquiryForm
+            property={site.slug}
+            heading="Inquiry"
+            fields={RETREAT_INQUIRY_FIELDS}
+          />
         </Section>
       ) : null}
     </>

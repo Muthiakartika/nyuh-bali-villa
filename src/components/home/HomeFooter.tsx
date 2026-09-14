@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PROPERTIES } from "@/data/properties";
 import { Container } from "@/components/ui/Container";
+import { getSiteSettings } from "@/sanity/lib/content";
 
 /**
  * The homepage's closing line: copyright left, the same two property links
@@ -16,14 +17,19 @@ import { Container } from "@/components/ui/Container";
  * menus on one screen is not a feature, so the footer's was removed and this
  * became a plain Server Component with no JavaScript at all.
  */
-export function HomeFooter() {
+export async function HomeFooter() {
+  // The one line of copy this footer owns. It reads the same Site settings
+  // field the property footer's copyright uses, so the two cannot disagree —
+  // they were two separate literals before, in two files.
+  const settings = await getSiteSettings();
+  const note = settings?.title || "Nyuh Bali Villas";
   return (
     // Shallow `py` on purpose: the nav links carry their own `py-2` for tap
     // size, so the bar's padding was double-counting it and eating into the
     // clearance PropertyPanel's `pb-28` reserves for this footer.
     <footer className="absolute inset-x-0 bottom-0 z-[150] px-5 py-3 sm:px-8 md:py-5">
       <Container className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-[13px] text-white/60">Copyright © Nyuh Bali Villas</p>
+        <p className="text-[13px] text-white/60">Copyright © {note}</p>
 
         <nav>
           <ul className="flex gap-7">

@@ -135,14 +135,14 @@ export type PropertySite = {
   };
 };
 
-const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
+const UPLOADS = "/uploads";
 
 export const PROPERTY_SITES: Record<"seminyak" | "ubud", PropertySite> = {
   seminyak: {
     slug: "seminyak",
     label: "Seminyak",
     logoSrc:
-      "https://nyuhbalivillas.com/wp-content/uploads/2023/04/logonyuhbaliseminyak.webp",
+      "/uploads/2023/04/logonyuhbaliseminyak.webp",
     navItems: [
       // Every Seminyak nav destination is now built in this project, so the
       // whole menu is in scope. The hrefs mirror the WordPress paths exactly
@@ -208,7 +208,7 @@ export const PROPERTY_SITES: Record<"seminyak" | "ubud", PropertySite> = {
     slug: "ubud",
     label: "Ubud",
     logoSrc:
-      "https://nyuhbalivillas.com/wp-content/uploads/2023/04/logonyuhbaliubud.webp",
+      "/uploads/2023/04/logonyuhbaliubud.webp",
     // Note: unlike Seminyak, the live Ubud nav has no "Contact" item at
     // all — Contact – Ubud is only reachable from the footer. That
     // asymmetry is intentional and preserved here, not a mistake.

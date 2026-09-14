@@ -7,6 +7,7 @@ import {
   sanityApiVersion,
   sanityDataset,
 } from "@/sanity/env";
+import { localizeUploads } from "@/sanity/lib/uploads";
 
 export const client = createClient({
   projectId: resolvedSanityProjectId,
@@ -45,16 +46,21 @@ export type SanityFetchOptions = {
   revalidate?: number | false;
 };
 
-function fetchPublished<TResult>(
+async function fetchPublished<TResult>(
   query: string,
   options: SanityFetchOptions,
 ): Promise<TResult> {
-  return publishedClient.fetch<TResult>(query, options.params ?? {}, {
-    next: {
-      tags: options.tags ?? ["sanity"],
-      revalidate: options.revalidate ?? 60,
+  const result = await publishedClient.fetch<TResult>(
+    query,
+    options.params ?? {},
+    {
+      next: {
+        tags: options.tags ?? ["sanity"],
+        revalidate: options.revalidate ?? 60,
+      },
     },
-  });
+  );
+  return localizeUploads(result);
 }
 
 /**
@@ -88,7 +94,10 @@ export async function sanityFetch<TResult>(
     if (isEmpty) {
       return await fetchPublished<TResult>(query, options);
     }
-    return result.data as TResult;
+    // Every document this app reads passes through here or through
+    // fetchPublished above, which is what makes one rewrite enough — see the
+    // note in ./uploads.ts.
+    return localizeUploads(result.data as TResult);
   } catch (error) {
     // Live Content can be unavailable outside request scope (for example in
     // generateStaticParams), or fail independently from Sanity's published

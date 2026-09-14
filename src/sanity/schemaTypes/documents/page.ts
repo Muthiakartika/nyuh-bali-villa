@@ -18,6 +18,39 @@ async function isUniquePath(
   return duplicate ? "Another page already uses this website path." : true;
 }
 
+
+/**
+ * Exactly one `<h1>` per page, checked where the rule actually holds.
+ *
+ * Three section types can produce one: a hero always does, the property
+ * picker's first panel does, and the contact body and the enquiry form do
+ * when their heading level says so. Every other section is capped at H2 by
+ * `headingLevelField`, so this is the whole of the rule.
+ *
+ * It is a **warning, not an error**, for one reason: it must not be able to
+ * block an editor from saving a page that is mid-edit — a hero deleted before
+ * its replacement is added would otherwise lock the document. The message
+ * names which sections are competing, which is the part that is hard to work
+ * out by reading the page.
+ */
+function countPageTitles(sections: unknown): true | string {
+  if (!Array.isArray(sections)) return true;
+  const titles = sections.filter((section) => {
+    const s = section as { _type?: string; headingLevel?: string; isHidden?: boolean };
+    if (s?.isHidden) return false;
+    if (s?._type === "heroSection" || s?._type === "propertyPickerSection") return true;
+    if (s?._type === "contactSection") return (s.headingLevel ?? "h1") === "h1";
+    if (s?._type === "inquiryFormSection") return s.headingLevel === "h1";
+    return false;
+  });
+  if (titles.length === 1) return true;
+  const names = titles.map((section) => (section as { _type?: string })._type).join(", ");
+  if (titles.length === 0) {
+    return "This page has no main heading. Add a hero, or set the contact or enquiry section's heading level to H1.";
+  }
+  return `This page has ${titles.length} main headings (${names}). Search engines expect exactly one — lower all but one to H2.`;
+}
+
 const sectionMembers = [
   "heroSection",
   "propertyPickerSection",
@@ -98,7 +131,13 @@ export const page = defineType({
       type: "array",
       group: "content",
       of: sectionMembers,
-      validation: (Rule) => Rule.required().min(1),
+      // Two rules, not one chain: `.warning()` applies to everything before
+      // it, so chaining the heading check onto `.required()` would have
+      // downgraded "a page needs at least one section" to a warning too.
+      validation: (Rule) => [
+        Rule.required().min(1),
+        Rule.warning().custom(countPageTitles),
+      ],
       options: { insertMenu: { views: [{ name: "grid" }, { name: "list" }] } },
     }),
     defineField({ name: "seo", title: "Search and social", type: "seo", group: "seo" }),

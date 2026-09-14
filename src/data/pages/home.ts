@@ -31,7 +31,7 @@ export const HOME_PANELS: HomePanel[] = [
     description:
       "Experience romantic ambiance in our  Seminyak honeymoon villa that ready to pamper you and your loved one. Enjoy the personalized service from our team and signature Nyuh amenities for your memorable honeymoon.",
     imageSrc:
-      "https://nyuhbalivillas.com/wp-content/uploads/2023/03/home-seminyak.webp",
+      "/uploads/2023/03/home-seminyak.webp",
     href: "/seminyak",
   },
   {
@@ -39,7 +39,7 @@ export const HOME_PANELS: HomePanel[] = [
     description:
       "A sanctuary for relaxation and wellness, our Ubud resort is an ideal journey to recharge your body and mind. We invite you to experience our luxury retreat in Ubud to find tranquility, balance, and inner peace.",
     imageSrc:
-      "https://nyuhbalivillas.com/wp-content/uploads/2025/01/home-ubud-compress.webp",
+      "/uploads/2025/01/home-ubud-compress.webp",
     href: "/ubud",
   },
 ];

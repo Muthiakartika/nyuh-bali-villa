@@ -7,7 +7,7 @@
 
 import type { Room } from "@/components/property/RoomList";
 
-export const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
+export const UPLOADS = "/uploads";
 
 // Photographs verified against this route on the live site, 2026-09-04.
 // The live header's three slides are the lead photographs of three rooms in

@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { sectionSettingsFields, toneField } from "./shared";
+import { pageHeadingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 /** Mirrors the `InquiryField` union in InquiryForm.tsx. */
 const fieldKinds = [
@@ -94,6 +94,7 @@ export const inquiryFormSection = defineType({
       rows: 2,
       description: "Shown in place of the form once it has been sent.",
     }),
+    pageHeadingLevelField("h2"),
     toneField,
     ...sectionSettingsFields,
   ],

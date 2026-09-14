@@ -16,10 +16,53 @@ export const structure: StructureResolver = (S) =>
   S.list()
     .title("Content")
     .items([
+      // Pages, split the way an editor thinks about them. A flat list of 31
+      // is where the four in-room directory pages went missing in the first
+      // place — they are the pages nothing on the site links to, so an
+      // alphabetical list is the only way anyone finds them.
       S.listItem()
         .title("Pages")
         .schemaType("page")
-        .child(S.documentTypeList("page").title("Pages")),
+        .child(
+          S.list()
+            .title("Pages")
+            .items([
+              S.listItem()
+                .title("All pages")
+                .child(S.documentTypeList("page").title("All pages")),
+              S.divider(),
+              S.listItem()
+                .title("Seminyak")
+                .child(
+                  S.documentTypeList("page")
+                    .title("Seminyak pages")
+                    .filter('_type == "page" && property == "seminyak"')
+                    .apiVersion(STRUCTURE_API_VERSION),
+                ),
+              S.listItem()
+                .title("Ubud")
+                .child(
+                  S.documentTypeList("page")
+                    .title("Ubud pages")
+                    .filter('_type == "page" && property == "ubud"')
+                    .apiVersion(STRUCTURE_API_VERSION),
+                ),
+              S.divider(),
+              // The four QR-code pages and the homepage: everything a visitor
+              // cannot reach from the navigation, listed together so it is
+              // not discovered by accident.
+              S.listItem()
+                .title("Unlisted pages")
+                .child(
+                  S.documentTypeList("page")
+                    .title("Unlisted pages")
+                    .filter(
+                      '_type == "page" && path in ["/", "/seminyak-directory", "/ubud-directory", "/suite-directory", "/welcomeaboard"]',
+                    )
+                    .apiVersion(STRUCTURE_API_VERSION),
+                ),
+            ]),
+        ),
       S.divider(),
       S.listItem()
         .title("Blog posts")

@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { eyebrowField, sectionSettingsFields, toneField } from "./shared";
+import { eyebrowField, headingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 /** The About narrative band — prose beside a photograph. */
 export const splitContentSection = defineType({
@@ -44,6 +44,7 @@ export const splitContentSection = defineType({
     }),
     defineField({ name: "action", title: "Action", type: "link" }),
     toneField,
+    headingLevelField,
     ...sectionSettingsFields,
   ],
   preview: {

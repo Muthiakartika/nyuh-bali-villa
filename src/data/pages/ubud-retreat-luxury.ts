@@ -7,7 +7,7 @@
 
 import type { PackageItem } from "@/components/property/PackageList";
 
-export const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
+export const UPLOADS = "/uploads";
 
 export const RETREAT_BASE = "/ubud/retreat";
 

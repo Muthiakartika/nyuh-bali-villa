@@ -1,5 +1,5 @@
 import { defineField, defineType } from "sanity";
-import { eyebrowField, sectionSettingsFields, toneField } from "./shared";
+import { eyebrowField, headingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 export const richTextSection = defineType({
   name: "richTextSection",
@@ -15,6 +15,7 @@ export const richTextSection = defineType({
       validation: (Rule) => Rule.required(),
     }),
     toneField,
+    headingLevelField,
     ...sectionSettingsFields,
   ],
   preview: {

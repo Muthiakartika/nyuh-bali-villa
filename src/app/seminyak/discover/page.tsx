@@ -31,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata("/seminyak/discover");
 }
 
-const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
+const UPLOADS = "/uploads";
 
 export default async function SeminyakBlogPage() {
   const site = await getPropertySite("seminyak");

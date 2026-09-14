@@ -42,6 +42,7 @@ export default async function DynamicCollectionSection({
       <RoomList
         eyebrow={section.eyebrow}
         heading={section.heading ?? ""}
+        headingAs={section.headingLevel}
         intro={section.intro}
         tone={section.tone}
         rooms={rooms.map((room) => ({
@@ -65,6 +66,7 @@ export default async function DynamicCollectionSection({
       <PostGrid
         eyebrow={section.eyebrow}
         heading={section.heading ?? "Our Blog"}
+        headingAs={section.headingLevel}
         posts={posts}
         tone={section.tone}
       />
@@ -91,6 +93,7 @@ export default async function DynamicCollectionSection({
       <LinkCardGrid
         eyebrow={section.eyebrow}
         heading={section.heading ?? ""}
+        headingAs={section.headingLevel}
         items={items}
         columns={3}
         tone={section.tone}

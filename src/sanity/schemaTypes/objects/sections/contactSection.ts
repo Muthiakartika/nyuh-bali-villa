@@ -1,5 +1,5 @@
 import { defineField, defineType } from "sanity";
-import { eyebrowField, sectionSettingsFields } from "./shared";
+import { eyebrowField, pageHeadingLevelField, sectionSettingsFields } from "./shared";
 
 /**
  * The contact page's body — heading, photograph, and the enquiry form.
@@ -36,6 +36,7 @@ export const contactSection = defineType({
       type: "imageWithAlt",
       validation: (Rule) => Rule.required(),
     }),
+    pageHeadingLevelField("h1"),
     ...sectionSettingsFields,
   ],
   preview: {

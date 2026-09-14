@@ -77,9 +77,9 @@ function renderSection(section: SanitySection, site: PropertySite) {
     case "contactSection":
       return <ContactBlock section={section} site={site} />;
     case "inquiryFormSection":
-      return <InquiryFormBlock section={section} />;
+      return <InquiryFormBlock section={section} site={site} />;
     case "awardsSection":
-      return <AwardsBlock section={section} />;
+      return <AwardsBlock section={section} site={site} />;
     case "dealsSection":
       return <DealsBlock section={section} site={site} />;
     case "instagramSection":

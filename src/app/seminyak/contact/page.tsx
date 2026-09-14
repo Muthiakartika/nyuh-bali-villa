@@ -34,9 +34,10 @@ export default async function SeminyakContactPage() {
             this path and its sections take over. */}
         <ManagedPage path="/seminyak/contact" fallbackProperty="seminyak">
           <ContactPanel
+            property="seminyak"
             eyebrow={site.label}
             heading="Contact Us"
-            imageSrc="https://nyuhbalivillas.com/wp-content/uploads/2023/03/Contact-us-seminyak.webp"
+            imageSrc="/uploads/2023/03/Contact-us-seminyak.webp"
             imageAlt="Nyuh Bali Villas Seminyak"
           />
         </ManagedPage>

@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { sectionSettingsFields, toneField } from "./shared";
+import { headingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 /** The "Available Programs" accordion — length-of-stay tiers. */
 export const programListSection = defineType({
@@ -22,6 +22,7 @@ export const programListSection = defineType({
       validation: (Rule) => Rule.required().min(1),
     }),
     toneField,
+    headingLevelField,
     ...sectionSettingsFields,
   ],
   preview: {

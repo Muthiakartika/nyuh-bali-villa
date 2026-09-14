@@ -33,7 +33,7 @@ import { faqItem } from "./objects/faqItem";
 import { imageWithAlt } from "./objects/imageWithAlt";
 import { link } from "./objects/link";
 import { packageItem, packageMeta } from "./objects/packageItem";
-import { portableText } from "./objects/portableText";
+import { inlineRichText, portableText } from "./objects/portableText";
 import { priceRow, priceTable } from "./objects/priceTable";
 import { seo } from "./objects/seo";
 import {
@@ -77,6 +77,7 @@ export const schemaTypes = [
   imageWithAlt,
   link,
   portableText,
+  inlineRichText,
   seo,
   faqItem,
   bulletGroup,

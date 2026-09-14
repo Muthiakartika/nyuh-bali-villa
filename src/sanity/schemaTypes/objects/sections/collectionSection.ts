@@ -1,5 +1,5 @@
 import { defineField, defineType } from "sanity";
-import { eyebrowField, sectionSettingsFields, toneField } from "./shared";
+import { eyebrowField, headingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 /**
  * A section that lists documents rather than restating them — rooms, blog
@@ -96,6 +96,7 @@ export const collectionSection = defineType({
     }),
     defineField({ name: "action", title: "Closing action", type: "link" }),
     toneField,
+    headingLevelField,
     ...sectionSettingsFields,
   ],
   preview: {

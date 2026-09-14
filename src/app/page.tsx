@@ -3,6 +3,7 @@ import { HomeHeader } from "@/components/home/HomeHeader";
 import { HomeFooter } from "@/components/home/HomeFooter";
 import { PropertyPanel } from "@/components/home/PropertyPanel";
 import { BookNowRibbon } from "@/components/layout/BookNowRibbon";
+import { getBookNowLabel } from "@/sanity/lib/content";
 import ManagedPage from "@/components/sanity/ManagedPage";
 import { resolvePageMetadata } from "@/sanity/lib/metadata";
 import { HOME_PANELS } from "@/data/pages/home";
@@ -67,7 +68,7 @@ export default async function Home() {
       </main>
 
       <HomeFooter />
-      <BookNowRibbon href={GROUP_BOOKING_HREF} />
+      <BookNowRibbon href={GROUP_BOOKING_HREF} label={await getBookNowLabel()} />
     </div>
   );
 }

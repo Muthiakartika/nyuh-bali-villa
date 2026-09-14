@@ -5,7 +5,7 @@
 //   src/app/ubud/[...experience]/page.tsx
 //   src/components/property/ExperienceDetail.tsx
 
-const U = "https://nyuhbalivillas.com/wp-content/uploads/";
+const U = "/uploads/";
 
 /** A titled run of bullets. One of these is a block inside a programme tier
  * ("Retreat Exclusive", "Complimentary"), or a stand-alone list like the

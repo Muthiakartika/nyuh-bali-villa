@@ -1,11 +1,14 @@
 import { Fragment } from "react";
 import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 
 type ProseBandProps = {
   eyebrow?: string;
   heading: string;
+  /** Which tag this band's heading is written as. The size never changes —
+   * see HeadingLevel. Editors set it per section in the CMS. */
+  headingAs?: HeadingLevel;
   /** One entry per paragraph. A paragraph may contain the token `{email}`,
    * which is replaced by a mailto link to `email` below. */
   paragraphs: string[];
@@ -36,6 +39,7 @@ type ProseBandProps = {
 export function ProseBand({
   eyebrow,
   heading,
+  headingAs = "h2",
   paragraphs,
   email,
   tone = "sand",
@@ -43,7 +47,7 @@ export function ProseBand({
 }: ProseBandProps) {
   return (
     <Section tone={tone} id={anchor}>
-      <SectionHeading eyebrow={eyebrow} title={heading} />
+      <SectionHeading eyebrow={eyebrow} title={heading} as={headingAs} />
       <Reveal delay={80}>
         <div className="mt-8 flex max-w-[62rem] flex-col gap-4">
           {paragraphs.map((paragraph, index) => (

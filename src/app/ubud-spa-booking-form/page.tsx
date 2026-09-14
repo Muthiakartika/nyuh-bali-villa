@@ -20,14 +20,16 @@ import type { Metadata } from "next";
 import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
 import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
-import {
-  InquiryForm,
-} from "@/components/property/InquiryForm";
+import { InquiryForm } from "@/components/property/InquiryForm";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { Section } from "@/components/ui/Section";
-import { SPA_RESERVATION_FIELDS } from "@/data/spa-reservations";
+import {
+  SPA_RESERVATION_COPY,
+  SPA_RESERVATION_FIELDS,
+} from "@/data/spa-reservations";
 import { getPropertySite } from "@/sanity/lib/content";
 import { resolvePageMetadata } from "@/sanity/lib/metadata";
+import ManagedPage from "@/components/sanity/ManagedPage";
 
 export async function generateMetadata(): Promise<Metadata> {
   // A published `page` document's SEO wins; otherwise this stays
@@ -35,10 +37,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return resolvePageMetadata("/ubud-spa-booking-form");
 }
 
-
-
 // Full treatment choices, rates, booking times, and agreement from this form.
 const FIELDS = SPA_RESERVATION_FIELDS["ubud-spa-booking-form"];
+const COPY = SPA_RESERVATION_COPY["ubud-spa-booking-form"];
 
 export default async function UbudSpaBookingFormPage() {
   const site = await getPropertySite("ubud");
@@ -46,19 +47,24 @@ export default async function UbudSpaBookingFormPage() {
     <>
       <PropertyHeader site={site} activeHref="/ubud/spa" />
       <main>
+        <ManagedPage path="/ubud-spa-booking-form" fallbackProperty="ubud">
+          <Section tone="sand" width="narrow">
+            <InquiryForm
+              property="ubud"
+              // The only heading on this page, so it is the page title.
+              headingAs="h1"
+              heading={COPY.heading}
+              fields={FIELDS}
+              submitLabel={COPY.submitLabel}
+              confirmation={COPY.confirmation}
+            />
+          </Section>
 
-        <Section tone="sand" width="narrow">
-          <InquiryForm
-            // The only heading on this page, so it is the page title.
-            headingAs="h1"
-            heading="Spa Booking"
-            fields={FIELDS}
-            submitLabel="Send"
-            confirmation="Thank you — we have received your spa booking request and will confirm it by email shortly."
+          <AwardsRow
+            variant={site.awards.variant}
+            badges={site.awards.badges}
           />
-        </Section>
-
-        <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
+        </ManagedPage>
       </main>
       <PropertyFooter site={site} />
       <DirectBookingDeals bookingHref={site.bookingHref} />

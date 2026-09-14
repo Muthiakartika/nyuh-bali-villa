@@ -29,6 +29,7 @@ import type { PropertySite } from "@/data/properties";
 import type { InquiryField } from "@/components/property/InquiryForm";
 import type { PackageItem } from "@/components/property/PackageList";
 import { resolveImageUrl, resolveImageUrls } from "@/sanity/lib/image";
+import { toRuns } from "@/sanity/lib/richText";
 import type { PortableTextBlock } from "@portabletext/types";
 import type { SanityLink, SanitySection } from "@/sanity/types";
 
@@ -95,10 +96,14 @@ export function AboutNarrativeBlock({
     <AboutNarrative
       eyebrow={section.eyebrow ?? ""}
       heading={section.heading}
+      headingAs={section.headingLevel}
       paragraphs={section.paragraphs}
       tagline={section.tagline}
       bookingHref={site.bookingHref}
       buttonLabel={section.buttonLabel}
+      offerHeading={section.offerHeading}
+      offerSubtitle={section.offerSubtitle}
+      offerCodeLabel={section.offerCodeLabel}
       promoCode={section.promoCode}
       perks={section.perks ?? []}
       contactEmail={site.contact.email}
@@ -118,8 +123,10 @@ export function ContactBlock({
   if (!image) return null;
   return (
     <ContactPanel
+      property={site.slug}
       eyebrow={section.eyebrow ?? site.label}
       heading={section.heading}
+      headingAs={section.headingLevel}
       intro={section.intro}
       imageSrc={image}
       imageAlt={section.image?.alt ?? site.label}
@@ -152,6 +159,7 @@ export function RoomListBlock({
     <RoomList
       eyebrow={section.eyebrow}
       heading={section.heading}
+      headingAs={section.headingLevel}
       intro={section.intro}
       tone={section.tone}
       rooms={rooms}
@@ -170,6 +178,7 @@ export function ProseBlock({
     <ProseBand
       eyebrow={section.eyebrow}
       heading={section.heading}
+      headingAs={section.headingLevel}
       paragraphs={section.paragraphs}
       // The address comes from the property, never from the section — the same
       // rule `ContactPanel` and `AboutNarrative` follow.
@@ -185,7 +194,11 @@ export function RichTextBlock({ section }: { section: Narrow<"richTextSection"> 
     <Section tone={section.tone} width="read" id={section.anchor}>
       {section.heading ? (
         <Reveal>
-          <SectionHeading eyebrow={section.eyebrow} title={section.heading} />
+          <SectionHeading
+            eyebrow={section.eyebrow}
+            title={section.heading}
+            as={section.headingLevel}
+          />
         </Reveal>
       ) : null}
       <Reveal>
@@ -204,7 +217,11 @@ export function SplitContentBlock({ section }: { section: Narrow<"splitContentSe
     <Section tone={section.tone} id={section.anchor}>
       <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
         <Reveal className={imageFirst ? "lg:order-2" : undefined}>
-          <SectionHeading eyebrow={section.eyebrow} title={section.heading} />
+          <SectionHeading
+            eyebrow={section.eyebrow}
+            title={section.heading}
+            as={section.headingLevel}
+          />
           <div className="mt-8 flex flex-col gap-5 md:mt-10">
             {section.paragraphs.map((paragraph, index) => (
               <p
@@ -251,7 +268,11 @@ export function GalleryBlock({ section }: { section: Narrow<"gallerySection"> })
     <Section tone={section.tone} id={section.anchor}>
       {section.heading ? (
         <Reveal>
-          <SectionHeading eyebrow={section.eyebrow} title={section.heading} />
+          <SectionHeading
+            eyebrow={section.eyebrow}
+            title={section.heading}
+            as={section.headingLevel}
+          />
         </Reveal>
       ) : null}
       <Reveal>
@@ -271,7 +292,11 @@ export function GalleryBlock({ section }: { section: Narrow<"gallerySection"> })
 export function AmenityBlock({ section }: { section: Narrow<"amenityGridSection"> }) {
   return (
     <Section tone={section.tone} id={section.anchor}>
-      <AmenityGrid heading={section.heading} amenities={section.amenities} />
+      <AmenityGrid
+        heading={section.heading}
+        headingAs={section.headingLevel}
+        amenities={section.amenities}
+      />
     </Section>
   );
 }
@@ -287,6 +312,7 @@ export function LinkCardGridBlock({ section }: { section: Narrow<"linkCardGridSe
     <LinkCardGrid
       eyebrow={section.eyebrow}
       heading={section.heading}
+      headingAs={section.headingLevel}
       items={items}
       columns={section.columns}
       tone={section.tone}
@@ -303,7 +329,7 @@ export function PackageListBlock({ section }: { section: Narrow<"packageListSect
   const packages: PackageItem[] = (source ?? []).map((item) => ({
     name: item.name,
     images: resolveImageUrls(item.images, 900),
-    description: item.description,
+    description: toRuns(item.description),
     benefitsHeading: item.benefitsHeading,
     benefits: [...(item.benefits ?? []), ...always],
     meta: item.meta,
@@ -322,7 +348,8 @@ export function PackageListBlock({ section }: { section: Narrow<"packageListSect
     <PackageList
       eyebrow={section.eyebrow}
       heading={section.heading ?? ""}
-      intro={section.intro}
+      headingAs={section.headingLevel}
+      intro={toRuns(section.intro)}
       packages={packages}
       tone={section.tone}
     />
@@ -330,7 +357,14 @@ export function PackageListBlock({ section }: { section: Narrow<"packageListSect
 }
 
 export function ProgramListBlock({ section }: { section: Narrow<"programListSection"> }) {
-  return <ProgramList heading={section.heading} tiers={section.tiers} tone={section.tone} />;
+  return (
+    <ProgramList
+      heading={section.heading}
+      headingAs={section.headingLevel}
+      tiers={section.tiers}
+      tone={section.tone}
+    />
+  );
 }
 
 export function TreatmentListBlock({ section }: { section: Narrow<"treatmentListSection"> }) {
@@ -343,6 +377,7 @@ export function TreatmentListBlock({ section }: { section: Narrow<"treatmentList
     <TreatmentList
       eyebrow={section.eyebrow}
       heading={section.heading}
+      headingAs={section.headingLevel}
       intro={section.intro}
       notes={section.notes}
       categories={categories}
@@ -357,7 +392,11 @@ export function BulletListBlock({ section }: { section: Narrow<"bulletListSectio
     <Section tone={section.tone} id={section.anchor}>
       {section.heading ? (
         <Reveal>
-          <SectionHeading eyebrow={section.eyebrow} title={section.heading} />
+          <SectionHeading
+            eyebrow={section.eyebrow}
+            title={section.heading}
+            as={section.headingLevel}
+          />
         </Reveal>
       ) : null}
       {section.intro ? (
@@ -403,7 +442,7 @@ export function PriceTableBlock({ section }: { section: Narrow<"priceTableSectio
     <Section tone={section.tone} id={section.anchor}>
       {section.heading ? (
         <Reveal>
-          <SectionHeading title={section.heading} />
+          <SectionHeading title={section.heading} as={section.headingLevel} />
         </Reveal>
       ) : null}
       <Reveal>
@@ -455,7 +494,14 @@ export function PriceTableBlock({ section }: { section: Narrow<"priceTableSectio
 }
 
 export function FaqBlock({ section }: { section: Narrow<"faqSection"> }) {
-  return <FaqList heading={section.heading} faqs={section.faqs} tone={section.tone} />;
+  return (
+    <FaqList
+      heading={section.heading}
+      headingAs={section.headingLevel}
+      faqs={section.faqs}
+      tone={section.tone}
+    />
+  );
 }
 
 export function CtaBlock({ section }: { section: Narrow<"ctaSection"> }) {
@@ -478,6 +524,7 @@ export function CtaBlock({ section }: { section: Narrow<"ctaSection"> }) {
         <SectionHeading
           eyebrow={section.eyebrow}
           title={section.heading}
+          as={section.headingLevel}
           align="center"
           surface={image ? "dark" : "light"}
         />
@@ -502,7 +549,13 @@ export function CtaBlock({ section }: { section: Narrow<"ctaSection"> }) {
   );
 }
 
-export function InquiryFormBlock({ section }: { section: Narrow<"inquiryFormSection"> }) {
+export function InquiryFormBlock({
+  section,
+  site,
+}: {
+  section: Narrow<"inquiryFormSection">;
+  site: PropertySite;
+}) {
   const fields = section.fields.map(
     (field) =>
       ({
@@ -516,7 +569,9 @@ export function InquiryFormBlock({ section }: { section: Narrow<"inquiryFormSect
   return (
     <Section tone={section.tone} width="narrow" id={section.anchor}>
       <InquiryForm
+        property={site.slug}
         heading={section.heading}
+        headingAs={section.headingLevel}
         fields={fields}
         submitLabel={section.submitLabel}
         confirmation={section.confirmation}
@@ -525,10 +580,24 @@ export function InquiryFormBlock({ section }: { section: Narrow<"inquiryFormSect
   );
 }
 
-export function AwardsBlock({ section }: { section: Narrow<"awardsSection"> }) {
-  const badges = resolveImageUrls(section.badges, 400);
+/**
+ * The awards strip. Its badges and its layout both fall back to the
+ * property's own, the same rule `dealsSection` and `instagramSection`
+ * follow — every page on the site shows that property's awards, so making
+ * an editor paste eleven badges into each page would be duplication with no
+ * decision behind it.
+ */
+export function AwardsBlock({
+  section,
+  site,
+}: {
+  section: Narrow<"awardsSection">;
+  site: PropertySite;
+}) {
+  const authored = resolveImageUrls(section.badges, 400);
+  const badges = authored.length ? authored : site.awards.badges;
   if (!badges.length) return null;
-  return <AwardsRow badges={badges} variant={section.variant} />;
+  return <AwardsRow badges={badges} variant={section.variant || site.awards.variant} />;
 }
 
 /** The three sections below fall back to the page's own property when left empty. */
@@ -539,7 +608,14 @@ export function DealsBlock({
   section: Narrow<"dealsSection">;
   site: PropertySite;
 }) {
-  return <DirectBookingDeals bookingHref={section.bookingHref || site.bookingHref} />;
+  return (
+    <DirectBookingDeals
+      bookingHref={section.bookingHref || site.bookingHref}
+      headline={section.headline}
+      code={section.code}
+      buttonLabel={section.buttonLabel}
+    />
+  );
 }
 
 export function PropertyPickerBlock({

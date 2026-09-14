@@ -21,18 +21,23 @@
  * rate table is a real table, stored that way in the CMS rather than being
  * re-derived by heuristics on every render.
  *
- * **Images stay hotlinked.** The site points every `<Image>` at
- * nyuhbalivillas.com's own CDN (see next.config.ts and CLAUDE.md), and this
- * migration keeps it that way: each image field is written with the live URL
- * in `externalUrl` and no uploaded asset, so a migrated page renders the
- * exact photograph it renders today and nothing is copied into a Sanity
- * project before anyone has decided to host it there.
+ * **Images are written as `/uploads/…` paths, not uploads.** Every photograph
+ * and menu PDF is served by this site now (public/uploads/, see
+ * next.config.ts), so an image field gets that path in `externalUrl` and no
+ * asset — a migrated page renders exactly what the code renders, and nothing
+ * is copied into the Sanity project by a run that was only asked to import
+ * content.
  *
- * Uploading is available whenever it is wanted, and does not need this
- * script: dropping a file onto an image field in the Studio replaces that one
- * hotlink, because the resolver prefers an asset over `externalUrl`. To move
- * everything at once later, rerun with --upload-images --replace.
+ * `--upload-images` still uploads them, reading each file from disk rather
+ * than fetching it. **But to move an existing dataset to uploaded assets, use
+ * `npm run sanity:images` instead** — this script reaches documents through
+ * `--replace`, which rebuilds them from src/data/ and would discard every edit
+ * an author has made in the Studio since. `upload-images.mjs` changes only the
+ * image objects inside whatever is published right now.
  */
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+
 import { createClient } from "@sanity/client";
 import { getCliClient } from "sanity/cli";
 
@@ -121,6 +126,33 @@ import {
 } from "../../src/data/pages/complimentary-services";
 import { HOME_PANELS } from "../../src/data/pages/home";
 import {
+  SPA_RESERVATION_COPY,
+  SPA_RESERVATION_FIELDS,
+} from "../../src/data/spa-reservations";
+import {
+  PERSONALIZE_RETREAT_CONFIRMATION,
+  PERSONALIZE_RETREAT_FIELDS,
+  PERSONALIZE_RETREAT_HEADING,
+  PERSONALIZE_RETREAT_SUBMIT_LABEL,
+} from "../../src/data/pages/ubud-personalize-retreat";
+import {
+  SEMINYAK_DIRECTORY,
+  SUITE_DIRECTORY,
+  UBUD_DIRECTORY,
+  WELCOME_ABOARD,
+  type DirectoryPageContent,
+} from "../../src/data/pages/directories";
+
+/** The four pages nothing on the site links to — see CLAUDE.md, Pass 5. */
+const DIRECTORY_PAGES: Array<
+  [string, string, PropertySlug, DirectoryPageContent]
+> = [
+  ["/seminyak-directory", "In-room directory — Seminyak", "seminyak", SEMINYAK_DIRECTORY],
+  ["/ubud-directory", "In-room directory — Ubud", "ubud", UBUD_DIRECTORY],
+  ["/suite-directory", "In-room directory — Ubud suites", "ubud", SUITE_DIRECTORY],
+  ["/welcomeaboard", "Welcome Aboard — staff onboarding", "ubud", WELCOME_ABOARD],
+];
+import {
   HERO_IMAGES as seminyakTourHero,
   DAY_TRAVELLING as seminyakDayTravelling,
   TOURS as seminyakTours,
@@ -142,7 +174,7 @@ import {
 import type { TreatmentCategory } from "../../src/components/property/TreatmentList";
 import type { InquiryField } from "../../src/components/property/InquiryForm";
 
-import type { PackageItem } from "../../src/components/property/PackageList";
+import type { PackageItem, PackageRun } from "../../src/components/property/PackageList";
 
 // ── Flags ──────────────────────────────────────────────────────────────
 
@@ -270,8 +302,12 @@ async function migratedImage(
   alt: string,
 ): Promise<SanityImageValue | undefined> {
   if (!url) return undefined;
-  if (!/^https?:\/\//.test(url)) {
-    console.warn(`  ! not an absolute URL, skipped: ${url}`);
+  // Assets are served by this site now, so a data file names them `/uploads/…`
+  // rather than nyuhbalivillas.com. Absolute URLs are still accepted for
+  // anything genuinely remote. Anything else is a mistake worth naming.
+  const isLocal = url.startsWith("/uploads/");
+  if (!isLocal && !/^https?:\/\//.test(url)) {
+    console.warn(`  ! neither a /uploads path nor an absolute URL, skipped: ${url}`);
     return undefined;
   }
 
@@ -297,7 +333,9 @@ async function migratedImage(
     return stub;
   }
 
-  const sourceId = `nbv-live:${url}`;
+  // Keyed on the path, so `upload-images.mjs` and this script share one asset
+  // per photograph instead of uploading it twice under different keys.
+  const sourceId = isLocal ? `nbv-local:${url}` : `nbv-live:${url}`;
   let assetId = await client.fetch<string | null>(
     `*[_type == "sanity.imageAsset" && source.id == $sourceId][0]._id`,
     { sourceId },
@@ -307,9 +345,16 @@ async function migratedImage(
     reused += 1;
   } else {
     try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const buffer = Buffer.from(await response.arrayBuffer());
+      let buffer: Buffer;
+      if (isLocal) {
+        // public/uploads mirrors WordPress's own /YYYY/MM/ layout, so the URL
+        // path is the file path.
+        buffer = await readFile(join(process.cwd(), "public", decodeURIComponent(url)));
+      } else {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        buffer = Buffer.from(await response.arrayBuffer());
+      }
       const filename = decodeURIComponent(url.split("/").pop() || "image");
       const asset = await client.assets.upload("image", buffer, {
         filename,
@@ -396,6 +441,41 @@ function faqItems(faqs: Array<{ question: string; answer: string }> | undefined)
   }));
 }
 
+
+/**
+ * A string or a run list written as the inline rich text the schema now takes.
+ *
+ * `packageItem.description` and `packageListSection.intro` became
+ * `inlineRichText` in the CMS audit pass, so an editor can bold a phrase the
+ * way the in-room directory pages already do. The directories are also the
+ * one place `src/data` holds runs rather than a string, and this is what
+ * carries that bold into the CMS rather than flattening it on the way in.
+ *
+ * One block, because the value renders inside a `<p>` the layout draws.
+ */
+function inlineRichText(value: string | PackageRun[] | undefined) {
+  if (!value) return undefined;
+  const runs = typeof value === "string" ? [{ text: value }] : value;
+  const children = runs
+    .filter((run) => run.text)
+    .map((run, index) => ({
+      _type: "span" as const,
+      _key: key("span", index),
+      text: run.text,
+      marks: run.bold ? ["strong"] : [],
+    }));
+  if (!children.length) return undefined;
+  return [
+    {
+      _type: "block" as const,
+      _key: key("block", 0),
+      style: "normal" as const,
+      markDefs: [],
+      children,
+    },
+  ];
+}
+
 async function packageItems(items: PackageItem[], prefix: string) {
   const out = [];
   for (const [index, item] of items.entries()) {
@@ -404,7 +484,7 @@ async function packageItems(items: PackageItem[], prefix: string) {
       _key: key(prefix, index),
       name: item.name,
       images: await migratedImages(item.images, item.name),
-      ...(item.description ? { description: item.description } : {}),
+      ...(item.description ? { description: inlineRichText(item.description) } : {}),
       ...(item.benefitsHeading ? { benefitsHeading: item.benefitsHeading } : {}),
       ...(item.benefits?.length ? { benefits: item.benefits } : {}),
       ...(item.meta?.length
@@ -498,7 +578,12 @@ async function migrateSiteSettings() {
       {
         _type: "link",
         _key: key("legal", 1),
-        label: "Privacy Policy",
+        // The footer's own wording, not the page's title. The two differ on
+        // this site and the copy rule is that neither gets reworded: the
+        // legal bar says "Privacy & Policy", the page it opens is titled
+        // "Privacy Policy". Seeded as the latter, this quietly changed the
+        // footer on all 78 pages the moment the footer started reading it.
+        label: "Privacy & Policy",
         href: "/privacy-policy",
         external: false,
         inScope: true,
@@ -788,7 +873,7 @@ const bookingWidgetSection = (): SectionValue => ({
 async function packageListSection(options: {
   eyebrow?: string;
   heading?: string;
-  intro?: string;
+  intro?: string | PackageRun[];
   packages: PackageItem[];
   tone?: "sand" | "sand-deep";
 }): Promise<SectionValue> {
@@ -798,7 +883,7 @@ async function packageListSection(options: {
     source: "inline",
     ...(options.eyebrow ? { eyebrow: options.eyebrow } : {}),
     ...(options.heading ? { heading: options.heading } : {}),
-    ...(options.intro ? { intro: options.intro } : {}),
+    ...(options.intro ? { intro: inlineRichText(options.intro) } : {}),
     ...(options.tone ? { tone: options.tone } : {}),
     packages: await packageItems(options.packages, "pkg"),
   };
@@ -1637,6 +1722,88 @@ async function migratePages() {
       ),
     },
   ]);
+
+
+  // ── The three standalone enquiry forms ─────────────────────────
+  //
+  // Left out of the first two seeding batches because they are the only
+  // hand-written routes whose whole `<main>` is one form — heading, submit
+  // label, confirmation and every field label typed into the route file. A
+  // client changing "Send" to "Submit", or adding a dietary option, needed a
+  // developer. `inquiryFormSection` already rendered exactly this shape; what
+  // was missing was the field that lets its heading be the page's `<h1>`,
+  // which these three pages need because the form is their only heading.
+  //
+  // `awardsSection` carries no badges here: it falls back to the property's
+  // own, which is what every other page on the site shows.
+  sectionSeq = 0;
+  add("/spa-reservation-seminyak", "Spa Reservation — Seminyak", "seminyak", [
+    {
+      ...inquiryFormSection(
+        SPA_RESERVATION_COPY["spa-reservation-seminyak"].heading,
+        SPA_RESERVATION_FIELDS["spa-reservation-seminyak"],
+        SPA_RESERVATION_COPY["spa-reservation-seminyak"].submitLabel,
+      ),
+      headingLevel: "h1",
+      confirmation: SPA_RESERVATION_COPY["spa-reservation-seminyak"].confirmation,
+      tone: "sand",
+    },
+    { _type: "awardsSection", _key: nextKey() },
+  ]);
+
+  sectionSeq = 0;
+  add("/ubud-spa-booking-form", "Spa Booking — Ubud", "ubud", [
+    {
+      ...inquiryFormSection(
+        SPA_RESERVATION_COPY["ubud-spa-booking-form"].heading,
+        SPA_RESERVATION_FIELDS["ubud-spa-booking-form"],
+        SPA_RESERVATION_COPY["ubud-spa-booking-form"].submitLabel,
+      ),
+      headingLevel: "h1",
+      confirmation: SPA_RESERVATION_COPY["ubud-spa-booking-form"].confirmation,
+      tone: "sand",
+    },
+    { _type: "awardsSection", _key: nextKey() },
+  ]);
+
+  sectionSeq = 0;
+  add("/ubud-personalize-your-retreat", "Personalize Your Retreat — Ubud", "ubud", [
+    {
+      ...inquiryFormSection(
+        PERSONALIZE_RETREAT_HEADING,
+        PERSONALIZE_RETREAT_FIELDS,
+        PERSONALIZE_RETREAT_SUBMIT_LABEL,
+      ),
+      headingLevel: "h1",
+      confirmation: PERSONALIZE_RETREAT_CONFIRMATION,
+      tone: "sand",
+    },
+    { _type: "awardsSection", _key: nextKey() },
+  ]);
+
+  // ── The four in-room / staff pages ─────────────────────────────
+  //
+  // Wrapped in `ManagedPage` from the day they were built and never seeded,
+  // so an editor opening the Pages list found no trace of the menus a guest
+  // reaches by scanning the QR code on the card beside the bed. Each renders
+  // through `PackageList` exactly as the route does, with the band's heading
+  // as the `<h1>` — these pages have no hero — which is what `headingLevel`
+  // is for. Their bold survives the import: see `inlineRichText`.
+  for (const [path, title, property, content] of DIRECTORY_PAGES) {
+    sectionSeq = 0;
+    add(path, title, property, [
+      {
+        ...(await packageListSection({
+          heading: content.heading,
+          intro: content.intro,
+          packages: content.items,
+          tone: "sand",
+        })),
+        headingLevel: "h1",
+      },
+      { _type: "awardsSection", _key: nextKey() },
+    ]);
+  }
 
   for (const page of pages) {
     await write({

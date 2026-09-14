@@ -29,6 +29,11 @@ const components: PortableTextComponents = {
         {children}
       </h3>
     ),
+    h4: ({ children }) => (
+      <h4 className="font-heading mt-7 text-[18px] leading-[1.35] font-light text-balance text-ink first:mt-0 md:text-[20px]">
+        {children}
+      </h4>
+    ),
     blockquote: ({ children }) => (
       <blockquote className="mt-8 border-l-2 border-primary pl-5 text-[18px] leading-[1.7] font-light text-ink italic md:text-[20px]">
         {children}
@@ -58,11 +63,18 @@ const components: PortableTextComponents = {
     strong: ({ children }) => <strong className="font-semibold text-ink">{children}</strong>,
     em: ({ children }) => <em className="italic">{children}</em>,
     textLink: ({ value, children }) => {
-      const href: string = value?.href ?? "#";
+      // `href` is a string whichever way the editor authored it: an internal
+      // reference is already resolved to its path by `linkProjection` in
+      // lib/queries.ts, so this never sees a `_ref`. An annotation left
+      // half-filled renders as plain text rather than as a link to nowhere.
+      const href: string | undefined = value?.href;
+      if (!href) return <>{children}</>;
       const className =
         "text-primary-deep underline decoration-primary/40 underline-offset-[5px] transition-colors duration-300 hover:decoration-primary";
       // An off-site destination gets the new tab and the rel guard; an
       // internal one goes through Link so navigation stays client-side.
+      // `noreferrer` implies `noopener`, so the reverse-tabnabbing hole a bare
+      // `target="_blank"` opens is closed by this one value.
       if (value?.blank || /^https?:\/\//.test(href)) {
         return (
           <a href={href} target="_blank" rel="noreferrer" className={className}>

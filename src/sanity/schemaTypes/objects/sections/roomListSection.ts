@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { eyebrowField, sectionSettingsFields, toneField } from "./shared";
+import { eyebrowField, headingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 /**
  * An accommodation listing written on the page.
@@ -48,15 +48,41 @@ export const roomListSection = defineType({
               title: "Photographs",
               type: "array",
               of: [defineArrayMember({ type: "imageWithAlt" })],
+              description:
+                "Shown as a gallery in the listing row. Deliberately a different selection from the room's own page — see the note at the top of this file.",
+              options: { layout: "grid" },
+              validation: (Rule) => Rule.min(1).warning("A row with no photograph reads as a gap."),
             }),
-            defineField({ name: "bed", title: "Bedding", type: "string" }),
-            defineField({ name: "size", title: "Size", type: "string" }),
-            defineField({ name: "occupancy", title: "Occupancy", type: "string" }),
+            defineField({
+              name: "bed",
+              title: "Bedding",
+              type: "string",
+              description: 'The line under the name — "1 King Bed".',
+            }),
+            defineField({
+              name: "size",
+              title: "Size",
+              type: "string",
+              description: 'Including the unit — "68 m²".',
+            }),
+            defineField({
+              name: "occupancy",
+              title: "Occupancy",
+              type: "string",
+              description: 'How many the room sleeps — "2 Adults".',
+            }),
             defineField({
               name: "detailsHref",
               title: "Details page",
               type: "string",
               description: "Path to this room's own page, e.g. /ubud/villa/suite.",
+              validation: (Rule) =>
+                Rule.custom((value) => {
+                  if (!value) return true;
+                  return value.startsWith("/")
+                    ? true
+                    : "Start the path with a slash — this button always points at a page on this site.";
+                }),
             }),
             defineField({
               name: "detailsInScope",
@@ -72,6 +98,7 @@ export const roomListSection = defineType({
       validation: (Rule) => Rule.required().min(1),
     }),
     toneField,
+    headingLevelField,
     ...sectionSettingsFields,
   ],
   preview: {

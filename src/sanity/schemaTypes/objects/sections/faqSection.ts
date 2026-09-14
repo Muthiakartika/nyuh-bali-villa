@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { sectionSettingsFields, toneField } from "./shared";
+import { headingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 export const faqSection = defineType({
   name: "faqSection",
@@ -21,6 +21,7 @@ export const faqSection = defineType({
       validation: (Rule) => Rule.required().min(1),
     }),
     toneField,
+    headingLevelField,
     ...sectionSettingsFields,
   ],
   preview: {

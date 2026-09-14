@@ -8,7 +8,9 @@
  * after projection and dereferencing. Keep the two in step by regenerating
  * after any schema or projection change.
  */
+import type { PortableTextBlock } from "@portabletext/types";
 import type { AmenityIconName } from "@/components/property/AmenityGrid";
+import type { HeadingLevel } from "@/components/ui/SectionHeading";
 import type { PropertySlug } from "@/data/properties";
 
 export type SanityImage = {
@@ -25,17 +27,37 @@ export type SanityImage = {
 export type SanitySeo = {
   title?: string;
   description?: string;
+  /** Falls back to `title`; the live site sends the same string for both. */
+  ogTitle?: string;
+  /** Falls back to `description`. */
+  ogDescription?: string;
   image?: SanityImage;
+  /** Only set when this page deliberately points its ranking at another URL. */
+  canonicalUrl?: string;
   noIndex?: boolean;
 };
 
+/**
+ * `href` is always a string by the time a renderer sees one: an internal
+ * reference is resolved to its path by `linkProjection` in lib/queries.ts,
+ * and a typed path passes through. `linkType` and `reference` survive the
+ * projection but nothing reads them downstream.
+ */
 export type SanityLink = {
   label: string;
   href: string;
+  linkType?: "internal" | "custom";
   external?: boolean;
   inScope?: boolean;
   variant?: "solid" | "outline";
 };
+
+/**
+ * A value that became rich text in the CMS audit pass but whose published
+ * data may still be the string it was seeded as. Every reader goes through
+ * `toRuns` / `richTextToPlainText` in lib/richText.ts, so both shapes render.
+ */
+export type SanityRichTextValue = string | PortableTextBlock[];
 
 export type SanityBulletGroup = { heading?: string; items: string[] };
 
@@ -57,7 +79,7 @@ export type SanityPriceTable = {
 export type SanityPackageItem = {
   name: string;
   images?: SanityImage[];
-  description?: string;
+  description?: SanityRichTextValue;
   meta?: { label: string; value: string }[];
   benefitsHeading?: string;
   benefits?: string[];
@@ -90,6 +112,10 @@ type SectionBase = {
   anchor?: string;
   isHidden?: boolean;
   tone?: "sand" | "sand-deep";
+  /** Which tag the band's heading is written as. Absent means the renderer's
+   *  own default, which is what every document seeded before this field
+   *  existed relies on. */
+  headingLevel?: HeadingLevel;
 };
 
 /** One half of the homepage picker. `image` is the shared upload-or-hotlink
@@ -117,6 +143,9 @@ export type SanitySection =
       paragraphs: string[];
       tagline?: string;
       buttonLabel: string;
+      offerHeading?: string;
+      offerSubtitle?: string;
+      offerCodeLabel?: string;
       promoCode: string;
       perks?: string[];
       image?: SanityImage;
@@ -203,7 +232,7 @@ export type SanitySection =
       _type: "packageListSection";
       eyebrow?: string;
       heading?: string;
-      intro?: string;
+      intro?: SanityRichTextValue;
       source: "inline" | "reference";
       packages?: SanityPackageItem[];
       packageSet?: {
@@ -276,10 +305,18 @@ export type SanitySection =
   | (SectionBase & {
       _type: "awardsSection";
       heading?: string;
-      badges: SanityImage[];
-      variant?: "grid" | "marquee";
+      /** Empty means the property's own badges. */
+      badges?: SanityImage[];
+      /** Empty means the property's own layout. */
+      variant?: "grid" | "marquee" | "";
     })
-  | (SectionBase & { _type: "dealsSection"; bookingHref?: string })
+  | (SectionBase & {
+      _type: "dealsSection";
+      bookingHref?: string;
+      headline?: string;
+      code?: string;
+      buttonLabel?: string;
+    })
   | (SectionBase & {
       _type: "propertyPickerSection";
       panels?: SanityPropertyPanel[];
@@ -475,6 +512,14 @@ export type SanitySiteSettings = {
   description?: string;
   favicon?: SanityImage;
   bookNowLabel?: string;
+  dealHeadline?: string;
+  dealCode?: string;
+  dealButtonLabel?: string;
+  footerLogo?: SanityImage;
+  footerBookingLabel?: string;
+  footerMenuHeading?: string;
+  footerMenuLinks?: SanityLink[];
+  footerBlogHeading?: string;
   footerNote?: string;
   legalLinks?: SanityLink[];
   defaultSeo?: SanitySeo;

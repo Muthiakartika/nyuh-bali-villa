@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { eyebrowField, sectionSettingsFields, toneField } from "./shared";
+import { eyebrowField, headingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 /** The awards strip. Seminyak lays its badges out as a grid, Ubud as a marquee. */
 export const awardsSection = defineType({
@@ -13,7 +13,8 @@ export const awardsSection = defineType({
       title: "Badges",
       type: "array",
       of: [defineArrayMember({ type: "imageWithAlt" })],
-      validation: (Rule) => Rule.required().min(1),
+      description:
+        "Leave empty to show this property's own awards, which is what every page does today. Fill it in only for a page that should show a different set.",
       options: { layout: "grid" },
     }),
     defineField({
@@ -23,11 +24,14 @@ export const awardsSection = defineType({
       options: {
         layout: "radio",
         list: [
+          { title: "This property's usual layout", value: "" },
           { title: "Static row", value: "grid" },
           { title: "Scrolling marquee", value: "marquee" },
         ],
       },
-      initialValue: "grid",
+      initialValue: "",
+      description:
+        "Seminyak lays its badges out as a row and Ubud scrolls them. Leave on the first option unless this page needs the other.",
     }),
     ...sectionSettingsFields,
   ],
@@ -35,7 +39,9 @@ export const awardsSection = defineType({
     select: { title: "heading", badges: "badges", media: "badges.0" },
     prepare: ({ title, badges, media }) => ({
       title: title || "Awards",
-      subtitle: `${badges?.length ?? 0} badge${badges?.length === 1 ? "" : "s"}`,
+      subtitle: badges?.length
+        ? `${badges.length} badge${badges.length === 1 ? "" : "s"}`
+        : "This property's own awards",
       media,
     }),
   },
@@ -50,13 +56,40 @@ export const dealsSection = defineType({
     defineField({
       name: "bookingHref",
       title: "Booking destination",
+      type: "url",
+      description:
+        "Leave empty to use the property's own booking link, which is what every page does today.",
+      validation: (Rule) => Rule.uri({ scheme: ["http", "https"] }),
+    }),
+    defineField({
+      name: "headline",
+      title: "Offer line",
       type: "string",
-      description: "Leave empty to use the property's own booking link.",
+      description: "Leave empty to use the offer set in Site settings, which is what every page shows.",
+      validation: (Rule) => Rule.max(60),
+    }),
+    defineField({
+      name: "code",
+      title: "Promo code line",
+      type: "string",
+      description: "Leave empty to use Site settings'.",
+      validation: (Rule) => Rule.max(40),
+    }),
+    defineField({
+      name: "buttonLabel",
+      title: "Button label",
+      type: "string",
+      description: "Leave empty to use Site settings'.",
+      validation: (Rule) => Rule.max(30),
     }),
     ...sectionSettingsFields,
   ],
   preview: {
-    prepare: () => ({ title: "Direct booking deals" }),
+    select: { headline: "headline" },
+    prepare: ({ headline }) => ({
+      title: "Direct booking deals",
+      subtitle: headline || "The offer set in Site settings",
+    }),
   },
 });
 
@@ -146,6 +179,7 @@ export const bulletListSection = defineType({
       of: [defineArrayMember({ type: "bulletGroup" })],
       validation: (Rule) => Rule.required().min(1),
     }),
+    headingLevelField,
     toneField,
     ...sectionSettingsFields,
   ],
@@ -171,6 +205,7 @@ export const priceTableSection = defineType({
       type: "priceTable",
       validation: (Rule) => Rule.required(),
     }),
+    headingLevelField,
     toneField,
     ...sectionSettingsFields,
   ],

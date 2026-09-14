@@ -1,6 +1,6 @@
 import type { SVGProps } from "react";
 import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import {
   CutleryIcon,
@@ -46,6 +46,9 @@ export type Amenity = {
 
 type AmenityGridProps = {
   heading?: string;
+  /** Which tag this band's heading is written as. The size never changes —
+   * see HeadingLevel. Editors set it per section in the CMS. */
+  headingAs?: HeadingLevel;
   amenities: Amenity[];
   tone?: "sand" | "sand-deep";
 };
@@ -62,12 +65,13 @@ type AmenityGridProps = {
  */
 export function AmenityGrid({
   heading = "Featured Amenities",
+  headingAs = "h2",
   amenities,
   tone = "sand-deep",
 }: AmenityGridProps) {
   return (
     <Section tone={tone}>
-      <SectionHeading title={heading} />
+      <SectionHeading title={heading} as={headingAs} />
 
       <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-9 md:mt-10 md:grid-cols-4">
         {amenities.map((amenity, index) => {

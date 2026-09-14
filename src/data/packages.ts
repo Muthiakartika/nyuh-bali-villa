@@ -15,7 +15,7 @@ import type { PackageItem } from "@/components/property/PackageList";
 import type { Testimonial } from "@/data/testimonials";
 import { PROPERTY_SITES } from "@/data/properties";
 
-const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
+const UPLOADS = "/uploads";
 const BOOKING_HREF = PROPERTY_SITES.ubud.bookingHref;
 
 /**

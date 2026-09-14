@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { eyebrowField, sectionSettingsFields, toneField } from "./shared";
+import { eyebrowField, headingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 export const treatmentListSection = defineType({
   name: "treatmentListSection",
@@ -30,6 +30,7 @@ export const treatmentListSection = defineType({
     }),
     defineField({ name: "cta", title: "Closing action", type: "link" }),
     toneField,
+    headingLevelField,
     ...sectionSettingsFields,
   ],
   preview: {

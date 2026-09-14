@@ -31,7 +31,7 @@ export function HomeHeader() {
               see next.config.ts for the remotePatterns allow-list that makes
               this legal for next/image to optimize. */}
           <Image
-            src="https://nyuhbalivillas.com/wp-content/uploads/2023/04/logonyuhbali.webp"
+            src="/uploads/2023/04/logonyuhbali.webp"
             alt="Nyuh Bali Villas"
             fill
             sizes="126px"

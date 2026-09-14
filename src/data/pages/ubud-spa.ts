@@ -8,7 +8,7 @@
 import type { TreatmentCategory } from "@/components/property/TreatmentList";
 import type { Testimonial } from "@/data/testimonials";
 
-export const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
+export const UPLOADS = "/uploads";
 
 // Mahamaya Spa takes bookings through Fresha, not the resort's own booking
 // engine, so every "Book Now" and the closing "Reserve Now" point here.

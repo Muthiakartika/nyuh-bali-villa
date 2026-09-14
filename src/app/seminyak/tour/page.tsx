@@ -109,6 +109,7 @@ export default async function SeminyakTourPage() {
             id="tour-booking"
           >
             <InquiryForm
+              property="seminyak"
               heading="Book your Tour"
               fields={TOUR_FIELDS}
               submitLabel="Send"

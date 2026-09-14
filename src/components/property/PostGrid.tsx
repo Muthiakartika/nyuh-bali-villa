@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { formatPostDate, readingMinutes } from "@/components/property/PostBody";
 import type { ArticleBlock } from "@/components/property/postBlocks";
@@ -40,6 +40,9 @@ function PostMeta({ post }: { post: GridPost }) {
 type PostGridProps = {
   eyebrow?: string;
   heading: string;
+  /** Which tag this band's heading is written as. The size never changes —
+   * see HeadingLevel. Editors set it per section in the CMS. */
+  headingAs?: HeadingLevel;
   posts: GridPost[];
   tone?: "sand" | "sand-deep";
   /**
@@ -122,6 +125,7 @@ function PostCard({ post, priority = false }: { post: GridPost; priority?: boole
 export function PostGrid({
   eyebrow,
   heading,
+  headingAs = "h2",
   posts,
   tone = "sand",
   featured,
@@ -132,7 +136,7 @@ export function PostGrid({
 
   return (
     <Section tone={tone}>
-      <SectionHeading eyebrow={eyebrow} title={heading} />
+      <SectionHeading eyebrow={eyebrow} title={heading} as={headingAs} />
 
       {lead ? (
         <Reveal>

@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { eyebrowField, sectionSettingsFields, toneField } from "./shared";
+import { eyebrowField, headingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 export const gallerySection = defineType({
   name: "gallerySection",
@@ -23,6 +23,7 @@ export const gallerySection = defineType({
       description: "One alt string for the whole set — every slide shows the same subject.",
     }),
     toneField,
+    headingLevelField,
     ...sectionSettingsFields,
   ],
   preview: {

@@ -404,8 +404,24 @@ weight a reading aid must not add.
 One field style: underlined, not boxed — a hairline that turns gold on focus,
 `primary-deep` uppercase labels. `ContactForm` is the Contact pages' fixed five
 fields; `InquiryForm` is the data-driven one (`InquiryField[]`) behind the
-Wedding and tour booking forms. Both sit in a `narrow` Section. Neither sends
-anywhere — a Server Action would replace `handleSubmit`.
+Wedding and tour booking forms. Both sit in a `narrow` Section. Both now send:
+`useFormDelivery` posts to `/api/contact`, which checks the bot token and emails
+the property through SendGrid. **The confirmation only replaces the form once
+that has succeeded** — on a failure the form stays put with its answers intact
+and one line of `error` red above the button, because a thank-you for a message
+nobody received is the worst state this component can be in.
+
+**Both carry a Cloudflare Turnstile check** (`property/Turnstile.tsx`), which
+is the site's second borrowed appearance after the Instagram embed: a vendor
+widget with its own card, its own radius and its own type, dropped into a form
+that has neither. It is pinned to Turnstile's `light` theme so it cannot land
+as a dark grey slab in the middle of a `sand` band, and the slot reserves its
+65px so the Send button does not jump as the script arrives — but the widget
+is not restyled, because Cloudflare renders it in an iframe and it cannot be.
+It sits directly above the button it guards, and its failure line uses the
+form's own `error` red. While the token is with Cloudflare, Send goes
+`disabled:opacity-60` — the one place opacity is the right answer, the hover
+having been moved off it precisely because a dimmed control reads as disabled.
 
 ### Awards (`property/AwardsRow.tsx`)
 Short badge row on `ink`. **Each badge box is a 56/68px square that hugs the

@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { plainTextPreview } from "./previewText";
 
 /** Structured facts shown above a package's description — Price, Duration, Itinerary. */
 export const packageMeta = defineType({
@@ -40,7 +41,13 @@ export const packageItem = defineType({
       type: "array",
       of: [defineArrayMember({ type: "imageWithAlt" })],
     }),
-    defineField({ name: "description", title: "Description", type: "text", rows: 4 }),
+    defineField({
+      name: "description",
+      title: "Description",
+      type: "inlineRichText",
+      description:
+        "The pitch under the name. Bold and italic are available because the design already uses them — the in-room directory pages set their instructions in bold. It renders as one paragraph, which is why headings and lists are not offered here.",
+    }),
     defineField({
       name: "meta",
       title: "Facts",
@@ -76,6 +83,11 @@ export const packageItem = defineType({
     }),
   ],
   preview: {
-    select: { title: "name", subtitle: "description", media: "images.0" },
+    select: { title: "name", description: "description", media: "images.0" },
+    prepare: ({ title, description, media }) => ({
+      title: title || "Untitled package",
+      subtitle: plainTextPreview(description),
+      media,
+    }),
   },
 });

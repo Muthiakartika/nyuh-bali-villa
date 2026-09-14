@@ -5,7 +5,7 @@
 // that imports React or `server-only` cannot be read by a plain Node script.
 // One copy, so the CMS cannot drift from the page it was seeded from.
 
-export const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
+export const UPLOADS = "/uploads";
 
 // Photographs verified against this route on the live site, 2026-09-04.
 // Not `honeymoon-ubud` — that is the Honeymoon Getaway package's own

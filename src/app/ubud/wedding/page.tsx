@@ -87,6 +87,7 @@ export default async function UbudWeddingPage() {
 
           <Section tone="sand-deep" width="narrow">
             <InquiryForm
+              property="ubud"
               heading="Personalize your Wedding"
               fields={WEDDING_FIELDS}
               submitLabel="Send"

@@ -7,7 +7,7 @@
 
 import type { PackageItem } from "@/components/property/PackageList";
 
-export const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
+export const UPLOADS = "/uploads";
 
 // Photographs verified against this route on the live site, 2026-09-04.
 export const HERO_IMAGES = [`${UPLOADS}/2023/05/AW_06570-min-2.jpg`];

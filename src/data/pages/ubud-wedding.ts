@@ -8,7 +8,7 @@
 import type { PackageItem } from "@/components/property/PackageList";
 import type { InquiryField } from "@/components/property/InquiryForm";
 
-export const UPLOADS = "https://nyuhbalivillas.com/wp-content/uploads";
+export const UPLOADS = "/uploads";
 
 // Photographs verified against this route on the live site, 2026-09-04.
 // Not `ubud-wedding-3` — that is the intimate-wedding row's own photograph

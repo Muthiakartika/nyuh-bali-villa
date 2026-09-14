@@ -7,13 +7,21 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "cache:check": "node scripts/cloudflare/cache.mjs check",
+    "cache:purge": "node scripts/cloudflare/cache.mjs purge",
     "sanity": "sanity",
     "sanity:deploy": "sanity deploy",
     "sanity:typegen": "sanity schema extract --path=./src/sanity/schema.json --force && sanity typegen generate",
     "sanity:migrate": "sanity exec scripts/sanity/migrate.ts --with-user-token --",
     "sanity:migrate:dry": "sanity exec scripts/sanity/migrate.ts -- --dry-run",
     "sanity:migrate:token": "sanity exec scripts/sanity/migrate.ts --",
-    "sanity:seed-demo": "sanity exec scripts/sanity/seed-demo-page.ts --"
+    "sanity:seed-demo": "sanity exec scripts/sanity/seed-demo-page.ts --",
+    "sanity:images": "node scripts/sanity/upload-images.mjs",
+    "sanity:images:dry": "node scripts/sanity/upload-images.mjs --dry-run",
+    "cloudflare:rules": "node scripts/cloudflare/cache-rules.mjs",
+    "cloudflare:rules:dry": "node scripts/cloudflare/cache-rules.mjs --dry-run",
+    "sanity:rich-text": "node scripts/sanity/migrate-rich-text.mjs",
+    "sanity:rich-text:dry": "node scripts/sanity/migrate-rich-text.mjs --dry-run"
   },
   "dependencies": {
     "@portabletext/react": "^8.0.1",

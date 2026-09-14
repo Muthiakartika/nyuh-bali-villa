@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { eyebrowField, sectionSettingsFields } from "./shared";
+import { eyebrowField, headingLevelField, sectionSettingsFields } from "./shared";
 
 /**
  * The About band — the one that carries "Best Price Guaranteed".
@@ -60,6 +60,30 @@ export const aboutNarrativeSection = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "offerHeading",
+      title: "Offer heading",
+      type: "string",
+      group: "offer",
+      description: 'Empty reads "Best Price Guaranteed".',
+      validation: (Rule) => Rule.max(60),
+    }),
+    defineField({
+      name: "offerSubtitle",
+      title: "Offer line",
+      type: "string",
+      group: "offer",
+      description: 'The line under the heading. Empty reads "Exclusive privileges for booking on our website."',
+      validation: (Rule) => Rule.max(120),
+    }),
+    defineField({
+      name: "offerCodeLabel",
+      title: "Promo code label",
+      type: "string",
+      group: "offer",
+      description: 'The small gold label over the code. Empty reads "Promo code".',
+      validation: (Rule) => Rule.max(40),
+    }),
+    defineField({
       name: "promoCode",
       title: "Promo code",
       type: "string",
@@ -81,6 +105,7 @@ export const aboutNarrativeSection = defineType({
       group: "offer",
       description: "Optional. Sits above “Best Price Guaranteed”.",
     }),
+    headingLevelField,
     ...sectionSettingsFields,
   ],
   preview: {

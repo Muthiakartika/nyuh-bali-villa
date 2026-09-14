@@ -17,7 +17,15 @@ export const treatmentOption = defineType({
       name: "href",
       title: "Booking destination",
       type: "string",
-      validation: (Rule) => Rule.required(),
+      description:
+        "Where this duration books — the spa reservation form on this site, or the external booking page.",
+      validation: (Rule) =>
+        Rule.required().custom((value) => {
+          if (!value) return true;
+          if (value.startsWith("/") || value.startsWith("#")) return true;
+          if (/^(https?:\/\/|mailto:|tel:)/.test(value)) return true;
+          return "Use a site path beginning with / or a complete http(s) address.";
+        }),
     }),
   ],
   preview: { select: { title: "label", subtitle: "href" } },

@@ -1,11 +1,14 @@
 import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { ChevronIcon } from "@/components/ui/icons";
 import type { ExperienceProgram } from "@/data/experiences";
 
 type ProgramListProps = {
   heading: string;
+  /** Which tag this band's heading is written as. The size never changes —
+   * see HeadingLevel. Editors set it per section in the CMS. */
+  headingAs?: HeadingLevel;
   tiers: ExperienceProgram[];
   tone?: "sand" | "sand-deep";
 };
@@ -33,10 +36,12 @@ type ProgramListProps = {
  * The first tier is `open` by default. A stack of closed rows gives no clue
  * what is inside, and the shortest stay is the safe thing to show first.
  */
-export function ProgramList({ heading, tiers, tone = "sand" }: ProgramListProps) {
+export function ProgramList({
+  heading,
+  headingAs = "h2", tiers, tone = "sand" }: ProgramListProps) {
   return (
     <Section tone={tone}>
-      <SectionHeading title={heading} />
+      <SectionHeading title={heading} as={headingAs} />
 
       <div className="mt-8 flex flex-col border-t border-ink/10 md:mt-10">
         {tiers.map((tier, tierIndex) => (
