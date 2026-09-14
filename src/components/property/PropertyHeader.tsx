@@ -128,7 +128,13 @@ export function PropertyHeader({ site, activeHref }: PropertyHeaderProps) {
                   // `focus-within` for a keyboard — so the submenu needs no
                   // React state and stays available if hydration is slow.
                   <li key={item.label} className="group/item relative">
-                    {item.inScope ? (
+                    {/*`!== false`, not truthiness. A missing `inScope` used to mean *out* of
+scope here and *in* scope in MobileNavOverlay, ActionLink and the `link`
+schema's initialValue — so the same nav item could be a dead label on a
+desktop and a working link on a phone. Safe to align now that all 84
+labelled internal links in src/data state the flag: nothing rendered
+changes, and an item added later without it behaves like the rest. */}
+                    {item.inScope !== false ? (
                       <Link
                         href={item.href}
                         className={`group/nav ${labelClassName} flex items-center gap-1.5 hover:text-white`}
@@ -171,7 +177,7 @@ export function PropertyHeader({ site, activeHref }: PropertyHeaderProps) {
                                   >
                                     {child.label}
                                   </a>
-                                ) : child.inScope ? (
+                                ) : child.inScope !== false ? (
                                   <Link href={child.href} className={childClassName}>
                                     {child.label}
                                   </Link>

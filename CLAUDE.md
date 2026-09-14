@@ -251,6 +251,23 @@ The last two needed a section type that did not exist, and both near-misses are 
   - `ReadMore` — clamps a long block behind a "Read more" toggle, **but only after measuring a real overflow**, so short items keep no control. Used by `PackageList` for the benefits list and the tour notes: the photograph is a fixed 352px while those text columns ran 725–905px, leaving a third of the row as empty band. Follows `Reveal`'s rule — the server ships it unclamped with no button, and the clamp is only ever applied once the client has confirmed it can undo it. The "Read more" label and its gold-underline treatment are reused from `PostGrid`, not invented.
   - `icons.tsx` — hand-drawn inline SVGs instead of an icon library dependency. Deliberately avoids recreating any brand's actual logomark (e.g. Google Maps links use the generic pin icon, not Google's "G").
 
+**All five readers of `inScope` agree now, and that took three passes to
+notice.** `PackageList`, `PropertyHeader` and `LinkCardGrid` tested the flag
+for truthiness — a *missing* one meant **out** of scope — while
+`MobileNavOverlay`, `ActionLink`, the `link` schema's `initialValue` and the
+migration's `linkValue` all treated a missing one as **in** scope. One field,
+two readings, and the desktop nav disagreeing with the mobile nav over the
+same data. The visible damage was two seeded pages linking where the coded
+page rendered inert text; the latent damage was that any item added without
+the flag would render as a dead label that looks like a design choice. All
+five test `!== false` now. That was only safe to change after checking that
+**all 84 labelled internal links in `src/data` state the flag explicitly**, so
+it altered nothing rendered — verified by diffing the raw `<main>` markup of
+all 78 pages before and after. Audit it with: no `border border-ink/20` (the
+inert-button class) anywhere in the build, no `<li class="group/item
+relative"><span`, and every `group/card` tile wrapped in an `<a>`; at the time
+of writing that is 0, 0, and 39 of 39.
+
 **The `inScope` convention:** `PropertyNavItem`, `LinkCardItem`, and `MobileNavLink` all carry an `inScope?: boolean`. When true (or omitted), the item renders as a real `<Link>`; when explicitly `false`, it renders as plain `<span>` text with identical styling — used everywhere a live-site link points at a page this project doesn't build (Villas, Dining, SPA, Offers, Blog, etc.). Follow this same pattern for any new nav/grid item rather than inventing a different scoping mechanism.
 
 **Carousels** (PropertyHero, ImageGallery, TestimonialCarousel) follow one consistent pattern: local `useState` index, plain prev/next handlers with wraparound, hairline-rule indicators — no carousel library. All hide their controls entirely when given a single item (the live Ubud hero genuinely has one slide). PropertyHero auto-advances every 6s and ImageGallery every 5s — a gallery is shorter-lived than the hero and there are often several to a page — both pausing on hover and disabled outright under `prefers-reduced-motion`. ImageGallery uses a `setTimeout` keyed on the active index rather than a standing `setInterval`, so tapping a bullet restarts the wait instead of having the chosen slide yanked away a moment later.

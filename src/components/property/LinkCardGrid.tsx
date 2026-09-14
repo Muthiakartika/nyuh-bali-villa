@@ -140,7 +140,11 @@ export function LinkCardGrid({
           // of simply switched on.
           return (
             <Reveal key={item.label} delay={index * 90}>
-              {item.inScope ? (
+              {/* `!== false`, not truthiness — see the note in
+                  PropertyHeader. A card added without the flag used to render
+                  as an inert tile, which looks like a design choice rather
+                  than a mistake. */}
+              {item.inScope !== false ? (
                 <Link href={item.href} className="block">
                   {content}
                 </Link>
