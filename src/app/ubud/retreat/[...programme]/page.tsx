@@ -73,6 +73,12 @@ export default async function RetreatProgrammePage({
   const item = await getExperience(PREFIX + (await params).programme.join("/"));
   if (!item) notFound();
   const site = await getPropertySite("ubud");
+  // The closing "Other Personalized Luxury Retreat" grid shows the *other*
+  // retreats, so their thumbnails have to be resolved here — the detail body
+  // is handed one experience and cannot see the rest.
+  const cardImages = Object.fromEntries(
+    (await getExperiences()).map((entry) => [entry.slug, entry.cardImage]),
+  );
 
   return (
     <>
@@ -84,7 +90,7 @@ export default async function RetreatProgrammePage({
           eyebrow={item.eyebrow}
           title={item.title}
         />
-        <ExperienceDetailBody experience={item} site={site} />
+        <ExperienceDetailBody experience={item} site={site} cardImages={cardImages} />
         <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
       </main>
       <PropertyFooter site={site} />

@@ -194,6 +194,14 @@ export const experience = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "cardImage",
+      title: "Thumbnail when listed elsewhere",
+      type: "imageWithAlt",
+      group: "media",
+      description:
+        'Used in the "Other Personalized Luxury Retreat" grid at the foot of the other retreat pages. Empty uses the hero. Pick a photograph that does not already appear on those pages — no page shows the same picture twice.',
+    }),
+    defineField({
       name: "gallery",
       title: "Gallery",
       type: "array",

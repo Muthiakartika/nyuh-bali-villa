@@ -275,6 +275,7 @@ const experienceProjection = `{
   faqHeading,
   faq,
   hero ${imageProjection},
+  cardImage ${imageProjection},
   gallery[] ${imageProjection},
   seo ${seoProjection}
 }`;
@@ -365,6 +366,7 @@ export const siteSettingsQuery = defineQuery(`
     dealHeadline,
     dealCode,
     dealButtonLabel,
+    homeLogo ${imageProjection},
     footerLogo ${imageProjection},
     footerBookingLabel,
     footerMenuHeading,

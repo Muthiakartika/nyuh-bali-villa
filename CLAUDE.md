@@ -274,6 +274,33 @@ of writing that is 0, 0, and 39 of 39.
 
 **All three carousels keep every slide in the server HTML** and cross-fade between them; none renders only the active one. `TestimonialCarousel` used to — it rendered `testimonials[activeIndex]` alone, so three of Ubud's four guest quotes existed only in the React payload and never reached a crawler or a visitor whose JS didn't run. It now stacks its quotes in a one-cell grid (`col-start-1 row-start-1`, `items-center`) rather than the absolute positioning the image carousels use, because text has no fixed height: the band takes the height of the longest quote and stops resizing as you page through. Same rule as `FaqAccordion`'s answers — if it is page copy, it ships in the markup.
 
+**Every photograph on the site is now editable from the Studio, bar two, and
+the check that proves it is a build scan rather than a source grep.** Count
+what each prerendered page actually requests: an image served from
+`cdn.sanity.io` has an asset behind it and can be swapped by dragging a file
+onto a field; one served from `/uploads/…` is falling back to a path. That
+scan started at **21 distinct files** and ends at **2**. Three different causes,
+and only the first was visible by grepping for a literal path:
+
+- **The landing page's wordmark** was written into `HomeHeader` as a path. It
+  is the one route with no property document to take a logo from, so it had no
+  field at all — `siteSettings.homeLogo` is it, and because `HomeHeader` is a
+  Client Component (it owns the hamburger) the route resolves the image and
+  passes it in.
+- **The four in-room pages** were seeded *after* `npm run sanity:images` last
+  ran, so their fields held paths with no asset. Rerunning it was the whole
+  fix — it is idempotent and resumes.
+- **The "Other Personalized Luxury Retreat" grid** took its six thumbnails from
+  `PERSONALISED_RETREATS` in `src/data/experiences.ts`, which no CMS field
+  reached. Each retreat carries its own `cardImage` now, resolved by the route
+  (the detail body is handed one experience and cannot see the others).
+
+**The two that remain are deliberate and must stay in code.** They are the
+per-page overrides inside `otherPersonalisedRetreats` — `ubudspa.webp` and
+`yoga-4.jpg` — and they exist for the rule below: without them, two of those
+pages would show the same photograph twice. They are a layout constraint, not
+content.
+
 **No photograph is used twice on the same page.** This is a client requirement, and it is enforced structurally rather than by remembering: `RoomDetail` and `ExperienceDetail` filter the page's `hero` out of the gallery they render, `PostBody` drops any body image block equal to the post's featured image, and the three `InstagramTeaser` grids carry photos the rest of their page doesn't use. The rest is per-page curation — page heroes are chosen from outside the lists below them, and where two entries share a subject (the two Seminyak sunset tours both visit Tanah Lot) each shows the stops unique to it. Re-check by counting `<img>` sources inside `<main>` per route after any image change; the awards marquee and the header/footer logo legitimately repeat and are excluded.
 
 **The rule now holds on all 74 routes, and the page header is where it kept breaking.** The live site routinely opens a page on a photograph it uses again further down — the Wellness header is the Yoga Class photo, the Explore Bali header is the charter car, `/ubud/villa`'s three header slides are three rooms' lead photographs — and the client flagged exactly that ("please don't repeat the same pictures"). Sixteen pages carried a repeat; each was fixed by moving the **header**, not the content row, because the content photograph is the one that has to be there (the client had specifically asked for the yoga picture back). Replacements come from the live WordPress media library (`/wp-json/wp/v2/media`, 640 images, most of them unused by the site), and **two traps make filename-based picking unsafe**: the same shot is often published twice under different names (`2023/03/Tour-Seminyak.webp` = `2023/02/full-day-travelling.webp`, `2023/03/honeymoon-ubud.webp` = `2023/02/Honeymoon-Getaway-Package.jpg`, `2023/03/Honeymoon-Pool-Villa-1.webp` = `2023/02/Honeymoon-Pool-Villa-6.jpg`), and a promising name can be the wrong picture entirely (`Seminyak-slider-4.webp` is a housekeeper cleaning a basin). **Look at every candidate before using it.** Verify with the audit above: 0 repeats across 74 routes, awards badges excluded.

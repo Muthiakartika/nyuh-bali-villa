@@ -27,6 +27,7 @@ export type SiteSettings = {
   dealHeadline?: string;
   dealCode?: string;
   dealButtonLabel?: string;
+  homeLogo?: ImageWithAlt;
   footerLogo?: ImageWithAlt;
   footerBookingLabel?: string;
   footerMenuHeading?: string;
@@ -1058,6 +1059,7 @@ export type Experience = {
     } & FaqItem
   >;
   hero?: ImageWithAlt;
+  cardImage?: ImageWithAlt;
   gallery?: Array<
     {
       _key: string;
@@ -3084,7 +3086,7 @@ export type RoomsByPropertyQueryResult = Array<{
 
 // Source: src/sanity/lib/queries.ts
 // Variable: allExperiencesQuery
-// Query: *[_type == "experience" && defined(slug)] | order(group asc, title asc) {  _id,  _type,  title,  slug,  group,  eyebrow,  paragraphs,  recommendedFor,  note,  sections[]{    ...,    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  blocks,  programsHeading,  programs,  inclusions,  price,  highlightsHeading,  highlights[]{    ...,    icon {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  closingCta,  teamHeading,  team[]{    ...,    photo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  faqHeading,  faq,  hero {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  gallery[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  seo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}}
+// Query: *[_type == "experience" && defined(slug)] | order(group asc, title asc) {  _id,  _type,  title,  slug,  group,  eyebrow,  paragraphs,  recommendedFor,  note,  sections[]{    ...,    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  blocks,  programsHeading,  programs,  inclusions,  price,  highlightsHeading,  highlights[]{    ...,    icon {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  closingCta,  teamHeading,  team[]{    ...,    photo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  faqHeading,  faq,  hero {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  cardImage {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  gallery[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  seo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}}
 export type AllExperiencesQueryResult = Array<{
   _id: string;
   _type: "experience";
@@ -3171,6 +3173,15 @@ export type AllExperiencesQueryResult = Array<{
     crop: SanityImageCrop | null;
     hotspot: SanityImageHotspot | null;
   } | null;
+  cardImage: {
+    _type: "imageWithAlt";
+    asset: SanityImageAssetReference | null;
+    alt: string | null;
+    caption: string | null;
+    externalUrl: string | null;
+    crop: SanityImageCrop | null;
+    hotspot: SanityImageHotspot | null;
+  } | null;
   gallery: Array<{
     _type: "imageWithAlt";
     asset: SanityImageAssetReference | null;
@@ -3201,7 +3212,7 @@ export type AllExperiencesQueryResult = Array<{
 
 // Source: src/sanity/lib/queries.ts
 // Variable: experienceBySlugQuery
-// Query: *[_type == "experience" && slug == $slug][0] {  _id,  _type,  title,  slug,  group,  eyebrow,  paragraphs,  recommendedFor,  note,  sections[]{    ...,    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  blocks,  programsHeading,  programs,  inclusions,  price,  highlightsHeading,  highlights[]{    ...,    icon {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  closingCta,  teamHeading,  team[]{    ...,    photo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  faqHeading,  faq,  hero {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  gallery[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  seo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}}
+// Query: *[_type == "experience" && slug == $slug][0] {  _id,  _type,  title,  slug,  group,  eyebrow,  paragraphs,  recommendedFor,  note,  sections[]{    ...,    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  blocks,  programsHeading,  programs,  inclusions,  price,  highlightsHeading,  highlights[]{    ...,    icon {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  closingCta,  teamHeading,  team[]{    ...,    photo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  faqHeading,  faq,  hero {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  cardImage {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  gallery[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  seo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}}
 export type ExperienceBySlugQueryResult = {
   _id: string;
   _type: "experience";
@@ -3280,6 +3291,15 @@ export type ExperienceBySlugQueryResult = {
     } & FaqItem
   > | null;
   hero: {
+    _type: "imageWithAlt";
+    asset: SanityImageAssetReference | null;
+    alt: string | null;
+    caption: string | null;
+    externalUrl: string | null;
+    crop: SanityImageCrop | null;
+    hotspot: SanityImageHotspot | null;
+  } | null;
+  cardImage: {
     _type: "imageWithAlt";
     asset: SanityImageAssetReference | null;
     alt: string | null;
@@ -3514,7 +3534,7 @@ export type PropertyBySlugQueryResult = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: siteSettingsQuery
-// Query: *[_type == "siteSettings"][0]{    _id,    _type,    title,    description,    favicon {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    bookNowLabel,    dealHeadline,    dealCode,    dealButtonLabel,    footerLogo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    footerBookingLabel,    footerMenuHeading,    footerMenuLinks[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},    footerBlogHeading,    footerNote,    legalLinks[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},    defaultSeo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}  }
+// Query: *[_type == "siteSettings"][0]{    _id,    _type,    title,    description,    favicon {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    bookNowLabel,    dealHeadline,    dealCode,    dealButtonLabel,    homeLogo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    footerLogo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    footerBookingLabel,    footerMenuHeading,    footerMenuLinks[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},    footerBlogHeading,    footerNote,    legalLinks[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},    defaultSeo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}  }
 export type SiteSettingsQueryResult = {
   _id: string;
   _type: "siteSettings";
@@ -3533,6 +3553,15 @@ export type SiteSettingsQueryResult = {
   dealHeadline: string | null;
   dealCode: string | null;
   dealButtonLabel: string | null;
+  homeLogo: {
+    _type: "imageWithAlt";
+    asset: SanityImageAssetReference | null;
+    alt: string | null;
+    caption: string | null;
+    externalUrl: string | null;
+    crop: SanityImageCrop | null;
+    hotspot: SanityImageHotspot | null;
+  } | null;
   footerLogo: {
     _type: "imageWithAlt";
     asset: SanityImageAssetReference | null;
@@ -3608,13 +3637,13 @@ declare global {
     '\n  *[_type == "post" && defined(path)].path\n': AllPostPathsQueryResult;
     '\n  *[_type == "room" && defined(slug.current)] | order(property asc, order asc, title asc) {\n  _id,\n  _type,\n  title,\n  "slug": slug.current,\n  property,\n  description,\n  details,\n  amenities,\n  facilities,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  order,\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': AllRoomsQueryResult;
     '\n  *[_type == "room" && property == $property && defined(slug.current)] | order(order asc, title asc) {\n  _id,\n  _type,\n  title,\n  "slug": slug.current,\n  property,\n  description,\n  details,\n  amenities,\n  facilities,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  order,\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': RoomsByPropertyQueryResult;
-    '\n  *[_type == "experience" && defined(slug)] | order(group asc, title asc) {\n  _id,\n  _type,\n  title,\n  slug,\n  group,\n  eyebrow,\n  paragraphs,\n  recommendedFor,\n  note,\n  sections[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  blocks,\n  programsHeading,\n  programs,\n  inclusions,\n  price,\n  highlightsHeading,\n  highlights[]{\n    ...,\n    icon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  closingCta,\n  teamHeading,\n  team[]{\n    ...,\n    photo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  faqHeading,\n  faq,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': AllExperiencesQueryResult;
-    '\n  *[_type == "experience" && slug == $slug][0] {\n  _id,\n  _type,\n  title,\n  slug,\n  group,\n  eyebrow,\n  paragraphs,\n  recommendedFor,\n  note,\n  sections[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  blocks,\n  programsHeading,\n  programs,\n  inclusions,\n  price,\n  highlightsHeading,\n  highlights[]{\n    ...,\n    icon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  closingCta,\n  teamHeading,\n  team[]{\n    ...,\n    photo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  faqHeading,\n  faq,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': ExperienceBySlugQueryResult;
+    '\n  *[_type == "experience" && defined(slug)] | order(group asc, title asc) {\n  _id,\n  _type,\n  title,\n  slug,\n  group,\n  eyebrow,\n  paragraphs,\n  recommendedFor,\n  note,\n  sections[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  blocks,\n  programsHeading,\n  programs,\n  inclusions,\n  price,\n  highlightsHeading,\n  highlights[]{\n    ...,\n    icon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  closingCta,\n  teamHeading,\n  team[]{\n    ...,\n    photo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  faqHeading,\n  faq,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  cardImage {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': AllExperiencesQueryResult;
+    '\n  *[_type == "experience" && slug == $slug][0] {\n  _id,\n  _type,\n  title,\n  slug,\n  group,\n  eyebrow,\n  paragraphs,\n  recommendedFor,\n  note,\n  sections[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  blocks,\n  programsHeading,\n  programs,\n  inclusions,\n  price,\n  highlightsHeading,\n  highlights[]{\n    ...,\n    icon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  closingCta,\n  teamHeading,\n  team[]{\n    ...,\n    photo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  faqHeading,\n  faq,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  cardImage {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': ExperienceBySlugQueryResult;
     '\n  *[_type == "packageSet" && defined(slug.current)]{\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    property,\n    alwaysIncluded,\n    packages[]{\n      ...,\n      images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n      ctas[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n      "description": select(\n  description[0]._type == "block" => description[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n}\n  },\n  description\n)\n    }\n  }\n': AllPackageSetsQueryResult;
     '\n  *[_type == "testimonial"] | order(order asc){\n    _id,\n    _type,\n    quote,\n    author,\n    property,\n    order\n  }\n': AllTestimonialsQueryResult;
     '\n  *[_type == "legalPage" && path == $path][0]{\n    _id,\n    _type,\n    title,\n    path,\n    intro,\n    sections,\n    updatedAt,\n    seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n': LegalPageByPathQueryResult;
     '\n  *[_type == "property" && slug == $slug][0]{\n    _id,\n    _type,\n    slug,\n    label,\n    logo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    navItems,\n    addressLines,\n    phones,\n    email,\n    maps,\n    facebook,\n    instagram,\n    instagramFeedUrl,\n    instagramApiUrl,\n    spaInstagramApiUrl,\n    bookingHref,\n    bookingWidgetId,\n    offersHref,\n    blogPosts,\n    awardBadges[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    awardVariant\n  }\n': PropertyBySlugQueryResult;
-    '\n  *[_type == "siteSettings"][0]{\n    _id,\n    _type,\n    title,\n    description,\n    favicon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    bookNowLabel,\n    dealHeadline,\n    dealCode,\n    dealButtonLabel,\n    footerLogo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    footerBookingLabel,\n    footerMenuHeading,\n    footerMenuLinks[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n    footerBlogHeading,\n    footerNote,\n    legalLinks[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n    defaultSeo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n': SiteSettingsQueryResult;
+    '\n  *[_type == "siteSettings"][0]{\n    _id,\n    _type,\n    title,\n    description,\n    favicon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    bookNowLabel,\n    dealHeadline,\n    dealCode,\n    dealButtonLabel,\n    homeLogo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    footerLogo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    footerBookingLabel,\n    footerMenuHeading,\n    footerMenuLinks[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n    footerBlogHeading,\n    footerNote,\n    legalLinks[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n    defaultSeo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n': SiteSettingsQueryResult;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

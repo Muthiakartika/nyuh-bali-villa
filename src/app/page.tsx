@@ -3,7 +3,7 @@ import { HomeHeader } from "@/components/home/HomeHeader";
 import { HomeFooter } from "@/components/home/HomeFooter";
 import { PropertyPanel } from "@/components/home/PropertyPanel";
 import { BookNowRibbon } from "@/components/layout/BookNowRibbon";
-import { getBookNowLabel } from "@/sanity/lib/content";
+import { getBookNowLabel, getHomeLogo } from "@/sanity/lib/content";
 import ManagedPage from "@/components/sanity/ManagedPage";
 import { resolvePageMetadata } from "@/sanity/lib/metadata";
 import { HOME_PANELS } from "@/data/pages/home";
@@ -40,9 +40,10 @@ const GROUP_BOOKING_HREF =
  * whole page to ship as client-side JS.
  */
 export default async function Home() {
+  const homeLogo = await getHomeLogo();
   return (
     <div className="relative min-h-screen">
-      <HomeHeader />
+      <HomeHeader logoSrc={homeLogo.src} logoAlt={homeLogo.alt} />
 
       {/* Gapless on purpose: the seam where the two photographs meet is the
           division, and it does the job a gutter used to do without spending

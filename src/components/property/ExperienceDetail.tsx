@@ -28,6 +28,12 @@ const INQUIRY_ANCHOR = "retreat-inquiry";
 type ExperienceDetailBodyProps = {
   experience: Experience;
   site: PropertySite;
+  /**
+   * Every retreat's own thumbnail, keyed by slug, for the grid that closes
+   * the personalised pages. The route resolves it — this component is handed
+   * one experience and cannot see the others.
+   */
+  cardImages?: Record<string, string | undefined>;
 };
 
 /**
@@ -51,6 +57,7 @@ type ExperienceDetailBodyProps = {
 export function ExperienceDetailBody({
   experience,
   site,
+  cardImages,
 }: ExperienceDetailBodyProps) {
   // Same rule as `RoomDetail`: the page opens on `hero`, so the gallery below
   // shows everything except that one photograph rather than repeating it.
@@ -61,7 +68,7 @@ export function ExperienceDetailBody({
   // that failed to load.
   const hasGalleryBand = gallery.length > 1;
   const introImage = gallery.length === 1 ? gallery[0] : null;
-  const related = otherPersonalisedRetreats(experience.slug);
+  const related = otherPersonalisedRetreats(experience.slug, cardImages);
   // Only the retreat programmes publish an enquiry form; the wellness
   // classes and cultural activities book through the resort directly.
   const hasInquiry = experience.group === "retreat";

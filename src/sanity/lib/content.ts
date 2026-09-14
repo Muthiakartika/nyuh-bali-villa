@@ -318,6 +318,7 @@ function toExperience(document: SanityExperience): ResolvedExperience {
       : undefined,
     gallery: imageUrls(document.gallery),
     hero: imageUrl(document.hero) ?? "",
+    cardImage: imageUrl(document.cardImage, 900) ?? undefined,
   };
 }
 
@@ -628,6 +629,23 @@ export async function getFooterSettings(site: PropertySite): Promise<FooterSetti
           external: item.external,
         }))
       : defaultLegal,
+  };
+}
+
+/**
+ * The wordmark over the landing page's photographs.
+ *
+ * The property pages take theirs from the property document, but the homepage
+ * has no property — so this was the one image on the site with no CMS field
+ * behind it at all, written into `HomeHeader` as a path. It is a different
+ * artwork from the footer's: its tagline is cream, for the dark photography
+ * it sits on.
+ */
+export async function getHomeLogo(): Promise<{ src: string; alt: string }> {
+  const settings = await getSiteSettings();
+  return {
+    src: imageUrl(settings?.homeLogo, 400) || "/uploads/2023/04/logonyuhbali.webp",
+    alt: settings?.homeLogo?.alt || settings?.title || "Nyuh Bali Villas",
   };
 }
 

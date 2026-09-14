@@ -437,6 +437,8 @@ export type SanityExperience = {
   faqHeading?: string;
   faq?: SanityFaqItem[];
   hero?: SanityImage;
+  /** The thumbnail used when this retreat is listed on another one's page. */
+  cardImage?: SanityImage;
   gallery?: SanityImage[];
   seo?: SanitySeo;
 };
@@ -522,6 +524,7 @@ export type SanitySiteSettings = {
   dealHeadline?: string;
   dealCode?: string;
   dealButtonLabel?: string;
+  homeLogo?: SanityImage;
   footerLogo?: SanityImage;
   footerBookingLabel?: string;
   footerMenuHeading?: string;

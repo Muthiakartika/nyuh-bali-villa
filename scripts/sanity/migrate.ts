@@ -41,7 +41,7 @@ import { join } from "node:path";
 import { createClient } from "@sanity/client";
 import { getCliClient } from "sanity/cli";
 
-import { EXPERIENCES, type Experience } from "../../src/data/experiences";
+import { EXPERIENCES, PERSONALISED_RETREATS, type Experience } from "../../src/data/experiences";
 import {
   PRIVACY_POLICY_SECTIONS,
   TERMS_CONDITIONS_SECTIONS,
@@ -597,6 +597,15 @@ async function migrateSiteSettings() {
     _type: "siteSettings",
     title: "Nyuh Bali Villas",
     ...(home?.description ? { description: home.description } : {}),
+    // The two wordmarks. Different artwork, not two crops of one: the
+    // homepage's tagline is cream for the dark photography it sits over, the
+    // footer's is the mark that reads on `ink`. Seeded so the Studio shows
+    // what is rendering rather than an empty field.
+    homeLogo: await migratedImage(
+      "/uploads/2023/04/logonyuhbali.webp",
+      "Nyuh Bali Villas",
+    ),
+    footerLogo: await migratedImage("/uploads/2022/12/Logo-Nyuh-Bali.png", ""),
     legalLinks: [
       {
         _type: "link",
@@ -757,6 +766,17 @@ async function migrateExperiences() {
       ...(experience.faqHeading ? { faqHeading: experience.faqHeading } : {}),
       ...(experience.faq?.length ? { faq: faqItems(experience.faq) } : {}),
       hero: await migratedImage(experience.hero, experience.title),
+      // The thumbnail this retreat shows when it is listed at the foot of
+      // another one's page. Only the four personalised retreats are ever
+      // listed that way, so only they carry one.
+      ...(personalisedCardImage(experience.slug)
+        ? {
+            cardImage: await migratedImage(
+              personalisedCardImage(experience.slug) as string,
+              experience.title,
+            ),
+          }
+        : {}),
       gallery: await migratedImages(experience.gallery, experience.title),
       seo: seoFor(`/ubud/${experience.slug}`),
     });
@@ -1138,6 +1158,11 @@ async function contactSection(options: {
     ...(options.intro ? { intro: proseRichText(options.intro) } : {}),
     image: await migratedImage(options.image, options.alt),
   };
+}
+
+/** The grid thumbnail each personalised retreat carries, from src/data. */
+function personalisedCardImage(slug: string): string | undefined {
+  return PERSONALISED_RETREATS.find((item) => item.slug === slug)?.image;
 }
 
 async function migratePages() {

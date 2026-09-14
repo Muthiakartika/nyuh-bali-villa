@@ -76,6 +76,10 @@ export type Experience = {
   team?: { heading: string; members: TeamMember[] };
   gallery: string[];
   hero: string;
+  /** The thumbnail used when this retreat is listed at the foot of another
+   * one's page. Set from the CMS; `PERSONALISED_RETREATS` is the fallback and
+   * carries the same picture for each. */
+  cardImage?: string;
 };
 
 /** Every programme tier on every retreat page closes with these same two
@@ -138,16 +142,29 @@ export const PERSONALISED_RETREATS = [
 
 /** The other three personalised retreats, for the closing grid. Returns an
  * empty array for anything that isn't one of the four. */
-export function otherPersonalisedRetreats(slug: string) {
+export function otherPersonalisedRetreats(
+  slug: string,
+  /**
+   * Each retreat's own thumbnail, as published in the Studio — keyed by slug.
+   * Empty or missing falls back to the picture below, which is what this
+   * function returned before the field existed.
+   */
+  cardImages: Record<string, string | undefined> = {},
+) {
   if (!PERSONALISED_RETREATS.some((item) => item.slug === slug)) return [];
   return PERSONALISED_RETREATS.filter((item) => item.slug !== slug).map((item) => {
+    // The two overrides are NOT content and are deliberately not editable:
+    // they exist so no page shows the same photograph twice, which is a
+    // client requirement enforced structurally elsewhere too (see CLAUDE.md).
+    // The live site solves it by using a different thumbnail per viewing
+    // page; these two pairs are where one picture would otherwise repeat.
     if (slug === "retreat/luxury/balinese-healing" && item.slug === "retreat/luxury/holistic-balancing") {
       return { ...item, image: `${U}2023/03/ubudspa.webp` };
     }
     if (slug === "retreat/luxury/new-beginning" && item.slug === "retreat/couples") {
       return { ...item, image: `${U}2023/02/yoga-4.jpg` };
     }
-    return item;
+    return { ...item, image: cardImages[item.slug] || item.image };
   });
 }
 

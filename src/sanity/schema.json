@@ -76,6 +76,14 @@
         },
         "optional": true
       },
+      "homeLogo": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "imageWithAlt"
+        },
+        "optional": true
+      },
       "footerLogo": {
         "type": "objectAttribute",
         "value": {
@@ -6519,6 +6527,14 @@
         "optional": true
       },
       "hero": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "imageWithAlt"
+        },
+        "optional": true
+      },
+      "cardImage": {
         "type": "objectAttribute",
         "value": {
           "type": "inline",

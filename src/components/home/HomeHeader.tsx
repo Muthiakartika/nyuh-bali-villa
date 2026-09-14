@@ -20,19 +20,29 @@ import { Container } from "@/components/ui/Container";
  * A Client Component because it needs `useState` for the mobile menu — that's
  * ephemeral, browser-only UI state with no reason to exist on the server.
  */
-export function HomeHeader() {
+type HomeHeaderProps = {
+  /** The wordmark, resolved from Site settings by the route — see
+   *  `getHomeLogo`. A Client Component cannot read Sanity itself. */
+  logoSrc: string;
+  logoAlt: string;
+};
+
+export function HomeHeader({ logoSrc, logoAlt }: HomeHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <header className="absolute inset-x-0 top-0 z-[150] px-5 py-6 sm:px-8 md:py-7">
       <Container className="flex items-center justify-between">
         <Link href="/" className="relative h-[46px] w-[126px] shrink-0">
-          {/* Hotlinked straight from the live site, per the project brief —
-              see next.config.ts for the remotePatterns allow-list that makes
-              this legal for next/image to optimize. */}
+          {/* A prop, not a path. This is a Client Component — it owns the
+              hamburger's open state — so it cannot read Sanity itself; the
+              route resolves the wordmark and passes it in. It was the last
+              image on the site with no CMS field behind it, because the
+              landing page is the one route with no property document to take
+              a logo from. */}
           <Image
-            src="/uploads/2023/04/logonyuhbali.webp"
-            alt="Nyuh Bali Villas"
+            src={logoSrc}
+            alt={logoAlt}
             fill
             sizes="126px"
             className="object-contain object-left"

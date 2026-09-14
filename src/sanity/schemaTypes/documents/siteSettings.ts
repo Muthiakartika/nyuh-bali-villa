@@ -83,6 +83,14 @@ export const siteSettings = defineType({
       validation: (Rule) => Rule.max(30),
     }),
     defineField({
+      name: "homeLogo",
+      title: "Homepage logo",
+      type: "imageWithAlt",
+      group: "brand",
+      description:
+        "The wordmark over the photographs on the landing page. A different artwork from the footer's — its tagline is set in cream for the dark photography behind it. Empty uses the one the site ships with.",
+    }),
+    defineField({
       name: "footerLogo",
       title: "Footer logo",
       type: "imageWithAlt",
