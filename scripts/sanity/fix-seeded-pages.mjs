@@ -18,13 +18,17 @@
  * routes render `AwardsRow` *outside* `ManagedPage`, so the page already has
  * one; the seeded `awardsSection` drew another underneath it.
  *
- * **2. Package CTAs that linked where the coded page did not.** The seed's
- * `linkValue` defaults `inScope` to `true`, but `PackageList` reads a missing
- * `inScope` as *out* of scope — `ActionLink` reads it the other way, which is
- * the inconsistency underneath this. Two labels the site renders as inert
- * text became live links. Both destinations exist, so the better fix may be
- * to mark them in scope in `src/data`; this restores what the site shows
- * today and leaves that decision to the client.
+ * **2. Two package CTAs whose `inScope` disagreed with the coded page.** The
+ * seed's `linkValue` defaults `inScope` to `true`; `PackageList` used to read
+ * a missing `inScope` as *out* of scope while `ActionLink` read it the other
+ * way. One field, two readings.
+ *
+ * Resolved in favour of linking: `/ubud/fitness` is a route this project
+ * builds, so both "Explore More" labels now say `inScope: true` in `src/data`,
+ * `PackageList` reads a missing flag the way the rest of the site does, and
+ * this puts the published documents back in step. An earlier run of this
+ * script set them inert to match the code as it stood then; running it again
+ * corrects them.
  *
  * **3. Nothing to do for anchors.** The third fault found in the same diff —
  * anchored sections landing under the sticky header — was in `Section`
@@ -85,11 +89,10 @@ const SELF_AWARDING = new Set([
 ]);
 
 /**
- * The package CTAs the site renders inert. Matched on destination rather than
- * on label, because "Explore More" is the label of a dozen links that *are*
- * live — only these two are written without an `inScope` in `src/data`.
+ * Package CTAs whose `inScope` must be `true`. Matched on destination rather
+ * than on label, because "Explore More" is the label of a dozen other links.
  */
-const INERT_CTA_HREFS = new Set(["/ubud/fitness"]);
+const LIVE_CTA_HREFS = new Set(["/ubud/fitness"]);
 
 function fixAwards(document) {
   if (!SELF_AWARDING.has(document.path)) return 0;
@@ -110,8 +113,8 @@ function fixCtas(node) {
   let n = 0;
   if (node._type === "packageItem" && Array.isArray(node.ctas)) {
     for (const cta of node.ctas) {
-      if (cta?.inScope === true && INERT_CTA_HREFS.has(cta.href)) {
-        cta.inScope = false;
+      if (cta && LIVE_CTA_HREFS.has(cta.href) && cta.inScope !== true) {
+        cta.inScope = true;
         n += 1;
       }
     }
@@ -148,7 +151,7 @@ for (const document of documents) {
   written += 1;
   const notes = [];
   if (a) notes.push(a + " duplicate awards strip" + (a === 1 ? "" : "s") + " removed");
-  if (c) notes.push(c + " CTA" + (c === 1 ? "" : "s") + " set back to inert");
+  if (c) notes.push(c + " CTA" + (c === 1 ? "" : "s") + " set live");
   console.log(
     "  " + (dryRun ? "would fix" : "fixing") + "  " + copy.path + " — " + notes.join(", "),
   );

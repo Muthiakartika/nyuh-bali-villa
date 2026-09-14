@@ -426,24 +426,28 @@ repeating:
   hand-written tour route ever did — so `/seminyak/tour#tour-booking` worked
   and nothing authored in the Studio would have. `Section` applies it itself
   now whenever `id` is set.
-- **Two seeded pages linked where the coded page did not.** `linkValue`
-  defaults `inScope` to `true`, but `PackageList` reads a *missing* `inScope`
-  as out of scope while `ActionLink` reads it as in scope — an inconsistency
-  that turned two inert labels into live links. `npm run sanity:fix-pages`
-  restored them, and the seed is faithful now. Both destinations do exist, so
-  marking them in scope in `src/data` is the better long-term answer.
+- **One `inScope` field, read two ways.** `linkValue` defaults it to `true`,
+  `ActionLink` and the `link` schema treat a missing one as in scope — and
+  `PackageList` treated a missing one as *out* of scope. So two seeded pages
+  linked where the coded page rendered inert text. Resolved in favour of
+  linking, because `/ubud/fitness` is a route this project builds: both
+  "Explore More" CTAs say `inScope: true` in `src/data` now, `PackageList`
+  reads a missing flag the way everything else does, and
+  `npm run sanity:fix-pages` put the published documents in step. Checked
+  first that all **114** package CTAs in `src/data` state the flag explicitly,
+  so aligning the reader changed nothing already rendered.
 
 A fourth was mine: the four in-room pages render `AwardsRow` *outside*
 `ManagedPage`, so the `awardsSection` seeded into them drew a second strip.
 Also fixed by `sanity:fix-pages`.
 
-After all of it: raw `<main>` markup is identical on **75 of 78** pages, once
-image URLs are normalised (the CMS build serves the uploaded Sanity asset, the
-fallback the `/uploads` path it was seeded from — same photograph). The three
-that remain are known and harmless: `ctaSection`'s extra
-`mx-auto max-w-2xl text-center` wrapper on Host Your Retreat, documented above;
-and one blog post whose Sanity body orders a paragraph and an image
-differently from `src/data/posts.ts`.
+After all of it: visible text identical on **78 of 78**, and raw `<main>`
+markup identical on **76 of 78** once image URLs are normalised (the CMS build
+serves the uploaded Sanity asset, the fallback the `/uploads` path it was
+seeded from — same photograph). The two that remain are known and harmless:
+`ctaSection`'s extra `mx-auto max-w-2xl text-center` wrapper on Host Your
+Retreat, documented above, and one blog post whose Sanity body orders a
+paragraph and an image differently from `src/data/posts.ts`.
 
 ## 7. Preview and publishing
 

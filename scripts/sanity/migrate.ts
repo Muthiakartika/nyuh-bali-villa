@@ -525,21 +525,11 @@ async function packageItems(items: PackageItem[], prefix: string) {
           }
         : {}),
       ...(item.notes?.length ? { notes: item.notes } : {}),
-      // `?? false`, unlike `linkValue`'s `?? true`, because `PackageList`
-      // reads a missing `inScope` as *out* of scope while `ActionLink` reads
-      // it as in scope. Seeding the optimistic default turned two inert
-      // labels into live links — /ubud/fitness on Complimentary Services and
-      // one on Wellness — so a CMS page said something the coded page did
-      // not. Both destinations do exist, so this is worth revisiting in
-      // `src/data`; until then the seed reproduces what the site shows.
-      ...(item.ctas?.length
-        ? {
-            ctas: item.ctas.map((cta, index) => ({
-              ...linkValue(cta, index),
-              inScope: cta.inScope ?? false,
-            })),
-          }
-        : {}),
+      // Plain `linkValue` again. It briefly carried `inScope: cta.inScope ??
+      // false` to reproduce `PackageList`'s own reading of a missing flag —
+      // that disagreement is gone: PackageList reads it as every other
+      // component does, and all 114 CTAs in src/data are explicit.
+      ...(item.ctas?.length ? { ctas: item.ctas.map(linkValue) } : {}),
     });
   }
   return out;

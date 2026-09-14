@@ -205,11 +205,14 @@ outer tone showing as a strip around the inner one on `/ubud/villa`. Every
 anchored CMS section landed under the sticky header, because `Section`'s doc
 said to pair `id` with a `scroll-mt-*` class and only the hand-written tour
 route ever did; `Section` applies it itself now. And two seeded pages linked
-where the coded page renders inert text, because `linkValue` defaults `inScope`
-to `true` while **`PackageList` reads a missing `inScope` as *out* of scope and
-`ActionLink` reads it as *in* scope** — that inconsistency is still there and
-is worth resolving in `src/data`. `npm run sanity:fix-pages` corrected the
-published documents. Text and heading tags matched on all 78 pages throughout;
+where the coded page rendered inert text, because `linkValue` defaults
+`inScope` to `true` while **`PackageList` read a missing `inScope` as *out* of
+scope and `ActionLink` reads it as *in* scope** — one field, two readings.
+Resolved in favour of linking (`/ubud/fitness` is a route this project builds):
+both CTAs state `inScope: true` in `src/data`, and `PackageList` now reads a
+missing flag the way everything else does, which was safe to align only after
+checking that **all 114 package CTAs in `src/data` state it explicitly**.
+`npm run sanity:fix-pages` corrected the published documents. Text and heading tags matched on all 78 pages throughout;
 only the markup diff showed any of this.
 
 **One seeded string had quietly disagreed with the site, and only reading the

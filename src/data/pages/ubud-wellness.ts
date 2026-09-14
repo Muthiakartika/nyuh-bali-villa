@@ -36,7 +36,7 @@ export const FACILITIES: PackageItem[] = [
     images: [`${UPLOADS}/2026/08/Nyuh-Bali-Ubud-23-1.jpg`],
     description:
       "Opening Hours: 7.00 AM – 9.00 PM. Here at Nyuh Bali, we understand your regular workout cannot be put on standby just because you are away from home. We have created a home gym to keep you in shape during the holiday. Exclusively for our in-house guests.",
-    ctas: [{ label: "Explore More", href: "/ubud/fitness" }],
+    ctas: [{ label: "Explore More", href: "/ubud/fitness", inScope: true }],
   },
   {
     name: "Sound Healing",

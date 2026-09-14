@@ -115,7 +115,7 @@ export const SERVICES: PackageItem[] = [
     images: [`${UPLOADS}/2024/12/DW_03575-min-min.jpg.webp`],
     description:
       "Here at Nyuh Bali, we understand your regular workout cannot be put on standby just because you are away from home. We have created a home gym to keep you in shape during the holiday. Enjoy complimentary unlimited access to our fitness center that features a spectrum of weight and state of the art machinery such as treadmill, multi gym station, cross trainer, exercise bike, abs training bench, pilates ball, yoga matt and also some weights.",
-    ctas: [{ label: "Explore More", href: "/ubud/fitness" }],
+    ctas: [{ label: "Explore More", href: "/ubud/fitness", inScope: true }],
   },
   {
     name: "Free Afternoon Tea",

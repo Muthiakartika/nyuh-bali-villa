@@ -279,7 +279,16 @@ export function PackageList({
                           );
                         }
 
-                        if (cta.inScope) {
+                        // `!== false`, not truthiness. A missing `inScope`
+                        // meant *out* of scope here and *in* scope in
+                        // `ActionLink`, in the `link` schema's initialValue
+                        // and in the migration — one field read two ways,
+                        // which seeded two live links where this renders
+                        // inert text. Safe to align now that all 114 CTAs in
+                        // src/data say which they are: nothing rendered
+                        // changes, and the next CTA written without the flag
+                        // behaves the way the rest of the site does.
+                        if (cta.inScope !== false) {
                           return (
                             <Link
                               key={cta.label}
