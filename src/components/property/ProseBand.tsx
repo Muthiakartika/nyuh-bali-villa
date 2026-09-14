@@ -1,6 +1,6 @@
-import { Fragment } from "react";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
+import { RichProse, type ProseValue } from "@/components/sanity/RichProse";
 import { Reveal } from "@/components/ui/Reveal";
 
 type ProseBandProps = {
@@ -9,9 +9,10 @@ type ProseBandProps = {
   /** Which tag this band's heading is written as. The size never changes —
    * see HeadingLevel. Editors set it per section in the CMS. */
   headingAs?: HeadingLevel;
-  /** One entry per paragraph. A paragraph may contain the token `{email}`,
-   * which is replaced by a mailto link to `email` below. */
-  paragraphs: string[];
+  /** Rich text from the CMS, or the `string[]` src/data still holds. A
+   * paragraph may contain the token `{email}`, which becomes a mailto link
+   * to `email` below — see RichProse. */
+  paragraphs: ProseValue;
   /** The property's own address. It is passed in rather than written into the
    * copy for the reason every other component here derives it: the footer, the
    * contact page and this band must never be able to disagree about where a
@@ -49,26 +50,15 @@ export function ProseBand({
     <Section tone={tone} id={anchor}>
       <SectionHeading eyebrow={eyebrow} title={heading} as={headingAs} />
       <Reveal delay={80}>
+        {/* The gap lives on this wrapper, so each paragraph is a bare
+            sibling with no margin of its own — which is what lets rich text
+            produce exactly the markup a plain string produced here. */}
         <div className="mt-8 flex max-w-[62rem] flex-col gap-4">
-          {paragraphs.map((paragraph, index) => (
-            <p key={index} className="text-[17px] leading-[1.7] font-light text-text">
-              {email
-                ? paragraph.split("{email}").map((part, i, all) => (
-                    <Fragment key={i}>
-                      {part}
-                      {i < all.length - 1 ? (
-                        <a
-                          href={`mailto:${email}`}
-                          className="text-primary-deep underline decoration-primary/40 underline-offset-[5px] transition-colors duration-300 hover:decoration-primary"
-                        >
-                          {email}
-                        </a>
-                      ) : null}
-                    </Fragment>
-                  ))
-                : paragraph}
-            </p>
-          ))}
+          <RichProse
+            value={paragraphs}
+            paragraphClassName="text-[17px] leading-[1.7] font-light text-text"
+            email={email}
+          />
         </div>
       </Reveal>
     </Section>

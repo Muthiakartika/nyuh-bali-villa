@@ -86,6 +86,14 @@ const introProjection = `"intro": select(
   intro
 )`;
 
+const paragraphsProjection = `"paragraphs": select(
+  paragraphs[0]._type == "block" => paragraphs[]{
+    ...,
+    markDefs[] ${linkProjection}
+  },
+  paragraphs
+)`;
+
 const bodyProjection = `"body": select(
   body[0]._type == "block" => body[]{
     ...,
@@ -124,6 +132,7 @@ const sectionProjection = `{
   cta ${linkProjection},
   ${bodyProjection},
   ${introProjection},
+  ${paragraphsProjection},
   packageSet->{
     _id,
     title,

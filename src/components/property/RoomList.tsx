@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
+import { RichProse, type ProseValue } from "@/components/sanity/RichProse";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button, buttonClassName } from "@/components/ui/Button";
 import { ImageGallery } from "@/components/property/ImageGallery";
@@ -32,7 +33,7 @@ type RoomListProps = {
    * see HeadingLevel. Editors set it per section in the CMS. */
   headingAs?: HeadingLevel;
   /** The paragraph the live page runs under each category heading. */
-  intro?: string;
+  intro?: ProseValue;
   rooms: Room[];
   tone?: "sand" | "sand-deep";
 };
@@ -66,9 +67,15 @@ export function RoomList({
 
       {intro ? (
         <Reveal delay={80}>
-          <p className="mt-8 max-w-[62rem] text-[17px] leading-[1.7] font-light text-text">
-            {intro}
-          </p>
+          {/* `mt-8` opens the block and `mt-4` separates anything after it, so
+              a one-paragraph intro — which is every one of them today —
+              renders the identical single <p> this was before. */}
+          <RichProse
+            value={intro}
+            paragraphClassName="max-w-[62rem] text-[17px] leading-[1.7] font-light text-text"
+            firstClassName="mt-8"
+            restClassName="mt-4"
+          />
         </Reveal>
       ) : null}
 

@@ -453,6 +453,33 @@ function faqItems(faqs: Array<{ question: string; answer: string }> | undefined)
  *
  * One block, because the value renders inside a `<p>` the layout draws.
  */
+
+/**
+ * A string or an array of paragraphs, written as the `proseRichText` those
+ * fields now take: one block per paragraph, so the breaks an author wrote are
+ * the breaks the CMS stores.
+ *
+ * Sibling of `inlineRichText`, which is the single-paragraph form used where
+ * the value renders inside a `<p>` the layout already draws.
+ */
+function proseRichText(value: string | string[] | undefined) {
+  if (!value) return undefined;
+  const paragraphs = (typeof value === "string" ? [value] : value)
+    .flatMap((entry) => entry.split(/\n{2,}/))
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+  if (!paragraphs.length) return undefined;
+  return paragraphs.map((text) => ({
+    _type: "block" as const,
+    _key: key("block", keyCounter++),
+    style: "normal" as const,
+    markDefs: [],
+    children: [{ _type: "span" as const, _key: key("span", keyCounter++), text, marks: [] }],
+  }));
+}
+
+let keyCounter = 0;
+
 function inlineRichText(value: string | PackageRun[] | undefined) {
   if (!value) return undefined;
   const runs = typeof value === "string" ? [{ text: value }] : value;
@@ -498,7 +525,21 @@ async function packageItems(items: PackageItem[], prefix: string) {
           }
         : {}),
       ...(item.notes?.length ? { notes: item.notes } : {}),
-      ...(item.ctas?.length ? { ctas: item.ctas.map(linkValue) } : {}),
+      // `?? false`, unlike `linkValue`'s `?? true`, because `PackageList`
+      // reads a missing `inScope` as *out* of scope while `ActionLink` reads
+      // it as in scope. Seeding the optimistic default turned two inert
+      // labels into live links — /ubud/fitness on Complimentary Services and
+      // one on Wellness — so a CMS page said something the coded page did
+      // not. Both destinations do exist, so this is worth revisiting in
+      // `src/data`; until then the seed reproduces what the site shows.
+      ...(item.ctas?.length
+        ? {
+            ctas: item.ctas.map((cta, index) => ({
+              ...linkValue(cta, index),
+              inScope: cta.inScope ?? false,
+            })),
+          }
+        : {}),
     });
   }
   return out;
@@ -922,7 +963,7 @@ async function roomListSection(options: {
     _key: nextKey(),
     ...(options.eyebrow ? { eyebrow: options.eyebrow } : {}),
     heading: options.heading,
-    ...(options.intro ? { intro: options.intro } : {}),
+    ...(options.intro ? { intro: proseRichText(options.intro) } : {}),
     ...(options.tone ? { tone: options.tone } : {}),
     rooms,
   };
@@ -984,7 +1025,7 @@ async function treatmentListSection(options: {
     _key: nextKey(),
     ...(options.eyebrow ? { eyebrow: options.eyebrow } : {}),
     heading: options.heading,
-    ...(options.intro ? { intro: options.intro } : {}),
+    ...(options.intro ? { intro: proseRichText(options.intro) } : {}),
     ...(options.notes?.length ? { notes: options.notes } : {}),
     ...(options.cta ? { cta: linkValue(options.cta, 0) } : {}),
     ...(options.tone ? { tone: options.tone } : {}),
@@ -1104,7 +1145,7 @@ async function contactSection(options: {
     _key: nextKey(),
     eyebrow: options.eyebrow,
     heading: options.heading,
-    ...(options.intro ? { intro: options.intro } : {}),
+    ...(options.intro ? { intro: proseRichText(options.intro) } : {}),
     image: await migratedImage(options.image, options.alt),
   };
 }
@@ -1146,9 +1187,9 @@ async function migratePages() {
       _key: nextKey(),
       eyebrow: "About Us",
       heading: "Luxury Villas & Suite in Ubud",
-      paragraphs: [
+      paragraphs: proseRichText([
         "Inspired by the philosophy of the coconut tree, or Nyuh in the Balinese language, which is known as the versatile tree to shore up people’s lives, Ubud Nyuh Bali Resort aims to create the holistic luxury retreat experience that you look for. Presenting you with two luxury yoga shalas, five-star accommodations, two swimming pools, a spa, and a home gym, you will feel the power of positive transformation of Ubud energy. Imagine waking up while hearing the groups of birds singing, inhaling the morning breeze during guided morning walks, stretching your body with a daily yoga class, and enjoying delicious healthy foods. Calm your mind by joining daily complimentary wellness activities like breathwork & sound healing to allow yourself to relax as your well-being deserves. With an experienced team that cares for you from the heart and with the personalized touch of our luxury villas in Ubud, you will feel recharged and reborn for a new beginning.",
-      ],
+      ]),
       buttonLabel: "Plan Now",
       promoCode: "ilovenyuh",
       perks: [
@@ -1219,10 +1260,10 @@ async function migratePages() {
       _key: nextKey(),
       eyebrow: "About Us",
       heading: "Nyuh Bali's Honeymoon Villa in Seminyak",
-      paragraphs: [
+      paragraphs: proseRichText([
         "Nestled in the heart of Seminyak, Nyuh Bali Villa is designed as a romantic oasis to unwind while having easy access to enjoy the Seminyak vibes. World-class restaurants, minimarket, and money changers are just a few steps from your door. Each villa represents the authentic Balinese style featuring a private pool, tropical greenery, and our signature Nyuh Bali touches for the romantic experience in Bali.",
         "Imagine the comfort of your private villa in Bali while enjoying the convenience of a fully serviced hotel such as onsite restaurant, spa, and shuttle around Seminyak. Butler service is ready around the clock as our commitment to deliver the highest level of personalized service. In every romantic journey, from the proposal, a honeymoon to the anniversary, we would love to make it memorable for you to treasure. All people at Nyuh Bali believe that your holiday should be less stressful. Let us take care your holiday in Seminyak Bali",
-      ],
+      ]),
       tagline: "We serve with smile and sincerity",
       buttonLabel: "Book Your Stay",
       promoCode: "ilovenyuh",
@@ -1611,7 +1652,7 @@ async function migratePages() {
       _key: nextKey(),
       eyebrow: "Explore Bali",
       heading: "You are in the Right Hands . . .",
-      paragraphs: seminyakTourProse,
+      paragraphs: proseRichText(seminyakTourProse),
       tone: "sand",
     },
     await packageListSection({
@@ -1801,7 +1842,11 @@ async function migratePages() {
         })),
         headingLevel: "h1",
       },
-      { _type: "awardsSection", _key: nextKey() },
+      // No `awardsSection` here, unlike the three form pages. On these four
+      // routes `AwardsRow` is rendered *outside* `ManagedPage`, so the page
+      // already has an awards strip and a seeded one would draw a second.
+      // Found by diffing the raw markup of the CMS build against the
+      // hand-written fallback.
     ]);
   }
 

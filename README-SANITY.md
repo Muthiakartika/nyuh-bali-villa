@@ -359,6 +359,23 @@ on the About band, so the two could drift apart. `DirectBookingDeals` is now a
 server component that resolves all three strings and renders the client bar
 (`DirectBookingDealsBar`), which is presentation only.
 
+**Paragraphs are rich text.** Nine fields moved from plain `text` /
+`string[]` to the new `proseRichText`: the About narrative, the prose band,
+the text-with-image band, four listing intros, the contact line and the CTA
+body. They render through **`RichProse`**, which takes the band's *own*
+paragraph classes and emits siblings with no wrapper — so one block produces
+exactly the markup the band produced when this was a string, and the spacing
+still comes from the wrapper the band draws. `proseRichText` offers H3/H4 (not
+H2 — the band's own heading is the H2), lists, quotes, bold, italic and links.
+`RichProse` accepts portable text, a string, *or* the `string[]` these fields
+were, so a document published before the migration and the `src/data`
+fallback both still render.
+
+The `{email}` token survived the change. `substituteEmail` splits the span
+holding it at render time and gives the middle piece a link mark, so the
+address still comes from the property document and is never written into CMS
+copy.
+
 **Rich text where the design already has it.** `packageItem.description` and
 `packageListSection.intro` became `inlineRichText` — one paragraph, with bold,
 italic and links. Not full portable text, because both render inside a `<p>`
@@ -385,16 +402,48 @@ with two.
 to the page's own path.
 
 **`npm run sanity:rich-text`** is the migration the rich-text change needed —
-71 fields across 14 documents. It reads what is published and writes it back,
+80 fields across 22 documents in two passes. It reads what is published and writes it back,
 like `sanity:images` and unlike `--replace`, so editor changes survive; it is
 idempotent, and it converts drafts too. Run `npm run sanity:rich-text:dry`
 first.
 
-**Nothing about the site moved.** Verified by building twice — once against
+**Nothing about the site moved — and diffing the raw markup proved three
+things that were already wrong.** The check is to build twice, once against
 the dataset and once with `NEXT_PUBLIC_SANITY_PROJECT_ID` emptied so every
-route falls back to its own JSX — and diffing both the visible text of
-`<main>` and the sequence of heading tags inside it: **78 of 78 pages
-identical on both measures**, with exactly one `<h1>` each.
+route falls back to its own JSX, then diff `<main>`. Visible text and heading
+tags matched on **78 of 78** pages from the first run, with one `<h1>` each.
+Diffing the **raw markup** is what found the rest, and it is the check worth
+repeating:
+
+- **`amenityGridSection` drew a `<section>` inside a `<section>`.**
+  `AmenityGrid` renders its own `Section`; the block wrapped it in another. So
+  the Amenities band on both Stay pages carried twice the vertical padding,
+  and on `/ubud/villa`, where the two tones differed, the outer band showed as
+  a strip around the inner one. Neither the text nor the heading diff could
+  see it.
+- **Every anchored CMS section landed under the sticky header.** `Section`'s
+  own doc said to pair `id` with a `scroll-mt-*` class, and only the
+  hand-written tour route ever did — so `/seminyak/tour#tour-booking` worked
+  and nothing authored in the Studio would have. `Section` applies it itself
+  now whenever `id` is set.
+- **Two seeded pages linked where the coded page did not.** `linkValue`
+  defaults `inScope` to `true`, but `PackageList` reads a *missing* `inScope`
+  as out of scope while `ActionLink` reads it as in scope — an inconsistency
+  that turned two inert labels into live links. `npm run sanity:fix-pages`
+  restored them, and the seed is faithful now. Both destinations do exist, so
+  marking them in scope in `src/data` is the better long-term answer.
+
+A fourth was mine: the four in-room pages render `AwardsRow` *outside*
+`ManagedPage`, so the `awardsSection` seeded into them drew a second strip.
+Also fixed by `sanity:fix-pages`.
+
+After all of it: raw `<main>` markup is identical on **75 of 78** pages, once
+image URLs are normalised (the CMS build serves the uploaded Sanity asset, the
+fallback the `/uploads` path it was seeded from — same photograph). The three
+that remain are known and harmless: `ctaSection`'s extra
+`mx-auto max-w-2xl text-center` wrapper on Host Your Retreat, documented above;
+and one blog post whose Sanity body orders a paragraph and an image
+differently from `src/data/posts.ts`.
 
 ## 7. Preview and publishing
 
@@ -453,13 +502,15 @@ npm run build
 - ~~**No route uses `ManagedPage`.**~~ **Superseded:** all 31 hand-written
   routes use it and each has a seeded document.
 - **New CMS pages need a redeploy** to be reachable — see section 8 for the one-line change that removes that constraint.
-- **FAQ answers, section intros and paragraph arrays stay plain text.** Every
-  one of them feeds a component that takes a `string` or a `string[]` —
-  `FaqEntry`, `ProseBand`, `AboutNarrative`, `RoomList`, `TreatmentList`.
-  Making them portable text would mean either changing the markup of bands
-  nobody asked to change, or flattening the blocks back to strings on the way
-  out, which buys the editor nothing. `richTextSection` already exists for
-  prose that genuinely needs formatting, and can be added to any page.
+- ~~**Section intros and paragraph arrays stay plain text.**~~
+  **Superseded:** all nine are `proseRichText` now — see above. The concern
+  that made them plain (that rich text would change the markup of bands nobody
+  asked to change) was answered by `RichProse` taking the band's own classes
+  rather than bringing its own.
+- **FAQ answers stay plain text.** `FaqEntry` renders an answer as a string
+  inside a `<details>`, and `src/data/experiences.ts` holds 88 of them that
+  way. Converting would mean migrating the fallback data as well as the CMS,
+  for a field that is one short paragraph by design.
 - **`experience` and `room` descriptions stay plain text** for the same
   reason, with one extra: `ExperienceDetailBody` renders six different kinds
   of structured block (`sections`, `blocks`, `programs`, `highlights`, `team`)

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
+import { RichProse, type ProseValue } from "@/components/sanity/RichProse";
 import { ContactForm } from "@/components/property/ContactForm";
 import type { PropertySlug } from "@/data/properties";
 
@@ -19,7 +20,7 @@ type ContactPanelProps = {
   imageAlt: string;
   /** Ubud's page opens the form column with a line of copy; Seminyak's does
    * not. Omitting it renders the form on its own, exactly as before. */
-  intro?: string;
+  intro?: ProseValue;
   anchor?: string;
 };
 
@@ -66,9 +67,12 @@ export function ContactPanel({
 
         {intro ? (
           <div>
-            <p className="mb-6 text-[17px] leading-relaxed font-light text-text">
-              {intro}
-            </p>
+            <RichProse
+              value={intro}
+              paragraphClassName="text-[17px] leading-relaxed font-light text-text"
+              firstClassName="mb-6"
+              restClassName="mb-6"
+            />
             <ContactForm property={property} />
           </div>
         ) : (

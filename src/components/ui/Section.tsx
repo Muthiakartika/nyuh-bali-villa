@@ -27,7 +27,12 @@ type SectionProps = {
   /** Classes for the inner Container (the content layer). */
   innerClassName?: string;
   /** Anchor target for same-page links — the Explore Bali tours all link down
-   * to the booking form. Pair it with a `scroll-mt-*` class so the jump clears
+   * to the booking form. The `scroll-mt` that clears the sticky header is
+   * applied automatically whenever this is set — see the note in the render.
+   * (Historically it had to be passed by hand, which every CMS-authored
+   * section forgot, so every anchored jump landed under the header.)
+   * The old wording follows, for anyone who finds a stray class in a route:
+   * Pair it with a `scroll-mt-*` class so the jump clears
    * the sticky header. */
   id?: string;
 };
@@ -134,10 +139,17 @@ export function Section({
   innerClassName = "",
   id,
 }: SectionProps) {
+  // A section that can be jumped to needs to clear the sticky header — 68px,
+  // 72px from `lg` — or the heading it was aimed at sits underneath it. This
+  // used to be the caller's job, and only the hand-written tour route ever did
+  // it; every CMS section with an anchor got it wrong by omission. Doing it
+  // here means setting `id` is enough. A caller passing its own `scroll-mt-*`
+  // still wins, because `className` comes later in the string.
+  const anchorClass = id ? "scroll-mt-[68px] lg:scroll-mt-[72px]" : "";
   return (
     <section
       id={id}
-      className={`px-5 sm:px-8 ${TONE_CLASS[tone]} ${SPACE_CLASS[space]} ${className}`}
+      className={`px-5 sm:px-8 ${TONE_CLASS[tone]} ${SPACE_CLASS[space]} ${anchorClass} ${className}`}
     >
       <Container width={width} className={innerClassName}>
         {children}

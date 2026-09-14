@@ -115,10 +115,36 @@ function toBlocks(value) {
 }
 
 /**
- * Walks a document and rewrites the two fields wherever they appear, at any
- * depth. Keyed on the parent object's `_type` rather than on the field name
- * alone: `intro` is still a plain string on four other section types, and
- * converting one of those would hand its renderer an array it reads as empty.
+ * Which `_type` owns which rich-text field.
+ *
+ * Keyed on the parent object's `_type` rather than on the field name alone,
+ * because the same name means different things in different sections — and
+ * converting a field whose renderer still wants a string would hand it an
+ * array it reads as empty. Every entry here has a renderer that goes through
+ * `RichProse` or `toRuns`, both of which accept the old shape too.
+ */
+const RICH_TEXT_FIELDS = {
+  packageItem: ["description"],
+  packageListSection: ["intro"],
+  aboutNarrativeSection: ["paragraphs"],
+  proseSection: ["paragraphs"],
+  splitContentSection: ["paragraphs"],
+  roomListSection: ["intro"],
+  collectionSection: ["intro"],
+  treatmentListSection: ["intro"],
+  bulletListSection: ["intro"],
+  contactSection: ["intro"],
+  ctaSection: ["body"],
+};
+
+/**
+ * Walks a document and rewrites those fields wherever they appear, at any
+ * depth.
+ *
+ * A `string[]` becomes one block per entry — that is what the paragraph
+ * arrays were — and a plain string becomes one block per blank-line-separated
+ * run. Anything already a block array is left alone, which is what makes a
+ * rerun a no-op and an interrupted run resumable.
  */
 function convert(node) {
   if (Array.isArray(node)) {
@@ -129,18 +155,22 @@ function convert(node) {
   if (!node || typeof node !== "object") return 0;
 
   let changed = 0;
-  if (node._type === "packageItem" && typeof node.description === "string") {
-    const blocks = toBlocks(node.description);
-    if (blocks) {
-      node.description = blocks;
-      changed += 1;
-    }
-  }
-  if (node._type === "packageListSection" && typeof node.intro === "string") {
-    const blocks = toBlocks(node.intro);
-    if (blocks) {
-      node.intro = blocks;
-      changed += 1;
+  for (const field of RICH_TEXT_FIELDS[node._type] ?? []) {
+    const value = node[field];
+    if (typeof value === "string") {
+      const blocks = toBlocks(value);
+      if (blocks) {
+        node[field] = blocks;
+        changed += 1;
+      }
+    } else if (Array.isArray(value) && value.every((item) => typeof item === "string")) {
+      // A paragraph array: one block each, so the paragraph breaks the editor
+      // wrote are the paragraph breaks the CMS stores.
+      const blocks = value.flatMap((item) => toBlocks(item) ?? []);
+      if (blocks.length) {
+        node[field] = blocks;
+        changed += 1;
+      }
     }
   }
   for (const [field, value] of Object.entries(node)) {

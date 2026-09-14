@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import Link from "next/link";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
@@ -102,7 +102,12 @@ function renderRuns(value: string | PackageRun[]) {
       );
     }
 
-    return <span key={index}>{node}</span>;
+    // A plain run is returned as bare text, not wrapped in a `<span>`. The
+    // wrapper was invisible but it was still a markup difference between a
+    // page rendered from the CMS and the same page rendered from src/data,
+    // which is the diff this whole layer is checked with — keeping the two
+    // byte-identical is what makes that check worth running.
+    return <Fragment key={index}>{node}</Fragment>;
   });
 }
 

@@ -1,4 +1,4 @@
-import { defineArrayMember, defineField, defineType } from "sanity";
+import { defineField, defineType } from "sanity";
 import { eyebrowField, headingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 /**
@@ -26,10 +26,9 @@ export const proseSection = defineType({
     defineField({
       name: "paragraphs",
       title: "Paragraphs",
-      type: "array",
-      of: [defineArrayMember({ type: "text", rows: 5 })],
+      type: "proseRichText",
       description:
-        "Write {email} anywhere in a paragraph to drop in the property's own reservations address as a link — it is never typed here, so it cannot disagree with the footer.",
+        "Paragraphs, with bold, italic, links, lists and subheadings. Each paragraph is set in this band's own type — the formatting is inline, the layout stays the band's. Writing {email} anywhere still drops in the property's own reservations address as a link — it is never typed here, so it cannot disagree with the footer.",
       validation: (Rule) => Rule.required().min(1),
     }),
     toneField,

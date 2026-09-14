@@ -37,9 +37,9 @@ export const aboutNarrativeSection = defineType({
     defineField({
       name: "paragraphs",
       title: "Narrative",
-      type: "array",
+      type: "proseRichText",
       group: "narrative",
-      of: [defineArrayMember({ type: "text", rows: 6 })],
+      description: "Paragraphs, with bold, italic, links, lists and subheadings. Each paragraph is set in this band's own type — the formatting is inline, the layout stays the band's.",
       validation: (Rule) => Rule.required().min(1),
     }),
     defineField({

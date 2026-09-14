@@ -30,6 +30,7 @@ import type { InquiryField } from "@/components/property/InquiryForm";
 import type { PackageItem } from "@/components/property/PackageList";
 import { resolveImageUrl, resolveImageUrls } from "@/sanity/lib/image";
 import { toRuns } from "@/sanity/lib/richText";
+import { RichProse } from "@/components/sanity/RichProse";
 import type { PortableTextBlock } from "@portabletext/types";
 import type { SanityLink, SanitySection } from "@/sanity/types";
 
@@ -223,14 +224,10 @@ export function SplitContentBlock({ section }: { section: Narrow<"splitContentSe
             as={section.headingLevel}
           />
           <div className="mt-8 flex flex-col gap-5 md:mt-10">
-            {section.paragraphs.map((paragraph, index) => (
-              <p
-                key={index}
-                className="text-[17px] leading-[1.85] font-light text-pretty text-text md:text-[19px]"
-              >
-                {paragraph}
-              </p>
-            ))}
+            <RichProse
+              value={section.paragraphs}
+              paragraphClassName="text-[17px] leading-[1.85] font-light text-pretty text-text md:text-[19px]"
+            />
           </div>
           {section.script ? (
             <p className="font-script mt-6 text-[26px] leading-tight text-primary-deep md:text-[30px]">
@@ -289,15 +286,25 @@ export function GalleryBlock({ section }: { section: Narrow<"gallerySection"> })
   );
 }
 
+/**
+ * No `Section` wrapper here: `AmenityGrid` draws its own.
+ *
+ * It used to have one, which put a `<section>` inside a `<section>` and gave
+ * the Amenities band on both Stay pages twice the vertical padding it should
+ * have — with the outer band's tone showing as a strip around the inner one
+ * on /ubud/villa, where the two tones differed. Found by diffing the raw
+ * markup of the CMS build against the hand-written fallback; the text and the
+ * heading tags matched, so only the markup diff could show it.
+ */
 export function AmenityBlock({ section }: { section: Narrow<"amenityGridSection"> }) {
   return (
-    <Section tone={section.tone} id={section.anchor}>
-      <AmenityGrid
-        heading={section.heading}
-        headingAs={section.headingLevel}
-        amenities={section.amenities}
-      />
-    </Section>
+    <AmenityGrid
+      heading={section.heading}
+      headingAs={section.headingLevel}
+      amenities={section.amenities}
+      tone={section.tone}
+      anchor={section.anchor}
+    />
   );
 }
 
@@ -401,9 +408,12 @@ export function BulletListBlock({ section }: { section: Narrow<"bulletListSectio
       ) : null}
       {section.intro ? (
         <Reveal>
-          <p className="mt-8 text-[17px] leading-[1.85] font-light text-pretty text-text md:mt-10 md:text-[19px]">
-            {section.intro}
-          </p>
+          <RichProse
+            value={section.intro}
+            paragraphClassName="text-[17px] leading-[1.85] font-light text-pretty text-text md:text-[19px]"
+            firstClassName="mt-8 md:mt-10"
+            restClassName="mt-4"
+          />
         </Reveal>
       ) : null}
       <div className="mt-8 grid gap-10 md:mt-10 md:grid-cols-2">
@@ -529,13 +539,14 @@ export function CtaBlock({ section }: { section: Narrow<"ctaSection"> }) {
           surface={image ? "dark" : "light"}
         />
         {section.body ? (
-          <p
-            className={`mt-6 text-[17px] leading-[1.85] font-light text-pretty md:text-[19px] ${
+          <RichProse
+            value={section.body}
+            paragraphClassName={`text-[17px] leading-[1.85] font-light text-pretty md:text-[19px] ${
               image ? "text-white/85" : "text-text"
             }`}
-          >
-            {section.body}
-          </p>
+            firstClassName="mt-6"
+            restClassName="mt-4"
+          />
         ) : null}
         {section.actions?.length ? (
           <div className="mt-8 flex flex-wrap justify-center gap-4">

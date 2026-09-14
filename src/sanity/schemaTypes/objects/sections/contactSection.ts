@@ -25,10 +25,9 @@ export const contactSection = defineType({
     defineField({
       name: "intro",
       title: "Line above the form",
-      type: "text",
-      rows: 2,
+      type: "proseRichText",
       description:
-        "Ubud's page opens the form column with one line; Seminyak's has none. Empty renders the form on its own.",
+        "Ubud's page opens the form column with one line; Seminyak's has none. Empty renders the form on its own. " + "Paragraphs, with bold, italic, links, lists and subheadings. Each paragraph is set in this band's own type — the formatting is inline, the layout stays the band's.",
     }),
     defineField({
       name: "image",

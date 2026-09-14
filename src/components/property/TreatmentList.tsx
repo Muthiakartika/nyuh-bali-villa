@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
+import { RichProse, type ProseValue } from "@/components/sanity/RichProse";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
 import { ChevronIcon } from "@/components/ui/icons";
@@ -29,7 +30,7 @@ type TreatmentListProps = {
   /** Which tag this band's heading is written as. The size never changes —
    * see HeadingLevel. Editors set it per section in the CMS. */
   headingAs?: HeadingLevel;
-  intro?: string;
+  intro?: ProseValue;
   /** Short facts under the intro — opening hours, the early-booking discount. */
   notes?: string[];
   categories: TreatmentCategory[];
@@ -87,9 +88,12 @@ export function TreatmentList({
 
       {intro ? (
         <Reveal delay={80}>
-          <p className="mt-8 max-w-[62rem] text-[17px] leading-[1.7] font-light text-text">
-            {intro}
-          </p>
+          <RichProse
+            value={intro}
+            paragraphClassName="max-w-[62rem] text-[17px] leading-[1.7] font-light text-text"
+            firstClassName="mt-8"
+            restClassName="mt-4"
+          />
         </Reveal>
       ) : null}
 

@@ -171,7 +171,12 @@ export const bulletListSection = defineType({
   fields: [
     eyebrowField,
     defineField({ name: "heading", title: "Heading", type: "string" }),
-    defineField({ name: "intro", title: "Intro", type: "text", rows: 3 }),
+    defineField({
+      name: "intro",
+      title: "Intro",
+      type: "proseRichText",
+      description: "Paragraphs, with bold, italic, links, lists and subheadings. Each paragraph is set in this band's own type — the formatting is inline, the layout stays the band's.",
+    }),
     defineField({
       name: "groups",
       title: "Bullet groups",

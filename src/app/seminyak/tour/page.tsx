@@ -100,14 +100,11 @@ export default async function SeminyakTourPage() {
 
           <PackageList heading="Tour Packages" packages={TOURS} tone="sand" />
 
-          {/* `scroll-mt` clears the 68/72px sticky header, so an anchored jump
-              doesn't land the heading underneath it. */}
-          <Section
-            tone="sand-deep"
-            width="narrow"
-            className="scroll-mt-[68px] lg:scroll-mt-[72px]"
-            id="tour-booking"
-          >
+          {/* `Section` adds the `scroll-mt` that clears the 68/72px sticky
+              header whenever `id` is set, so an anchored jump doesn't land the
+              heading underneath it — this route used to pass that class by
+              hand, and it was the only one that did. */}
+          <Section tone="sand-deep" width="narrow" id="tour-booking">
             <InquiryForm
               property="seminyak"
               heading="Book your Tour"

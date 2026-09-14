@@ -13,7 +13,12 @@ export const ctaSection = defineType({
       type: "string",
       validation: (Rule) => Rule.required(),
     }),
-    defineField({ name: "body", title: "Body", type: "text", rows: 3 }),
+    defineField({
+      name: "body",
+      title: "Body",
+      type: "proseRichText",
+      description: "Paragraphs, with bold, italic, links, lists and subheadings. Each paragraph is set in this band's own type — the formatting is inline, the layout stays the band's.",
+    }),
     defineField({
       name: "actions",
       title: "Actions",

@@ -59,6 +59,13 @@ export type SanityLink = {
  */
 export type SanityRichTextValue = string | PortableTextBlock[];
 
+/**
+ * Body copy that became `proseRichText`. Three shapes rather than two: these
+ * fields were `string[]` before, and a document published before the
+ * migration still holds one. `RichProse` renders all three identically.
+ */
+export type SanityProseValue = string | string[] | PortableTextBlock[];
+
 export type SanityBulletGroup = { heading?: string; items: string[] };
 
 export type SanityFaqItem = { question: string; answer: string };
@@ -140,7 +147,7 @@ export type SanitySection =
       _type: "aboutNarrativeSection";
       eyebrow?: string;
       heading: string;
-      paragraphs: string[];
+      paragraphs: SanityProseValue;
       tagline?: string;
       buttonLabel: string;
       offerHeading?: string;
@@ -160,13 +167,13 @@ export type SanitySection =
       _type: "proseSection";
       eyebrow?: string;
       heading: string;
-      paragraphs: string[];
+      paragraphs: SanityProseValue;
     })
   | (SectionBase & {
       _type: "splitContentSection";
       eyebrow?: string;
       heading: string;
-      paragraphs: string[];
+      paragraphs: SanityProseValue;
       script?: string;
       image?: SanityImage;
       imageSide?: "left" | "right";
@@ -201,7 +208,7 @@ export type SanitySection =
       _type: "collectionSection";
       eyebrow?: string;
       heading?: string;
-      intro?: string;
+      intro?: SanityProseValue;
       collection: "room" | "post" | "experience" | "testimonial";
       property?: string;
       group?: string;
@@ -216,7 +223,7 @@ export type SanitySection =
       _type: "roomListSection";
       eyebrow?: string;
       heading: string;
-      intro?: string;
+      intro?: SanityProseValue;
       rooms: {
         _key: string;
         name: string;
@@ -251,7 +258,7 @@ export type SanitySection =
       _type: "treatmentListSection";
       eyebrow?: string;
       heading: string;
-      intro?: string;
+      intro?: SanityProseValue;
       notes?: string[];
       categories: SanityTreatmentCategory[];
       cta?: SanityLink;
@@ -260,7 +267,7 @@ export type SanitySection =
       _type: "bulletListSection";
       eyebrow?: string;
       heading?: string;
-      intro?: string;
+      intro?: SanityProseValue;
       groups: SanityBulletGroup[];
     })
   | (SectionBase & {
@@ -277,7 +284,7 @@ export type SanitySection =
       _type: "ctaSection";
       eyebrow?: string;
       heading: string;
-      body?: string;
+      body?: SanityProseValue;
       actions?: SanityLink[];
       image?: SanityImage;
     })
@@ -299,7 +306,7 @@ export type SanitySection =
       _type: "contactSection";
       eyebrow?: string;
       heading: string;
-      intro?: string;
+      intro?: SanityProseValue;
       image: SanityImage;
     })
   | (SectionBase & {

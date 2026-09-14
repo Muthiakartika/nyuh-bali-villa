@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
+import { RichProse, type ProseValue } from "@/components/sanity/RichProse";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
 
@@ -12,7 +13,8 @@ type AboutNarrativeProps = {
   /** Which tag this band's heading is written as. The size never changes —
    * see HeadingLevel. Editors set it per section in the CMS. */
   headingAs?: HeadingLevel;
-  paragraphs: string[];
+  /** Rich text from the CMS, or the `string[]` src/data holds. */
+  paragraphs: ProseValue;
   /** Seminyak's page has a short tagline between the narrative and the
    * button ("We serve with smile and sincerity"); Ubud's doesn't have one
    * at all — omitting the prop skips it entirely rather than rendering an
@@ -132,14 +134,10 @@ export function AboutNarrative({
               "0" glyph, 11.7px in this font, so `62ch` resolved to 726px, wider
               than the container it was meant to constrain.) */}
           <Reveal delay={120} className="flex max-w-[34rem] flex-col gap-4 lg:max-w-none">
-            {paragraphs.map((paragraph) => (
-              <p
-                key={paragraph}
-                className="text-[17px] leading-[1.7] font-light text-text"
-              >
-                {paragraph}
-              </p>
-            ))}
+            <RichProse
+              value={paragraphs}
+              paragraphClassName="text-[17px] leading-[1.7] font-light text-text"
+            />
           </Reveal>
 
           {/* The tagline and the button are one closing block: `mt-6` is its

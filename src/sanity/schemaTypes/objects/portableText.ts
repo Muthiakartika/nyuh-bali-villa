@@ -97,3 +97,44 @@ export const inlineRichText = defineType({
     }),
   ],
 });
+
+/**
+ * Body copy for a page band — the About narrative, a listing intro, the prose
+ * under a heading.
+ *
+ * Sits between the other two. `inlineRichText` is a single paragraph because
+ * its value renders inside a `<p>` the layout draws; `portableText` is a whole
+ * band of prose with its own type scale and its own images. This is several
+ * paragraphs set in the band's own treatment, so it offers lists, links and
+ * subheadings and no images — the bands that show a photograph have a field
+ * for it already.
+ *
+ * **H2 is deliberately absent, and H3/H4 are what is left.** These paragraphs
+ * sit under the band's own heading, which is an H2 unless an editor has
+ * lowered it. A heading written inside the body is therefore a subheading by
+ * definition, and offering H2 would let a band's body outrank the band.
+ */
+export const proseRichText = defineType({
+  name: "proseRichText",
+  title: "Paragraphs",
+  type: "array",
+  of: [
+    defineArrayMember({
+      type: "block",
+      styles: [
+        { title: "Paragraph", value: "normal" },
+        { title: "Subheading", value: "h3" },
+        { title: "Small subheading", value: "h4" },
+        { title: "Quote", value: "blockquote" },
+      ],
+      lists: [
+        { title: "Bullet list", value: "bullet" },
+        { title: "Numbered list", value: "number" },
+      ],
+      marks: {
+        decorators,
+        annotations: [textLinkAnnotation],
+      },
+    }),
+  ],
+});

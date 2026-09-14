@@ -1,4 +1,4 @@
-import { defineArrayMember, defineField, defineType } from "sanity";
+import { defineField, defineType } from "sanity";
 import { eyebrowField, headingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 /** The About narrative band — prose beside a photograph. */
@@ -17,9 +17,8 @@ export const splitContentSection = defineType({
     defineField({
       name: "paragraphs",
       title: "Paragraphs",
-      type: "array",
-      of: [defineArrayMember({ type: "text", rows: 5 })],
-      description: "One entry per paragraph.",
+      type: "proseRichText",
+      description: "Paragraphs, with bold, italic, links, lists and subheadings. Each paragraph is set in this band's own type — the formatting is inline, the layout stays the band's.",
       validation: (Rule) => Rule.required().min(1),
     }),
     defineField({

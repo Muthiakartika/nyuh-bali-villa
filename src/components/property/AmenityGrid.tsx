@@ -51,6 +51,8 @@ type AmenityGridProps = {
   headingAs?: HeadingLevel;
   amenities: Amenity[];
   tone?: "sand" | "sand-deep";
+  /** Optional id for deep links, e.g. /seminyak/villa#amenities. */
+  anchor?: string;
 };
 
 /**
@@ -68,9 +70,15 @@ export function AmenityGrid({
   headingAs = "h2",
   amenities,
   tone = "sand-deep",
+  anchor,
 }: AmenityGridProps) {
   return (
-    <Section tone={tone}>
+    // This band draws its own `Section`. A caller must not wrap it in a
+    // second one — that was the `amenityGridSection` bug: two nested
+    // `<section>` elements, so the Amenities band on both Stay pages carried
+    // twice the vertical padding, with the outer band's tone showing as a
+    // strip around the inner one.
+    <Section tone={tone} id={anchor}>
       <SectionHeading title={heading} as={headingAs} />
 
       <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-9 md:mt-10 md:grid-cols-4">

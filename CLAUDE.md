@@ -197,6 +197,21 @@ JSX, then diffing both the visible text of `<main>` and the sequence of
 heading tags inside it — **78 of 78 pages identical on both measures**, one
 `<h1>` each. See README-SANITY.md for the rest of what that pass changed.
 
+**Diffing the *raw markup* of the two builds is the check that earns its
+keep, and it found three faults the text diff could not.** `amenityGridSection`
+wrapped `AmenityGrid` — which draws its own `Section` — in a second one, so the
+Amenities band on both Stay pages carried twice the vertical padding, with the
+outer tone showing as a strip around the inner one on `/ubud/villa`. Every
+anchored CMS section landed under the sticky header, because `Section`'s doc
+said to pair `id` with a `scroll-mt-*` class and only the hand-written tour
+route ever did; `Section` applies it itself now. And two seeded pages linked
+where the coded page renders inert text, because `linkValue` defaults `inScope`
+to `true` while **`PackageList` reads a missing `inScope` as *out* of scope and
+`ActionLink` reads it as *in* scope** — that inconsistency is still there and
+is worth resolving in `src/data`. `npm run sanity:fix-pages` corrected the
+published documents. Text and heading tags matched on all 78 pages throughout;
+only the markup diff showed any of this.
+
 **One seeded string had quietly disagreed with the site, and only reading the
 document exposed it.** `siteSettings.legalLinks` was seeded with "Privacy
 Policy" — the *page's* title — while the footer's own literal read "Privacy &

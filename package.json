@@ -21,7 +21,9 @@
     "cloudflare:rules": "node scripts/cloudflare/cache-rules.mjs",
     "cloudflare:rules:dry": "node scripts/cloudflare/cache-rules.mjs --dry-run",
     "sanity:rich-text": "node scripts/sanity/migrate-rich-text.mjs",
-    "sanity:rich-text:dry": "node scripts/sanity/migrate-rich-text.mjs --dry-run"
+    "sanity:rich-text:dry": "node scripts/sanity/migrate-rich-text.mjs --dry-run",
+    "sanity:fix-pages": "node scripts/sanity/fix-seeded-pages.mjs",
+    "sanity:fix-pages:dry": "node scripts/sanity/fix-seeded-pages.mjs --dry-run"
   },
   "dependencies": {
     "@portabletext/react": "^8.0.1",
