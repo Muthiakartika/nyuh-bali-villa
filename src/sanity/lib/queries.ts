@@ -47,6 +47,7 @@ const linkProjection = `{
   ...,
   "href": select(
     linkType == "internal" && defined(reference) => reference->${referenceHref},
+    linkType == "file" && defined(file.asset) => file.asset->url,
     href
   )
 }`;

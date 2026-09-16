@@ -21,11 +21,16 @@ export const HERO_IMAGES = [
 ];
 
 // Menu PDFs, hosted on the WordPress uploads folder like the images.
-export const MENU_ALA_CARTE = `${UPLOADS}/2023/03/Nyuh-Bali-Villas-Ala-Carte-Menu.pdf`;
+// Pointed at the file the in-room QR-code pages serve, not an older copy.
+// The two were different documents for the same menu — the Dining page kept
+// what the live dining page linked in 2023 while the resort had moved on, so
+// a guest scanning the card by the bed and a guest on the website saw
+// different prices. Established from each PDF's own ModDate, not its folder.
+export const MENU_ALA_CARTE = `${UPLOADS}/2025/03/Seminyak-Ala-carte-Menu.pdf`;
 
-export const MENU_BREAKFAST = `${UPLOADS}/2023/03/Breakfast-Menu-Seminyak.pdf`;
+export const MENU_BREAKFAST = `${UPLOADS}/2023/12/Breakfast-Menu-Seminyak.pdf`;
 
-export const MENU_CLD_BBQ = `${UPLOADS}/2023/03/CLD-BBQ-Menu-Seminyak.pdf`;
+export const MENU_CLD_BBQ = `${UPLOADS}/2023/12/CLD-BBQ-Menu-Seminyak.pdf`;
 
 // Three dining venues/experiences. The first carries two menu links, which is
 // why PackageList takes a `ctas` array rather than a single CTA.

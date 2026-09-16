@@ -1,5 +1,67 @@
 [
   {
+    "type": "type",
+    "name": "sanity.fileAsset.reference",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_ref": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          }
+        },
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "reference"
+          }
+        },
+        "_weak": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        }
+      },
+      "dereferencesTo": "sanity.fileAsset"
+    }
+  },
+  {
+    "type": "type",
+    "name": "textLink.file",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "asset": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "sanity.fileAsset.reference"
+          },
+          "optional": true
+        },
+        "media": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "media"
+          },
+          "optional": true
+        },
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "file"
+          }
+        }
+      }
+    }
+  },
+  {
     "name": "siteSettings",
     "type": "document",
     "attributes": {
@@ -5017,6 +5079,10 @@
                         },
                         {
                           "type": "string",
+                          "value": "file"
+                        },
+                        {
+                          "type": "string",
                           "value": "custom"
                         }
                       ]
@@ -5049,6 +5115,14 @@
                           "name": "legalPage.reference"
                         }
                       ]
+                    },
+                    "optional": true
+                  },
+                  "file": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "inline",
+                      "name": "textLink.file"
                     },
                     "optional": true
                   },
@@ -5212,6 +5286,10 @@
                         },
                         {
                           "type": "string",
+                          "value": "file"
+                        },
+                        {
+                          "type": "string",
                           "value": "custom"
                         }
                       ]
@@ -5244,6 +5322,14 @@
                           "name": "legalPage.reference"
                         }
                       ]
+                    },
+                    "optional": true
+                  },
+                  "file": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "inline",
+                      "name": "textLink.file"
                     },
                     "optional": true
                   },
@@ -5435,6 +5521,10 @@
                             },
                             {
                               "type": "string",
+                              "value": "file"
+                            },
+                            {
+                              "type": "string",
                               "value": "custom"
                             }
                           ]
@@ -5467,6 +5557,14 @@
                               "name": "legalPage.reference"
                             }
                           ]
+                        },
+                        "optional": true
+                      },
+                      "file": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "inline",
+                          "name": "textLink.file"
                         },
                         "optional": true
                       },
@@ -5584,6 +5682,10 @@
               },
               {
                 "type": "string",
+                "value": "file"
+              },
+              {
+                "type": "string",
                 "value": "custom"
               }
             ]
@@ -5616,6 +5718,14 @@
                 "name": "legalPage.reference"
               }
             ]
+          },
+          "optional": true
+        },
+        "file": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "textLink.file"
           },
           "optional": true
         },

@@ -1,5 +1,10 @@
 import { defineField, defineType } from "sanity";
-import { hrefField, linkReferenceField, linkTypeField } from "./linkTarget";
+import {
+  hrefField,
+  linkFileField,
+  linkReferenceField,
+  linkTypeField,
+} from "./linkTarget";
 
 /**
  * The one call-to-action shape on the site: a label, a destination, and the
@@ -29,6 +34,7 @@ export const link = defineType({
     }),
     linkTypeField,
     linkReferenceField,
+    linkFileField,
     hrefField({ required: true }),
     defineField({
       name: "external",

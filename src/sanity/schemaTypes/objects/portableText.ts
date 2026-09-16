@@ -1,5 +1,10 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { hrefField, linkReferenceField, linkTypeField } from "./linkTarget";
+import {
+  hrefField,
+  linkFileField,
+  linkReferenceField,
+  linkTypeField,
+} from "./linkTarget";
 
 /**
  * The link annotation shared by both rich-text types.
@@ -18,6 +23,7 @@ const textLinkAnnotation = defineField({
   fields: [
     linkTypeField,
     linkReferenceField,
+    linkFileField,
     hrefField({ required: true, title: "Web address" }),
     defineField({
       name: "blank",

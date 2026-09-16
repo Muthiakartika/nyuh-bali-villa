@@ -10,13 +10,18 @@ import type { Testimonial } from "@/data/testimonials";
 
 export const UPLOADS = "/uploads";
 
-export const MENU_ALA_CARTE = `${UPLOADS}/2025/06/All-Day-Menu-Villa.pdf`;
+// Pointed at the file the in-room QR-code pages serve, not an older copy.
+// The two were different documents for the same menu — the Dining page kept
+// what the live dining page linked in 2023 while the resort had moved on, so
+// a guest scanning the card by the bed and a guest on the website saw
+// different prices. Established from each PDF's own ModDate, not its folder.
+export const MENU_ALA_CARTE = `${UPLOADS}/2025/10/Ala-Carte-Villa.pdf`;
 
-export const MENU_BREAKFAST = `${UPLOADS}/2023/08/Villas-Breakfast-Ubud.pdf`;
+export const MENU_BREAKFAST = `${UPLOADS}/2024/08/Breakfast-Menu-Ubud-Nyuh-Bali-Resort.pdf`;
 
 export const MENU_BBQ = `${UPLOADS}/2023/06/BBQ-Ubud-020623.pdf`;
 
-export const MENU_ROMANTIC = `${UPLOADS}/2023/05/CLD-Menu-Ubud-010523.pdf`;
+export const MENU_ROMANTIC = `${UPLOADS}/2023/11/CLD-Menu-Ubud.pdf`;
 
 export const MENU_CULTURAL_NIGHT = `${UPLOADS}/2025/06/Balinese-Cultural-Night.pdf`;
 

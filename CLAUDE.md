@@ -283,6 +283,33 @@ the absence: hero and the property picker are full-bleed photographs with no
 band colour behind them, and awards, deals, Instagram and the booking widget
 draw their own surface.
 
+**A menu PDF is replaceable from the Studio, and that closed the first thing
+the client actually asked for.** "My team would like to change the F&B menu"
+turned out to be the one job the CMS could not do: the menu buttons are `link`
+objects whose destination was a path into `public/uploads/`, which is in the
+repository — so changing a menu meant a developer and a deploy. `link` (and
+the rich-text annotation) now takes **"A file to open"** alongside a page
+reference and a typed URL, resolved by `linkProjection` the same way an image
+is: upload wins, the typed path stays as the fallback, and a button whose file
+has not been uploaded renders exactly as before. **There were zero `file`
+fields in the whole schema before this.**
+
+The menus live on **five** pages, not one — `/seminyak/dining`, `/ubud/dining`
+and the three in-room directories — and **the same menu was two different
+PDFs**. The Dining pages linked what the live dining page linked in 2023 while
+the in-room pages, built later from the cards guests actually scan, linked
+newer files. A guest at the QR code and a guest on the website could read
+different prices. Six pairs, unified onto the in-room file and established
+from each PDF's own `ModDate` rather than its `/YYYY/MM/` folder (which only
+records when WordPress received the upload): Seminyak à la carte 2023-01-27 →
+2025, breakfast 2022-08-04 → 2023-12-08, CLD+BBQ → 2023-12-22; Ubud breakfast
+2023-08-19 → 2024, all-day 2025-06-13 → 2025-10-08, candle-light 2023-05-01 →
+2023-11-19. `npm run sanity:menus` did the published documents,
+`src/data/pages/*-dining.ts` carries the same six, and the two builds agree.
+**Most apparent mismatches are not** — Spa, Wellness, All Day and Room
+Directory differ per property and per room type on purpose, so the script
+moves only the six exact paths it names.
+
 **Then every published value was checked against every rule, and three more
 turned up.** The method: read the enum unions out of `src/sanity/schema.json`,
 parse `Rule.required()` and `.max(n)` out of the schema source, and walk all

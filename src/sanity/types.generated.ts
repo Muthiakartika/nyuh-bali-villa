@@ -15,6 +15,19 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: src/sanity/schema.json
+export type SanityFileAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+};
+
+export type TextLinkFile = {
+  asset?: SanityFileAssetReference;
+  media?: unknown; // Unable to locate the referenced type "media" in schema
+  _type: "file";
+};
+
 export type SiteSettings = {
   _id: string;
   _type: "siteSettings";
@@ -796,13 +809,14 @@ export type ProseRichText = Array<{
   style?: "normal" | "h3" | "h4" | "blockquote";
   listItem?: "bullet" | "number";
   markDefs?: Array<{
-    linkType?: "internal" | "custom";
+    linkType?: "internal" | "file" | "custom";
     reference?:
       | PageReference
       | PostReference
       | RoomReference
       | ExperienceReference
       | LegalPageReference;
+    file?: TextLinkFile;
     href?: string;
     blank?: boolean;
     _type: "textLink";
@@ -823,13 +837,14 @@ export type InlineRichText = Array<{
   style?: "normal";
   listItem?: never;
   markDefs?: Array<{
-    linkType?: "internal" | "custom";
+    linkType?: "internal" | "file" | "custom";
     reference?:
       | PageReference
       | PostReference
       | RoomReference
       | ExperienceReference
       | LegalPageReference;
+    file?: TextLinkFile;
     href?: string;
     blank?: boolean;
     _type: "textLink";
@@ -851,13 +866,14 @@ export type PortableText = Array<
       style?: "normal" | "h2" | "h3" | "h4" | "blockquote";
       listItem?: "bullet" | "number";
       markDefs?: Array<{
-        linkType?: "internal" | "custom";
+        linkType?: "internal" | "file" | "custom";
         reference?:
           | PageReference
           | PostReference
           | RoomReference
           | ExperienceReference
           | LegalPageReference;
+        file?: TextLinkFile;
         href?: string;
         blank?: boolean;
         _type: "textLink";
@@ -875,13 +891,14 @@ export type PortableText = Array<
 export type Link = {
   _type: "link";
   label?: string;
-  linkType?: "internal" | "custom";
+  linkType?: "internal" | "file" | "custom";
   reference?:
     | PageReference
     | PostReference
     | RoomReference
     | ExperienceReference
     | LegalPageReference;
+  file?: TextLinkFile;
   href?: string;
   external?: boolean;
   inScope?: boolean;
@@ -1252,6 +1269,8 @@ export type Geopoint = {
 };
 
 export type AllSanitySchemaTypes =
+  | SanityFileAssetReference
+  | TextLinkFile
   | SiteSettings
   | Seo
   | SanityImageAssetReference
@@ -1339,7 +1358,7 @@ export type AllSanitySchemaTypes =
 
 // Source: src/sanity/lib/queries.ts
 // Variable: pageByPathQuery
-// Query: *[_type == "page" && path == $path][0]{    _id,    _type,    title,    path,    property,    seo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex},    sections[] {  ...,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  images[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  badges[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  items[]{    ...,    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  packages[]{    ...,    images[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    ctas[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},    "description": select(  description[0]._type == "block" => description[]{    ...,    markDefs[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )}  },  description)  },  categories[]{    ...,    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  action {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},  actions[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},  cta {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},  "body": select(  body[0]._type == "block" => body[]{    ...,    markDefs[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )}  },  body),  "intro": select(  intro[0]._type == "block" => intro[]{    ...,    markDefs[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )}  },  intro),  "paragraphs": select(  paragraphs[0]._type == "block" => paragraphs[]{    ...,    markDefs[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )}  },  paragraphs),  packageSet->{    _id,    title,    alwaysIncluded,    packages[]{      ...,      images[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},      ctas[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},      "description": select(  description[0]._type == "block" => description[]{    ...,    markDefs[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )}  },  description)    }  }}  }
+// Query: *[_type == "page" && path == $path][0]{    _id,    _type,    title,    path,    property,    seo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex},    sections[] {  ...,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  images[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  badges[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  items[]{    ...,    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  packages[]{    ...,    images[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    ctas[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )},    "description": select(  description[0]._type == "block" => description[]{    ...,    markDefs[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )}  },  description)  },  categories[]{    ...,    image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot}  },  action {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )},  actions[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )},  cta {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )},  "body": select(  body[0]._type == "block" => body[]{    ...,    markDefs[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )}  },  body),  "intro": select(  intro[0]._type == "block" => intro[]{    ...,    markDefs[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )}  },  intro),  "paragraphs": select(  paragraphs[0]._type == "block" => paragraphs[]{    ...,    markDefs[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )}  },  paragraphs),  packageSet->{    _id,    title,    alwaysIncluded,    packages[]{      ...,      images[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},      ctas[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )},      "description": select(  description[0]._type == "block" => description[]{    ...,    markDefs[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )}  },  description)    }  }}  }
 export type PageByPathQueryResult = {
   _id: string;
   _type: "page";
@@ -1380,13 +1399,14 @@ export type PageByPathQueryResult = {
               style?: "blockquote" | "h3" | "h4" | "normal";
               listItem?: "bullet" | "number";
               markDefs: Array<{
-                linkType?: "custom" | "internal";
+                linkType?: "custom" | "file" | "internal";
                 reference?:
                   | ExperienceReference
                   | LegalPageReference
                   | PageReference
                   | PostReference
                   | RoomReference;
+                file?: TextLinkFile;
                 href: string | null | "/privacy-policy" | "/terms-conditions";
                 blank?: boolean;
                 _type: "textLink";
@@ -1519,13 +1539,14 @@ export type PageByPathQueryResult = {
               style?: "blockquote" | "h3" | "h4" | "normal";
               listItem?: "bullet" | "number";
               markDefs: Array<{
-                linkType?: "custom" | "internal";
+                linkType?: "custom" | "file" | "internal";
                 reference?:
                   | ExperienceReference
                   | LegalPageReference
                   | PageReference
                   | PostReference
                   | RoomReference;
+                file?: TextLinkFile;
                 href: string | null | "/privacy-policy" | "/terms-conditions";
                 blank?: boolean;
                 _type: "textLink";
@@ -1575,13 +1596,14 @@ export type PageByPathQueryResult = {
               style?: "blockquote" | "h3" | "h4" | "normal";
               listItem?: "bullet" | "number";
               markDefs: Array<{
-                linkType?: "custom" | "internal";
+                linkType?: "custom" | "file" | "internal";
                 reference?:
                   | ExperienceReference
                   | LegalPageReference
                   | PageReference
                   | PostReference
                   | RoomReference;
+                file?: TextLinkFile;
                 href: string | null | "/privacy-policy" | "/terms-conditions";
                 blank?: boolean;
                 _type: "textLink";
@@ -1637,13 +1659,14 @@ export type PageByPathQueryResult = {
               style?: "blockquote" | "h3" | "h4" | "normal";
               listItem?: "bullet" | "number";
               markDefs: Array<{
-                linkType?: "custom" | "internal";
+                linkType?: "custom" | "file" | "internal";
                 reference?:
                   | ExperienceReference
                   | LegalPageReference
                   | PageReference
                   | PostReference
                   | RoomReference;
+                file?: TextLinkFile;
                 href: string | null | "/privacy-policy" | "/terms-conditions";
                 blank?: boolean;
                 _type: "textLink";
@@ -1696,13 +1719,14 @@ export type PageByPathQueryResult = {
               style?: "blockquote" | "h3" | "h4" | "normal";
               listItem?: "bullet" | "number";
               markDefs: Array<{
-                linkType?: "custom" | "internal";
+                linkType?: "custom" | "file" | "internal";
                 reference?:
                   | ExperienceReference
                   | LegalPageReference
                   | PageReference
                   | PostReference
                   | RoomReference;
+                file?: TextLinkFile;
                 href: string | null | "/privacy-policy" | "/terms-conditions";
                 blank?: boolean;
                 _type: "textLink";
@@ -1718,13 +1742,14 @@ export type PageByPathQueryResult = {
           _key: string;
           _type: "link";
           label?: string;
-          linkType?: "custom" | "internal";
+          linkType?: "custom" | "file" | "internal";
           reference?:
             | ExperienceReference
             | LegalPageReference
             | PageReference
             | PostReference
             | RoomReference;
+          file?: TextLinkFile;
           href: string | null | "/privacy-policy" | "/terms-conditions";
           external?: boolean;
           inScope?: boolean;
@@ -1982,13 +2007,14 @@ export type PageByPathQueryResult = {
               style?: "normal";
               listItem?: never;
               markDefs: Array<{
-                linkType?: "custom" | "internal";
+                linkType?: "custom" | "file" | "internal";
                 reference?:
                   | ExperienceReference
                   | LegalPageReference
                   | PageReference
                   | PostReference
                   | RoomReference;
+                file?: TextLinkFile;
                 href: string | null | "/privacy-policy" | "/terms-conditions";
                 blank?: boolean;
                 _type: "textLink";
@@ -2025,13 +2051,14 @@ export type PageByPathQueryResult = {
                 style?: "normal";
                 listItem?: never;
                 markDefs: Array<{
-                  linkType?: "custom" | "internal";
+                  linkType?: "custom" | "file" | "internal";
                   reference?:
                     | ExperienceReference
                     | LegalPageReference
                     | PageReference
                     | PostReference
                     | RoomReference;
+                  file?: TextLinkFile;
                   href: string | null | "/privacy-policy" | "/terms-conditions";
                   blank?: boolean;
                   _type: "textLink";
@@ -2055,13 +2082,14 @@ export type PageByPathQueryResult = {
             _key: string;
             _type: "link";
             label?: string;
-            linkType?: "custom" | "internal";
+            linkType?: "custom" | "file" | "internal";
             reference?:
               | ExperienceReference
               | LegalPageReference
               | PageReference
               | PostReference
               | RoomReference;
+            file?: TextLinkFile;
             href: string | null | "/privacy-policy" | "/terms-conditions";
             external?: boolean;
             inScope?: boolean;
@@ -2096,13 +2124,14 @@ export type PageByPathQueryResult = {
                   style?: "normal";
                   listItem?: never;
                   markDefs: Array<{
-                    linkType?: "custom" | "internal";
+                    linkType?: "custom" | "file" | "internal";
                     reference?:
                       | ExperienceReference
                       | LegalPageReference
                       | PageReference
                       | PostReference
                       | RoomReference;
+                    file?: TextLinkFile;
                     href:
                       string | null | "/privacy-policy" | "/terms-conditions";
                     blank?: boolean;
@@ -2127,13 +2156,14 @@ export type PageByPathQueryResult = {
               _key: string;
               _type: "link";
               label?: string;
-              linkType?: "custom" | "internal";
+              linkType?: "custom" | "file" | "internal";
               reference?:
                 | ExperienceReference
                 | LegalPageReference
                 | PageReference
                 | PostReference
                 | RoomReference;
+              file?: TextLinkFile;
               href: string | null | "/privacy-policy" | "/terms-conditions";
               external?: boolean;
               inScope?: boolean;
@@ -2245,13 +2275,14 @@ export type PageByPathQueryResult = {
               style?: "blockquote" | "h3" | "h4" | "normal";
               listItem?: "bullet" | "number";
               markDefs: Array<{
-                linkType?: "custom" | "internal";
+                linkType?: "custom" | "file" | "internal";
                 reference?:
                   | ExperienceReference
                   | LegalPageReference
                   | PageReference
                   | PostReference
                   | RoomReference;
+                file?: TextLinkFile;
                 href: string | null | "/privacy-policy" | "/terms-conditions";
                 blank?: boolean;
                 _type: "textLink";
@@ -2297,13 +2328,14 @@ export type PageByPathQueryResult = {
                   style?: "blockquote" | "h2" | "h3" | "h4" | "normal";
                   listItem?: "bullet" | "number";
                   markDefs: Array<{
-                    linkType?: "custom" | "internal";
+                    linkType?: "custom" | "file" | "internal";
                     reference?:
                       | ExperienceReference
                       | LegalPageReference
                       | PageReference
                       | PostReference
                       | RoomReference;
+                    file?: TextLinkFile;
                     href:
                       string | null | "/privacy-policy" | "/terms-conditions";
                     blank?: boolean;
@@ -2362,13 +2394,14 @@ export type PageByPathQueryResult = {
               style?: "blockquote" | "h3" | "h4" | "normal";
               listItem?: "bullet" | "number";
               markDefs: Array<{
-                linkType?: "custom" | "internal";
+                linkType?: "custom" | "file" | "internal";
                 reference?:
                   | ExperienceReference
                   | LegalPageReference
                   | PageReference
                   | PostReference
                   | RoomReference;
+                file?: TextLinkFile;
                 href: string | null | "/privacy-policy" | "/terms-conditions";
                 blank?: boolean;
                 _type: "textLink";
@@ -2428,13 +2461,14 @@ export type PageByPathQueryResult = {
               style?: "blockquote" | "h3" | "h4" | "normal";
               listItem?: "bullet" | "number";
               markDefs: Array<{
-                linkType?: "custom" | "internal";
+                linkType?: "custom" | "file" | "internal";
                 reference?:
                   | ExperienceReference
                   | LegalPageReference
                   | PageReference
                   | PostReference
                   | RoomReference;
+                file?: TextLinkFile;
                 href: string | null | "/privacy-policy" | "/terms-conditions";
                 blank?: boolean;
                 _type: "textLink";
@@ -2460,13 +2494,14 @@ export type PageByPathQueryResult = {
         action: {
           _type: "link";
           label?: string;
-          linkType?: "custom" | "internal";
+          linkType?: "custom" | "file" | "internal";
           reference?:
             | ExperienceReference
             | LegalPageReference
             | PageReference
             | PostReference
             | RoomReference;
+          file?: TextLinkFile;
           href: string | null | "/privacy-policy" | "/terms-conditions";
           external?: boolean;
           inScope?: boolean;
@@ -2503,13 +2538,14 @@ export type PageByPathQueryResult = {
               style?: "blockquote" | "h3" | "h4" | "normal";
               listItem?: "bullet" | "number";
               markDefs: Array<{
-                linkType?: "custom" | "internal";
+                linkType?: "custom" | "file" | "internal";
                 reference?:
                   | ExperienceReference
                   | LegalPageReference
                   | PageReference
                   | PostReference
                   | RoomReference;
+                file?: TextLinkFile;
                 href: string | null | "/privacy-policy" | "/terms-conditions";
                 blank?: boolean;
                 _type: "textLink";
@@ -2544,13 +2580,14 @@ export type PageByPathQueryResult = {
         cta: {
           _type: "link";
           label?: string;
-          linkType?: "custom" | "internal";
+          linkType?: "custom" | "file" | "internal";
           reference?:
             | ExperienceReference
             | LegalPageReference
             | PageReference
             | PostReference
             | RoomReference;
+          file?: TextLinkFile;
           href: string | null | "/privacy-policy" | "/terms-conditions";
           external?: boolean;
           inScope?: boolean;
@@ -3311,7 +3348,7 @@ export type ExperienceBySlugQueryResult = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: allPackageSetsQuery
-// Query: *[_type == "packageSet" && defined(slug.current)]{    _id,    _type,    title,    "slug": slug.current,    property,    alwaysIncluded,    packages[]{      ...,      images[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},      ctas[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},      "description": select(  description[0]._type == "block" => description[]{    ...,    markDefs[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )}  },  description)    }  }
+// Query: *[_type == "packageSet" && defined(slug.current)]{    _id,    _type,    title,    "slug": slug.current,    property,    alwaysIncluded,    packages[]{      ...,      images[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},      ctas[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )},      "description": select(  description[0]._type == "block" => description[]{    ...,    markDefs[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )}  },  description)    }  }
 export type AllPackageSetsQueryResult = Array<{
   _id: string;
   _type: "packageSet";
@@ -3343,13 +3380,14 @@ export type AllPackageSetsQueryResult = Array<{
           style?: "normal";
           listItem?: never;
           markDefs: Array<{
-            linkType?: "custom" | "internal";
+            linkType?: "custom" | "file" | "internal";
             reference?:
               | ExperienceReference
               | LegalPageReference
               | PageReference
               | PostReference
               | RoomReference;
+            file?: TextLinkFile;
             href: string | null | "/privacy-policy" | "/terms-conditions";
             blank?: boolean;
             _type: "textLink";
@@ -3373,13 +3411,14 @@ export type AllPackageSetsQueryResult = Array<{
       _key: string;
       _type: "link";
       label?: string;
-      linkType?: "custom" | "internal";
+      linkType?: "custom" | "file" | "internal";
       reference?:
         | ExperienceReference
         | LegalPageReference
         | PageReference
         | PostReference
         | RoomReference;
+      file?: TextLinkFile;
       href: string | null | "/privacy-policy" | "/terms-conditions";
       external?: boolean;
       inScope?: boolean;
@@ -3505,7 +3544,7 @@ export type PropertyBySlugQueryResult = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: siteSettingsQuery
-// Query: *[_type == "siteSettings"][0]{    _id,    _type,    title,    description,    favicon {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    bookNowLabel,    dealHeadline,    dealCode,    dealButtonLabel,    homeLogo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    footerLogo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    footerBookingLabel,    footerMenuHeading,    footerMenuLinks[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},    footerBlogHeading,    footerNote,    legalLinks[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    href  )},    defaultSeo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}  }
+// Query: *[_type == "siteSettings"][0]{    _id,    _type,    title,    description,    favicon {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    bookNowLabel,    dealHeadline,    dealCode,    dealButtonLabel,    homeLogo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    footerLogo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    footerBookingLabel,    footerMenuHeading,    footerMenuLinks[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )},    footerBlogHeading,    footerNote,    legalLinks[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )},    defaultSeo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}  }
 export type SiteSettingsQueryResult = {
   _id: string;
   _type: "siteSettings";
@@ -3548,13 +3587,14 @@ export type SiteSettingsQueryResult = {
     _key: string;
     _type: "link";
     label?: string;
-    linkType?: "custom" | "internal";
+    linkType?: "custom" | "file" | "internal";
     reference?:
       | ExperienceReference
       | LegalPageReference
       | PageReference
       | PostReference
       | RoomReference;
+    file?: TextLinkFile;
     href: string | null | "/privacy-policy" | "/terms-conditions";
     external?: boolean;
     inScope?: boolean;
@@ -3566,13 +3606,14 @@ export type SiteSettingsQueryResult = {
     _key: string;
     _type: "link";
     label?: string;
-    linkType?: "custom" | "internal";
+    linkType?: "custom" | "file" | "internal";
     reference?:
       | ExperienceReference
       | LegalPageReference
       | PageReference
       | PostReference
       | RoomReference;
+    file?: TextLinkFile;
     href: string | null | "/privacy-policy" | "/terms-conditions";
     external?: boolean;
     inScope?: boolean;
@@ -3600,7 +3641,7 @@ export type SiteSettingsQueryResult = {
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '\n  *[_type == "page" && path == $path][0]{\n    _id,\n    _type,\n    title,\n    path,\n    property,\n    seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n},\n    sections[] {\n  ...,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  badges[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  items[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  packages[]{\n    ...,\n    images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    ctas[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n    "description": select(\n  description[0]._type == "block" => description[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n}\n  },\n  description\n)\n  },\n  categories[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  action {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n  actions[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n  cta {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n  "body": select(\n  body[0]._type == "block" => body[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n}\n  },\n  body\n),\n  "intro": select(\n  intro[0]._type == "block" => intro[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n}\n  },\n  intro\n),\n  "paragraphs": select(\n  paragraphs[0]._type == "block" => paragraphs[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n}\n  },\n  paragraphs\n),\n  packageSet->{\n    _id,\n    title,\n    alwaysIncluded,\n    packages[]{\n      ...,\n      images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n      ctas[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n      "description": select(\n  description[0]._type == "block" => description[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n}\n  },\n  description\n)\n    }\n  }\n}\n  }\n': PageByPathQueryResult;
+    '\n  *[_type == "page" && path == $path][0]{\n    _id,\n    _type,\n    title,\n    path,\n    property,\n    seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n},\n    sections[] {\n  ...,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  badges[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  items[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  packages[]{\n    ...,\n    images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    ctas[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n},\n    "description": select(\n  description[0]._type == "block" => description[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n}\n  },\n  description\n)\n  },\n  categories[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  action {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n},\n  actions[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n},\n  cta {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n},\n  "body": select(\n  body[0]._type == "block" => body[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n}\n  },\n  body\n),\n  "intro": select(\n  intro[0]._type == "block" => intro[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n}\n  },\n  intro\n),\n  "paragraphs": select(\n  paragraphs[0]._type == "block" => paragraphs[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n}\n  },\n  paragraphs\n),\n  packageSet->{\n    _id,\n    title,\n    alwaysIncluded,\n    packages[]{\n      ...,\n      images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n      ctas[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n},\n      "description": select(\n  description[0]._type == "block" => description[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n}\n  },\n  description\n)\n    }\n  }\n}\n  }\n': PageByPathQueryResult;
     '\n  *[_type == "page" && defined(path)].path\n': AllPagePathsQueryResult;
     '\n  *[_type == "post" && path == $path][0] {\n  _id,\n  _type,\n  title,\n  path,\n  property,\n  date,\n  order,\n  excerpt,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  "categories": categories[]->{_id, title, "slug": slug.current},\n  blocks[] {\n  ...,\n  _type == "articleImage" => {\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  _type == "articlePoints" => {\n    items[]{\n      ...,\n      body[]{\n        ...,\n        image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n      }\n    }\n  }\n},\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': PostByPathQueryResult;
     '\n  *[_type == "post" && defined(path)] | order(date desc, order asc) {\n  _id,\n  _type,\n  title,\n  path,\n  property,\n  date,\n  order,\n  excerpt,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  "categories": categories[]->{_id, title, "slug": slug.current},\n  blocks[] {\n  ...,\n  _type == "articleImage" => {\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  _type == "articlePoints" => {\n    items[]{\n      ...,\n      body[]{\n        ...,\n        image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n      }\n    }\n  }\n},\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': AllPostsQueryResult;
@@ -3610,11 +3651,11 @@ declare global {
     '\n  *[_type == "room" && property == $property && defined(slug.current)] | order(order asc, title asc) {\n  _id,\n  _type,\n  title,\n  "slug": slug.current,\n  property,\n  description,\n  details,\n  amenities,\n  facilities,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  order,\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': RoomsByPropertyQueryResult;
     '\n  *[_type == "experience" && defined(slug)] | order(group asc, title asc) {\n  _id,\n  _type,\n  title,\n  slug,\n  group,\n  eyebrow,\n  paragraphs,\n  recommendedFor,\n  note,\n  sections[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  blocks,\n  programsHeading,\n  programs,\n  inclusions,\n  price,\n  highlightsHeading,\n  highlights[]{\n    ...,\n    icon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  closingCta,\n  teamHeading,\n  team[]{\n    ...,\n    photo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  faqHeading,\n  faq,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  cardImage {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': AllExperiencesQueryResult;
     '\n  *[_type == "experience" && slug == $slug][0] {\n  _id,\n  _type,\n  title,\n  slug,\n  group,\n  eyebrow,\n  paragraphs,\n  recommendedFor,\n  note,\n  sections[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  blocks,\n  programsHeading,\n  programs,\n  inclusions,\n  price,\n  highlightsHeading,\n  highlights[]{\n    ...,\n    icon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  closingCta,\n  teamHeading,\n  team[]{\n    ...,\n    photo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  faqHeading,\n  faq,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  cardImage {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': ExperienceBySlugQueryResult;
-    '\n  *[_type == "packageSet" && defined(slug.current)]{\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    property,\n    alwaysIncluded,\n    packages[]{\n      ...,\n      images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n      ctas[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n      "description": select(\n  description[0]._type == "block" => description[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n}\n  },\n  description\n)\n    }\n  }\n': AllPackageSetsQueryResult;
+    '\n  *[_type == "packageSet" && defined(slug.current)]{\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    property,\n    alwaysIncluded,\n    packages[]{\n      ...,\n      images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n      ctas[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n},\n      "description": select(\n  description[0]._type == "block" => description[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n}\n  },\n  description\n)\n    }\n  }\n': AllPackageSetsQueryResult;
     '\n  *[_type == "testimonial"] | order(order asc){\n    _id,\n    _type,\n    quote,\n    author,\n    property,\n    order\n  }\n': AllTestimonialsQueryResult;
     '\n  *[_type == "legalPage" && path == $path][0]{\n    _id,\n    _type,\n    title,\n    path,\n    intro,\n    sections,\n    seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n': LegalPageByPathQueryResult;
     '\n  *[_type == "property" && slug == $slug][0]{\n    _id,\n    _type,\n    slug,\n    label,\n    logo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    navItems,\n    addressLines,\n    phones,\n    email,\n    maps,\n    facebook,\n    instagram,\n    instagramApiUrl,\n    spaInstagramApiUrl,\n    bookingHref,\n    bookingWidgetId,\n    offersHref,\n    blogPosts,\n    awardBadges[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    awardVariant\n  }\n': PropertyBySlugQueryResult;
-    '\n  *[_type == "siteSettings"][0]{\n    _id,\n    _type,\n    title,\n    description,\n    favicon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    bookNowLabel,\n    dealHeadline,\n    dealCode,\n    dealButtonLabel,\n    homeLogo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    footerLogo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    footerBookingLabel,\n    footerMenuHeading,\n    footerMenuLinks[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n    footerBlogHeading,\n    footerNote,\n    legalLinks[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n    defaultSeo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n': SiteSettingsQueryResult;
+    '\n  *[_type == "siteSettings"][0]{\n    _id,\n    _type,\n    title,\n    description,\n    favicon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    bookNowLabel,\n    dealHeadline,\n    dealCode,\n    dealButtonLabel,\n    homeLogo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    footerLogo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    footerBookingLabel,\n    footerMenuHeading,\n    footerMenuLinks[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n},\n    footerBlogHeading,\n    footerNote,\n    legalLinks[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n},\n    defaultSeo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n': SiteSettingsQueryResult;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too
