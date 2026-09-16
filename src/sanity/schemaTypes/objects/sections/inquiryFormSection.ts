@@ -93,6 +93,53 @@ export const inquiryFormSection = defineType({
       ],
       validation: (Rule) => Rule.required().min(1),
     }),
+    defineField({
+      name: "pricing",
+      title: "Price summary",
+      type: "object",
+      description:
+        "The running total the two spa forms show — Price, Tax and Service, Discount, Total. Leave it off for every other form.",
+      options: { collapsible: true, collapsed: true },
+      fields: [
+        defineField({
+          name: "enabled",
+          title: "Show the price summary",
+          type: "boolean",
+          initialValue: false,
+        }),
+        defineField({
+          name: "field",
+          title: "Which question is priced",
+          type: "string",
+          description:
+            'The field name of the treatment checkboxes — "package" on both spa forms. Each choice is priced from the IDR figure in its own label.',
+          initialValue: "package",
+        }),
+        defineField({
+          name: "taxPercent",
+          title: "Tax and service (%)",
+          type: "number",
+          initialValue: 21,
+          validation: (Rule) => Rule.min(0).max(100),
+        }),
+        defineField({
+          name: "discountPercent",
+          title: "Discount (%)",
+          type: "number",
+          description:
+            "Taken off the total *after* tax, which is how the live forms calculate it. Seminyak gives 20%, Ubud 15%.",
+          initialValue: 0,
+          validation: (Rule) => Rule.min(0).max(100),
+        }),
+        defineField({
+          name: "note",
+          title: "Condition under the discount",
+          type: "string",
+          description:
+            'Shown with an asterisk. Ubud reads "Discount is valid for booking minimum one week in advance"; Seminyak shows none.',
+        }),
+      ],
+    }),
     defineField({ name: "submitLabel", title: "Submit button label", type: "string" }),
     defineField({
       name: "confirmation",

@@ -27,6 +27,7 @@ import { Section } from "@/components/ui/Section";
 import {
   SPA_RESERVATION_COPY,
   SPA_RESERVATION_FIELDS,
+  SPA_RESERVATION_PRICING,
 } from "@/data/spa-reservations";
 import { getPropertySite } from "@/sanity/lib/content";
 import { resolvePageMetadata } from "@/sanity/lib/metadata";
@@ -50,6 +51,7 @@ export async function generateMetadata(): Promise<Metadata> {
 // are shown verbatim in each option label, and on /seminyak/spa.
 const FIELDS = SPA_RESERVATION_FIELDS["spa-reservation-seminyak"];
 const COPY = SPA_RESERVATION_COPY["spa-reservation-seminyak"];
+const PRICING = SPA_RESERVATION_PRICING["spa-reservation-seminyak"];
 
 /** Seminyak — Spa Reservation. The form the SPA page's every "Book Now" and
  * its closing "Reserve Now" lead to. */
@@ -72,6 +74,7 @@ export default async function SeminyakSpaReservationPage() {
               fields={FIELDS}
               submitLabel={COPY.submitLabel}
               confirmation={COPY.confirmation}
+              pricing={PRICING}
             />
           </Section>
 

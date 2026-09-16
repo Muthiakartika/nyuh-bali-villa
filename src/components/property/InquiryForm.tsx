@@ -1,6 +1,12 @@
 "use client";
 
 import { useId, useState, type FormEvent } from "react";
+import type { SpaPricing } from "@/data/spa-reservations";
+import {
+  computeTotals,
+  ReservationReview,
+  type ReservationTotals,
+} from "@/components/property/ReservationReview";
 import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { buttonClassName } from "@/components/ui/Button";
 import { useFormDelivery } from "@/components/property/FormDelivery";
@@ -52,6 +58,12 @@ type InquiryFormProps = {
    * retreat Inquiry appears on Ubud pages, so there is no path convention a
    * default could safely read the property from. */
   property: PropertySlug;
+  /**
+   * Turns on the running "Reservation Review" the two spa forms carry. The
+   * form stays uncontrolled — this only watches the checkbox group named in
+   * the rule and recomputes from the form's own FormData.
+   */
+  pricing?: SpaPricing;
 };
 
 /**
@@ -81,8 +93,19 @@ export function InquiryForm({
   submitLabel = "Send",
   confirmation = "Thank you for reaching out — we'll get back to you shortly.",
   property,
+  pricing,
 }: InquiryFormProps) {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  // The only piece of form state this component keeps. Everything else is
+  // still read with `FormData` on submit — a running total needs to know the
+  // selection *before* submit, and recomputing from the form's own FormData
+  // costs nothing and avoids controlling thirty-nine checkboxes.
+  const [totals, setTotals] = useState<ReservationTotals | null>(null);
+  const recount = (form: HTMLFormElement) => {
+    if (!pricing) return;
+    const chosen = new FormData(form).getAll(pricing.field).map(String);
+    setTotals(computeTotals(chosen, pricing));
+  };
   // Namespaces every input id, so two forms on one page can never collide.
   const formId = useId();
   const delivery = useFormDelivery({ formName: heading, property });
@@ -128,6 +151,9 @@ export function InquiryForm({
       onSubmit={(event) => {
         void handleSubmit(event);
       }}
+      // Delegated rather than per-input: the panel has to react to any of the
+      // treatment checkboxes, and this keeps every field uncontrolled.
+      onChange={pricing ? (event) => recount(event.currentTarget) : undefined}
     >
       {title}
 
@@ -214,6 +240,16 @@ export function InquiryForm({
         {/* Shared button classes rather than a hand-rolled copy, so this can't
             drift away from the booking CTAs it sits alongside. `disabled` while
             the enquiry is in flight, so one press cannot become two. */}
+        {/* Above Send, not below it: the total is what a guest checks before
+            committing, and the live form puts its review beside the list for
+            the same reason. */}
+        {pricing ? (
+          <ReservationReview
+            totals={totals ?? computeTotals([], pricing)}
+            pricing={pricing}
+          />
+        ) : null}
+
         <button
           type="submit"
           disabled={delivery.isSending}

@@ -26,6 +26,7 @@ import { Section } from "@/components/ui/Section";
 import {
   SPA_RESERVATION_COPY,
   SPA_RESERVATION_FIELDS,
+  SPA_RESERVATION_PRICING,
 } from "@/data/spa-reservations";
 import { getPropertySite } from "@/sanity/lib/content";
 import { resolvePageMetadata } from "@/sanity/lib/metadata";
@@ -40,6 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
 // Full treatment choices, rates, booking times, and agreement from this form.
 const FIELDS = SPA_RESERVATION_FIELDS["ubud-spa-booking-form"];
 const COPY = SPA_RESERVATION_COPY["ubud-spa-booking-form"];
+const PRICING = SPA_RESERVATION_PRICING["ubud-spa-booking-form"];
 
 export default async function UbudSpaBookingFormPage() {
   const site = await getPropertySite("ubud");
@@ -57,6 +59,7 @@ export default async function UbudSpaBookingFormPage() {
               fields={FIELDS}
               submitLabel={COPY.submitLabel}
               confirmation={COPY.confirmation}
+              pricing={PRICING}
             />
           </Section>
 

@@ -592,6 +592,18 @@ export function InquiryFormBlock({
         property={site.slug}
         heading={section.heading}
         headingAs={section.headingLevel}
+        // Only when the section says so: every other form on the site has no
+        // prices to total, and a summary of nothing is worse than none.
+        pricing={
+          section.pricing?.enabled
+            ? {
+                field: section.pricing.field || "package",
+                taxPercent: section.pricing.taxPercent ?? 21,
+                discountPercent: section.pricing.discountPercent ?? 0,
+                note: section.pricing.note || undefined,
+              }
+            : undefined
+        }
         fields={fields}
         submitLabel={section.submitLabel}
         confirmation={section.confirmation}

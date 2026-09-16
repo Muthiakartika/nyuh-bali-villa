@@ -62,6 +62,50 @@
     }
   },
   {
+    "type": "type",
+    "name": "pricing",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "enabled": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "field": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "taxPercent": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "discountPercent": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "note": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
     "name": "siteSettings",
     "type": "document",
     "attributes": {
@@ -1349,6 +1393,14 @@
                 }
               }
             }
+          },
+          "optional": true
+        },
+        "pricing": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "pricing"
           },
           "optional": true
         },

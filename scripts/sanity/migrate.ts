@@ -128,6 +128,7 @@ import { HOME_PANELS } from "../../src/data/pages/home";
 import {
   SPA_RESERVATION_COPY,
   SPA_RESERVATION_FIELDS,
+  SPA_RESERVATION_PRICING,
 } from "../../src/data/spa-reservations";
 import {
   PERSONALIZE_RETREAT_CONFIRMATION,
@@ -1801,6 +1802,8 @@ async function migratePages() {
       ),
       headingLevel: "h1",
       confirmation: SPA_RESERVATION_COPY["spa-reservation-seminyak"].confirmation,
+      // The running total, with the live form's own tax and discount rates.
+      pricing: { enabled: true, ...SPA_RESERVATION_PRICING["spa-reservation-seminyak"] },
       tone: "sand",
     },
     { _type: "awardsSection", _key: nextKey() },
@@ -1816,6 +1819,8 @@ async function migratePages() {
       ),
       headingLevel: "h1",
       confirmation: SPA_RESERVATION_COPY["ubud-spa-booking-form"].confirmation,
+      // The running total, with the live form's own tax and discount rates.
+      pricing: { enabled: true, ...SPA_RESERVATION_PRICING["ubud-spa-booking-form"] },
       tone: "sand",
     },
     { _type: "awardsSection", _key: nextKey() },

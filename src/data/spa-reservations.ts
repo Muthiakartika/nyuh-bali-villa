@@ -260,3 +260,75 @@ export const SPA_RESERVATION_COPY: Record<
       "Thank you — we have received your spa booking request and will confirm it by email shortly.",
   },
 };
+
+/**
+ * The running "Reservation Review" panel the live spa forms show.
+ *
+ * ── Every number here is the live site's own ─────────────────────────
+ *
+ * The panel was left out of the first build on the grounds that inventing the
+ * arithmetic could quote a guest a total the business never agreed to. That
+ * objection was right and is now moot: the formula was read straight off each
+ * live form's `updateReview()`, and each treatment's price was checked
+ * against the `data-price` attribute the live markup carries. All seven
+ * Seminyak prices and all thirty-nine Ubud ones match what this project
+ * already stores, to the rupiah.
+ *
+ *   tax      = taxPercent% of the subtotal
+ *   total    = subtotal + tax
+ *   discount = discountPercent% of that total   (not of the subtotal)
+ *   payable  = total - discount
+ *
+ * **The two forms differ, which is the reason this is a table and not a
+ * constant.** Seminyak discounts 20% and Ubud 15%, and only Ubud prints a
+ * condition under the figure.
+ *
+ * One dead branch is deliberately not reproduced: Ubud's script reads a
+ * `data-ts` attribute to split treatments into taxed and untaxed, and **no
+ * element on the page carries it**, so every treatment takes the taxed path.
+ * Copying the branch would have implied a distinction the live form does not
+ * actually make.
+ */
+export type SpaPricing = {
+  /** The checkbox group whose selections are priced. */
+  field: string;
+  taxPercent: number;
+  discountPercent: number;
+  /** The asterisked line under the discount, where the live form shows one. */
+  note?: string;
+};
+
+export const SPA_RESERVATION_PRICING: Record<string, SpaPricing> = {
+  "spa-reservation-seminyak": {
+    field: "package",
+    taxPercent: 21,
+    discountPercent: 20,
+  },
+  "ubud-spa-booking-form": {
+    field: "package",
+    taxPercent: 21,
+    discountPercent: 15,
+    note: "Discount is valid for booking minimum one week in advance",
+  },
+};
+
+/**
+ * The rupiah figure inside an option label — "… 90 mins IDR 790.000++".
+ *
+ * The price lives in the label because that is how the live form writes it,
+ * and it is the same string a guest reads on the checkbox. Parsing it keeps
+ * one copy of every price instead of a second list to keep in step; the
+ * parser was checked against the live `data-price` attributes and agreed on
+ * every treatment on both forms.
+ *
+ * Indonesian thousands separators are dots, so they are stripped rather than
+ * treated as a decimal point. An option with no figure prices at zero, which
+ * is what the agreement checkbox and any future non-priced option need.
+ */
+export function priceFromOption(option: string): number {
+  const match = /IDR\s*([\d.]+)/.exec(option);
+  if (!match) return 0;
+  const digits = match[1].replace(/\./g, "");
+  const value = Number.parseInt(digits, 10);
+  return Number.isFinite(value) ? value : 0;
+}

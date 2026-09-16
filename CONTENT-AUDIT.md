@@ -1,4 +1,11 @@
-# Audit konten — 4 September 2026
+# Audit konten — 4 September 2026, diperbarui 16 September 2026
+
+> **Catatan pembaruan (16 September 2026).** Tiga pernyataan di dokumen ini
+> sudah tidak berlaku dan diperbaiki di bagian "Perbedaan dan batas
+> pemeriksaan": formulir kini terkirim sungguhan, panel total harga sudah
+> dibuat, dan feed Instagram sudah memakai embed resmi aplikasinya. Sisa
+> dokumen tetap sebagaimana adanya — temuannya masih berlaku untuk snapshot
+> tanggal auditnya.
 
 Sumber: https://nyuhbalivillas.com/. Cakupan: 74 URL yang sudah diimplementasikan dalam proyek, berdasarkan `src/data/seo.ts`. Audit membandingkan HTML lokal dengan HTML live, gambar `<img>`, dan gambar latar dari stylesheet live; pemeriksaan visual tambahan dilakukan di browser.
 
@@ -27,7 +34,13 @@ Sumber: https://nyuhbalivillas.com/. Cakupan: 74 URL yang sudah diimplementasika
 
 Proyek belum identik 100% dengan live. Desain ulang mempertahankan hero tambahan dari foto pada halaman terkait, ringkasan artikel, rekomendasi artikel, dan daftar blog tanpa pagination live. Perbedaan itu masih muncul dalam hasil pembanding mentah dan tidak otomatis berarti salah konten.
 
-Feed Instagram live bersifat dinamis dan belum diintegrasikan. Galeri pengganti tidak dipresentasikan sebagai posting Instagram aktual. Formulir lokal masih simulasi antarmuka; pengiriman, kalkulasi total, pembayaran deposit, dan konfirmasi backend belum terhubung. Audit ini tidak menguji transaksi atau mengirim formulir.
+**Feed Instagram sudah terintegrasi** — sejak audit ini ditulis, band Instagram memakai embed milik aplikasi feed-nya sendiri (`<seoboost-feed>`), bukan galeri pengganti. Ada tiga akun: @nyuhbalivillas, @nyuhbaliubud, dan @mahamayaspa.ubud untuk halaman SPA Ubud. Tata letak, jumlah kolom, dan kropnya adalah setelan aplikasi itu, bukan repositori ini.
+
+**Formulir bukan lagi simulasi.** Ketiga belas formulir mengirim ke satu endpoint, `/api/contact`, yang memeriksa token Cloudflare Turnstile lalu mengirim email lewat SendGrid dalam permintaan yang sama. Konfirmasi hanya muncul bila pengiriman benar-benar berhasil — sebelumnya formulir mengganti dirinya dengan ucapan terima kasih apa pun yang terjadi.
+
+**Panel "Reservation Review" sudah dibuat.** Total berjalan pada kedua formulir SPA menghitung harga, pajak & servis 21%, dan diskon — 20% di Seminyak, 15% di Ubud dengan syarat pemesanan minimal satu minggu sebelumnya. Rumus dan tarifnya dibaca langsung dari `updateReview()` pada masing-masing formulir live, dan setiap harga dicocokkan dengan atribut `data-price` di markup live: ketujuh harga Seminyak dan ketiga puluh sembilan harga Ubud cocok sampai ke rupiah.
+
+**Yang masih belum ada: pembayaran deposit.** Formulir mengirimkan permintaan; pembayarannya diurus terpisah oleh resor. Audit ini tidak menguji transaksi.
 
 Email laporan pada Explore Bali tetap memakai alamat reservasi publik Seminyak. Teks live pada paragraf tersebut masih menunjuk `info@preview.nyuhbalivillas.com`; alamat staging itu tidak disalin kembali. Copyright memakai tahun berjalan. Beberapa perbedaan pemisahan paragraf dan pemenggalan kata live dipertahankan dalam bentuk yang terbaca.
 

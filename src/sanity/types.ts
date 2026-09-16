@@ -300,6 +300,13 @@ export type SanitySection =
       }[];
       submitLabel?: string;
       confirmation?: string;
+      pricing?: {
+        enabled?: boolean;
+        field?: string;
+        taxPercent?: number;
+        discountPercent?: number;
+        note?: string;
+      };
     })
   | (SectionBase & {
       _type: "contactSection";

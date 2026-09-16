@@ -283,6 +283,38 @@ the absence: hero and the property picker are full-bleed photographs with no
 band colour behind them, and awards, deals, Instagram and the booking widget
 draw their own surface.
 
+**The spa forms' "Reservation Review" is built, and the objection that kept
+it out turned out to be answerable.** The route file said the live panel was
+"a pricing calculator wired to the booking backend… inventing the arithmetic
+would risk quoting a guest a number the business never agreed to." Right at
+the time, and moot now: the formula was read straight off each live form's own
+`updateReview()`, and every price was checked against the `data-price` the
+live markup carries — **all 7 Seminyak prices and all 39 Ubud ones match what
+this project already stores, to the rupiah**. Nothing is invented.
+
+    tax      = 21% of subtotal
+    total    = subtotal + tax
+    discount = 20% (Seminyak) / 15% (Ubud) of *that total*, not of the subtotal
+    payable  = total - discount
+
+Three things are worth knowing. **The two forms genuinely differ** — different
+discount rates, and only Ubud prints "*Discount is valid for booking minimum
+one week in advance" — which is why `SPA_RESERVATION_PRICING` is a table and
+the CMS carries the rates per section rather than in code. **One live branch
+is deliberately not reproduced**: Ubud's script splits treatments on a
+`data-ts` attribute that *no element on the page carries*, so every treatment
+takes the taxed path; copying the branch would imply a distinction the live
+form does not make. And **the panel must not guess a treatment's name** — a
+first version split the option label at the first capitalised word and turned
+"Honeymoon Enjoyment Package" into "Honeymoon", so it now shows everything
+before the duration, clamped to two lines. The live form can separate them
+because its markup has a `.package-name`; this data is one string.
+
+Prices are parsed from the option label rather than stored twice
+(`priceFromOption`), the form stays uncontrolled — one `onChange` on the
+`<form>` recomputes from its own `FormData` — and `inquiryFormSection.pricing`
+carries it in the CMS, so the published pages and `src/data` both render it.
+
 **A menu PDF is replaceable from the Studio, and that closed the first thing
 the client actually asked for.** "My team would like to change the F&B menu"
 turned out to be the one job the CMS could not do: the menu buttons are `link`

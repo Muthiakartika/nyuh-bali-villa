@@ -28,6 +28,14 @@ export type TextLinkFile = {
   _type: "file";
 };
 
+export type Pricing = {
+  enabled?: boolean;
+  field?: string;
+  taxPercent?: number;
+  discountPercent?: number;
+  note?: string;
+};
+
 export type SiteSettings = {
   _id: string;
   _type: "siteSettings";
@@ -234,6 +242,7 @@ export type InquiryFormSection = {
     _type: "inquiryField";
     _key: string;
   }>;
+  pricing?: Pricing;
   submitLabel?: string;
   confirmation?: string;
   headingLevel?: "h1" | "h2" | "h3";
@@ -1271,6 +1280,7 @@ export type Geopoint = {
 export type AllSanitySchemaTypes =
   | SanityFileAssetReference
   | TextLinkFile
+  | Pricing
   | SiteSettings
   | Seo
   | SanityImageAssetReference
@@ -1910,6 +1920,7 @@ export type PageByPathQueryResult = {
           _type: "inquiryField";
           _key: string;
         }>;
+        pricing?: Pricing;
         submitLabel?: string;
         confirmation?: string;
         headingLevel?: "h1" | "h2" | "h3";
