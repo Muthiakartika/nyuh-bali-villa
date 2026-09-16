@@ -6,11 +6,12 @@ import { CANONICAL_HOST, SITE_ORIGIN } from "@/data/origin";
  * ═══════════════════════════════════════════════════════════════════════
  * One job: make sure the site is only ever *indexable* at one address.
  *
- * By default that means a 308 from any non-canonical hostname to the real
- * domain. `ALLOW_ALIAS_REVIEW=1` swaps the redirect for an
- * `X-Robots-Tag: noindex, nofollow` on those same requests, so the Vercel
- * alias can be read by a person without becoming a second copy of the site
- * — see THE REVIEW ESCAPE HATCH below.
+ * Two ways to do that, and this file can do either. **The default is
+ * `X-Robots-Tag: noindex, nofollow`** on any non-canonical hostname, which
+ * keeps the Vercel alias readable by a person while keeping it out of the
+ * index. `ENFORCE_CANONICAL_HOST=1` swaps that for a 308 to the real domain
+ * — see THE DEFAULT, AND WHICH WAY ROUND below for why it starts on the
+ * first and should end on the second.
  *
  * This was `src/middleware.ts` exporting `middleware`. Next 16 deprecated
  * that convention in favour of `proxy.ts` exporting `proxy` and warns on
@@ -33,9 +34,9 @@ import { CANONICAL_HOST, SITE_ORIGIN } from "@/data/origin";
  *
  * The canonical tags in `layout.tsx` are correct and absolute, which is
  * most of the defence — but a canonical is a hint, not a directive, so the
- * duplicate can still be crawled and occasionally indexed. A 308 removes
- * the question: a crawler that follows it only ever sees one address, and
- * the ranking signals land there.
+ * duplicate can still be crawled and occasionally indexed. Both modes below
+ * remove the question: `noindex` is a directive a crawler must obey, and a
+ * 308 means it only ever sees one address in the first place.
  *
  * `robots.ts` is the other half, and it covers the case this cannot: a
  * preview deployment, where a redirect to production would make the
@@ -87,31 +88,38 @@ function isOffCanonicalHost(request: NextRequest) {
 }
 
 /**
- * ── THE REVIEW ESCAPE HATCH ────────────────────────────────────────────
- * `ALLOW_ALIAS_REVIEW=1` keeps the `*.vercel.app` alias **readable** while
- * still keeping it out of the index.
+ * ── THE DEFAULT, AND WHICH WAY ROUND ───────────────────────────────────
+ * **Unset, the alias is served with `X-Robots-Tag: noindex, nofollow`.
+ * `ENFORCE_CANONICAL_HOST=1` turns it into a 308 instead.** That is the
+ * opposite way round from how this started, and the reason is the window
+ * this project is actually in rather than a view about which is better.
  *
- * It exists for the window this project is actually in: the build is
- * finished but `nyuhbalivillas.com` still resolves to WordPress, so the
- * production alias is the only address at which the finished site can be
- * looked at — and the 308 above sends a reviewer straight to the WordPress
- * site they are trying to replace. A preview deployment is not a
+ * `nyuhbalivillas.com` still resolves to WordPress. The production alias
+ * is therefore the *only* address at which the finished build can be
+ * looked at, and a 308 sends a reviewer straight to the site they are
+ * trying to replace — so the redirect-by-default made the deployment
+ * unusable for the one job it currently has. A preview deployment is not a
  * substitute, because the thing under review is the production build.
  *
- * **It answers `X-Robots-Tag: noindex, nofollow` rather than switching the
- * protection off.** That matters more than the convenience: `noindex` is a
- * directive, not the hint a canonical tag is, so the alias is no more
- * indexable in this mode than it is behind the redirect. It is the same
- * mechanism Vercel applies to previews and `next.config.ts` applies to
- * `/studio`. What it loses against a 308 is the consolidation of ranking
- * signals — links pointing at the alias stop passing to the canonical —
- * and essentially nothing links to a `*.vercel.app` address.
+ * **Both modes keep the alias out of the index; they differ in what else
+ * they do.** `noindex` is a directive rather than the hint a canonical tag
+ * is, so a crawler must obey it — it is the same mechanism Vercel applies
+ * to previews and `next.config.ts` applies to `/studio`. What this mode
+ * gives up against a 308 is the consolidation of ranking signals: a link
+ * pointing at the alias stops passing anything to the canonical. Nothing
+ * links to a `*.vercel.app` address, so today that costs nothing.
  *
- * **So forgetting to unset it at cutover is not a duplicate-content
- * incident**, only a slightly weaker guard than intended. That is the
- * whole reason it is written this way rather than as an early `return`:
- * an escape hatch nobody remembers to close should fail in the safe
- * direction. Unset it once the domain points here and the 308 comes back.
+ * **Set `ENFORCE_CANONICAL_HOST=1` at cutover**, once DNS points here. Then
+ * the alias is a genuine duplicate of a live site and the 308 is worth
+ * having.
+ *
+ * **Forgetting to is not a duplicate-content incident**, only a weaker
+ * guard than intended, and that asymmetry is the whole reason the default
+ * is this way round: whichever value gets left behind, the alias stays
+ * unindexable. It is also why the switch does not sit on the live site's
+ * path at all — real traffic arrives at the canonical host, so
+ * `isOffCanonicalHost` is already false and neither branch below runs.
+ * Nothing about this flag can reach a visitor on nyuhbalivillas.com.
  *
  * **Do not let robots.txt near this.** Adding `Disallow: /` for the alias
  * would be the classic own goal: a disallowed page is never fetched, so
@@ -120,22 +128,22 @@ function isOffCanonicalHost(request: NextRequest) {
  * `noindex` is the combination that actually removes a page; blocked plus
  * `noindex` is the combination that cannot.
  */
-function aliasReviewAllowed() {
-  const flag = process.env.ALLOW_ALIAS_REVIEW?.trim().toLowerCase();
+function canonicalRedirectEnforced() {
+  const flag = process.env.ENFORCE_CANONICAL_HOST?.trim().toLowerCase();
   return flag === "1" || flag === "true";
 }
 
 export function proxy(request: NextRequest) {
   if (!isOffCanonicalHost(request)) return NextResponse.next();
 
-  if (aliasReviewAllowed()) {
-    const response = NextResponse.next();
-    response.headers.set("X-Robots-Tag", "noindex, nofollow");
-    return response;
+  if (canonicalRedirectEnforced()) {
+    const { pathname, search } = request.nextUrl;
+    return NextResponse.redirect(`${SITE_ORIGIN}${pathname}${search}`, 308);
   }
 
-  const { pathname, search } = request.nextUrl;
-  return NextResponse.redirect(`${SITE_ORIGIN}${pathname}${search}`, 308);
+  const response = NextResponse.next();
+  response.headers.set("X-Robots-Tag", "noindex, nofollow");
+  return response;
 }
 
 export const config = {
