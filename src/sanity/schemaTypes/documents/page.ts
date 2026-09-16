@@ -41,6 +41,10 @@ function countPageTitles(sections: unknown): true | string {
     if (s?._type === "heroSection" || s?._type === "propertyPickerSection") return true;
     if (s?._type === "contactSection") return (s.headingLevel ?? "h1") === "h1";
     if (s?._type === "inquiryFormSection") return s.headingLevel === "h1";
+    // The in-room pages have no hero: their packages band carries the <h1>.
+    // Left out, this warned "no main heading" on the four pages that do have
+    // one — a warning that teaches an editor to ignore warnings.
+    if (s?._type === "packageListSection") return s.headingLevel === "h1";
     return false;
   });
   if (titles.length === 1) return true;

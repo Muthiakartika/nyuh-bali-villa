@@ -1,5 +1,10 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { eyebrowField, headingLevelField, sectionSettingsFields, toneField } from "./shared";
+import {
+  eyebrowField,
+  pageHeadingLevelField,
+  sectionSettingsFields,
+  toneField,
+} from "./shared";
 
 export const packageListSection = defineType({
   name: "packageListSection",
@@ -45,7 +50,12 @@ export const packageListSection = defineType({
       hidden: ({ parent }) => parent?.source !== "reference",
     }),
     toneField,
-    headingLevelField,
+    // H1 is offered here, unlike most bands, because on the four in-room /
+    // staff pages this band *is* the page — they have no hero, so its heading
+    // is the page title and the seed writes "h1". The narrower field rejected
+    // that value, so those four documents showed a red error on content that
+    // renders correctly.
+    pageHeadingLevelField("h2"),
     ...sectionSettingsFields,
   ],
   preview: {

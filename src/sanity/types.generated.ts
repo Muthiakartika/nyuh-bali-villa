@@ -338,7 +338,7 @@ export type PackageListSection = {
   >;
   packageSet?: PackageSetReference;
   tone?: "sand" | "sand-deep" | "white";
-  headingLevel?: "h2" | "h3" | "h4";
+  headingLevel?: "h1" | "h2" | "h3";
   anchor?: string;
   isHidden?: boolean;
 };
@@ -2142,7 +2142,7 @@ export type PageByPathQueryResult = {
           }> | null;
         } | null;
         tone?: "sand-deep" | "sand" | "white";
-        headingLevel?: "h2" | "h3" | "h4";
+        headingLevel?: "h1" | "h2" | "h3";
         anchor?: string;
         isHidden?: boolean;
         image: null;

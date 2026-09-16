@@ -68,8 +68,20 @@ export const post = defineType({
       type: "text",
       rows: 3,
       group: "content",
-      description: "Shown on the Discover index cards.",
-      validation: (Rule) => Rule.required().max(320),
+      description:
+        "The summary on the Discover index cards. The card clamps it to two lines, so the first sentence is what people read.",
+      // **Warnings, not errors, and the imported posts are why.** Thirteen of
+      // the seventeen failed this rule the moment it existed: eleven run past
+      // 320 characters (373 at the longest) and two have no excerpt at all —
+      // in `src/data` as well, so it is the source's own doing, not a gap in
+      // the import. Neither breaks anything: `PostGrid` guards on
+      // `post.excerpt` and clamps what it renders. A rule the content cannot
+      // satisfy is not a standard, it is thirteen red marks an editor learns
+      // to scroll past.
+      validation: (Rule) => [
+        Rule.required().warning("Without an excerpt the card shows only a headline."),
+        Rule.max(320).warning("Longer than about 320 characters is clamped on the card anyway."),
+      ],
     }),
     defineField({
       name: "image",

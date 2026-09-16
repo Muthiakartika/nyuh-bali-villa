@@ -283,6 +283,31 @@ the absence: hero and the property picker are full-bleed photographs with no
 band colour behind them, and awards, deals, Instagram and the booking widget
 draw their own surface.
 
+**Then every published value was checked against every rule, and three more
+turned up.** The method: read the enum unions out of `src/sanity/schema.json`,
+parse `Rule.required()` and `.max(n)` out of the schema source, and walk all
+405 published documents looking for values the Studio would mark red. Two
+things make the result trustworthy — the enum side is read from the extracted
+schema rather than guessed, and every `required` hit was checked against
+`schema.json`'s own field ownership before being believed. **All 23 that
+survived were mis-attribution** (`legalList.items` read as `legalPage.items`,
+`linkCard.image` as `linkCardGridSection.image`, and so on: the parser scans a
+window per `defineField` and can slurp the next field's validation). Discount
+that column; the enum and length findings were real.
+
+- **`packageListSection` could not hold the heading level its own seed
+  writes.** The four in-room pages have no hero, so that band *is* the page
+  title and the migration sets `headingLevel: "h1"` — which
+  `headingLevelField` (H2/H3/H4) rejects. Four documents showed a red error on
+  content that renders correctly. It takes `pageHeadingLevelField` now, and
+  `countPageTitles` counts it, which also stopped those four warning "no main
+  heading" when they plainly have one.
+- **`post.excerpt` was `required().max(320)` and thirteen of the seventeen
+  posts failed it** — eleven over 320 (373 at the longest) and two with no
+  excerpt at all, empty in `src/data` too, so the source's own doing. Neither
+  breaks anything: `PostGrid` guards on `post.excerpt` and clamps it to two
+  lines. Both are warnings now.
+
 **A validation rule the project's own data failed.**
 `inquiryFormSection.fields[].name` required kebab-case — and the Wedding page
 ships six camelCase names (`weddingDate`, `stayDate`, `weddingGift`,
