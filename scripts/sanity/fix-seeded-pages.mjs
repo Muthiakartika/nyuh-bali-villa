@@ -80,13 +80,16 @@ const client = createClient({
   useCdn: false,
 });
 
-/** The four routes that render their own AwardsRow outside ManagedPage. */
-const SELF_AWARDING = new Set([
-  "/seminyak-directory",
-  "/ubud-directory",
-  "/suite-directory",
-  "/welcomeaboard",
-]);
+/**
+ * Previously: the four routes that rendered their own AwardsRow *outside*
+ * ManagedPage, so a seeded awardsSection drew a second strip.
+ *
+ * They render it inside now — that was the only band on those pages a client
+ * could not hide — so the seeded section is what draws it and nothing should
+ * be stripped. Kept empty rather than deleted so a rerun of this script is a
+ * no-op instead of undoing the fix.
+ */
+const SELF_AWARDING = new Set([]);
 
 /**
  * Package CTAs whose `inScope` must be `true`. Matched on destination rather

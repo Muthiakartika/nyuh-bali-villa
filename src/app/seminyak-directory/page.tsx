@@ -51,9 +51,13 @@ export default async function SeminyakDirectoryPage() {
             intro={SEMINYAK_DIRECTORY.intro}
             packages={SEMINYAK_DIRECTORY.items}
           />
+          {/* Inside `ManagedPage`, like every other band on the site. It used
+              to sit outside, which made it the one strip on these four pages a
+              client could not hide from the Studio — and meant the seeded
+              document had to leave its `awardsSection` out to avoid drawing a
+              second one. */}
+          <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
         </ManagedPage>
-
-        <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
       </main>
       <PropertyFooter site={site} />
       <DirectBookingDeals bookingHref={site.bookingHref} />

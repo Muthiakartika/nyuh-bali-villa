@@ -36,8 +36,15 @@ export default async function ManagedPage({
   children: ReactNode;
 }) {
   const page = await getSanityPage(path);
-  if (!page?.sections?.length) return <>{children}</>;
+  // Counted *after* the hidden ones are dropped, not before. `sections.length`
+  // alone let an editor who had hidden every section publish a page whose
+  // `<main>` rendered nothing at all — no heading, no content, and no hint in
+  // the Studio beyond the "no main heading" warning. An all-hidden document
+  // says "render none of this", and the resolver's rule for that everywhere
+  // else is to hand back what the route already had.
+  const visible = (page?.sections ?? []).filter((section) => !section.isHidden);
+  if (!visible.length) return <>{children}</>;
 
-  const site = await getPropertySite(page.property ?? fallbackProperty);
-  return <PageBuilder sections={page.sections} site={site} />;
+  const site = await getPropertySite(page!.property ?? fallbackProperty);
+  return <PageBuilder sections={visible} site={site} />;
 }

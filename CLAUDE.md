@@ -283,6 +283,31 @@ the absence: hero and the property picker are full-bleed photographs with no
 band colour behind them, and awards, deals, Instagram and the booking widget
 draw their own surface.
 
+**Hide/show reaches every band now, and two things stood between it and
+that.** All 24 section types carried `isHidden` and `PageBuilder` filtered on
+it, so as a *field* it was complete — but:
+
+- **The awards strip on the four in-room / staff pages was not a section at
+  all.** Those routes rendered `AwardsRow` outside `ManagedPage`, which is why
+  their seeded documents had to omit `awardsSection` (two strips otherwise).
+  It was the one band on those pages a client could not hide. It sits inside
+  `ManagedPage` now, like every other band, and the seeded section is what
+  draws it.
+- **Hiding *every* section published a blank page.** `ManagedPage` tested
+  `sections.length` before the hidden ones were filtered out, so an all-hidden
+  document rendered an empty `<main>` — no heading, no content. It counts the
+  visible ones now and falls back to the route's own JSX, which is the rule
+  every other resolver here follows for "nothing to render".
+
+**Verified by actually hiding one and rebuilding**, not by reading the code:
+the strip disappeared, the page kept its `<h1>`, the other three were
+untouched, and unhiding restored it. Expect **a one-build lag** doing this —
+the first `npm run build` after a write still served the pre-write copy both
+times, in each direction, with `.next` deleted. The data was correct on
+`api` *and* `apicdn` when checked directly, so it is the fetch layer's cache,
+not the CDN and not the code. Build twice before believing a CMS change did
+not take.
+
 **Then the same question was asked of every field, and the answer was six
 more.** The check is mechanical and worth rerunning: for each section, take
 its fields from `src/sanity/schema.json`, check each one is in the

@@ -1856,11 +1856,11 @@ async function migratePages() {
         })),
         headingLevel: "h1",
       },
-      // No `awardsSection` here, unlike the three form pages. On these four
-      // routes `AwardsRow` is rendered *outside* `ManagedPage`, so the page
-      // already has an awards strip and a seeded one would draw a second.
-      // Found by diffing the raw markup of the CMS build against the
-      // hand-written fallback.
+      // `AwardsRow` sits *inside* `ManagedPage` on these four routes now, like
+      // every other band, so the seeded section is what draws it — and it is
+      // hideable from the Studio, which it was not while the route rendered
+      // it outside.
+      { _type: "awardsSection", _key: nextKey() },
     ]);
   }
 
