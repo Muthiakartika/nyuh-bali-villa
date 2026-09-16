@@ -182,12 +182,36 @@ what:
   file type, and one zone-wide number is simultaneously too long for HTML and
   too short for hashed assets.
 
-**A cutover issue the rules list reveals, outside caching:** rules 5 and 6
+**Rule 1's Edge TTL is longer than the origin asks for, and that is measured
+rather than inferred.** `npm run cache:check` against the live apex, with
+`SITE_URL` set, reads this back:
+
+    cf-cache-status  HIT
+    age              427384s  (4.9 days)
+    cache-control    max-age=7200
+
+WordPress asks for two hours and the edge has held that copy for **almost five
+days** — so rule 1 carries an Edge TTL of its own, well past the one day rule 3
+sets. Two consequences, and the second is the one that bites:
+
+- It is the reason to read rule 1's TTLs before replacing it, above. A rules
+  list shows only that a TTL is *set*, never to what; this is how to find out.
+- **At cutover, stale WordPress HTML can outlive the DNS change by days.** The
+  edge answers from its own copy without asking the new origin at all, so
+  pointing DNS at Vercel does not by itself put this build in front of anyone
+  holding a cached page. `npm run cache:purge` immediately after the switch is
+  what makes the cutover visible; it is not optional here, and the 4.9 days
+  above is why.
+
+**A cutover issue the rules list used to reveal, now closed:** rules 5 and 6
 imply `/ubud-directory` and `/seminyak-directory` are in use — the in-room
-tablet directories. This project deliberately does not build them (nor
-`/suite-directory`), so those URLs **404 the moment DNS points at Vercel**,
-cache rules or not. That needs settling with the client before cutover, by
-building them or redirecting the paths.
+directories a guest reaches from the QR code beside the bed. This project did
+not build them when those rules were written, so the URLs would have 404ed the
+moment DNS pointed at Vercel. Pass 5 built all four (`/seminyak-directory`,
+`/ubud-directory`, `/suite-directory`, `/welcomeaboard`); each is prerendered
+and deliberately kept out of the sitemap by `UNLISTED` in `src/app/sitemap.ts`,
+matching the live site, which lists none of them either. Rules 5 and 6 can be
+deleted with the rest — nothing needs settling with the client any more.
 
 ---
 
@@ -303,6 +327,12 @@ command.
 ```
 
 An `age` in days on an HTML page is the whole problem this file exists for.
+
+**The last block only appears when `SITE_URL` is set.** Without it the command
+still validates the zone id and the token — the two things that actually break
+a purge — and prints `not checked — set SITE_URL to probe the live edge` in
+place of the edge state. That is easy to read as "the edge is fine" when it
+means "nobody looked", so set `SITE_URL` before trusting a clean run.
 
 **Is the edge caching pages at all?** Two requests; the second should say HIT.
 
