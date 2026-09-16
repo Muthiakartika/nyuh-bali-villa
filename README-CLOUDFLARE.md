@@ -157,7 +157,7 @@ today job — deleting them now only makes the live old site slower.
 
 | Order | Rule | At cutover | Why |
 |---|---|---|---|
-| 1 | `Cache Everything [Template]` — `URI Full wildcard https://nyuhbalivillas.com/*` | **replaced** by rule 3 above | Its match misses `www.` entirely, and its TTLs need setting — see below |
+| 1 | `Cache Everything [Template]` — `URI Full wildcard https://nyuhbalivillas.com/*` | **replaced** by rule 3 above | Its match misses `www.` entirely, it carries no bypass list at all, and its Edge TTL outlives what the origin asks for — see below |
 | 2 | `_GRECAPTCHA` (Disabled) | delete | Already off, and this site uses Turnstile |
 | 3 | `Bypass wp admin` — `/wp-admin/*` | delete | No WordPress to protect |
 | 4 | `Bypass login` — `/wp-login.php*` | delete | Same |
@@ -169,18 +169,25 @@ six at once — and **refuses on the first run**, printing every rule it did not
 write, so nobody discards them without reading the list. `--force` is the
 second run, after reading it.
 
-**Two values to read off rule 1 before replacing it**, because the screenshot
-of a rules list shows only that Browser TTL and Edge TTL are *set*, never to
-what:
+**Two values decide whether a purge can reach everyone, and a rules list
+cannot answer either** — it shows only that Browser TTL and Edge TTL are *set*,
+never to what. Both were measured against the live zone instead.
 
-- **Browser TTL.** If it carries a long value, that is the one nothing can
-  reach — not a purge, not a publish, not a redeploy. Rule 3 above sets it to
-  Respect origin.
-- **Caching → Configuration → Browser Cache TTL**, which is a *zone-wide*
-  setting and not a cache rule at all. It is the most commonly missed lever
-  here. Set it to **Respect Existing Headers**: Next sends the right header per
-  file type, and one zone-wide number is simultaneously too long for HTML and
-  too short for hashed assets.
+- **Rule 1's Browser TTL is Respect origin**, measured 2026-09-16 and no longer
+  an open question. The probe is to ask the edge for two files whose origin
+  headers disagree: the apex HTML comes back `max-age=7200` and
+  `/wp-content/uploads/2023/03/Honeymoon-Pool-Villa-1.webp` comes back
+  `max-age=604800`. A fixed Browser TTL would have flattened both to one
+  number, so the rule is passing the origin's own value through — which is what
+  rule 3 above sets too. That takes the worst cutover risk off the list: there
+  is no visitor holding a copy a purge cannot reach.
+- **Caching → Configuration → Browser Cache TTL** is a *zone-wide* setting and
+  not a cache rule at all, so the probe above cannot tell it apart from rule
+  1's — it proves only that *neither* is overriding. It is the most commonly
+  missed lever here, so confirm it reads **Respect Existing Headers** in the
+  dashboard before cutover: Next sends the right header per file type, and one
+  zone-wide number is simultaneously too long for HTML and too short for hashed
+  assets.
 
 **Rule 1's Edge TTL is longer than the origin asks for, and that is measured
 rather than inferred.** `npm run cache:check` against the live apex, with
@@ -192,16 +199,56 @@ rather than inferred.** `npm run cache:check` against the live apex, with
 
 WordPress asks for two hours and the edge has held that copy for **almost five
 days** — so rule 1 carries an Edge TTL of its own, well past the one day rule 3
-sets. Two consequences, and the second is the one that bites:
+sets. The exact number is still unread: reading a rule's settings back needs a
+Cache Rules → Read token, which nothing in this repo holds, so what is
+established is a floor of five days rather than a value. Two consequences, and
+the second is the one that bites:
 
-- It is the reason to read rule 1's TTLs before replacing it, above. A rules
-  list shows only that a TTL is *set*, never to what; this is how to find out.
+- It is why the edge's copy, not the browser's, is the one to plan around
+  here. The browser's expires in two hours and Respect origin keeps it that
+  way; the edge's outlives it by days and only a purge ends it.
 - **At cutover, stale WordPress HTML can outlive the DNS change by days.** The
   edge answers from its own copy without asking the new origin at all, so
   pointing DNS at Vercel does not by itself put this build in front of anyone
   holding a cached page. `npm run cache:purge` immediately after the switch is
   what makes the cutover visible; it is not optional here, and the 4.9 days
   above is why.
+
+**Rule 1 caches responses that say not to, and that is the cutover hazard a
+rules list does not show at all.** `Cache Everything` overrides
+*cacheability*, not just TTL. Measured on the live zone the same day:
+`/sitemap_index.xml` answers `Cache-Control: private, must-revalidate` and is
+served `HIT` at an age of 4.7 days regardless, and `/wp-json/wp/v2/pages`
+answers `private` and reports `MISS` — which is Cloudflare storing a copy, not
+declining to. Today that is a WordPress staleness quirk and nothing more.
+Pointed at Vercel with rule 1 still in place, the same behaviour reaches three
+things that matter:
+
+- **`/studio`** — the HTML of an application that is signed in as a person,
+  held at the edge.
+- **`/_next/image*`** — `Vary: Accept` is ignored outside Enterprise, so a
+  browser that cannot read AVIF can be handed one, cached.
+- **the two draft-mode cookies** — unpublished content stored where the public
+  is served from.
+
+Forms are the exception rather than a fourth entry: Cloudflare caches GET and
+HEAD only, so a POST to `/api/contact` was never exposed by this. Rule 1 of §3
+is what closes the other three, which is the argument for applying the rules in
+the same sitting as the DNS change rather than the week after.
+
+**The rest of the zone, same pass, as a before picture.** `/` and
+`/ubud/villa/` `HIT` at 4.9 and 4.5 days. `/robots.txt` `HIT` at 4.9 days —
+worth remembering, because a stale `robots.txt` outlives a cutover exactly the
+way the HTML does. `/wp-admin/` and `/wp-login.php` are not cached, so rules 3
+and 4 are doing their job, and neither is `/ubud-directory/`, so rules 5 and 6
+are doing theirs. `www.nyuhbalivillas.com` 301s to the apex and is never
+cached, which is why rule 1 missing `www.` costs nothing today and would cost
+the entire `www` audience the moment Vercel is serving. And
+`booking.nyuhbalivillas.com` answers from `Server: AmazonS3` with no
+`cf-cache-status` at all — it is not proxied through this zone, so the
+subdomain trap every rule in §3 is scoped against is currently theoretical.
+Keep the scoping anyway: a grey-clouded record is one click from being an
+orange one.
 
 **A cutover issue the rules list used to reveal, now closed:** rules 5 and 6
 imply `/ubud-directory` and `/seminyak-directory` are in use — the in-room
@@ -342,6 +389,16 @@ curl -sI https://nyuhbalivillas.com/ubud/villa | grep -i "cf-cache-status\|cache
 
 `DYNAMIC` means no cache rule matched — rule 3 is missing, or its expression
 does not match. `BYPASS` means rule 1 matched something it should not.
+
+**Is anything overriding Browser TTL?** Ask for two files whose origin
+headers disagree and compare what comes back. A rule or a zone-wide setting
+that overrides would flatten both to the same number; passing both through
+means Respect origin is in force, and that a purge can reach every visitor.
+
+```bash
+curl -sI https://nyuhbalivillas.com/ | grep -i ^cache-control
+curl -sI https://nyuhbalivillas.com/wp-content/uploads/2023/03/Honeymoon-Pool-Villa-1.webp | grep -i ^cache-control
+```
 
 **Is the Studio excluded?**
 
