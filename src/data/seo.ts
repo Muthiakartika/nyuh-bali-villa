@@ -37,29 +37,10 @@ import type { Metadata } from "next";
  */
 export type RouteSeo = { title: string; description?: string };
 
-/**
- * The origin every absolute URL this site publishes is built from — the
- * canonical link, `og:url`, the sitemap's `<loc>` and robots.txt's `Sitemap:`.
- *
- * `SITE_URL` already exists for the Cloudflare purge (see .env.example), and
- * it means the same thing here: the public domain, not `VERCEL_URL`.
- *
- * **The fallback is the production domain on purpose.** A preview deployment
- * with nothing set therefore points its canonicals at the live site rather
- * than at itself, which is the safe direction to be wrong in — a preview that
- * nominates itself as canonical can outrank the page it is previewing. Vercel
- * sends `X-Robots-Tag: noindex` on preview deployments anyway, so this is the
- * second of two guards rather than the only one.
- */
-export const SITE_ORIGIN = ((): string => {
-  const raw = process.env.SITE_URL?.trim();
-  if (!raw) return "https://nyuhbalivillas.com";
-  try {
-    return new URL(raw.startsWith("http") ? raw : `https://${raw}`).origin;
-  } catch {
-    return "https://nyuhbalivillas.com";
-  }
-})();
+// Moved to its own module so `src/middleware.ts` can import it without
+// pulling ROUTE_SEO into the edge bundle. Re-exported here because this is
+// where every caller already looks for it.
+export { SITE_ORIGIN } from "./origin";
 
 export const ROUTE_SEO: Record<string, RouteSeo> = {
   "/": {
@@ -71,11 +52,6 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
     title: "Complimentary Services - Nyuh Bali",
     description:
       "More than a stay, we invite you to enjoy truly Ubud experience. We curate authentic Balinese activities and wellness classes to help you relax and create an unforgettable stay.",
-  },
-  "/life-coach-retreat-benefits": {
-    title: "Life Coach & Psychologist in Bali - Ubud Nyuh Bali Resort",
-    description:
-      "Journey towards self-discovery with our compassionate life coaches and psychologists amidst Ubud’s most luxurious resort.",
   },
   "/privacy-policy": {
     title: "Privacy Policy - Nyuh Bali Villas – Your Data Protection & Privacy",

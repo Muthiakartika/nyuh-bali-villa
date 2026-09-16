@@ -66,12 +66,43 @@ const nextConfig: NextConfig = {
         source: "/studio",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
+
+      // The 352 files in `public/uploads/` — 315 photographs and 37 menu
+      // PDFs, carried over under WordPress's own /YYYY/MM/ layout.
+      //
+      // Vercel serves everything in `public/` with `Cache-Control: public,
+      // max-age=0, must-revalidate` unless told otherwise. Files under
+      // `_next/static` get a fingerprinted name and a year of `immutable`
+      // for free; a `public/` file keeps the name it was authored with, so
+      // Next cannot assume it is safe to hold and revalidates every one on
+      // every visit. The photographs mostly go through next/image and are
+      // answered from Vercel's optimizer, but the PDFs are linked directly
+      // and are the largest single things a guest downloads — a menu paying
+      // a conditional request per open, forever.
+      //
+      // **30 days, and deliberately not `immutable`.** These filenames are
+      // stable, so a photograph swapped in under an existing name would
+      // otherwise be invisible to anyone who had already cached it. A month
+      // bounds that, and giving the replacement a new filename busts the
+      // cache immediately if it ever needs to be faster than that.
+      //
+      // This is also the value Cloudflare passes through: rule 3 in
+      // scripts/cloudflare/cache-rules.mjs caches `/uploads/*` with *both*
+      // TTLs set to respect origin, so this header — not a number in the
+      // dashboard — is the single place the figure is stated, for the edge
+      // and the browser alike.
+      {
+        source: "/uploads/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=2592000" }],
+      },
     ];
   },
 
-  // Two sets, both about the day this build replaces the live site: URLs
+  // Three sets. Two are about the day this build replaces the live site: URLs
   // WordPress publishes today that nothing here would answer. A 308 keeps the
-  // ranking signals a page has accumulated; a 404 throws them away.
+  // ranking signals a page has accumulated; a 404 throws them away. The third
+  // is the opposite case — a URL this build *did* answer, retired because the
+  // live site retired it.
   //
   // **Every destination is a route this build already serves, and every source
   // is a URL the live site actually publishes.** Both lists were derived, not
@@ -150,6 +181,32 @@ const nextConfig: NextConfig = {
         // backup URL should not have been indexed in the first place.
         source: "/ubud-backup/culture/chakra-healing-retreat",
         destination: "/ubud/wellness/chakra-healing",
+        permanent: true,
+      },
+
+      // The one redirect that mirrors a change the live site made after this
+      // build was written, rather than one that pre-dates it.
+      //
+      // `/life-coach-retreat-benefits` is a published post, and WordPress no
+      // longer serves it: the URL 301s to `/ubud/wellness/life-coach` at the
+      // server, not in PHP — the response carries no `x-powered-by` and none
+      // of WordPress's `link:` headers — which is why it left no trace in the
+      // REST API's `modified` dates or in Yoast's `<lastmod>`, and why Yoast
+      // still lists the post in `/post-sitemap.xml`. A date diff cannot find
+      // this class of change; only requesting the URL can.
+      //
+      // This build had already found the same collision from the other end and
+      // answered it differently: `src/app/life-coach-retreat-benefits/page.tsx`
+      // re-rendered the wellness class at the legacy URL, so two routes served
+      // byte-identical content and each self-canonicalised. That is the
+      // duplicate the live site has now resolved, so that alias route is
+      // deleted and this takes its place — one URL, one canonical.
+      //
+      // The post's own article text is untouched in `src/data/posts.ts`; only
+      // its route is gone. See the note there before restoring it.
+      {
+        source: "/life-coach-retreat-benefits",
+        destination: "/ubud/wellness/life-coach",
         permanent: true,
       },
 

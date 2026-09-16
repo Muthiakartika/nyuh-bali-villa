@@ -24,10 +24,17 @@ import { getPostPaths, getSanityPagePaths } from "@/sanity/lib/content";
  * `/seminyak/discover/[slug]`, the misspelt `/ubud/discoverl/[slug]`, and
  * `/ubud/spa/[slug]`). A post published in the Studio under any other path has
  * nowhere to render — `dynamicParams = false` makes it a 404 — so it must not
- * be advertised here. The three posts that live outside these prefixes
- * (`/ubud/retreat/detox`, `/ubud/wellness/yoga/retreat` and the bare
- * `/life-coach-retreat-benefits`) have standalone route files and are already
- * in `ROUTE_SEO`, so they are covered by the base list below.
+ * be advertised here. The two posts that live outside these prefixes
+ * (`/ubud/retreat/detox` and `/ubud/wellness/yoga/retreat`) have standalone
+ * route files and are already in `ROUTE_SEO`, so they are covered by the base
+ * list below.
+ *
+ * A third used to: the bare `/life-coach-retreat-benefits`. WordPress now
+ * 301s it to `/ubud/wellness/life-coach`, so this build redirects it too and
+ * it is out of `ROUTE_SEO` — which is the whole of what keeps it out of this
+ * file, since it matches no prefix above either. Yoast still lists it in the
+ * live `/post-sitemap.xml`; that is the live site's own loose end, not one to
+ * copy.
  */
 const POST_ROUTE_PREFIXES = [
   "/ubud/discover/",

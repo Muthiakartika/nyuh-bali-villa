@@ -784,6 +784,15 @@ export const POSTS: Post[] = [
       { kind: "paragraph", text: "In closing, Nyuh Bali Resort is super happy to announce our big win – three amazing titles at the 2023 World Luxury Hotel Awards. We're Asia's best for Luxury Boutique Retreat, Luxury Wellness Resort, and Luxury Yoga & Wellness Retreat. This victory is a big deal for us, showing how much we care about making your stay awesome. Join in our excitement as we promise to give you the best Bali experience, filled with luxury and tranquility. Nyuh Bali is here for you, creating a special place where you can unwind and feel great every day. Come, be part of our celebration and let's enjoy the joy of wellness together!" },
     ],
   },
+  // **This post has no route.** WordPress retired the URL — it 301s to
+  // /ubud/wellness/life-coach — and next.config.ts mirrors that, so nothing
+  // renders these blocks today and `/ubud/discover` links the card through
+  // the redirect. The article is kept rather than deleted because it is real
+  // copy the business paid for and the redirect is reversible; restoring it
+  // means dropping the redirect and adding a route file back, not editing
+  // this entry. Deleting it instead is a content call — note the same
+  // document is published in Sanity, which is what `getPosts` reads when the
+  // CMS is configured, so removing the card takes both.
   {
     path: "/life-coach-retreat-benefits",
     property: "ubud",

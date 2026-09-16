@@ -69,7 +69,7 @@ than swallowed, and §6 is worth reading before launch day.
 
 ## 3. The cache rules
 
-Three rules, in `scripts/cloudflare/cache-rules.mjs`. They are kept in the repo
+Four rules, in `scripts/cloudflare/cache-rules.mjs`. They are kept in the repo
 rather than only in the dashboard so that what the edge is doing is reviewable
 in a diff, and so a zone can be rebuilt from scratch.
 
@@ -100,7 +100,8 @@ does not serve this site.
 |---|---|---|---|
 | 1 | `/api/*`, `/studio*`, `/_next/image*`, or either draft-mode cookie | **Bypass cache** | Forms, the publish webhook, the signed-in Studio and unpublished previews must never be served from a cache. `/_next/image` is on the list for a different reason — below. |
 | 2 | `/_next/static/*` | **Cache, respect origin** | Content-hashed filenames, and the origin already says `immutable`. Nothing to decide. |
-| 3 | everything else (the 74 pages) | **Cache, edge TTL 1 day, browser TTL respect origin** | The rule that makes the site fast, and the one the purge exists for. |
+| 3 | `/uploads/*` | **Cache, respect origin** | The 352 files carried over from WordPress's media library. `next.config.ts` sends `max-age=2592000` for them — below. |
+| 4 | everything else (the 74 pages) | **Cache, edge TTL 1 day, browser TTL respect origin** | The rule that makes the site fast, and the one the purge exists for. |
 
 ### Why one day and not thirty
 
@@ -118,7 +119,7 @@ nobody visits was cold either way.
 
 **Long edge TTL, and no browser TTL of our own.**
 
-Cloudflare holds a page for a month, so almost nobody waits for the origin. The
+Cloudflare holds a page for a day, so almost nobody waits for the origin. The
 browser is left with whatever Next already sends for a prerendered page
 (`max-age=0, must-revalidate`), so it re-asks Cloudflare on every navigation.
 That is what makes a purge take effect for everyone at once: there is no copy
@@ -129,6 +130,31 @@ property completely. A visitor who loaded the old page keeps it until their own
 clock runs out, and no purge, publish or redeploy can reach them. If someone
 reports "the change is live for me but not for them", this is the first thing
 to check.
+
+### Why `/uploads/*` is not left to rule 4
+
+`public/uploads/` holds 315 photographs and 37 menu PDFs under WordPress's own
+`/YYYY/MM/` layout. Rule 4's one-day edge TTL is a number chosen for *pages* —
+things whose whole point is that publishing changes them. A photograph at a
+fixed path does not change; capping it at a day would have Cloudflare re-fetch
+352 files from Vercel every day for nothing.
+
+The rule says **respect origin** rather than naming a number, because
+`next.config.ts` already sends `Cache-Control: public, max-age=2592000` for
+`/uploads/*` and one place to state a figure beats two that drift apart. Thirty
+days and deliberately not `immutable`: these filenames are stable, so a
+photograph swapped in under an existing name would otherwise be invisible to
+anyone holding the old one, and a month bounds that. Giving the replacement a
+new filename busts it immediately when that is not fast enough.
+
+That header exists for a second reason worth knowing. Vercel serves everything
+in `public/` as `max-age=0, must-revalidate` unless told otherwise — files
+under `_next/static` get a fingerprinted name and a year of `immutable` for
+free, but a `public/` file keeps the name it was authored with, so Next cannot
+assume it is safe to hold. Without the header every menu PDF pays a conditional
+request each time a guest opens it. And if the header ever goes missing, the
+fallback is that the edge stops caching these rather than caching them wrongly
+— the safe direction to fail in.
 
 ### Why `/_next/image` is bypassed rather than cached
 
@@ -145,7 +171,7 @@ format for every browser, and rule 1 can drop its `/_next/image` clause.
 
 ### Clicking them in instead
 
-Caching → Cache Rules → Create rule, three times, in this order. The expression
+Caching → Cache Rules → Create rule, four times, in this order. The expression
 editor accepts the same strings the script sends, and
 `npm run cloudflare:rules:dry` prints them.
 
@@ -157,7 +183,7 @@ today job — deleting them now only makes the live old site slower.
 
 | Order | Rule | At cutover | Why |
 |---|---|---|---|
-| 1 | `Cache Everything [Template]` — `URI Full wildcard https://nyuhbalivillas.com/*` | **replaced** by rule 3 above | Its match misses `www.` entirely, it carries no bypass list at all, and its Edge TTL outlives what the origin asks for — see below |
+| 1 | `Cache Everything [Template]` — `URI Full wildcard https://nyuhbalivillas.com/*` | **replaced** by rule 4 above | Its match misses `www.` entirely, it carries no bypass list at all, and its Edge TTL outlives what the origin asks for — see below |
 | 2 | `_GRECAPTCHA` (Disabled) | delete | Already off, and this site uses Turnstile |
 | 3 | `Bypass wp admin` — `/wp-admin/*` | delete | No WordPress to protect |
 | 4 | `Bypass login` — `/wp-login.php*` | delete | Same |
@@ -179,7 +205,7 @@ never to what. Both were measured against the live zone instead.
   `/wp-content/uploads/2023/03/Honeymoon-Pool-Villa-1.webp` comes back
   `max-age=604800`. A fixed Browser TTL would have flattened both to one
   number, so the rule is passing the origin's own value through — which is what
-  rule 3 above sets too. That takes the worst cutover risk off the list: there
+  rule 4 above sets too. That takes the worst cutover risk off the list: there
   is no visitor holding a copy a purge cannot reach.
 - **Caching → Configuration → Browser Cache TTL** is a *zone-wide* setting and
   not a cache rule at all, so the probe above cannot tell it apart from rule
@@ -198,7 +224,7 @@ rather than inferred.** `npm run cache:check` against the live apex, with
     cache-control    max-age=7200
 
 WordPress asks for two hours and the edge has held that copy for **almost five
-days** — so rule 1 carries an Edge TTL of its own, well past the one day rule 3
+days** — so rule 1 carries an Edge TTL of its own, well past the one day rule 4
 sets. The exact number is still unread: reading a rule's settings back needs a
 Cache Rules → Read token, which nothing in this repo holds, so what is
 established is a floor of five days rather than a value. Two consequences, and
@@ -477,3 +503,108 @@ And the ones that are not about the API:
   already holds, and a secret-protected endpoint would be one more public
   surface for something nothing needs to call from outside. Same reasoning as
   the missing `/api/turnstile/verify` route in CLAUDE.md.
+
+---
+
+## 9. What must never be crawled, and what enforces it
+
+Cache and crawl are two different questions that keep getting answered in the
+same sentence, because the same three URLs come up in both. They are not the
+same control and they do not live in the same place: **a cache rule decides
+whether Cloudflare keeps a copy; nothing in Cloudflare decides whether Google
+keeps one.** Everything below is enforced by this build, and the table says
+which layer each piece sits in so a change to one is not mistaken for a change
+to the other.
+
+| What | Cached at the edge? | Crawlable? | Enforced by |
+|---|---|---|---|
+| The 74 pages | yes, 1 day (rule 4) | **yes** — the point of the site | `src/app/robots.ts`, `src/app/sitemap.ts` |
+| `/uploads/*` | yes, respect origin (rule 3) | yes | — |
+| `/_next/static/*` | yes, respect origin (rule 2) | yes, deliberately | Google renders before indexing; a site that hides its own CSS and JS is judged on the wreckage |
+| `/studio` and everything under it | **no** (rule 1) | **no** | `Disallow: /studio` · the route's `robots: { index: false, follow: false }` · `X-Robots-Tag: noindex, nofollow` in `next.config.ts` |
+| `/api/*` | **no** (rule 1) | **no** | `Disallow: /api/` |
+| `/_next/image*` | **no** (rule 1) | n/a | `Vary: Accept` — see §3 |
+| Draft-mode previews | **no** (rule 1) | n/a | the two cookies |
+| A **preview** deployment | n/a — not proxied | **no** | `robots.ts` returns `Disallow: /` on `VERCEL_ENV === "preview"`, plus Vercel's own `X-Robots-Tag` |
+| The **production** `*.vercel.app` alias | n/a — not proxied | **no** | `src/middleware.ts` 308s every page request to `nyuhbalivillas.com` |
+| `?utm_source=…` copies of a page | yes, as separate entries | **no** | the three `utm` `Disallow` lines in `robots.ts` |
+
+### The Studio, three ways, because each covers a different failure
+
+`Disallow: /studio` is a prefix match, so it covers `/studio` itself and every
+tool route beneath it (`/studio/structure`, `/studio/vision`, …), which a
+crawler would otherwise walk forever. In practice it is the whole of what
+matters, because **nothing on this site links to the Studio** — a crawler has
+no way to reach it.
+
+The case it does not cover is a URL someone pastes somewhere public. A crawler
+may fetch that regardless, so the route's own `robots: { index: false, follow:
+false }` metadata is the backstop — and note the two are not redundant in the
+way they look: a *disallowed* page is never fetched, so its `noindex` is never
+read. That is exactly why the `X-Robots-Tag` header in `next.config.ts` exists
+as well, and being a header it also covers the Studio's asset responses rather
+than only its HTML.
+
+Rule 1 is the fourth thing, and it is a different kind of protection: it stops
+Cloudflare holding a copy of an application that is **signed in as a person**.
+Without it, `Cache Everything` would store `/studio`'s HTML at the edge — see
+§3, where the live zone is measured doing exactly that to responses marked
+`private`.
+
+### The Vercel alias, which is the one Cloudflare cannot touch
+
+A Vercel **production** deployment answers on its own `*.vercel.app` alias as
+well as on `nyuhbalivillas.com`, and that alias serves all 74 pages. Two
+things that look like they cover it do not:
+
+- **Vercel's automatic `X-Robots-Tag: noindex`** is sent on *preview*
+  deployments only. A production alias reports `VERCEL_ENV` as `"production"`
+  and is served without it — and, before this, with the permissive robots.txt.
+- **These cache rules** cannot help at all. They belong to the zone for
+  `nyuhbalivillas.com`; `*.vercel.app` is not in that zone and never passes
+  through the proxy. **Everything protecting the alias has to live in the
+  build**, which is why `src/middleware.ts` exists and why it is the only
+  middleware in this project.
+
+It 308s every page request on a non-canonical host to `SITE_ORIGIN`. The
+canonical tags in `layout.tsx` were already correct and absolute, which is most
+of the defence — but a canonical is a hint, not a directive, so the duplicate
+can still be crawled and occasionally indexed. A 308 removes the question.
+
+Three exemptions, and each one is load-bearing:
+
+| Exempt | Why |
+|---|---|
+| Anything that is not a production deployment | localhost and previews are supposed to answer on their own hosts; redirecting either would make both unusable |
+| `/api/` | §7 recommends pointing the Sanity webhook at the alias *on purpose* when bot protection starts eating it. A 308 only survives a client that follows redirects and preserves the method |
+| Any request carrying `cf-ray` | The guard that makes the rule safe. If the proxy were ever pointed at the alias by name — a Host Header Override — "host is not canonical" would be true for *every* live request, and each would redirect to a domain that resolves back through the same proxy. That is not duplicate content, it is the site down in a loop |
+
+**`SITE_URL` must be set on the Vercel production environment for this to do
+anything useful.** Unset, `SITE_ORIGIN` falls back to
+`https://nyuhbalivillas.com`, which happens to be right — but it is the same
+variable `cache:check` and the canonicals read, so set it rather than relying
+on the fallback being correct.
+
+### Checking it
+
+```bash
+# The Studio is bypassed at the edge, and says noindex on its own.
+curl -sI https://nyuhbalivillas.com/studio | grep -iE "cf-cache-status|x-robots-tag"
+
+# The production Vercel alias 308s to the real domain.
+curl -sI https://<project>.vercel.app/ubud/villa | grep -iE "^HTTP|^location"
+
+# ...but its API surface does not, so the webhook keeps working.
+curl -sI https://<project>.vercel.app/api/revalidate/sanity | grep -iE "^HTTP"
+
+# A preview deployment refuses everything.
+curl -s https://<preview>.vercel.app/robots.txt
+
+# Production robots.txt lists the Studio, the API and the three utm rules.
+curl -s https://nyuhbalivillas.com/robots.txt
+```
+
+The first must never say `HIT`. The second must be `308` with a `location` on
+`nyuhbalivillas.com`. The third must **not** be a redirect — if it is, the
+`/api/` exemption has been lost and the publish webhook is one WAF rule away
+from silently failing.

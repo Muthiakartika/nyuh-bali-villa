@@ -46,8 +46,33 @@ import { SITE_ORIGIN } from "@/data/seo";
  * production site rather than the preview's own host; that is deliberate, and
  * the same reason `metadataBase` defaults there — a preview should never
  * nominate itself as the canonical copy.
+ *
+ * ## Preview deployments refuse everything
+ *
+ * Every Vercel preview build serves all 74 pages on its own hostname. Left
+ * alone that is the whole site duplicated at an address nobody intends to
+ * publish, competing with the real one. Vercel does send its own
+ * `X-Robots-Tag: noindex` on preview deployments, so this is the second of
+ * two guards rather than the only one — but it is the cheaper of the two,
+ * because a disallowed path is never fetched at all, and a header is only
+ * read after it has been.
+ *
+ * `VERCEL_ENV` is read at build time, which is correct here: each deployment
+ * is built with its own value, so a preview build bakes in the refusal and a
+ * production build bakes in the rules below. **Production and local
+ * development are identical to each other**, so what `localhost:3001/robots.txt`
+ * prints is exactly what ships.
+ *
+ * Production's `*.vercel.app` alias is *not* covered by this — it reports
+ * `VERCEL_ENV` as "production" and so is served the permissive file. That is
+ * `src/middleware.ts`'s job: it 308s every page request on a non-canonical
+ * host to the real domain.
  */
 export default function robots(): MetadataRoute.Robots {
+  if (process.env.VERCEL_ENV === "preview") {
+    return { rules: { userAgent: "*", disallow: "/" } };
+  }
+
   return {
     rules: {
       userAgent: "*",

@@ -33,7 +33,6 @@
 export const ROUTE_LASTMOD: Record<string, string> = {
   "/": "2025-03-19T03:00:01+00:00",
   "/complimentary-services": "2026-01-23T10:21:05+00:00",
-  "/life-coach-retreat-benefits": "2025-12-16T03:48:03+00:00",
   "/privacy-policy": "2026-02-16T03:58:55+00:00",
   "/seminyak": "2025-08-13T13:52:06+00:00",
   "/seminyak-directory": "2025-08-14T14:02:28+00:00",

@@ -6,13 +6,13 @@
  *
  * They live here rather than only in the dashboard so that what the edge is
  * doing is reviewable in a diff, and so a zone can be rebuilt from the repo.
- * README-CLOUDFLARE.md walks through the same three rules for anyone who would
+ * README-CLOUDFLARE.md walks through the same four rules for anyone who would
  * rather click them in.
  *
  * ## The one idea the whole design rests on
  *
  * **Long edge TTL, no browser TTL of our own.** Cloudflare holds a page for a
- * month so almost no visitor waits for the origin; the browser is left with
+ * day so almost no visitor waits for the origin; the browser is left with
  * whatever Next already sends for a prerendered page (`max-age=0,
  * must-revalidate`), so it re-asks Cloudflare on every navigation. That is
  * what makes a purge take effect for everyone at once: there is no copy
@@ -21,12 +21,13 @@
  * loaded the old page keeps it until their own clock runs out, and no purge,
  * publish or redeploy can reach them.
  *
- * ## Why the three expressions do not overlap
+ * ## Why the four expressions do not overlap
  *
  * Cloudflare evaluates every matching rule in this phase and later matches win
  * on conflicting settings. Rather than depend on that, the three expressions
  * below are written to be mutually exclusive, so the order they sit in cannot
- * change the outcome.
+ * change the outcome. Rule 4 carries the exclusions that make that true: it is
+ * "everything the first three did not claim", spelled out.
  */
 
 import { pathToFileURL } from "node:url";
@@ -99,7 +100,31 @@ export const CACHE_RULES = [
     },
   },
   {
-    // 3. Everything else — which on this site means the 74 prerendered pages.
+    // 3. The 352 files carried over from WordPress's media library — 315
+    // photographs and 37 menu PDFs, under its own /YYYY/MM/ layout.
+    //
+    // Respect origin rather than a number here, because `next.config.ts`
+    // already sends `public, max-age=2592000` for `/uploads/*` and one place
+    // to state a figure is better than two that can drift apart. If that
+    // header ever goes missing the fallback is Vercel's `max-age=0,
+    // must-revalidate`, so the edge stops caching these rather than caching
+    // them wrongly — the safe direction to fail in.
+    //
+    // They need their own rule because rule 4's one-day edge TTL is chosen
+    // for *pages*, whose whole point is that a publish changes them. A
+    // photograph at a fixed path does not change; capping it at a day would
+    // have Cloudflare re-fetch 352 files from Vercel daily for nothing.
+    description: "nbv: media library",
+    expression: `${HOSTS} and (starts_with(http.request.uri.path, "/uploads/"))`,
+    action: "set_cache_settings",
+    action_parameters: {
+      cache: true,
+      edge_ttl: { mode: "respect_origin" },
+      browser_ttl: { mode: "respect_origin" },
+    },
+  },
+  {
+    // 4. Everything else — which on this site means the 74 prerendered pages.
     //
     // Vercel sends `max-age=0, must-revalidate` for a prerendered page, which
     // is right for the browser and wrong for a CDN: taken literally it would
@@ -122,6 +147,7 @@ export const CACHE_RULES = [
       '(http.request.uri.path ne "/api") and ' +
       '(not starts_with(http.request.uri.path, "/studio")) and ' +
       '(not starts_with(http.request.uri.path, "/_next/")) and ' +
+      '(not starts_with(http.request.uri.path, "/uploads/")) and ' +
       '(not http.cookie contains "__prerender_bypass") and ' +
       '(not http.cookie contains "__next_preview_data")',
     action: "set_cache_settings",

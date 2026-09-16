@@ -15,11 +15,14 @@ type PostPageProps = { post: ResolvedPost };
  * A whole blog-post page — chrome, hero, body and "more from the blog".
  *
  * The live site scatters posts across several URL prefixes (/ubud/discover/,
- * /ubud/spa/, /ubud/retreat/, a bare /life-coach-retreat-benefits/ and even a
- * misspelt /ubud/discoverl/). Each of those needs its own Next.js route
- * segment to keep the published URL identical, so the *page* lives here once
- * and every route file is a thin wrapper that looks the post up and renders
- * this.
+ * /ubud/spa/, /ubud/retreat/ and even a misspelt /ubud/discoverl/). Each of
+ * those needs its own Next.js route segment to keep the published URL
+ * identical, so the *page* lives here once and every route file is a thin
+ * wrapper that looks the post up and renders this.
+ *
+ * There was a fifth, the bare /life-coach-retreat-benefits/. WordPress retired
+ * that URL — it 301s to /ubud/wellness/life-coach — so it is a redirect in
+ * next.config.ts now rather than a route.
  *
  * It resolves its own chrome and related posts rather than taking them as
  * props, so the five route files that render it did not each have to learn

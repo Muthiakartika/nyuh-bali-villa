@@ -73,13 +73,45 @@ const built = new Set(
 );
 
 const problems = [];
+const notes = [];
+
+/**
+ * Paths that answer with a permanent redirect rather than a page of their own.
+ *
+ * A redirected URL is not an outage — it resolves, just somewhere else — so a
+ * document still pointing at one is worth *seeing* without being counted as
+ * missing. Without this the check fails on every run, and a check that always
+ * fails stops being read, which is the failure that matters.
+ *
+ * `/life-coach-retreat-benefits` is the live case: WordPress retired that URL,
+ * next.config.ts mirrors it, and its `post` document is still published in
+ * Sanity. Unpublishing that document clears the note.
+ *
+ * Read out of next.config.ts rather than listed here, so retiring the next URL
+ * does not also mean remembering to edit this file. Two narrowings keep it
+ * honest: only the `redirects()` body is scanned, because `headers()` above it
+ * declares `source` too and a header rule moves nothing; and a source carrying
+ * `:` or `*` is skipped, because a parameterised source like `/studio/:path*`
+ * is a pattern rather than a path to compare against.
+ */
+const nextConfig = fs.readFileSync("next.config.ts", "utf8");
+const redirectBlock = nextConfig.slice(nextConfig.indexOf("async redirects()"));
+const redirected = new Set(
+  [...redirectBlock.matchAll(/^ +source: "(\/[^":*]*)",$/gm)].map((m) => m[1]),
+);
+
 const check = (label, wanted) => {
-  const missing = [...new Set(wanted)].filter((p) => p && !built.has(p));
+  const all = [...new Set(wanted)].filter(Boolean);
+  const absent = all.filter((p) => !built.has(p));
+  const moved = absent.filter((p) => redirected.has(p));
+  const missing = absent.filter((p) => !redirected.has(p));
   console.log(
-    "  " + label.padEnd(30) + String([...new Set(wanted)].length).padStart(3) +
-      " expected, " + missing.length + " missing",
+    "  " + label.padEnd(30) + String(all.length).padStart(3) +
+      " expected, " + missing.length + " missing" +
+      (moved.length ? ", " + moved.length + " redirected" : ""),
   );
   missing.forEach((p) => problems.push(label + " -> " + p + " is not served"));
+  moved.forEach((p) => notes.push(label + " -> " + p + " is redirected, not served"));
 };
 
 console.log("\n  Pages this build serves: " + built.size + "\n");
@@ -150,6 +182,10 @@ if (!projectId || !token) {
   gone("rooms", dataRooms, live.rooms);
   gone("experiences", dataExperiences, live.experiences);
   gone("posts", dataPosts, live.posts);
+}
+
+if (notes.length) {
+  console.log("\n  NOTES (" + notes.length + "):\n" + notes.map((p) => "   " + p).join("\n"));
 }
 
 console.log(
