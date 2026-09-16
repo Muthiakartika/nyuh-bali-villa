@@ -18,6 +18,8 @@ export type MobileNavLink = {
 };
 
 type MobileNavOverlayProps = {
+  /** The CTA's wording, from Site settings via `PropertySite`. */
+  bookNowLabel?: string;
   isOpen: boolean;
   onClose: () => void;
   links: MobileNavLink[];
@@ -41,6 +43,7 @@ export function MobileNavOverlay({
   onClose,
   links,
   bookingHref,
+  bookNowLabel = "Book Now",
 }: MobileNavOverlayProps) {
   useEffect(() => {
     if (!isOpen) return;
@@ -166,7 +169,7 @@ export function MobileNavOverlay({
           external
           className="w-full animate-rise-in"
         >
-          Book Now
+          {bookNowLabel}
         </Button>
       ) : null}
     </div>

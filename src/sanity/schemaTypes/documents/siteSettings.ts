@@ -118,6 +118,22 @@ export const siteSettings = defineType({
       description: 'The eyebrow over an article and the heading on the blog index. Empty reads "Our Blog".',
     }),
     defineField({
+      name: "relatedRetreatsHeading",
+      title: "Related-retreats heading",
+      type: "string",
+      group: "labels",
+      description:
+        'Over the grid that closes the four personalised retreat pages. Empty reads "Other Personalized Luxury Retreat".',
+    }),
+    defineField({
+      name: "inquiryHeading",
+      title: "Retreat enquiry heading",
+      type: "string",
+      group: "labels",
+      description:
+        'Over the enquiry form on a retreat page. Empty reads "Inquiry". The three standalone form pages set their own heading on the page itself.',
+    }),
+    defineField({
       name: "followInstagramLabel",
       title: "Follow on Instagram button",
       type: "string",

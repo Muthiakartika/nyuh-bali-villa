@@ -39,6 +39,7 @@ type PropertyHeaderProps = {
  * A Client Component only because of the mobile menu's `useState`.
  */
 export function PropertyHeader({ site, activeHref }: PropertyHeaderProps) {
+  const bookNowLabel = site.bookNowLabel || "Book Now";
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -221,7 +222,7 @@ changes, and an item added later without it behaves like the rest. */}
             */}
             <span className="hidden sm:block">
               <Button href={site.bookingHref} external size="sm">
-                Book Now
+                {bookNowLabel}
               </Button>
             </span>
 
@@ -255,6 +256,7 @@ changes, and an item added later without it behaves like the rest. */}
         onClose={() => setIsMenuOpen(false)}
         links={site.navItems}
         bookingHref={site.bookingHref}
+        bookNowLabel={bookNowLabel}
       />
     </>
   );

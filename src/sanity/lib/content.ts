@@ -131,17 +131,21 @@ export async function getSiteSettings(): Promise<SanitySiteSettings | null> {
  */
 export async function getPropertySite(slug: PropertySlug): Promise<PropertySite> {
   const base = PROPERTY_SITES[slug];
+  // Site-wide, but carried on the property because the two components that
+  // need it are Client Components — see `PropertySite.bookNowLabel`.
+  const bookNowLabel = (await getSiteLabels()).bookNow;
   const document = await sanityFetch<SanityProperty>(propertyBySlugQuery, {
     params: { slug },
     tags: ["sanity", "sanity:property", `sanity:property:${slug}`],
   });
-  if (!document) return base;
+  if (!document) return { ...base, bookNowLabel };
 
   const logo = imageUrl(document.logo, 400);
   const badges = imageUrls(document.awardBadges, 400);
 
   return {
     ...base,
+    bookNowLabel,
     label: document.label || base.label,
     logoSrc: logo || base.logoSrc,
     navItems: document.navItems?.length
@@ -697,6 +701,8 @@ export type SiteLabels = {
   recommendedFor: string;
   inclusions: string;
   blog: string;
+  relatedRetreats: string;
+  inquiry: string;
   followInstagram: string;
 };
 
@@ -728,6 +734,9 @@ export async function getSiteLabels(): Promise<SiteLabels> {
     recommendedFor: s?.recommendedForHeading?.trim() || "Recommended for",
     inclusions: s?.inclusionsHeading?.trim() || "Inclusions",
     blog: s?.blogLabel?.trim() || "Our Blog",
+    relatedRetreats:
+      s?.relatedRetreatsHeading?.trim() || "Other Personalized Luxury Retreat",
+    inquiry: s?.inquiryHeading?.trim() || "Inquiry",
     followInstagram: s?.followInstagramLabel?.trim() || "Follow on Instagram",
   };
 }

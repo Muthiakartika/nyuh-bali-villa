@@ -6,7 +6,7 @@ import { PostBody } from "@/components/property/PostBody";
 import { PostGrid } from "@/components/property/PostGrid";
 import { ReadingProgress } from "@/components/property/ReadingProgress";
 import { AwardsRow } from "@/components/property/AwardsRow";
-import { getPostByPath, getPosts, getPropertySite } from "@/sanity/lib/content";
+import { getPostByPath, getPosts, getPropertySite, getSiteLabels } from "@/sanity/lib/content";
 import type { ResolvedPost } from "@/sanity/lib/content";
 
 type PostPageProps = { post: ResolvedPost };
@@ -27,6 +27,7 @@ type PostPageProps = { post: ResolvedPost };
  */
 export async function PostPage({ post }: PostPageProps) {
   const site = await getPropertySite(post.property);
+  const labels = await getSiteLabels();
 
   // Three more posts from the same property, newest first, excluding this one.
   const related = (await getPosts(post.property))
@@ -42,18 +43,18 @@ export async function PostPage({ post }: PostPageProps) {
         <PropertyHero
           images={[post.image]}
           alt={post.title}
-          eyebrow="Our Blog"
+          eyebrow={labels.blog}
           title={post.title}
         />
 
-        <PostBody post={post} />
+        <PostBody post={post} blogLabel={labels.blog} />
 
         {related.length ? (
           // `featured={false}`: this is a "more from the blog" footer, so the
           // three cards stay an even row. Leading one of them at full width
           // would out-shout the article the reader is already on.
           <PostGrid
-            heading="Our Blog"
+            heading={labels.blog}
             posts={related}
             tone="sand-deep"
             featured={false}

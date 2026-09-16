@@ -210,6 +210,20 @@
         },
         "optional": true
       },
+      "relatedRetreatsHeading": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "inquiryHeading": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
       "followInstagramLabel": {
         "type": "objectAttribute",
         "value": {
@@ -1260,6 +1274,20 @@
           "value": {
             "type": "inline",
             "name": "proseRichText"
+          },
+          "optional": true
+        },
+        "formHeading": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "confirmation": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
           },
           "optional": true
         },

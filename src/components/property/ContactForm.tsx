@@ -32,7 +32,21 @@ const LABELS = {
  * on a warm surface they leave the form looking like stationery rather than
  * like a web form. No copy or field changed.
  */
-export function ContactForm({ property }: { property: PropertySlug }) {
+type ContactFormProps = {
+  /** Which resort's inbox this form's submissions belong to. */
+  property: PropertySlug;
+  /** The form's own heading. `contactSection.formHeading` supplies it; the
+   *  default is what both Contact pages have always shown. */
+  formHeading?: string;
+  /** Shown in place of the form once the property has been emailed. */
+  confirmation?: string;
+};
+
+export function ContactForm({
+  property,
+  formHeading = "Please fill in the form below",
+  confirmation = "Thank you for reaching out — we’ll get back to you shortly.",
+}: ContactFormProps) {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const delivery = useFormDelivery({ formName: "Contact Us", property });
 
@@ -58,7 +72,7 @@ export function ContactForm({ property }: { property: PropertySlug }) {
   // Shared so the heading is identical in the form and in the confirmation
   // that replaces it in place.
   const heading = (
-    <SectionHeading title="Please fill in the form below" />
+    <SectionHeading title={formHeading} />
   );
 
   if (isSubmitted) {
@@ -66,7 +80,7 @@ export function ContactForm({ property }: { property: PropertySlug }) {
       <div>
         {heading}
         <p className="mt-8 text-[17px] leading-relaxed font-light text-text">
-          Thank you for reaching out — we&apos;ll get back to you shortly.
+          {confirmation}
         </p>
       </div>
     );

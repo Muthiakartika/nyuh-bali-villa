@@ -6,6 +6,9 @@ import { ContactForm } from "@/components/property/ContactForm";
 import type { PropertySlug } from "@/data/properties";
 
 type ContactPanelProps = {
+  /** Passed straight to `ContactForm`; both default there. */
+  formHeading?: string;
+  confirmation?: string;
   /** Which resort's inbox this page's form emails. Passed through to
    * `ContactForm`; the server maps the slug to an address it already knows. */
   property: PropertySlug;
@@ -46,6 +49,8 @@ export function ContactPanel({
   eyebrow,
   heading,
   tone = "sand",
+  formHeading,
+  confirmation,
   headingAs = "h1",
   imageSrc,
   imageAlt,
@@ -76,10 +81,18 @@ export function ContactPanel({
               firstClassName="mb-6"
               restClassName="mb-6"
             />
-            <ContactForm property={property} />
+            <ContactForm
+              property={property}
+              formHeading={formHeading}
+              confirmation={confirmation}
+            />
           </div>
         ) : (
-          <ContactForm property={property} />
+          <ContactForm
+              property={property}
+              formHeading={formHeading}
+              confirmation={confirmation}
+            />
         )}
       </div>
     </Section>

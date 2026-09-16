@@ -54,6 +54,15 @@ export type PropertyNavChild = {
 };
 
 export type PropertySite = {
+  /**
+   * The primary call-to-action's wording, for the header and the mobile menu.
+   *
+   * Site-wide rather than per-property — it comes from `siteSettings` — but it
+   * rides on this type because `PropertyHeader` and `MobileNavOverlay` are
+   * Client Components that cannot read Sanity, and every route already hands
+   * them a `PropertySite`. `getPropertySite` fills it in.
+   */
+  bookNowLabel?: string;
   slug: "seminyak" | "ubud";
   label: string;
   logoSrc: string;

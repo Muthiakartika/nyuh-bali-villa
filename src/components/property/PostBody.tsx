@@ -123,7 +123,9 @@ function InlineText({ text }: { text: string }) {
  * recover. A post still coming from src/data has only `blocks`, and the
  * recovery passes run over it as before.
  */
-type PostBodyProps = { post: Post & { articleBlocks?: ArticleBlock[] } };
+type PostBodyProps = {
+  /** The wording of the link back to the index, from Site settings. */
+  blogLabel?: string; post: Post & { articleBlocks?: ArticleBlock[] } };
 
 /** "2024-06-18" -> "18 June 2024". Fixed locale so the server and the client
  * can't disagree about the format and trigger a hydration mismatch. */
@@ -288,7 +290,7 @@ function PointList({ ordered, items }: { ordered: boolean; items: PointItem[] })
  * standfirst, photographs breaking the measure at `lg`, and rendering a block
  * list rather than injecting CMS HTML.
  */
-export function PostBody({ post }: PostBodyProps) {
+export function PostBody({ post, blogLabel = "Our Blog" }: PostBodyProps) {
   const minutes = readingMinutes(post.articleBlocks ?? post.blocks);
   // WordPress serves the featured image again as the article's first inline
   // image on most posts. `PostPage` already runs it full-bleed as the hero, so
@@ -436,7 +438,7 @@ export function PostBody({ post }: PostBodyProps) {
               aria-hidden
               className="block h-px w-6 bg-primary transition-all duration-500 ease-out group-hover/back:w-10"
             />
-            Our Blog
+            {blogLabel}
           </Link>
         </div>
       </Reveal>

@@ -130,6 +130,8 @@ export function ContactBlock({
       eyebrow={section.eyebrow ?? site.label}
       heading={section.heading}
       headingAs={section.headingLevel}
+      formHeading={section.formHeading}
+      confirmation={section.confirmation}
       intro={section.intro}
       imageSrc={image}
       imageAlt={section.image?.alt ?? site.label}

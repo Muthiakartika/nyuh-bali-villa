@@ -33,6 +33,8 @@ type ExperienceDetailBodyProps = {
     gallery: string;
     recommendedFor: string;
     inclusions: string;
+    relatedRetreats: string;
+    inquiry: string;
   };
   experience: Experience;
   site: PropertySite;
@@ -71,6 +73,8 @@ export function ExperienceDetailBody({
     gallery: "Gallery",
     recommendedFor: "Recommended for",
     inclusions: "Inclusions",
+    relatedRetreats: "Other Personalized Luxury Retreat",
+    inquiry: "Inquiry",
   },
 }: ExperienceDetailBodyProps) {
   // Same rule as `RoomDetail`: the page opens on `hero`, so the gallery below
@@ -430,7 +434,7 @@ export function ExperienceDetailBody({
 
       {related.length ? (
         <LinkCardGrid
-          heading="Other Personalized Luxury Retreat"
+          heading={labels.relatedRetreats}
           columns={3}
           tone={nextTone()}
           items={related.map((item) => ({
@@ -446,7 +450,7 @@ export function ExperienceDetailBody({
         <Section tone={nextTone()} id={INQUIRY_ANCHOR}>
           <InquiryForm
             property={site.slug}
-            heading="Inquiry"
+            heading={labels.inquiry}
             fields={RETREAT_INQUIRY_FIELDS}
           />
         </Section>

@@ -369,6 +369,8 @@ export const siteSettingsQuery = defineQuery(`
     recommendedForHeading,
     inclusionsHeading,
     blogLabel,
+    relatedRetreatsHeading,
+    inquiryHeading,
     followInstagramLabel,
     dealHeadline,
     dealCode,

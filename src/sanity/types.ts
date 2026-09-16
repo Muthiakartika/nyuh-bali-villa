@@ -312,6 +312,8 @@ export type SanitySection =
       _type: "contactSection";
       eyebrow?: string;
       heading: string;
+      formHeading?: string;
+      confirmation?: string;
       intro?: SanityProseValue;
       image: SanityImage;
     })
@@ -530,6 +532,8 @@ export type SanitySiteSettings = {
   recommendedForHeading?: string;
   inclusionsHeading?: string;
   blogLabel?: string;
+  relatedRetreatsHeading?: string;
+  inquiryHeading?: string;
   followInstagramLabel?: string;
   dealHeadline?: string;
   dealCode?: string;

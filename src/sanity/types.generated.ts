@@ -52,6 +52,8 @@ export type SiteSettings = {
   recommendedForHeading?: string;
   inclusionsHeading?: string;
   blogLabel?: string;
+  relatedRetreatsHeading?: string;
+  inquiryHeading?: string;
   followInstagramLabel?: string;
   dealHeadline?: string;
   dealCode?: string;
@@ -223,6 +225,8 @@ export type ContactSection = {
   eyebrow?: string;
   heading?: string;
   intro?: ProseRichText;
+  formHeading?: string;
+  confirmation?: string;
   image?: ImageWithAlt;
   headingLevel?: "h1" | "h2" | "h3";
   tone?: "sand" | "sand-deep" | "white";
@@ -1696,6 +1700,8 @@ export type PageByPathQueryResult = {
             }>
           | ProseRichText
           | null;
+        formHeading?: string;
+        confirmation?: string;
         image: {
           _type: "imageWithAlt";
           asset: SanityImageAssetReference | null;
@@ -3563,7 +3569,7 @@ export type PropertyBySlugQueryResult = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: siteSettingsQuery
-// Query: *[_type == "siteSettings"][0]{    _id,    _type,    title,    description,    favicon {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    bookNowLabel,    checkRatesLabel,    galleryHeading,    detailsHeading,    amenitiesHeading,    recommendedForHeading,    inclusionsHeading,    blogLabel,    followInstagramLabel,    dealHeadline,    dealCode,    dealButtonLabel,    homeLogo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    footerLogo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    footerBookingLabel,    footerMenuHeading,    footerMenuLinks[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )},    footerBlogHeading,    footerNote,    legalLinks[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )},    defaultSeo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}  }
+// Query: *[_type == "siteSettings"][0]{    _id,    _type,    title,    description,    favicon {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    bookNowLabel,    checkRatesLabel,    galleryHeading,    detailsHeading,    amenitiesHeading,    recommendedForHeading,    inclusionsHeading,    blogLabel,    relatedRetreatsHeading,    inquiryHeading,    followInstagramLabel,    dealHeadline,    dealCode,    dealButtonLabel,    homeLogo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    footerLogo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    footerBookingLabel,    footerMenuHeading,    footerMenuLinks[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )},    footerBlogHeading,    footerNote,    legalLinks[] {  ...,  "href": select(    linkType == "internal" && defined(reference) => reference->{"resolved": select(  _type == "room" => "/" + property + "/villa/" + slug.current,  _type == "experience" => "/ubud/" + slug,  defined(path) => path)}.resolved,    linkType == "file" && defined(file.asset) => file.asset->url,    href  )},    defaultSeo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}  }
 export type SiteSettingsQueryResult = {
   _id: string;
   _type: "siteSettings";
@@ -3586,6 +3592,8 @@ export type SiteSettingsQueryResult = {
   recommendedForHeading: string | null;
   inclusionsHeading: string | null;
   blogLabel: string | null;
+  relatedRetreatsHeading: string | null;
+  inquiryHeading: string | null;
   followInstagramLabel: string | null;
   dealHeadline: string | null;
   dealCode: string | null;
@@ -3682,7 +3690,7 @@ declare global {
     '\n  *[_type == "testimonial"] | order(order asc){\n    _id,\n    _type,\n    quote,\n    author,\n    property,\n    order\n  }\n': AllTestimonialsQueryResult;
     '\n  *[_type == "legalPage" && path == $path][0]{\n    _id,\n    _type,\n    title,\n    path,\n    intro,\n    sections,\n    seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n': LegalPageByPathQueryResult;
     '\n  *[_type == "property" && slug == $slug][0]{\n    _id,\n    _type,\n    slug,\n    label,\n    logo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    navItems,\n    addressLines,\n    phones,\n    email,\n    maps,\n    facebook,\n    instagram,\n    instagramApiUrl,\n    spaInstagramApiUrl,\n    bookingHref,\n    bookingWidgetId,\n    offersHref,\n    blogPosts,\n    awardBadges[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    awardVariant\n  }\n': PropertyBySlugQueryResult;
-    '\n  *[_type == "siteSettings"][0]{\n    _id,\n    _type,\n    title,\n    description,\n    favicon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    bookNowLabel,\n    checkRatesLabel,\n    galleryHeading,\n    detailsHeading,\n    amenitiesHeading,\n    recommendedForHeading,\n    inclusionsHeading,\n    blogLabel,\n    followInstagramLabel,\n    dealHeadline,\n    dealCode,\n    dealButtonLabel,\n    homeLogo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    footerLogo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    footerBookingLabel,\n    footerMenuHeading,\n    footerMenuLinks[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n},\n    footerBlogHeading,\n    footerNote,\n    legalLinks[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n},\n    defaultSeo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n': SiteSettingsQueryResult;
+    '\n  *[_type == "siteSettings"][0]{\n    _id,\n    _type,\n    title,\n    description,\n    favicon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    bookNowLabel,\n    checkRatesLabel,\n    galleryHeading,\n    detailsHeading,\n    amenitiesHeading,\n    recommendedForHeading,\n    inclusionsHeading,\n    blogLabel,\n    relatedRetreatsHeading,\n    inquiryHeading,\n    followInstagramLabel,\n    dealHeadline,\n    dealCode,\n    dealButtonLabel,\n    homeLogo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    footerLogo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    footerBookingLabel,\n    footerMenuHeading,\n    footerMenuLinks[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n},\n    footerBlogHeading,\n    footerNote,\n    legalLinks[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    linkType == "file" && defined(file.asset) => file.asset->url,\n    href\n  )\n},\n    defaultSeo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n': SiteSettingsQueryResult;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

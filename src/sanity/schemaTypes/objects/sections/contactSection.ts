@@ -30,6 +30,21 @@ export const contactSection = defineType({
         "Ubud's page opens the form column with one line; Seminyak's has none. Empty renders the form on its own. " + "Select any words to make them bold, italic or a link. Press Return for a new paragraph; the style menu adds subheadings, quotes and lists. The layout stays the band's — formatting is inline only.",
     }),
     defineField({
+      name: "formHeading",
+      title: "Heading above the form fields",
+      type: "string",
+      description:
+        'Sits inside the form itself, under the band heading. Empty reads "Please fill in the form below".',
+    }),
+    defineField({
+      name: "confirmation",
+      title: "Message after sending",
+      type: "text",
+      rows: 2,
+      description:
+        "Replaces the form once the enquiry has actually been emailed — it is never shown if delivery failed.",
+    }),
+    defineField({
       name: "image",
       title: "Photograph",
       type: "imageWithAlt",

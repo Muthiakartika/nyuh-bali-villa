@@ -283,6 +283,30 @@ the absence: hero and the property picker are full-bleed photographs with no
 band colour behind them, and awards, deals, Instagram and the booking widget
 draw their own surface.
 
+**No copy is left in a component that a client would reasonably want to
+change.** The sweep that found this classifies every visible literal by
+whether it survives the CMS — a literal in a route's own JSX is the
+documented fallback and only renders when Sanity is unconfigured, while one in
+a shared component renders whichever way the page is served. The
+document-backed count is **0** and what remains in shared components is six
+strings, all deliberate:
+
+| Left in code | Why |
+|---|---|
+| "Award badge", "Close menu" | accessible names, not copy |
+| "Flexible Dates" | a control on the booking bar |
+| "Reservation Review", "Total price", the empty-state line | the live form's own panel structure, on two pages |
+
+Two corrections were needed along the way, and the second is the reason to
+re-run a sweep rather than trust the last one. `contactSection` gained
+`formHeading` and `confirmation`, because `ContactForm` hardcoded both while
+its sibling `InquiryForm` had taken them as props all along. And **an earlier
+commit here claimed the header and mobile menu read `bookNowLabel` when they
+did not** — they are Client Components and could not reach Sanity. The label
+rides on `PropertySite` now, filled in by `getPropertySite`, which is what
+lets two Client Components read a site-wide setting without threading a prop
+through all 31 routes that render the header.
+
 **The 47 document-backed pages set their headings and buttons from Site
 settings now, not from the components.** Rooms, experiences, posts and the
 legal pages have no page-builder — their content comes from their own document
