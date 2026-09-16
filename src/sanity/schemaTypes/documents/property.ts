@@ -181,14 +181,11 @@ export const property = defineType({
       description:
         "The workspace feed endpoint for the Mahamaya Spa grid on /ubud/spa. A separate account from the resort's, so it needs its own endpoint — pointing it at the resort feed would publish the resort's posts under the spa's name.",
     }),
-    defineField({
-      name: "instagramFeedUrl",
-      title: "Behold feed URL",
-      type: "url",
-      group: "contact",
-      description:
-        "https://feeds.behold.so/<id>, from the Behold dashboard. Empty means no live grid — the page falls back to whatever it showed before.",
-    }),
+    // No "Behold feed URL". It was left behind when the hand-built grid and
+    // its proxy were deleted in favour of the feed app's own embed: nothing
+    // read it, and the two fields above — which take a workspace endpoint, not
+    // a Behold one — are what actually choose the account. Both properties had
+    // it empty, so nothing was lost.
 
     // ── Booking ───────────────────────────────────────────────────────
     defineField({

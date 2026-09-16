@@ -45,6 +45,9 @@ type PostGridProps = {
   headingAs?: HeadingLevel;
   posts: GridPost[];
   tone?: BandTone;
+  /** Optional id so a link can jump to this band. `Section` adds the
+   * scroll-mt that clears the sticky header whenever this is set. */
+  anchor?: string;
   /**
    * Lead with one large post, then run the rest as a grid. Defaults on when
    * there are enough posts to make a "rest" (4+); a 2- or 3-post list has no
@@ -128,6 +131,7 @@ export function PostGrid({
   headingAs = "h2",
   posts,
   tone = "sand",
+  anchor,
   featured,
 }: PostGridProps) {
   const useFeature = (featured ?? posts.length >= 4) && posts.length > 0;
@@ -135,7 +139,7 @@ export function PostGrid({
   const rest = useFeature ? posts.slice(1) : posts;
 
   return (
-    <Section tone={tone}>
+    <Section tone={tone} id={anchor}>
       <SectionHeading eyebrow={eyebrow} title={heading} as={headingAs} />
 
       {lead ? (

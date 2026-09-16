@@ -9,6 +9,9 @@ import type { InstagramPost } from "@/components/property/instagramFeed";
 
 type InstagramTeaserProps = {
   heading: string;
+  /** Optional id so a link can jump to this band. `Section` adds the
+   * scroll-mt that clears the sticky header whenever this is set. */
+  anchor?: string;
   /** Seminyak and Ubud run separate Instagram accounts
    * (@nyuhbalivillas vs. @nyuhbaliubud) — confirmed by checking the actual
    * follow link on each property's page rather than assuming they share
@@ -60,6 +63,7 @@ export function InstagramTeaser({
   instagramHref,
   posts,
   widget,
+  anchor,
 }: InstagramTeaserProps) {
   // The stills (or Behold posts) this band already had, kept as the fallback
   // the live grid shows while it loads and if the feed is unreachable.
@@ -104,6 +108,7 @@ export function InstagramTeaser({
       tone="white"
       space="none"
       className="pt-6 pb-9 md:pt-[45px] md:pb-[51px]"
+      id={anchor}
     >
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeading title={heading} />

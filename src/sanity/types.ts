@@ -217,7 +217,6 @@ export type SanitySection =
       /** Testimonials only: quotes written on the page instead of listed. */
       quotes?: { _key: string; quote: string; author: string }[];
       limit?: number;
-      action?: SanityLink;
     })
   | (SectionBase & {
       _type: "roomListSection";
@@ -471,7 +470,6 @@ export type SanityLegalPage = {
   path: string;
   intro?: string;
   sections: SanityLegalSection[];
-  updatedAt?: string;
   seo?: SanitySeo;
 };
 
@@ -500,7 +498,6 @@ export type SanityProperty = {
   maps?: string;
   facebook?: string;
   instagram?: string;
-  instagramFeedUrl?: string;
   instagramApiUrl?: string;
   /** Ubud only — the Mahamaya Spa account's own feed endpoint. */
   spaInstagramApiUrl?: string;

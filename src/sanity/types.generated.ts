@@ -108,7 +108,6 @@ export type Property = {
   instagram?: string;
   instagramApiUrl?: string;
   spaInstagramApiUrl?: string;
-  instagramFeedUrl?: string;
   bookingHref?: string;
   bookingWidgetId?: string;
   offersHref?: string;
@@ -158,7 +157,6 @@ export type Slug = {
 export type BookingWidgetSection = {
   _type: "bookingWidgetSection";
   widgetId?: string;
-  anchor?: string;
   isHidden?: boolean;
 };
 
@@ -177,7 +175,6 @@ export type DealsSection = {
   headline?: string;
   code?: string;
   buttonLabel?: string;
-  anchor?: string;
   isHidden?: boolean;
 };
 
@@ -189,7 +186,6 @@ export type AwardsSection = {
     } & ImageWithAlt
   >;
   variant?: "" | "grid" | "marquee";
-  anchor?: string;
   isHidden?: boolean;
 };
 
@@ -406,7 +402,6 @@ export type CollectionSection = {
     _key: string;
   }>;
   limit?: number;
-  action?: Link;
   tone?: "sand" | "sand-deep" | "white";
   headingLevel?: "h2" | "h3" | "h4";
   anchor?: string;
@@ -525,7 +520,6 @@ export type PropertyPickerSection = {
       _key: string;
     } & PropertyPanel
   >;
-  anchor?: string;
   isHidden?: boolean;
 };
 
@@ -539,7 +533,6 @@ export type HeroSection = {
   eyebrow?: string;
   title?: string;
   alt?: string;
-  anchor?: string;
   isHidden?: boolean;
 };
 
@@ -1004,7 +997,6 @@ export type LegalPage = {
         _key: string;
       }
   >;
-  updatedAt?: string;
   seo?: Seo;
 };
 
@@ -1478,7 +1470,6 @@ export type PageByPathQueryResult = {
           hotspot: SanityImageHotspot | null;
         }> | null;
         variant?: "" | "grid" | "marquee";
-        anchor?: string;
         isHidden?: boolean;
         image: null;
         images: null;
@@ -1497,7 +1488,6 @@ export type PageByPathQueryResult = {
         _key: string;
         _type: "bookingWidgetSection";
         widgetId?: string;
-        anchor?: string;
         isHidden?: boolean;
         image: null;
         images: null;
@@ -1614,21 +1604,6 @@ export type PageByPathQueryResult = {
           _key: string;
         }>;
         limit?: number;
-        action: {
-          _type: "link";
-          label?: string;
-          linkType?: "custom" | "internal";
-          reference?:
-            | ExperienceReference
-            | LegalPageReference
-            | PageReference
-            | PostReference
-            | RoomReference;
-          href: string | null | "/privacy-policy" | "/terms-conditions";
-          external?: boolean;
-          inScope?: boolean;
-          variant?: "outline" | "solid";
-        } | null;
         tone?: "sand-deep" | "sand" | "white";
         headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
@@ -1639,6 +1614,7 @@ export type PageByPathQueryResult = {
         items: null;
         packages: null;
         categories: null;
+        action: null;
         actions: null;
         cta: null;
         body: null;
@@ -1785,7 +1761,6 @@ export type PageByPathQueryResult = {
         headline?: string;
         code?: string;
         buttonLabel?: string;
-        anchor?: string;
         isHidden?: boolean;
         image: null;
         images: null;
@@ -1875,7 +1850,6 @@ export type PageByPathQueryResult = {
         eyebrow?: string;
         title?: string;
         alt?: string;
-        anchor?: string;
         isHidden?: boolean;
         image: null;
         badges: null;
@@ -2240,7 +2214,6 @@ export type PageByPathQueryResult = {
             _key: string;
           } & PropertyPanel
         >;
-        anchor?: string;
         isHidden?: boolean;
         image: null;
         images: null;
@@ -3429,7 +3402,7 @@ export type AllTestimonialsQueryResult = Array<{
 
 // Source: src/sanity/lib/queries.ts
 // Variable: legalPageByPathQuery
-// Query: *[_type == "legalPage" && path == $path][0]{    _id,    _type,    title,    path,    intro,    sections,    updatedAt,    seo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}  }
+// Query: *[_type == "legalPage" && path == $path][0]{    _id,    _type,    title,    path,    intro,    sections,    seo {  title,  description,  ogTitle,  ogDescription,  image {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},  canonicalUrl,  noIndex}  }
 export type LegalPageByPathQueryResult = {
   _id: string;
   _type: "legalPage";
@@ -3450,7 +3423,6 @@ export type LegalPageByPathQueryResult = {
         _key: string;
       }
   > | null;
-  updatedAt: string | null;
   seo: {
     title: string | null;
     description: string | null;
@@ -3472,7 +3444,7 @@ export type LegalPageByPathQueryResult = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: propertyBySlugQuery
-// Query: *[_type == "property" && slug == $slug][0]{    _id,    _type,    slug,    label,    logo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    navItems,    addressLines,    phones,    email,    maps,    facebook,    instagram,    instagramFeedUrl,    instagramApiUrl,    spaInstagramApiUrl,    bookingHref,    bookingWidgetId,    offersHref,    blogPosts,    awardBadges[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    awardVariant  }
+// Query: *[_type == "property" && slug == $slug][0]{    _id,    _type,    slug,    label,    logo {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    navItems,    addressLines,    phones,    email,    maps,    facebook,    instagram,    instagramApiUrl,    spaInstagramApiUrl,    bookingHref,    bookingWidgetId,    offersHref,    blogPosts,    awardBadges[] {  _type,  asset,  alt,  caption,  externalUrl,  crop,  hotspot},    awardVariant  }
 export type PropertyBySlugQueryResult = {
   _id: string;
   _type: "property";
@@ -3508,7 +3480,6 @@ export type PropertyBySlugQueryResult = {
   maps: string | null;
   facebook: string | null;
   instagram: string | null;
-  instagramFeedUrl: string | null;
   instagramApiUrl: string | null;
   spaInstagramApiUrl: string | null;
   bookingHref: string | null;
@@ -3641,8 +3612,8 @@ declare global {
     '\n  *[_type == "experience" && slug == $slug][0] {\n  _id,\n  _type,\n  title,\n  slug,\n  group,\n  eyebrow,\n  paragraphs,\n  recommendedFor,\n  note,\n  sections[]{\n    ...,\n    image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  blocks,\n  programsHeading,\n  programs,\n  inclusions,\n  price,\n  highlightsHeading,\n  highlights[]{\n    ...,\n    icon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  closingCta,\n  teamHeading,\n  team[]{\n    ...,\n    photo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n}\n  },\n  faqHeading,\n  faq,\n  hero {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  cardImage {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  gallery[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n}\n': ExperienceBySlugQueryResult;
     '\n  *[_type == "packageSet" && defined(slug.current)]{\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    property,\n    alwaysIncluded,\n    packages[]{\n      ...,\n      images[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n      ctas[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n      "description": select(\n  description[0]._type == "block" => description[]{\n    ...,\n    markDefs[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n}\n  },\n  description\n)\n    }\n  }\n': AllPackageSetsQueryResult;
     '\n  *[_type == "testimonial"] | order(order asc){\n    _id,\n    _type,\n    quote,\n    author,\n    property,\n    order\n  }\n': AllTestimonialsQueryResult;
-    '\n  *[_type == "legalPage" && path == $path][0]{\n    _id,\n    _type,\n    title,\n    path,\n    intro,\n    sections,\n    updatedAt,\n    seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n': LegalPageByPathQueryResult;
-    '\n  *[_type == "property" && slug == $slug][0]{\n    _id,\n    _type,\n    slug,\n    label,\n    logo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    navItems,\n    addressLines,\n    phones,\n    email,\n    maps,\n    facebook,\n    instagram,\n    instagramFeedUrl,\n    instagramApiUrl,\n    spaInstagramApiUrl,\n    bookingHref,\n    bookingWidgetId,\n    offersHref,\n    blogPosts,\n    awardBadges[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    awardVariant\n  }\n': PropertyBySlugQueryResult;
+    '\n  *[_type == "legalPage" && path == $path][0]{\n    _id,\n    _type,\n    title,\n    path,\n    intro,\n    sections,\n    seo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n': LegalPageByPathQueryResult;
+    '\n  *[_type == "property" && slug == $slug][0]{\n    _id,\n    _type,\n    slug,\n    label,\n    logo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    navItems,\n    addressLines,\n    phones,\n    email,\n    maps,\n    facebook,\n    instagram,\n    instagramApiUrl,\n    spaInstagramApiUrl,\n    bookingHref,\n    bookingWidgetId,\n    offersHref,\n    blogPosts,\n    awardBadges[] {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    awardVariant\n  }\n': PropertyBySlugQueryResult;
     '\n  *[_type == "siteSettings"][0]{\n    _id,\n    _type,\n    title,\n    description,\n    favicon {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    bookNowLabel,\n    dealHeadline,\n    dealCode,\n    dealButtonLabel,\n    homeLogo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    footerLogo {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n    footerBookingLabel,\n    footerMenuHeading,\n    footerMenuLinks[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n    footerBlogHeading,\n    footerNote,\n    legalLinks[] {\n  ...,\n  "href": select(\n    linkType == "internal" && defined(reference) => reference->{"resolved": select(\n  _type == "room" => "/" + property + "/villa/" + slug.current,\n  _type == "experience" => "/ubud/" + slug,\n  defined(path) => path\n)}.resolved,\n    href\n  )\n},\n    defaultSeo {\n  title,\n  description,\n  ogTitle,\n  ogDescription,\n  image {\n  _type,\n  asset,\n  alt,\n  caption,\n  externalUrl,\n  crop,\n  hotspot\n},\n  canonicalUrl,\n  noIndex\n}\n  }\n': SiteSettingsQueryResult;
   }
 }

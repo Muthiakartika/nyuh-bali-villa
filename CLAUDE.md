@@ -283,6 +283,36 @@ the absence: hero and the property picker are full-bleed photographs with no
 band colour behind them, and awards, deals, Instagram and the booking widget
 draw their own surface.
 
+**Then the same question was asked of every field, and the answer was six
+more.** The check is mechanical and worth rerunning: for each section, take
+its fields from `src/sanity/schema.json`, check each one is in the
+`SanitySection` variant in `types.ts` (a field missing there *cannot* be read
+— TypeScript would reject it), then check the block `PageBuilder` maps that
+`_type` to actually mentions it. Do the same for the ten document types
+against `queries.ts` and the app. Both now report zero.
+
+- **`anchor` was offered on all 24 sections and honoured by 10.** Every
+  section carried "Section anchor" in the Studio; fourteen blocks dropped it,
+  so a client setting one on a Packages band, an FAQ or a card grid got an id
+  that never reached the DOM and a `#link` that silently did not jump. Nine
+  band components took no `anchor` prop at all and now do. **Five sections lost
+  the field instead**, because they draw no `Section` to hang an id on: the
+  hero and the property picker are full-bleed photography, awards and the
+  booking widget draw their own surface, and the deals bar is fixed to the
+  viewport. `hiddenOnlySettingsFields` is the settings pair without an anchor.
+- **`collectionSection.action`** was a "Closing action" link rendered by
+  nothing — none of the three components that section renders through draws a
+  button after the list, and adding one would have put a button on bands the
+  design closes without one.
+- **`legalPage.updatedAt`** and **`property.instagramFeedUrl`** were both
+  projected, typed, and read by nothing. The second is a leftover of the
+  deleted Behold proxy — `instagramApiUrl` / `spaInstagramApiUrl` are what
+  choose an account now. No document set either, so nothing was lost.
+- **`category.description` is the one that stayed.** Seven categories carry a
+  real one and nothing renders it — but it reads as a note to whoever tags the
+  posts, which is a fair thing for a schema to hold. It is titled and
+  described as internal now, so no one expects it on the site.
+
 **Two more fields were read by nothing, and the fix was to delete them rather
 than honour them.** `awardsSection.heading` and `bookingWidgetSection.heading`
 existed in the schema; neither `AwardsRow` nor `BookingWidget` accepts a

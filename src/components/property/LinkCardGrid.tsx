@@ -30,6 +30,9 @@ type LinkCardGridProps = {
   items: LinkCardItem[];
   columns: 2 | 3 | 4;
   tone?: GridTone;
+  /** Optional id so a link can jump to this band. `Section` adds the
+   * scroll-mt that clears the sticky header whenever this is set. */
+  anchor?: string;
 };
 
 // Tailwind's scanner needs each full class name to appear literally in the
@@ -83,11 +86,12 @@ export function LinkCardGrid({
   items,
   columns,
   tone = "sand",
+  anchor,
 }: LinkCardGridProps) {
   const isDark = tone === "ink";
 
   return (
-    <Section tone={tone}>
+    <Section tone={tone} id={anchor}>
       <SectionHeading
         eyebrow={eyebrow}
         title={heading}

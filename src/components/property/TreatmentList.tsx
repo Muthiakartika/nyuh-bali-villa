@@ -37,6 +37,9 @@ type TreatmentListProps = {
   /** The page's closing "Reserve Now" action. */
   cta?: { label: string; href: string };
   tone?: BandTone;
+  /** Optional id so a link can jump to this band. `Section` adds the
+   * scroll-mt that clears the sticky header whenever this is set. */
+  anchor?: string;
 };
 
 /**
@@ -81,9 +84,10 @@ export function TreatmentList({
   categories,
   cta,
   tone = "sand",
+  anchor,
 }: TreatmentListProps) {
   return (
-    <Section tone={tone}>
+    <Section tone={tone} id={anchor}>
       <SectionHeading eyebrow={eyebrow} title={heading} as={headingAs} />
 
       {intro ? (

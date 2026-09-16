@@ -324,7 +324,6 @@ export const legalPageByPathQuery = defineQuery(`
     path,
     intro,
     sections,
-    updatedAt,
     seo ${seoProjection}
   }
 `);
@@ -343,7 +342,6 @@ export const propertyBySlugQuery = defineQuery(`
     maps,
     facebook,
     instagram,
-    instagramFeedUrl,
     instagramApiUrl,
     spaInstagramApiUrl,
     bookingHref,

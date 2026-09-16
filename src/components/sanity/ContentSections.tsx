@@ -95,6 +95,7 @@ export function AboutNarrativeBlock({
 }) {
   return (
     <AboutNarrative
+      anchor={section.anchor}
       eyebrow={section.eyebrow ?? ""}
       heading={section.heading}
       headingAs={section.headingLevel}
@@ -160,6 +161,7 @@ export function RoomListBlock({
   if (!rooms.length) return null;
   return (
     <RoomList
+      anchor={section.anchor}
       eyebrow={section.eyebrow}
       heading={section.heading}
       headingAs={section.headingLevel}
@@ -319,6 +321,7 @@ export function LinkCardGridBlock({ section }: { section: Narrow<"linkCardGridSe
   if (!items.length) return null;
   return (
     <LinkCardGrid
+      anchor={section.anchor}
       eyebrow={section.eyebrow}
       heading={section.heading}
       headingAs={section.headingLevel}
@@ -355,6 +358,7 @@ export function PackageListBlock({ section }: { section: Narrow<"packageListSect
 
   return (
     <PackageList
+      anchor={section.anchor}
       eyebrow={section.eyebrow}
       heading={section.heading ?? ""}
       headingAs={section.headingLevel}
@@ -368,6 +372,7 @@ export function PackageListBlock({ section }: { section: Narrow<"packageListSect
 export function ProgramListBlock({ section }: { section: Narrow<"programListSection"> }) {
   return (
     <ProgramList
+      anchor={section.anchor}
       heading={section.heading}
       headingAs={section.headingLevel}
       tiers={section.tiers}
@@ -384,6 +389,7 @@ export function TreatmentListBlock({ section }: { section: Narrow<"treatmentList
   }));
   return (
     <TreatmentList
+      anchor={section.anchor}
       eyebrow={section.eyebrow}
       heading={section.heading}
       headingAs={section.headingLevel}
@@ -508,6 +514,7 @@ export function PriceTableBlock({ section }: { section: Narrow<"priceTableSectio
 export function FaqBlock({ section }: { section: Narrow<"faqSection"> }) {
   return (
     <FaqList
+      anchor={section.anchor}
       heading={section.heading}
       headingAs={section.headingLevel}
       faqs={section.faqs}
@@ -684,6 +691,7 @@ export async function InstagramBlock({
   const widget = await getInstagramWidget(feed);
   return (
     <InstagramTeaser
+      anchor={section.anchor}
       heading={section.heading || "Follow Us"}
       instagramHref={section.profileUrl || site.social.instagram}
       widget={widget}

@@ -12,6 +12,9 @@ type FaqListProps = {
   eyebrow?: string;
   faqs: FaqEntry[];
   tone?: BandTone;
+  /** Optional id so a link can jump to this band. `Section` adds the
+   * scroll-mt that clears the sticky header whenever this is set. */
+  anchor?: string;
 };
 
 /**
@@ -31,9 +34,10 @@ export function FaqList({
   eyebrow,
   faqs,
   tone = "sand-deep",
+  anchor,
 }: FaqListProps) {
   return (
-    <Section tone={tone}>
+    <Section tone={tone} id={anchor}>
       <SectionHeading eyebrow={eyebrow} title={heading} as={headingAs} />
 
       <div className="mt-8 md:mt-10">

@@ -571,7 +571,6 @@ async function migrateProperties() {
       maps: site.social.maps,
       facebook: site.social.facebook,
       instagram: site.social.instagram,
-      ...(site.instagramFeedUrl ? { instagramFeedUrl: site.instagramFeedUrl } : {}),
       bookingHref: site.bookingHref,
       bookingWidgetId: site.bookingWidgetId,
       offersHref: site.offersHref,

@@ -1,6 +1,26 @@
 import type { FieldDefinition } from "sanity";
 import { defineField } from "sanity";
 
+/**
+ * "Hide this section", on its own.
+ *
+ * For the bands that draw no `Section` of their own and so have nothing to
+ * hang an id on — the hero and the property picker are full-bleed
+ * photography, the awards strip and the booking widget draw their own
+ * surface, and the deals bar is fixed to the viewport. Offering an anchor
+ * there put an ID field in the Studio that reached no element: a link to it
+ * would simply not jump, with nothing to say why.
+ */
+export const hiddenOnlySettingsFields: FieldDefinition[] = [
+  defineField({
+    name: "isHidden",
+    title: "Hide this section",
+    type: "boolean",
+    initialValue: false,
+    description: "Keeps the content in the document without rendering it on the website.",
+  }),
+];
+
 export const sectionSettingsFields: FieldDefinition[] = [
   defineField({
     name: "anchor",

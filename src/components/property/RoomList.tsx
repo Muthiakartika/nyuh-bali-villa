@@ -36,6 +36,9 @@ type RoomListProps = {
   intro?: ProseValue;
   rooms: Room[];
   tone?: BandTone;
+  /** Optional id so a link can jump to this band. `Section` adds the
+   * scroll-mt that clears the sticky header whenever this is set. */
+  anchor?: string;
 };
 
 /**
@@ -60,9 +63,10 @@ export function RoomList({
   intro,
   rooms,
   tone = "sand",
+  anchor,
 }: RoomListProps) {
   return (
-    <Section tone={tone}>
+    <Section tone={tone} id={anchor}>
       <SectionHeading eyebrow={eyebrow} title={heading} as={headingAs} />
 
       {intro ? (

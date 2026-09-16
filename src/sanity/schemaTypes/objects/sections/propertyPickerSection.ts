@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { sectionSettingsFields } from "./shared";
+import { hiddenOnlySettingsFields } from "./shared";
 
 /**
  * One half of the homepage's Seminyak/Ubud picker: a full-height photograph
@@ -80,7 +80,7 @@ export const propertyPickerSection = defineType({
     }),
     // No background field: both panels are full-bleed photographs, so there
     // is no band colour behind them to choose.
-    ...sectionSettingsFields,
+    ...hiddenOnlySettingsFields,
   ],
   preview: {
     // Three path segments, not four: `panels.0.image.asset` is one level too

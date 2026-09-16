@@ -11,6 +11,9 @@ type ProgramListProps = {
   headingAs?: HeadingLevel;
   tiers: ExperienceProgram[];
   tone?: BandTone;
+  /** Optional id so a link can jump to this band. `Section` adds the
+   * scroll-mt that clears the sticky header whenever this is set. */
+  anchor?: string;
 };
 
 /**
@@ -38,9 +41,13 @@ type ProgramListProps = {
  */
 export function ProgramList({
   heading,
-  headingAs = "h2", tiers, tone = "sand" }: ProgramListProps) {
+  headingAs = "h2",
+  tiers,
+  tone = "sand",
+  anchor,
+}: ProgramListProps) {
   return (
-    <Section tone={tone}>
+    <Section tone={tone} id={anchor}>
       <SectionHeading title={heading} as={headingAs} />
 
       <div className="mt-8 flex flex-col border-t border-ink/10 md:mt-10">

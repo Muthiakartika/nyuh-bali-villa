@@ -18,7 +18,14 @@ export const category = defineType({
       options: { source: "title", maxLength: 96 },
       validation: (Rule) => Rule.required(),
     }),
-    defineField({ name: "description", title: "Description", type: "text", rows: 2 }),
+    defineField({
+      name: "description",
+      title: "What belongs in this category (internal)",
+      type: "text",
+      rows: 2,
+      description:
+        "A note for whoever tags the posts. It is not shown on the website — the blog renders a category as its name alone, in the meta row above each headline.",
+    }),
   ],
   preview: { select: { title: "title", subtitle: "slug.current" } },
   orderings: [

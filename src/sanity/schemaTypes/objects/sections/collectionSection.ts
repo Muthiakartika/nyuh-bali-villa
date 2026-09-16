@@ -99,7 +99,10 @@ export const collectionSection = defineType({
       description: "Leave empty to show every published item.",
       validation: (Rule) => Rule.min(1).max(48).integer(),
     }),
-    defineField({ name: "action", title: "Closing action", type: "link" }),
+    // No "closing action": none of the three components this section renders
+    // through — RoomList, PostGrid, LinkCardGrid — draws a button after the
+    // list, so the field was read by nothing. Adding one for real would put a
+    // button on bands the design closes without one.
     toneField,
     headingLevelField,
     ...sectionSettingsFields,

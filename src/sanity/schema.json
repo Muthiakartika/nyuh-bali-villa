@@ -584,13 +584,6 @@
         },
         "optional": true
       },
-      "instagramFeedUrl": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
       "bookingHref": {
         "type": "objectAttribute",
         "value": {
@@ -881,13 +874,6 @@
           },
           "optional": true
         },
-        "anchor": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          },
-          "optional": true
-        },
         "isHidden": {
           "type": "objectAttribute",
           "value": {
@@ -1004,13 +990,6 @@
           },
           "optional": true
         },
-        "anchor": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          },
-          "optional": true
-        },
         "isHidden": {
           "type": "objectAttribute",
           "value": {
@@ -1074,13 +1053,6 @@
                 "value": "marquee"
               }
             ]
-          },
-          "optional": true
-        },
-        "anchor": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
           },
           "optional": true
         },
@@ -2681,14 +2653,6 @@
           },
           "optional": true
         },
-        "action": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "inline",
-            "name": "link"
-          },
-          "optional": true
-        },
         "tone": {
           "type": "objectAttribute",
           "value": {
@@ -3641,13 +3605,6 @@
           },
           "optional": true
         },
-        "anchor": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          },
-          "optional": true
-        },
         "isHidden": {
           "type": "objectAttribute",
           "value": {
@@ -3708,13 +3665,6 @@
           "optional": true
         },
         "alt": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          },
-          "optional": true
-        },
-        "anchor": {
           "type": "objectAttribute",
           "value": {
             "type": "string"
@@ -6310,13 +6260,6 @@
               }
             ]
           }
-        },
-        "optional": true
-      },
-      "updatedAt": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
         },
         "optional": true
       },

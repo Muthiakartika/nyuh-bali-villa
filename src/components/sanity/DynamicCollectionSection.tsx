@@ -40,6 +40,7 @@ export default async function DynamicCollectionSection({
     if (!rooms.length) return null;
     return (
       <RoomList
+        anchor={section.anchor}
         eyebrow={section.eyebrow}
         heading={section.heading ?? ""}
         headingAs={section.headingLevel}
@@ -64,6 +65,7 @@ export default async function DynamicCollectionSection({
     if (!posts.length) return null;
     return (
       <PostGrid
+        anchor={section.anchor}
         eyebrow={section.eyebrow}
         heading={section.heading ?? "Our Blog"}
         headingAs={section.headingLevel}
@@ -91,6 +93,7 @@ export default async function DynamicCollectionSection({
     if (!items.length) return null;
     return (
       <LinkCardGrid
+        anchor={section.anchor}
         eyebrow={section.eyebrow}
         heading={section.heading ?? ""}
         headingAs={section.headingLevel}

@@ -17,7 +17,10 @@ type AboutNarrativeProps = {
   paragraphs: ProseValue;
   /** The band's background. Defaults to what this component used to hardcode,
    *  so a page that does not set one renders exactly as before. */
-  tone?: BandTone | "white";
+  tone?: BandTone;
+  /** Optional id so a link can jump to this band. `Section` adds the
+   * scroll-mt that clears the sticky header whenever this is set. */
+  anchor?: string;
   /** Seminyak's page has a short tagline between the narrative and the
    * button ("We serve with smile and sincerity"); Ubud's doesn't have one
    * at all — omitting the prop skips it entirely rather than rendering an
@@ -68,6 +71,7 @@ export function AboutNarrative({
   eyebrow,
   heading,
   tone = "sand",
+  anchor,
   headingAs = "h2",
   paragraphs,
   tagline,
@@ -94,6 +98,7 @@ export function AboutNarrative({
       tone={tone}
       space="none"
       className="pt-12 pb-9 md:pt-[72px] md:pb-13"
+      id={anchor}
     >
       {/* The two-column split happens at `lg`, not `md`. At 768 it gave the
           narrative a 347px column — 41 characters a line, a newspaper measure —

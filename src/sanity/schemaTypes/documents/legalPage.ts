@@ -105,13 +105,10 @@ export const legalPage = defineType({
       ],
       validation: (Rule) => Rule.required().min(1),
     }),
-    defineField({
-      name: "updatedAt",
-      title: "Last updated",
-      type: "date",
-      group: "content",
-      options: { dateFormat: "YYYY-MM-DD" },
-    }),
+    // No "last updated" field. Nothing rendered it — the two legal pages show
+    // no such line — so it sat in the Studio inviting an editor to set a date
+    // the website would never print. Adding the line for real is a design
+    // change, so the field goes until someone asks for it.
     defineField({ name: "seo", title: "Search and social", type: "seo", group: "seo" }),
   ],
   preview: {

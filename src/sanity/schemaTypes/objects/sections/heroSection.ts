@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { sectionSettingsFields } from "./shared";
+import { hiddenOnlySettingsFields } from "./shared";
 
 export const heroSection = defineType({
   name: "heroSection",
@@ -34,7 +34,7 @@ export const heroSection = defineType({
     }),
     // No background field: a hero is a full-bleed photograph edge to edge,
     // so there is no band colour to choose. Swap the image instead.
-    ...sectionSettingsFields,
+    ...hiddenOnlySettingsFields,
   ],
   preview: {
     select: { title: "title", subtitle: "eyebrow", media: "images.0" },

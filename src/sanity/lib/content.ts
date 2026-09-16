@@ -169,7 +169,6 @@ export async function getPropertySite(slug: PropertySlug): Promise<PropertySite>
       facebook: document.facebook || base.social.facebook,
       instagram: document.instagram || base.social.instagram,
     },
-    instagramFeedUrl: document.instagramFeedUrl || base.instagramFeedUrl,
     bookingHref: document.bookingHref || base.bookingHref,
     bookingWidgetId: document.bookingWidgetId || base.bookingWidgetId,
     offersHref: document.offersHref || base.offersHref,

@@ -1,5 +1,11 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { eyebrowField, headingLevelField, sectionSettingsFields, toneField } from "./shared";
+import {
+  eyebrowField,
+  headingLevelField,
+  hiddenOnlySettingsFields,
+  sectionSettingsFields,
+  toneField,
+} from "./shared";
 
 /** The awards strip. Seminyak lays its badges out as a grid, Ubud as a marquee. */
 export const awardsSection = defineType({
@@ -38,7 +44,7 @@ export const awardsSection = defineType({
       description:
         "Seminyak lays its badges out as a row and Ubud scrolls them. Leave on the first option unless this page needs the other.",
     }),
-    ...sectionSettingsFields,
+    ...hiddenOnlySettingsFields,
   ],
   preview: {
     select: { badges: "badges", media: "badges.0" },
@@ -87,7 +93,7 @@ export const dealsSection = defineType({
       description: "Leave empty to use Site settings'.",
       validation: (Rule) => Rule.max(30),
     }),
-    ...sectionSettingsFields,
+    ...hiddenOnlySettingsFields,
   ],
   preview: {
     select: { headline: "headline" },
@@ -162,7 +168,7 @@ export const bookingWidgetSection = defineType({
       type: "string",
       description: "Leave empty to use the property's own widget.",
     }),
-    ...sectionSettingsFields,
+    ...hiddenOnlySettingsFields,
   ],
   preview: {
     select: { widgetId: "widgetId" },
