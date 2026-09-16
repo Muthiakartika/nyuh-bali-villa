@@ -14,7 +14,7 @@
  *
  * ## Why this is its own file rather than a line in `seo.ts`
  *
- * `src/middleware.ts` needs it, and middleware is bundled for the edge
+ * `src/proxy.ts` needs it, and middleware is bundled for the edge
  * runtime and runs on every request. Importing it from `seo.ts` would pull
  * `ROUTE_SEO` — 74 routes of titles and descriptions — into that bundle for
  * the sake of one string. `seo.ts` re-exports `SITE_ORIGIN`, so every

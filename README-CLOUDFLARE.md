@@ -526,7 +526,7 @@ to the other.
 | `/_next/image*` | **no** (rule 1) | n/a | `Vary: Accept` — see §3 |
 | Draft-mode previews | **no** (rule 1) | n/a | the two cookies |
 | A **preview** deployment | n/a — not proxied | **no** | `robots.ts` returns `Disallow: /` on `VERCEL_ENV === "preview"`, plus Vercel's own `X-Robots-Tag` |
-| The **production** `*.vercel.app` alias | n/a — not proxied | **no** | `src/middleware.ts` 308s every page request to `nyuhbalivillas.com` |
+| The **production** `*.vercel.app` alias | n/a — not proxied | **no** | `src/proxy.ts` 308s every page request to `nyuhbalivillas.com` |
 | `?utm_source=…` copies of a page | yes, as separate entries | **no** | the three `utm` `Disallow` lines in `robots.ts` |
 
 ### The Studio, three ways, because each covers a different failure
@@ -563,7 +563,7 @@ things that look like they cover it do not:
 - **These cache rules** cannot help at all. They belong to the zone for
   `nyuhbalivillas.com`; `*.vercel.app` is not in that zone and never passes
   through the proxy. **Everything protecting the alias has to live in the
-  build**, which is why `src/middleware.ts` exists and why it is the only
+  build**, which is why `src/proxy.ts` exists and why it is the only
   middleware in this project.
 
 It 308s every page request on a non-canonical host to `SITE_ORIGIN`. The

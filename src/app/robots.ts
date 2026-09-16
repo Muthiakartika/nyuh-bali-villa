@@ -65,7 +65,7 @@ import { SITE_ORIGIN } from "@/data/seo";
  *
  * Production's `*.vercel.app` alias is *not* covered by this — it reports
  * `VERCEL_ENV` as "production" and so is served the permissive file. That is
- * `src/middleware.ts`'s job: it 308s every page request on a non-canonical
+ * `src/proxy.ts`'s job: it 308s every page request on a non-canonical
  * host to the real domain.
  */
 export default function robots(): MetadataRoute.Robots {

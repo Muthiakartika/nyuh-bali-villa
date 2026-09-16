@@ -93,11 +93,16 @@ const notes = [];
  * declares `source` too and a header rule moves nothing; and a source carrying
  * `:` or `*` is skipped, because a parameterised source like `/studio/:path*`
  * is a pattern rather than a path to compare against.
+ *
+ * The match is deliberately not anchored to a whole line. The 86 legacy
+ * WordPress permalinks are written one entry per line to stay readable at that
+ * length, so `source:` is mid-line for most of the table; anchoring would have
+ * silently seen only the nine older multi-line entries.
  */
 const nextConfig = fs.readFileSync("next.config.ts", "utf8");
 const redirectBlock = nextConfig.slice(nextConfig.indexOf("async redirects()"));
 const redirected = new Set(
-  [...redirectBlock.matchAll(/^ +source: "(\/[^":*]*)",$/gm)].map((m) => m[1]),
+  [...redirectBlock.matchAll(/source: "(\/[^":*]*)"/g)].map((m) => m[1]),
 );
 
 const check = (label, wanted) => {

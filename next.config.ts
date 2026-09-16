@@ -210,6 +210,177 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
+
+      // ── The legacy WordPress permalinks ──────────────────────────────
+      //
+      // The 86 below come from a crawl of every URL the live site still
+      // answers a 301 for (nyuhbalivillas-redirect-list.csv), and they are a
+      // different population from the eight above: those are pages the live
+      // site *serves* that this build does not rebuild, while these are URLs
+      // WordPress itself already retired — the pre-2023 permalink scheme,
+      // plus the hyphen-less and double-published variants that accumulated
+      // around it. WordPress answers them from its own redirect table, which
+      // is data this build does not inherit, so without this block every one
+      // of them 404s the day the DNS moves, and drops whatever ranking and
+      // inbound links it still carries.
+      //
+      // **Each destination is the crawl's Final URL, not its Redirect
+      // Target.** The live site chains several of these
+      // (`/balinese-culture-activity` -> `/ubud/culture` ->
+      // `/ubud/balinese-culture`); resolving to the end of the chain here
+      // means one hop instead of two. The handful where the crawl's own
+      // final URL is a 404 are marked individually below — those are the
+      // only entries that required a decision.
+      //
+      // Refresh the same way the list above is refreshed: re-crawl every
+      // published URL. A retired permalink is invisible from inside this
+      // build, because nothing here links to one.
+
+      // Section landing pages, under their old top-level slugs.
+      { source: "/contact-us", destination: "/seminyak/contact", permanent: true },
+      { source: "/contact-our-ubud-villa", destination: "/ubud/contact", permanent: true },
+      { source: "/seminyak-luxury-villa", destination: "/seminyak/villa", permanent: true },
+      { source: "/seminyak-dining", destination: "/seminyak/dining", permanent: true },
+      { source: "/seminyak-spa", destination: "/seminyak/spa", permanent: true },
+      { source: "/tour", destination: "/seminyak/tour", permanent: true },
+      { source: "/luxury-villa-ubud", destination: "/ubud", permanent: true },
+      { source: "/ubud-villa", destination: "/ubud/villa", permanent: true },
+      { source: "/ubud-packages", destination: "/ubud/packages", permanent: true },
+      { source: "/dining-ubud", destination: "/ubud/dining", permanent: true },
+      { source: "/spa-in-ubud", destination: "/ubud/spa", permanent: true },
+      { source: "/ubud-wellness", destination: "/ubud/wellness", permanent: true },
+      { source: "/wedding-in-ubud", destination: "/ubud/wedding", permanent: true },
+      { source: "/ubud-retreat", destination: "/ubud/retreat", permanent: true },
+      { source: "/luxury-retreat-ubud", destination: "/ubud/retreat/luxury", permanent: true },
+      { source: "/host-your-own-retreat", destination: "/ubud/retreat/host-your-own", permanent: true },
+      { source: "/how-to-host-retreat", destination: "/ubud/retreat/host-your-own", permanent: true },
+      // The parent of four permalinks that still redirect individually below;
+      // it 404s on the live site, so its own successor is a reading rather
+      // than a copy — `/ubud/retreat` is the page those four now live under.
+      { source: "/retreat-in-ubud", destination: "/ubud/retreat", permanent: true },
+      // "Ubud - Experience" is the old title of the page `/ubud-culture`
+      // already redirects to, which is what settles these three. The live
+      // site sends `/ubud-experience` to `/?page_id=38`, and that 404s.
+      { source: "/ubud-experience", destination: "/ubud/balinese-culture", permanent: true },
+      { source: "/balinese-culture-activity", destination: "/ubud/balinese-culture", permanent: true },
+      { source: "/ubud/culture", destination: "/ubud/balinese-culture", permanent: true },
+      // The two blog indexes. `/ubud-blog/page/2` is WordPress's pagination;
+      // this build's `/ubud/discover` is a single page, so page 2 is the
+      // index itself rather than the `/ubud/discoverpage/2/` the live
+      // redirect points at, which 404s there too.
+      { source: "/ubud-blog", destination: "/ubud/discover", permanent: true },
+      { source: "/ubud-blog/page/2", destination: "/ubud/discover", permanent: true },
+      { source: "/seminyak-blog", destination: "/seminyak/discover", permanent: true },
+
+      // Romance — the packages and the two honeymoon villas, including the
+      // hyphen-less variants WordPress published alongside them.
+      { source: "/romanticpackage", destination: "/seminyak/villa/honeymoon/packages", permanent: true },
+      { source: "/honeymoon-romantic-packages-bali", destination: "/seminyak/villa/honeymoon/packages", permanent: true },
+      { source: "/ubud-romance", destination: "/ubud/villa/honeymoon/packages", permanent: true },
+      { source: "/honeymoon-villa-seminyak", destination: "/seminyak/villa/honeymoon", permanent: true },
+      { source: "/honeymoonvillainseminyak", destination: "/seminyak/villa/honeymoon", permanent: true },
+      { source: "/pool-villa-seminyak", destination: "/seminyak/villa/honeymoon/pool", permanent: true },
+      { source: "/poolvillainseminyak", destination: "/seminyak/villa/honeymoon/pool", permanent: true },
+
+      // The Ubud rooms, under the old `/ubud-villa/` prefix. The pairing of
+      // the two honeymoon URLs is the live site's own and is copied as it
+      // stands: `honeymoon-suite-pool-villa` is the suite, `honeymoon-suite`
+      // is the pool villa.
+      { source: "/ubud-villa/nyuh-suite", destination: "/ubud/villa/suite", permanent: true },
+      { source: "/ubud-villa/honeymoon-suite-pool-villa", destination: "/ubud/villa/honeymoon", permanent: true },
+      { source: "/ubud-villa/honeymoon-suite", destination: "/ubud/villa/honeymoon/pool", permanent: true },
+      { source: "/ubud-villa/one-bedroom-deluxe-pool-villa", destination: "/ubud/villa/1-bedroom-pool-deluxe", permanent: true },
+      { source: "/ubud-villa/one-bedroom-royal-pool-villa", destination: "/ubud/villa/1-bedroom-pool-royal", permanent: true },
+      { source: "/ubud-villa/two-bedroom-pool-villa", destination: "/ubud/villa/2-bedroom-pool", permanent: true },
+      { source: "/ubud-villa/three-bedroom-pool-villa", destination: "/ubud/villa/3-bedroom-pool", permanent: true },
+      { source: "/ubud-villa/four-bedroom-pool-villa-family-suite-villa", destination: "/ubud/villa/4-bedroom-pool", permanent: true },
+      // The prefix without its hyphen. On the live site this one resolves to
+      // the room's *photograph* in /wp-content/uploads — a WordPress
+      // attachment page, not a decision anybody made — so it is sent to the
+      // room its hyphenated twin above goes to.
+      { source: "/ubudvilla/honeymoon-suite-pool-villa", destination: "/ubud/villa/honeymoon", permanent: true },
+
+      // Retreat programmes, under both of the prefixes they were published
+      // at. `/personalised-luxury-retreat-in-ubud/` is the older of the two,
+      // and its balinese-healing URL 404s on the live site rather than
+      // redirecting; it is mapped the way its `new-beginning` sibling is.
+      { source: "/luxury-retreat-ubud/couples-retreat", destination: "/ubud/retreat/couples", permanent: true },
+      { source: "/luxury-retreat-ubud/holistic-balancing-retreat", destination: "/ubud/retreat/luxury/holistic-balancing", permanent: true },
+      { source: "/luxury-retreat-ubud/new-beginning", destination: "/ubud/retreat/luxury/new-beginning", permanent: true },
+      { source: "/personalised-luxury-retreat-in-ubud/new-beginning", destination: "/ubud/retreat/luxury/new-beginning", permanent: true },
+      { source: "/luxury-retreat-ubud/ubud-authentic-balinese-healing", destination: "/ubud/retreat/luxury/balinese-healing", permanent: true },
+      { source: "/personalised-luxury-retreat-in-ubud/ubud-authentic-balinese-healing", destination: "/ubud/retreat/luxury/balinese-healing", permanent: true },
+      { source: "/ubud-anti-aging-retreat", destination: "/ubud/retreat/luxury/anti-aging", permanent: true },
+      { source: "/detox-retreat-bali", destination: "/ubud/retreat/detox", permanent: true },
+      { source: "/ubud-slimming-retreat", destination: "/ubud/retreat/slimming", permanent: true },
+
+      // The wellness classes. `/ubudwellness/` — the prefix with its hyphen
+      // dropped — 404s on the live site rather than redirecting; both of its
+      // URLs are mapped the way their `/ubud-wellness/` twins are.
+      { source: "/ubud-wellness/ubud-bodytoneflow", destination: "/ubud/wellness/body-tone-flow", permanent: true },
+      { source: "/ubud-wellness/ubud-breathwork", destination: "/ubud/wellness/breathwork", permanent: true },
+      { source: "/ubudwellness/ubud-breathwork", destination: "/ubud/wellness/breathwork", permanent: true },
+      { source: "/ubud-wellness/ubud-chakra-healing", destination: "/ubud/wellness/chakra-healing", permanent: true },
+      { source: "/ubud-wellness/ubud-life-coach", destination: "/ubud/wellness/life-coach", permanent: true },
+      { source: "/ubud-wellness/ubud-reiki-healing", destination: "/ubud/wellness/reiki-healing", permanent: true },
+      { source: "/ubudwellness/ubud-reiki-healing", destination: "/ubud/wellness/reiki-healing", permanent: true },
+      { source: "/ubud-wellness/ubud-sound-healing", destination: "/ubud/wellness/sound-healing", permanent: true },
+      { source: "/ubud-wellness/yoga", destination: "/ubud/wellness/yoga", permanent: true },
+      { source: "/retreat-in-ubud/yoga", destination: "/ubud/wellness/yoga", permanent: true },
+      { source: "/yoga-retreat-ubud", destination: "/ubud/wellness/yoga/retreat", permanent: true },
+      { source: "/balinese-culture-activity/chakra-healing-retreat", destination: "/ubud/wellness/chakra-healing", permanent: true },
+      // The same page under a third prefix. The live site sends this one to
+      // the `/ubud-backup/` draft already redirected above, so this skips
+      // that hop.
+      { source: "/retreat-in-ubud/chakra-healing-retreat", destination: "/ubud/wellness/chakra-healing", permanent: true },
+      { source: "/balinese-culture-activity/ubud-fitness", destination: "/ubud/fitness", permanent: true },
+      { source: "/retreat-in-ubud/ubud-fitness", destination: "/ubud/fitness", permanent: true },
+
+      // Culture activities. The live site's target for the cooking class is
+      // `/ubud/culture/cooking-class`, which is the renamed prefix redirected
+      // above and 404s on its own; both spellings land on the built route.
+      { source: "/retreat-in-ubud/complimentary-rice-paddies-walk-2", destination: "/ubud/balinese-culture/rice-field-walk", permanent: true },
+      { source: "/ubud-market-tour-and-private-balinese-cooking-lesson", destination: "/ubud/balinese-culture/cooking-class", permanent: true },
+      { source: "/ubud/culture/cooking-class", destination: "/ubud/balinese-culture/cooking-class", permanent: true },
+
+      // Spa treatments, and the spa's own menu page. `/ubud/spa/spa-menu` is
+      // not a page this build has — the menu is a PDF linked from the spa
+      // page — and it 404s on the live site too, so it goes to the page that
+      // carries the link.
+      { source: "/couple-massage-ubud", destination: "/ubud/spa/couple-massage", permanent: true },
+      { source: "/couple-massage-in-ubud-romantic-packages", destination: "/ubud/spa/couple-massage", permanent: true },
+      { source: "/hot-stone-massage-ubud", destination: "/ubud/spa/hot-stone-massage", permanent: true },
+      { source: "/spa-with-flower-bath-experience-in-ubud", destination: "/ubud/spa/flower-bath", permanent: true },
+      { source: "/spa-in-ubud/spa-menu", destination: "/ubud/spa", permanent: true },
+      { source: "/spa-reservation-seminyak-2", destination: "/spa-reservation-seminyak", permanent: true },
+
+      // Blog posts, at the bare slugs they were published under before the
+      // `/discover/` prefixes existed. `/ubud/discoverl/` is the live site's
+      // own misspelling and the route this build serves that post at.
+      { source: "/10-romantic-honeymoon-activities-in-seminyak", destination: "/seminyak/discover/10-romantic-honeymoon-activities", permanent: true },
+      { source: "/sunset-seminyak", destination: "/seminyak/discover/sunset", permanent: true },
+      { source: "/five-relaxing-activities-to-do-in-ubud", destination: "/ubud/discover/five-relaxing-activities-to-do", permanent: true },
+      { source: "/most-instagrammable-places-in-ubud", destination: "/ubud/discover/most-instagrammable-places", permanent: true },
+      { source: "/luxury-honeymoon-in-ubud", destination: "/ubud/discover/luxury-honeymoon", permanent: true },
+      { source: "/ubud-honeymoon", destination: "/ubud/discover/luxury-honeymoon", permanent: true },
+      { source: "/wellness-retreat-bali", destination: "/ubud/discover/wellness-retreat", permanent: true },
+      { source: "/what-is-a-bali-5-star-resort", destination: "/ubud/discover/5-star-resort", permanent: true },
+      { source: "/what-is-hatha-yoga", destination: "/ubud/discover/hatha-yoga", permanent: true },
+      { source: "/yoga-teacher-training-in-bali", destination: "/ubud/discover/yoga-teacher-training", permanent: true },
+      { source: "/luxury-hotel-award", destination: "/ubud/discoverl/luxury-hotel-awards", permanent: true },
+
+      // Two reopening announcements the live site retired to the landing
+      // page. Copied as they stand rather than pointed at a resort: the post
+      // applied to both.
+      { source: "/ubud-welcoming-the-new-normal-era", destination: "/", permanent: true },
+      { source: "/welcoming-the-new-normal-era", destination: "/", permanent: true },
+
+      // Nothing here for the http:// and www. rows of the same crawl. Those
+      // are host-level, not path-level: TLS termination handles the scheme,
+      // and www -> apex is a Cloudflare redirect rule, because src/proxy.ts
+      // deliberately exempts anything carrying `cf-ray` from its
+      // canonical-host 308 (see the note in that file).
+
       // Nothing here for /welcomeaboard, /ubud-directory, /seminyak-directory
       // or /suite-directory — those four are *built*, at their own URLs, so
       // the QR codes printed on the cards in every room keep resolving rather

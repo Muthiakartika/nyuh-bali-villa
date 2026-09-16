@@ -37,7 +37,7 @@ import type { Metadata } from "next";
  */
 export type RouteSeo = { title: string; description?: string };
 
-// Moved to its own module so `src/middleware.ts` can import it without
+// Moved to its own module so `src/proxy.ts` can import it without
 // pulling ROUTE_SEO into the edge bundle. Re-exported here because this is
 // where every caller already looks for it.
 export { SITE_ORIGIN } from "./origin";
