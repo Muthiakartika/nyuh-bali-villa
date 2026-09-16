@@ -283,6 +283,19 @@ the absence: hero and the property picker are full-bleed photographs with no
 band colour behind them, and awards, deals, Instagram and the booking widget
 draw their own surface.
 
+**A validation rule the project's own data failed.**
+`inquiryFormSection.fields[].name` required kebab-case — and the Wedding page
+ships six camelCase names (`weddingDate`, `stayDate`, `weddingGift`,
+`legalWedding`, `hairMakeup`, `receptionDinner`), so every editor who opened
+that page met six red errors on content that has always worked. The rule was
+house style written as a blocker. It accepts any identifier that survives form
+encoding now (`^[A-Za-z][A-Za-z0-9_-]*$`), which is the part that actually
+matters: the name is the key the answer is posted and emailed under. **Check a
+new validation rule against `src/data` before adding it** — every one of these
+forms was seeded from there, so a rule the file breaks is a rule the CMS
+breaks. The only other regex rule here, the section anchor, is deliberately a
+`.warning()` rather than an error for the same reason.
+
 **Section order is the editor's on 31 pages and the component's on 47, and
 that split is deliberate.** A `page` document's `sections` array is
 drag-to-reorder like any Sanity array — nothing in this schema disables

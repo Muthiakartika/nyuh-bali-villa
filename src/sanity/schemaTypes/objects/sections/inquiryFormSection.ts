@@ -52,10 +52,17 @@ export const inquiryFormSection = defineType({
               title: "Field name",
               type: "string",
               description:
-                "The identifier submitted with the form. Lowercase words separated by hyphens.",
+                "The identifier this answer is submitted and emailed under — not shown to the visitor. Letters, digits, hyphens and underscores; no spaces. Leave an existing one alone: changing it renames the line in the notification email.",
+              // **Not kebab-case.** It was, and the project's own data broke it:
+              // the Wedding page ships six camelCase names (`weddingDate`,
+              // `hairMakeup`, …), so every editor opening that page met six red
+              // errors on content that has always worked. A form identifier
+              // only has to survive form encoding and read sensibly in the
+              // email — the case convention is house style, and house style
+              // does not belong in a rule that blocks saving.
               validation: (Rule) =>
-                Rule.required().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
-                  name: "kebab-case",
+                Rule.required().regex(/^[A-Za-z][A-Za-z0-9_-]*$/, {
+                  name: "field name",
                 }),
             }),
             defineField({
