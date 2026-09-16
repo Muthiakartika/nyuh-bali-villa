@@ -25,7 +25,8 @@
     "sanity:fix-pages": "node scripts/sanity/fix-seeded-pages.mjs",
     "sanity:fix-pages:dry": "node scripts/sanity/fix-seeded-pages.mjs --dry-run",
     "sanity:seed-images": "node scripts/sanity/seed-new-image-fields.mjs",
-    "sanity:seed-images:dry": "node scripts/sanity/seed-new-image-fields.mjs --dry-run"
+    "sanity:seed-images:dry": "node scripts/sanity/seed-new-image-fields.mjs --dry-run",
+    "pages:check": "node scripts/sanity/check-pages.mjs"
   },
   "dependencies": {
     "@portabletext/react": "^8.0.1",

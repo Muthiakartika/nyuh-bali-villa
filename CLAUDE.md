@@ -283,6 +283,29 @@ the absence: hero and the property picker are full-bleed photographs with no
 band colour behind them, and awards, deals, Instagram and the booking widget
 draw their own surface.
 
+**Section order is the editor's on 31 pages and the component's on 47, and
+that split is deliberate.** A `page` document's `sections` array is
+drag-to-reorder like any Sanity array — nothing in this schema disables
+sorting anywhere — so every band on the 31 hand-written routes can be moved.
+The other 47 are backed by their own document type (10 rooms, 18 experiences,
+17 posts, 2 legal pages) and their band order lives in `RoomDetail`,
+`ExperienceDetailBody`, `PostBody` and `LegalSection`. `ExperienceDetailBody`
+in particular renders the live pages' own order, which is the reason those six
+retreat programmes were restructured in the first place — turning it into a
+page builder would hand an editor the ability to reorder a sequence that was
+reconstructed from the source on purpose.
+
+**`npm run pages:check` is the standing proof that nothing has gone missing.**
+It reads a build and compares it against `seo.ts`, the sitemap, every Sanity
+document that owns a URL, and `src/data` — currently 78 served, 0 missing on
+every count. The `src/data` comparison is the one worth having: `getRooms`,
+`getExperiences` and `getPostPaths` return Sanity's list *instead of* the
+file's rather than merging, and those routes are catch-alls with
+`dynamicParams = false`, so **unpublishing one room of ten 404s its URL until
+the next deploy** with nothing else changing. Correct for a deletion, a silent
+outage for an accident — so the script reports it and a human decides which it
+was.
+
 **Hide/show reaches every band now, and two things stood between it and
 that.** All 24 section types carried `isHidden` and `PageBuilder` filtered on
 it, so as a *field* it was complete — but:
