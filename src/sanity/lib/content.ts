@@ -650,8 +650,12 @@ export async function getHomeLogo(): Promise<{ src: string; alt: string }> {
 
 /** The homepage's vertical booking tab. Two short words, one per column. */
 export async function getBookNowLabel(): Promise<string> {
+  // The same field the header and the spa menu use, in capitals: this tab
+  // stacks one letter per line, and lowercase letters stacked vertically are
+  // barely readable. Uppercasing here rather than asking an editor to type
+  // capitals means one label serves both places.
   const settings = await getSiteSettings();
-  return settings?.bookNowLabel?.trim() || "BOOK NOW";
+  return (settings?.bookNowLabel?.trim() || "Book Now").toUpperCase();
 }
 
 /** The wording on the direct-booking bar docked to every page. */
@@ -680,5 +684,50 @@ export async function getDirectBookingDeal(): Promise<DirectBookingDeal> {
     headline: settings?.dealHeadline || "Direct Booking Deals 66% Off",
     code: settings?.dealCode ?? 'Code : "ilovenyuh"',
     buttonLabel: settings?.dealButtonLabel || "Book Now",
+  };
+}
+
+/** The words the shared components set their buttons and sections in. */
+export type SiteLabels = {
+  bookNow: string;
+  checkRates: string;
+  gallery: string;
+  details: string;
+  amenities: string;
+  recommendedFor: string;
+  inclusions: string;
+  blog: string;
+  followInstagram: string;
+};
+
+/**
+ * One resolver for every label the room, experience and blog pages draw.
+ *
+ * Those 47 pages have no page-builder — their content comes from a `room`,
+ * `experience`, `post` or `legalPage` document and their *section headings*
+ * came from nowhere at all, written into `RoomDetail`, `ExperienceDetailBody`
+ * and `PostPage`. A client asking for "Amenities & Facilities" in Indonesian
+ * needed a developer.
+ *
+ * They belong to Site settings rather than to each document because they are
+ * the same words on all 47: "Gallery" on ten separate room documents would be
+ * ten copies of one decision, and the first one edited would disagree with
+ * the other nine.
+ *
+ * Every default is the string its component shipped with, so an unset field
+ * renders exactly what the site renders today.
+ */
+export async function getSiteLabels(): Promise<SiteLabels> {
+  const s = await getSiteSettings();
+  return {
+    bookNow: s?.bookNowLabel?.trim() || "Book Now",
+    checkRates: s?.checkRatesLabel?.trim() || "Check Rates",
+    gallery: s?.galleryHeading?.trim() || "Gallery",
+    details: s?.detailsHeading?.trim() || "Details",
+    amenities: s?.amenitiesHeading?.trim() || "Amenities & Facilities",
+    recommendedFor: s?.recommendedForHeading?.trim() || "Recommended for",
+    inclusions: s?.inclusionsHeading?.trim() || "Inclusions",
+    blog: s?.blogLabel?.trim() || "Our Blog",
+    followInstagram: s?.followInstagramLabel?.trim() || "Follow on Instagram",
   };
 }

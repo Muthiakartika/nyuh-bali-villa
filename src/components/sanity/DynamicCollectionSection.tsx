@@ -3,7 +3,7 @@ import { PostGrid } from "@/components/property/PostGrid";
 import { RoomList } from "@/components/property/RoomList";
 import { TestimonialCarousel } from "@/components/property/TestimonialCarousel";
 import type { PropertySite, PropertySlug } from "@/data/properties";
-import { getExperiences, getPosts, getRooms, getTestimonials } from "@/sanity/lib/content";
+import { getExperiences, getPosts, getRooms, getSiteLabels, getTestimonials } from "@/sanity/lib/content";
 import type { SanitySection } from "@/sanity/types";
 
 type CollectionSection = Extract<SanitySection, { _type: "collectionSection" }>;
@@ -40,6 +40,7 @@ export default async function DynamicCollectionSection({
     if (!rooms.length) return null;
     return (
       <RoomList
+        checkRatesLabel={(await getSiteLabels()).checkRates}
         anchor={section.anchor}
         eyebrow={section.eyebrow}
         heading={section.heading ?? ""}
@@ -114,5 +115,13 @@ export default async function DynamicCollectionSection({
     ? take(inline)
     : take(await getTestimonials(property ?? site.slug));
   if (!testimonials.length) return null;
-  return <TestimonialCarousel testimonials={testimonials} />;
+  // `section.heading` was collected by the schema and dropped here — an
+  // editor could set a heading on a testimonial collection and watch the
+  // website ignore it. The other three branches always passed theirs.
+  return (
+    <TestimonialCarousel
+      heading={section.heading || undefined}
+      testimonials={testimonials}
+    />
+  );
 }

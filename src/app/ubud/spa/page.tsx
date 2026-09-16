@@ -33,7 +33,7 @@ import { InstagramTeaser } from "@/components/property/InstagramTeaser";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import ManagedPage from "@/components/sanity/ManagedPage";
 import type { } from "@/data/testimonials";
-import { getPropertySite, getInstagramWidget } from "@/sanity/lib/content";
+import { getInstagramWidget, getPropertySite, getSiteLabels } from "@/sanity/lib/content";
 import { resolvePageMetadata } from "@/sanity/lib/metadata";
 import {
   
@@ -63,6 +63,7 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default async function UbudSpaPage() {
   const site = await getPropertySite("ubud");
+  const labels = await getSiteLabels();
   const instagramWidget = await getInstagramWidget("spa");
   return (
     <>
@@ -80,6 +81,7 @@ export default async function UbudSpaPage() {
           />
 
           <TreatmentList
+            bookNowLabel={labels.bookNow}
             eyebrow="SPA"
             heading="Luxury Spa & Flower Bath in Ubud"
             intro={SPA_INTRO}
@@ -95,6 +97,7 @@ export default async function UbudSpaPage() {
           <TestimonialCarousel testimonials={GUEST_QUOTES} />
 
           <InstagramTeaser
+            followLabel={labels.followInstagram}
             heading="What's happening @mahamayaspa.ubud"
             instagramHref="https://www.instagram.com/mahamayaspa.ubud/"
             // The spa's own account, not either resort's — its workspace is a

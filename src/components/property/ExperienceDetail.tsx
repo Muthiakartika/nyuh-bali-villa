@@ -26,6 +26,14 @@ const RETREAT_INQUIRY_FIELDS: InquiryField[] = [
 const INQUIRY_ANCHOR = "retreat-inquiry";
 
 type ExperienceDetailBodyProps = {
+  /** Button and section wording from Site settings. Five of them on this one
+   * page, so it takes the object rather than five separate props. */
+  labels?: {
+    bookNow: string;
+    gallery: string;
+    recommendedFor: string;
+    inclusions: string;
+  };
   experience: Experience;
   site: PropertySite;
   /**
@@ -58,6 +66,12 @@ export function ExperienceDetailBody({
   experience,
   site,
   cardImages,
+  labels = {
+    bookNow: "Book Now",
+    gallery: "Gallery",
+    recommendedFor: "Recommended for",
+    inclusions: "Inclusions",
+  },
 }: ExperienceDetailBodyProps) {
   // Same rule as `RoomDetail`: the page opens on `hero`, so the gallery below
   // shows everything except that one photograph rather than repeating it.
@@ -101,7 +115,7 @@ export function ExperienceDetailBody({
                   verbatim; it is set as an eyebrow rather than a heading
                   because it introduces three words, not a section. */}
               <p className="text-eyebrow font-body text-primary-deep uppercase">
-                Recommended for
+                {labels.recommendedFor}
               </p>
               <ul className="mt-4 flex flex-col gap-2">
                 {experience.recommendedFor.map((item) => (
@@ -140,7 +154,7 @@ export function ExperienceDetailBody({
         <Reveal delay={200}>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Button href={site.bookingHref} external>
-              Book Now
+              {labels.bookNow}
             </Button>
             {/* The live pages pair BOOK NOW with an INQUIRY button; on the
                 personalised retreats that button's href is literally
@@ -171,7 +185,7 @@ export function ExperienceDetailBody({
 
       {hasGalleryBand ? (
         <Section tone={nextTone()}>
-          <SectionHeading title="Gallery" />
+          <SectionHeading title={labels.gallery} />
           <Reveal delay={80} className="mt-8 md:mt-10">
             <ImageGallery
               images={gallery}
@@ -325,7 +339,7 @@ export function ExperienceDetailBody({
 
       {experience.inclusions.length > 0 ? (
         <Section tone={nextTone()}>
-          <SectionHeading title="Inclusions" />
+          <SectionHeading title={labels.inclusions} />
           {/* Two columns from `sm`: several wellness pages list 40+
               inclusions, which as one column runs far past the fold.
               `break-inside-avoid` keeps an item from splitting across the
@@ -363,7 +377,7 @@ export function ExperienceDetailBody({
             <SectionHeading title={experience.closingCta} />
             <Reveal delay={120} className="shrink-0">
               <Button href={site.bookingHref} external>
-                Book Now
+                {labels.bookNow}
               </Button>
             </Reveal>
           </div>

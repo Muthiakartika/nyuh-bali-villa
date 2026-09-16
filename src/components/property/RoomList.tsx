@@ -26,6 +26,9 @@ export type Room = {
 };
 
 type RoomListProps = {
+  /** Button and section wording from Site settings. Optional, so the
+   * component keeps the string it shipped with when nothing is set. */
+  checkRatesLabel?: string;
   /** Small letter-spaced label above the heading. */
   eyebrow?: string;
   heading: string;
@@ -64,6 +67,7 @@ export function RoomList({
   rooms,
   tone = "sand",
   anchor,
+  checkRatesLabel = "Check Rates",
 }: RoomListProps) {
   return (
     <Section tone={tone} id={anchor}>
@@ -129,7 +133,7 @@ export function RoomList({
                   when one room's name wraps to two lines. */}
               <div className="mt-auto flex flex-wrap items-center gap-3 pt-7">
                 <Button href={room.ratesHref} external size="sm">
-                  Check Rates
+                  {checkRatesLabel}
                 </Button>
 
                 {room.detailsInScope ? (

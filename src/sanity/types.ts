@@ -523,6 +523,14 @@ export type SanitySiteSettings = {
   description?: string;
   favicon?: SanityImage;
   bookNowLabel?: string;
+  checkRatesLabel?: string;
+  galleryHeading?: string;
+  detailsHeading?: string;
+  amenitiesHeading?: string;
+  recommendedForHeading?: string;
+  inclusionsHeading?: string;
+  blogLabel?: string;
+  followInstagramLabel?: string;
   dealHeadline?: string;
   dealCode?: string;
   dealButtonLabel?: string;

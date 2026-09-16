@@ -283,6 +283,36 @@ the absence: hero and the property picker are full-bleed photographs with no
 band colour behind them, and awards, deals, Instagram and the booking widget
 draw their own surface.
 
+**The 47 document-backed pages set their headings and buttons from Site
+settings now, not from the components.** Rooms, experiences, posts and the
+legal pages have no page-builder — their content comes from their own document
+and their *section labels* came from nowhere at all: "Gallery", "Details",
+"Amenities & Facilities", "Recommended for", "Inclusions", "Check Rates",
+"Book Now", "Follow on Instagram" were written into `RoomDetail`,
+`ExperienceDetailBody`, `RoomList`, `TreatmentList` and `InstagramTeaser`. A
+client wanting any of them in Indonesian needed a developer.
+
+**They belong to `siteSettings`, not to each document.** "Gallery" on ten room
+documents would be ten copies of one decision, and the first one edited would
+disagree with the other nine. `getSiteLabels()` resolves them once; every
+default is the string its component shipped with, so an unset field renders
+what the site rendered before — verified as **78 of 78 pages byte-identical**,
+then verified the other way by setting `amenitiesHeading` to "Fasilitas &
+Amenitas", rebuilding, and watching it appear on every room page before
+reverting it.
+
+`bookNowLabel` stopped being half-wired in the same pass: it existed but only
+the homepage ribbon read it, so an editor changing it saw one of four places
+change. The header, the mobile menu and the spa menu read it too now, and the
+ribbon uppercases it because that tab stacks one letter per line.
+
+**And `collectionSection.heading` was silently dropped for testimonials.**
+`DynamicCollectionSection` passed it on its room, post and experience branches
+and not on the testimonial one, where `TestimonialCarousel` hardcoded "What
+our guests are saying" and took no heading at all. The earlier dead-field
+audit missed it because it asked whether the *block* mentions `section.heading`
+— it does, three times — rather than whether every branch does.
+
 **The spa forms' "Reservation Review" is built, and the objection that kept
 it out turned out to be answerable.** The route file said the live panel was
 "a pricing calculator wired to the booking backend… inventing the arithmetic

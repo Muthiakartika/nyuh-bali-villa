@@ -7,6 +7,9 @@ import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 type TestimonialCarouselProps = {
+  /** The band heading. `collectionSection.heading` supplies it; the default
+   *  is the wording both About pages have always carried. */
+  heading?: string;
   testimonials: Testimonial[];
 };
 
@@ -38,7 +41,10 @@ type TestimonialCarouselProps = {
  * `ImageGallery` ship every slide. So this now does what those two do —
  * stack the slides and cross-fade between them.
  */
-export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) {
+export function TestimonialCarousel({
+  testimonials,
+  heading = "What our guests are saying",
+}: TestimonialCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   function goToPrevious() {
@@ -59,7 +65,7 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
       space="loose"
       innerClassName="flex flex-col items-center"
     >
-      <SectionHeading title="What our guests are saying" align="center" />
+      <SectionHeading title={heading} align="center" />
 
       {/* A one-cell grid: every quote is placed in the same `col-start-1
           row-start-1`, so they stack without needing a fixed height the way

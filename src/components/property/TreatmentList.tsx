@@ -25,6 +25,9 @@ export type TreatmentCategory = {
 };
 
 type TreatmentListProps = {
+  /** Button and section wording from Site settings. Optional, so the
+   * component keeps the string it shipped with when nothing is set. */
+  bookNowLabel?: string;
   eyebrow?: string;
   heading: string;
   /** Which tag this band's heading is written as. The size never changes —
@@ -84,6 +87,7 @@ export function TreatmentList({
   categories,
   cta,
   tone = "sand",
+  bookNowLabel = "Book Now",
   anchor,
 }: TreatmentListProps) {
   return (
@@ -171,7 +175,7 @@ export function TreatmentList({
                             rel="noopener noreferrer"
                             className="text-eyebrow font-body text-primary-deep uppercase underline decoration-primary/40 underline-offset-[5px] transition-colors duration-300 hover:decoration-primary"
                           >
-                            Book Now
+                            {bookNowLabel}
                           </a>
                         </li>
                       ))}

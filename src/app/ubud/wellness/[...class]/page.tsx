@@ -26,7 +26,7 @@ import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
 import { ExperienceDetailBody } from "@/components/property/ExperienceDetail";
 import { AwardsRow } from "@/components/property/AwardsRow";
-import { getExperience, getExperiences, getPropertySite } from "@/sanity/lib/content";
+import { getExperience, getExperiences, getPropertySite, getSiteLabels } from "@/sanity/lib/content";
 import { resolveDocumentMetadata } from "@/sanity/lib/metadata";
 
 const PREFIX = "wellness/";
@@ -72,6 +72,7 @@ export default async function WellnessClassPage({
   const item = await getExperience(PREFIX + (await params).class.join("/"));
   if (!item) notFound();
   const site = await getPropertySite("ubud");
+  const labels = await getSiteLabels();
 
   return (
     <>
@@ -83,7 +84,7 @@ export default async function WellnessClassPage({
           eyebrow={item.eyebrow}
           title={item.title}
         />
-        <ExperienceDetailBody experience={item} site={site} />
+        <ExperienceDetailBody experience={item} site={site} labels={labels} />
         <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
       </main>
       <PropertyFooter site={site} />

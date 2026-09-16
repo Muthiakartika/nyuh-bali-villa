@@ -28,7 +28,7 @@ import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
 import { RoomDetailBody } from "@/components/property/RoomDetail";
 import { AwardsRow } from "@/components/property/AwardsRow";
-import { getPropertySite, getRoom, getRooms } from "@/sanity/lib/content";
+import { getPropertySite, getRoom, getRooms, getSiteLabels } from "@/sanity/lib/content";
 import { resolveDocumentMetadata } from "@/sanity/lib/metadata";
 
 type Params = { room: string[] };
@@ -68,6 +68,7 @@ export default async function SeminyakRoomDetailPage({
   const room = await getRoom("seminyak", (await params).room.join("/"));
   if (!room) notFound();
   const site = await getPropertySite("seminyak");
+  const labels = await getSiteLabels();
 
   return (
     <>
@@ -79,7 +80,12 @@ export default async function SeminyakRoomDetailPage({
           eyebrow="Villas"
           title={room.title}
         />
-        <RoomDetailBody room={room} site={site} />
+        <RoomDetailBody room={room} site={site}
+          checkRatesLabel={labels.checkRates}
+          galleryHeading={labels.gallery}
+          detailsHeading={labels.details}
+          amenitiesHeading={labels.amenities}
+        />
         <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
       </main>
       <PropertyFooter site={site} />

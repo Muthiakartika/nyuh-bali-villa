@@ -16,7 +16,7 @@ import { InquiryForm } from "@/components/property/InquiryForm";
 import { InstagramTeaser } from "@/components/property/InstagramTeaser";
 import { PropertyPanel } from "@/components/home/PropertyPanel";
 import type { InstagramFeedKey } from "@/components/property/instagramFeed";
-import { getInstagramWidget } from "@/sanity/lib/content";
+import { getInstagramWidget, getSiteLabels } from "@/sanity/lib/content";
 import { LinkCardGrid } from "@/components/property/LinkCardGrid";
 import { PackageList } from "@/components/property/PackageList";
 import { ProgramList } from "@/components/property/ProgramList";
@@ -139,7 +139,7 @@ export function ContactBlock({
   );
 }
 
-export function RoomListBlock({
+export async function RoomListBlock({
   section,
   site,
 }: {
@@ -161,6 +161,7 @@ export function RoomListBlock({
   if (!rooms.length) return null;
   return (
     <RoomList
+      checkRatesLabel={(await getSiteLabels()).checkRates}
       anchor={section.anchor}
       eyebrow={section.eyebrow}
       heading={section.heading}
@@ -381,7 +382,11 @@ export function ProgramListBlock({ section }: { section: Narrow<"programListSect
   );
 }
 
-export function TreatmentListBlock({ section }: { section: Narrow<"treatmentListSection"> }) {
+export async function TreatmentListBlock({
+  section,
+}: {
+  section: Narrow<"treatmentListSection">;
+}) {
   const categories = section.categories.map((category) => ({
     name: category.name,
     image: resolveImageUrl(category.image, 900) ?? undefined,
@@ -389,6 +394,7 @@ export function TreatmentListBlock({ section }: { section: Narrow<"treatmentList
   }));
   return (
     <TreatmentList
+      bookNowLabel={(await getSiteLabels()).bookNow}
       anchor={section.anchor}
       eyebrow={section.eyebrow}
       heading={section.heading}
@@ -703,6 +709,7 @@ export async function InstagramBlock({
   const widget = await getInstagramWidget(feed);
   return (
     <InstagramTeaser
+      followLabel={(await getSiteLabels()).followInstagram}
       anchor={section.anchor}
       heading={section.heading || "Follow Us"}
       instagramHref={section.profileUrl || site.social.instagram}

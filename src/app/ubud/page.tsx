@@ -10,7 +10,7 @@ import { TestimonialCarousel } from "@/components/property/TestimonialCarousel";
 import { InstagramTeaser } from "@/components/property/InstagramTeaser";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import ManagedPage from "@/components/sanity/ManagedPage";
-import { getPropertySite, getTestimonials, getInstagramWidget } from "@/sanity/lib/content";
+import { getInstagramWidget, getPropertySite, getSiteLabels, getTestimonials } from "@/sanity/lib/content";
 import { resolvePageMetadata } from "@/sanity/lib/metadata";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -26,6 +26,7 @@ const HERO_IMAGES = [`${UPLOADS}/2025/01/home-ubud-compress.webp`];
 
 export default async function UbudAboutPage() {
   const site = await getPropertySite("ubud");
+  const labels = await getSiteLabels();
   const instagramWidget = await getInstagramWidget("ubud");
   const testimonials = await getTestimonials("ubud");
   return (
@@ -157,6 +158,7 @@ export default async function UbudAboutPage() {
 
           <TestimonialCarousel testimonials={testimonials} />
           <InstagramTeaser
+            followLabel={labels.followInstagram}
             heading="What's happening @nyuhbaliubud"
             instagramHref="https://www.instagram.com/nyuhbaliubud/"
             // The workspace id, resolved from the same Studio field the JSON

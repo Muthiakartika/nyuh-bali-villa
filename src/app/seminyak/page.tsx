@@ -11,7 +11,7 @@ import { InstagramTeaser } from "@/components/property/InstagramTeaser";
 import { type InstagramPost } from "@/components/property/instagramFeed";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import ManagedPage from "@/components/sanity/ManagedPage";
-import { getPropertySite, getTestimonials, getInstagramWidget } from "@/sanity/lib/content";
+import { getInstagramWidget, getPropertySite, getSiteLabels, getTestimonials } from "@/sanity/lib/content";
 import { resolvePageMetadata } from "@/sanity/lib/metadata";
 
 
@@ -102,6 +102,7 @@ const INSTAGRAM_STILLS: InstagramPost[] = [
 
 export default async function SeminyakAboutPage() {
   const site = await getPropertySite("seminyak");
+  const labels = await getSiteLabels();
   const instagramWidget = await getInstagramWidget("seminyak");
   const testimonials = await getTestimonials("seminyak");
 
@@ -228,6 +229,7 @@ export default async function SeminyakAboutPage() {
 
           <TestimonialCarousel testimonials={testimonials} />
           <InstagramTeaser
+            followLabel={labels.followInstagram}
             heading="What's happening @nyuhbalivillas"
             instagramHref="https://www.instagram.com/nyuhbalivillas/"
             // Local photographs, not a feed — shown only if no workspace is

@@ -8,6 +8,9 @@ import { InstagramIcon } from "@/components/ui/icons";
 import type { InstagramPost } from "@/components/property/instagramFeed";
 
 type InstagramTeaserProps = {
+  /** Button and section wording from Site settings. Optional, so the
+   * component keeps the string it shipped with when nothing is set. */
+  followLabel?: string;
   heading: string;
   /** Optional id so a link can jump to this band. `Section` adds the
    * scroll-mt that clears the sticky header whenever this is set. */
@@ -64,6 +67,7 @@ export function InstagramTeaser({
   posts,
   widget,
   anchor,
+  followLabel = "Follow on Instagram",
 }: InstagramTeaserProps) {
   // The stills (or Behold posts) this band already had, kept as the fallback
   // the live grid shows while it loads and if the feed is unreachable.
@@ -114,7 +118,7 @@ export function InstagramTeaser({
         <SectionHeading title={heading} />
         <Reveal delay={120} className="shrink-0">
           <Button href={instagramHref} external variant="outline">
-            Follow on Instagram
+            {followLabel}
           </Button>
         </Reveal>
       </div>

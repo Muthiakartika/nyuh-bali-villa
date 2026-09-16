@@ -7,6 +7,12 @@ import type { RoomDetail as RoomDetailData } from "@/data/rooms";
 import type { PropertySite } from "@/data/properties";
 
 type RoomDetailBodyProps = {
+  /** Button and section wording from Site settings. Optional, so the
+   * component keeps the string it shipped with when nothing is set. */
+  checkRatesLabel?: string;
+  galleryHeading?: string;
+  detailsHeading?: string;
+  amenitiesHeading?: string;
   room: RoomDetailData;
   site: PropertySite;
 };
@@ -23,7 +29,14 @@ type RoomDetailBodyProps = {
  * pairs really are a description list, and the pattern matches the spec rows
  * already used by `RoomList` on the listing pages.
  */
-export function RoomDetailBody({ room, site }: RoomDetailBodyProps) {
+export function RoomDetailBody({
+  room,
+  site,
+  checkRatesLabel = "Check Rates",
+  galleryHeading = "Gallery",
+  detailsHeading = "Details",
+  amenitiesHeading = "Amenities & Facilities",
+}: RoomDetailBodyProps) {
   // The live gallery includes the photograph the page already opens on, so
   // rendering it verbatim showed the same picture twice — full-bleed at the
   // top and again as the gallery's first slide. The gallery keeps every other
@@ -42,14 +55,14 @@ export function RoomDetailBody({ room, site }: RoomDetailBodyProps) {
           </p>
           <div className="mt-8">
             <Button href={site.bookingHref} external>
-              Check Rates
+              {checkRatesLabel}
             </Button>
           </div>
         </Reveal>
       </Section>
 
       <Section tone="sand-deep">
-        <SectionHeading title="Gallery" />
+        <SectionHeading title={galleryHeading} />
         <Reveal delay={80} className="mt-8 md:mt-10">
           <ImageGallery
             images={gallery}
@@ -62,7 +75,7 @@ export function RoomDetailBody({ room, site }: RoomDetailBodyProps) {
       </Section>
 
       <Section tone="sand">
-        <SectionHeading title="Details" />
+        <SectionHeading title={detailsHeading} />
         <Reveal delay={80}>
           <dl className="mt-8 grid gap-x-12 border-t border-ink/10 md:mt-10 lg:grid-cols-2">
             {room.details.map((row) => (
@@ -83,7 +96,7 @@ export function RoomDetailBody({ room, site }: RoomDetailBodyProps) {
       </Section>
 
       <Section tone="sand-deep">
-        <SectionHeading title="Amenities & Facilities" />
+        <SectionHeading title={amenitiesHeading} />
         {/* Two independent lists, side by side at `lg` and stacked below —
             the same `lg` rule every other split on this site follows. */}
         <div className="mt-8 grid gap-x-14 gap-y-10 md:mt-10 lg:grid-cols-2">

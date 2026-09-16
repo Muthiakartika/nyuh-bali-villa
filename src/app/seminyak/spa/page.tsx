@@ -32,7 +32,7 @@ import { TestimonialCarousel } from "@/components/property/TestimonialCarousel";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import ManagedPage from "@/components/sanity/ManagedPage";
 import type { } from "@/data/testimonials";
-import { getPropertySite } from "@/sanity/lib/content";
+import { getPropertySite, getSiteLabels } from "@/sanity/lib/content";
 import { resolvePageMetadata } from "@/sanity/lib/metadata";
 import {
   
@@ -56,6 +56,7 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default async function SeminyakSpaPage() {
   const site = await getPropertySite("seminyak");
+  const labels = await getSiteLabels();
   return (
     <>
       <PropertyHeader site={site} activeHref="/seminyak/spa" />
@@ -72,6 +73,7 @@ export default async function SeminyakSpaPage() {
           />
 
           <TreatmentList
+            bookNowLabel={labels.bookNow}
             eyebrow="SPA"
             heading="Romantic Spa Experience in Seminyak"
             intro={SPA_INTRO}

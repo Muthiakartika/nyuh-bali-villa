@@ -29,7 +29,7 @@ import { RoomList } from "@/components/property/RoomList";
 import { AmenityGrid } from "@/components/property/AmenityGrid";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import ManagedPage from "@/components/sanity/ManagedPage";
-import { getPropertySite } from "@/sanity/lib/content";
+import { getPropertySite, getSiteLabels } from "@/sanity/lib/content";
 import { resolvePageMetadata } from "@/sanity/lib/metadata";
 import {
   
@@ -51,6 +51,7 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default async function SeminyakVillaPage() {
   const site = await getPropertySite("seminyak");
+  const labels = await getSiteLabels();
   return (
     <>
       <PropertyHeader site={site} activeHref="/seminyak/villa" />
@@ -68,6 +69,7 @@ export default async function SeminyakVillaPage() {
           <BookingWidget site={site} />
 
           <RoomList
+            checkRatesLabel={labels.checkRates}
             eyebrow="Villas"
             heading="Seminyak Luxury Villas"
             intro={VILLAS_INTRO}

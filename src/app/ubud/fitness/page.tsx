@@ -26,7 +26,7 @@ import { DirectBookingDeals } from "@/components/property/DirectBookingDeals";
 import { PropertyHero } from "@/components/property/PropertyHero";
 import { ExperienceDetailBody } from "@/components/property/ExperienceDetail";
 import { AwardsRow } from "@/components/property/AwardsRow";
-import { getExperience, getPropertySite } from "@/sanity/lib/content";
+import { getExperience, getPropertySite, getSiteLabels } from "@/sanity/lib/content";
 import { resolvePageMetadata } from "@/sanity/lib/metadata";
 
 
@@ -38,6 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function UbudFitnessPage() {
   const site = await getPropertySite("ubud");
+  const labels = await getSiteLabels();
   const item = await getExperience("fitness");
   if (!item) notFound();
 
@@ -51,7 +52,7 @@ export default async function UbudFitnessPage() {
           eyebrow={item.eyebrow}
           title={item.title}
         />
-        <ExperienceDetailBody experience={item} site={site} />
+        <ExperienceDetailBody experience={item} site={site} labels={labels} />
         <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
       </main>
       <PropertyFooter site={site} />

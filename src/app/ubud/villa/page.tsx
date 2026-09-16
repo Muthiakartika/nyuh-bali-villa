@@ -29,7 +29,7 @@ import { RoomList } from "@/components/property/RoomList";
 import { AmenityGrid } from "@/components/property/AmenityGrid";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import ManagedPage from "@/components/sanity/ManagedPage";
-import { getPropertySite } from "@/sanity/lib/content";
+import { getPropertySite, getSiteLabels } from "@/sanity/lib/content";
 import { resolvePageMetadata } from "@/sanity/lib/metadata";
 import {
   
@@ -54,6 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default async function UbudVillaPage() {
   const site = await getPropertySite("ubud");
+  const labels = await getSiteLabels();
   return (
     <>
       <PropertyHeader site={site} activeHref="/ubud/villa" />
@@ -74,6 +75,7 @@ export default async function UbudVillaPage() {
               intro slot, so the copy keeps its position above the Suites without
               needing a separate text-only band. */}
           <RoomList
+            checkRatesLabel={labels.checkRates}
             eyebrow="Stay"
             heading="Suites"
             intro={SUITES_INTRO}
@@ -82,6 +84,7 @@ export default async function UbudVillaPage() {
           />
 
           <RoomList
+            checkRatesLabel={labels.checkRates}
             heading="Villas"
             intro={VILLAS_INTRO}
             rooms={villas(site.bookingHref)}

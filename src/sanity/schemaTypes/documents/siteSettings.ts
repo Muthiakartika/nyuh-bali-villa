@@ -24,6 +24,7 @@ export const siteSettings = defineType({
   type: "document",
   groups: [
     { name: "brand", title: "Brand", default: true },
+    { name: "labels", title: "Buttons & section labels" },
     { name: "offer", title: "Booking offer" },
     { name: "footer", title: "Footer" },
     { name: "seo", title: "Search defaults" },
@@ -46,15 +47,85 @@ export const siteSettings = defineType({
       description:
         "The fallback meta description. Fifteen live routes publish none of their own and inherit this.",
     }),
+        // ── Buttons and section labels ───────────────────────────────────
+    //
+    // The words the room, experience and blog pages set their sections and
+    // buttons in. They live here rather than on each document because they
+    // are the *same* words on all 47 of those pages — putting "Gallery" on
+    // every room would be 10 copies of one decision, and the first one an
+    // editor changed would disagree with the other nine.
+    //
+    // Each falls back to exactly the string the component shipped with, so an
+    // empty field renders what the site renders today.
     defineField({
       name: "bookNowLabel",
-      title: "Book Now tab label",
+      title: "Book Now button",
       type: "string",
-      group: "brand",
+      group: "labels",
       description:
-        'The vertical tab down the right edge of the homepage. One word per line, so keep it to two short words — "BOOK NOW" is the default.',
+        'The primary call to action — in the header, the mobile menu, the spa menu and the vertical tab on the homepage. Empty reads "Book Now". The homepage tab sets it in capitals whatever you type.',
       validation: (Rule) => Rule.max(24),
     }),
+    defineField({
+      name: "checkRatesLabel",
+      title: "Check Rates button",
+      type: "string",
+      group: "labels",
+      description: 'On every room in the villa listings and on each room page. Empty reads "Check Rates".',
+      validation: (Rule) => Rule.max(24),
+    }),
+    defineField({
+      name: "galleryHeading",
+      title: "Gallery heading",
+      type: "string",
+      group: "labels",
+      description: 'Over the photographs on a room or experience page. Empty reads "Gallery".',
+    }),
+    defineField({
+      name: "detailsHeading",
+      title: "Details heading",
+      type: "string",
+      group: "labels",
+      description:
+        'Over the size / bedding / occupancy table on a room page. Empty reads "Details".',
+    }),
+    defineField({
+      name: "amenitiesHeading",
+      title: "Amenities heading",
+      type: "string",
+      group: "labels",
+      description: 'Empty reads "Amenities & Facilities".',
+    }),
+    defineField({
+      name: "recommendedForHeading",
+      title: "Recommended-for heading",
+      type: "string",
+      group: "labels",
+      description: 'On a retreat or wellness page. Empty reads "Recommended for".',
+    }),
+    defineField({
+      name: "inclusionsHeading",
+      title: "Inclusions heading",
+      type: "string",
+      group: "labels",
+      description: 'Empty reads "Inclusions".',
+    }),
+    defineField({
+      name: "blogLabel",
+      title: "Blog label",
+      type: "string",
+      group: "labels",
+      description: 'The eyebrow over an article and the heading on the blog index. Empty reads "Our Blog".',
+    }),
+    defineField({
+      name: "followInstagramLabel",
+      title: "Follow on Instagram button",
+      type: "string",
+      group: "labels",
+      description: 'Under the Instagram band. Empty reads "Follow on Instagram".',
+      validation: (Rule) => Rule.max(40),
+    }),
+
     defineField({
       name: "dealHeadline",
       title: "Offer line",
