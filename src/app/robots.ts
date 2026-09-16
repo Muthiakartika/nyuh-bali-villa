@@ -65,8 +65,16 @@ import { SITE_ORIGIN } from "@/data/seo";
  *
  * Production's `*.vercel.app` alias is *not* covered by this — it reports
  * `VERCEL_ENV` as "production" and so is served the permissive file. That is
- * `src/proxy.ts`'s job: it 308s every page request on a non-canonical
- * host to the real domain.
+ * `src/proxy.ts`'s job: by default it answers `X-Robots-Tag: noindex,
+ * nofollow` on any non-canonical host, and `ENFORCE_CANONICAL_HOST=1` turns
+ * that into a 308 to the real domain instead.
+ *
+ * **The permissive file is what makes that work, and must stay that way.**
+ * `noindex` only takes effect on a page a crawler actually fetched, so
+ * adding `Disallow: /` for the alias would guarantee the header is never
+ * read — and an alias URL that is already indexed would then have no way to
+ * be removed. Crawlable plus `noindex` removes a page; blocked plus
+ * `noindex` cannot.
  */
 export default function robots(): MetadataRoute.Robots {
   if (process.env.VERCEL_ENV === "preview") {
