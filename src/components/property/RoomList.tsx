@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Section } from "@/components/ui/Section";
+import { Section, type BandTone } from "@/components/ui/Section";
 import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { RichProse, type ProseValue } from "@/components/sanity/RichProse";
 import { Reveal } from "@/components/ui/Reveal";
@@ -35,7 +35,7 @@ type RoomListProps = {
   /** The paragraph the live page runs under each category heading. */
   intro?: ProseValue;
   rooms: Room[];
-  tone?: "sand" | "sand-deep";
+  tone?: BandTone;
 };
 
 /**

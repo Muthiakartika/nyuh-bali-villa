@@ -874,13 +874,6 @@
             "value": "bookingWidgetSection"
           }
         },
-        "heading": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          },
-          "optional": true
-        },
         "widgetId": {
           "type": "objectAttribute",
           "value": {
@@ -1041,13 +1034,6 @@
             "value": "awardsSection"
           }
         },
-        "heading": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          },
-          "optional": true
-        },
         "badges": {
           "type": "objectAttribute",
           "value": {
@@ -1167,6 +1153,27 @@
               {
                 "type": "string",
                 "value": "h3"
+              }
+            ]
+          },
+          "optional": true
+        },
+        "tone": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "union",
+            "of": [
+              {
+                "type": "string",
+                "value": "sand"
+              },
+              {
+                "type": "string",
+                "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },
@@ -1358,6 +1365,10 @@
               {
                 "type": "string",
                 "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },
@@ -1457,6 +1468,10 @@
               {
                 "type": "string",
                 "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },
@@ -1554,6 +1569,10 @@
               {
                 "type": "string",
                 "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },
@@ -1658,6 +1677,10 @@
               {
                 "type": "string",
                 "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },
@@ -1770,6 +1793,10 @@
               {
                 "type": "string",
                 "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },
@@ -1879,6 +1906,10 @@
               {
                 "type": "string",
                 "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },
@@ -1976,6 +2007,10 @@
               {
                 "type": "string",
                 "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },
@@ -2143,6 +2178,10 @@
               {
                 "type": "string",
                 "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },
@@ -2428,6 +2467,10 @@
               {
                 "type": "string",
                 "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },
@@ -2658,6 +2701,10 @@
               {
                 "type": "string",
                 "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },
@@ -2820,6 +2867,10 @@
               {
                 "type": "string",
                 "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },
@@ -2917,6 +2968,10 @@
               {
                 "type": "string",
                 "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },
@@ -3028,6 +3083,10 @@
               {
                 "type": "string",
                 "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },
@@ -3158,6 +3217,10 @@
               {
                 "type": "string",
                 "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },
@@ -3248,6 +3311,10 @@
               {
                 "type": "string",
                 "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },
@@ -3338,6 +3405,10 @@
               {
                 "type": "string",
                 "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },
@@ -3492,6 +3563,27 @@
               {
                 "type": "string",
                 "value": "h4"
+              }
+            ]
+          },
+          "optional": true
+        },
+        "tone": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "union",
+            "of": [
+              {
+                "type": "string",
+                "value": "sand"
+              },
+              {
+                "type": "string",
+                "value": "sand-deep"
+              },
+              {
+                "type": "string",
+                "value": "white"
               }
             ]
           },

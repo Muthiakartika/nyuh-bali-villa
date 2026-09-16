@@ -1,4 +1,4 @@
-import { Section } from "@/components/ui/Section";
+import { Section, type BandTone } from "@/components/ui/Section";
 import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { ChevronIcon } from "@/components/ui/icons";
@@ -10,7 +10,7 @@ type ProgramListProps = {
    * see HeadingLevel. Editors set it per section in the CMS. */
   headingAs?: HeadingLevel;
   tiers: ExperienceProgram[];
-  tone?: "sand" | "sand-deep";
+  tone?: BandTone;
 };
 
 /**

@@ -32,6 +32,8 @@ export const heroSection = defineType({
       type: "string",
       description: "One alt string for the whole set — every slide shows the same subject.",
     }),
+    // No background field: a hero is a full-bleed photograph edge to edge,
+    // so there is no band colour to choose. Swap the image instead.
     ...sectionSettingsFields,
   ],
   preview: {

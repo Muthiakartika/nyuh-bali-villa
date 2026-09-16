@@ -1,4 +1,4 @@
-import { Section } from "@/components/ui/Section";
+import { Section, type BandTone } from "@/components/ui/Section";
 import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { FaqAccordion, type FaqEntry } from "@/components/property/FaqAccordion";
 
@@ -11,7 +11,7 @@ type FaqListProps = {
   headingAs?: HeadingLevel;
   eyebrow?: string;
   faqs: FaqEntry[];
-  tone?: "sand" | "sand-deep";
+  tone?: BandTone;
 };
 
 /**

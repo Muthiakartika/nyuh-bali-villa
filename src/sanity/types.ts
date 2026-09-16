@@ -118,7 +118,7 @@ type SectionBase = {
   _key: string;
   anchor?: string;
   isHidden?: boolean;
-  tone?: "sand" | "sand-deep";
+  tone?: "sand" | "sand-deep" | "white";
   /** Which tag the band's heading is written as. Absent means the renderer's
    *  own default, which is what every document seeded before this field
    *  existed relies on. */
@@ -311,7 +311,6 @@ export type SanitySection =
     })
   | (SectionBase & {
       _type: "awardsSection";
-      heading?: string;
       /** Empty means the property's own badges. */
       badges?: SanityImage[];
       /** Empty means the property's own layout. */
@@ -339,7 +338,6 @@ export type SanitySection =
     })
   | (SectionBase & {
       _type: "bookingWidgetSection";
-      heading?: string;
       widgetId?: string;
     });
 

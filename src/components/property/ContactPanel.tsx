@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Section } from "@/components/ui/Section";
+import { Section, type BandTone } from "@/components/ui/Section";
 import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { RichProse, type ProseValue } from "@/components/sanity/RichProse";
 import { ContactForm } from "@/components/property/ContactForm";
@@ -21,6 +21,8 @@ type ContactPanelProps = {
   /** Ubud's page opens the form column with a line of copy; Seminyak's does
    * not. Omitting it renders the form on its own, exactly as before. */
   intro?: ProseValue;
+  /** The band's background. Defaults to what this component hardcoded. */
+  tone?: BandTone | "white";
   anchor?: string;
 };
 
@@ -43,6 +45,7 @@ export function ContactPanel({
   property,
   eyebrow,
   heading,
+  tone = "sand",
   headingAs = "h1",
   imageSrc,
   imageAlt,
@@ -50,7 +53,7 @@ export function ContactPanel({
   anchor,
 }: ContactPanelProps) {
   return (
-    <Section tone="sand" space="loose" id={anchor}>
+    <Section tone={tone} space="loose" id={anchor}>
       <SectionHeading eyebrow={eyebrow} title={heading} as={headingAs} size="display" />
 
       <div className="mt-10 grid gap-9 md:mt-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">

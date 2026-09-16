@@ -28,7 +28,7 @@ export const proseSection = defineType({
       title: "Paragraphs",
       type: "proseRichText",
       description:
-        "Paragraphs, with bold, italic, links, lists and subheadings. Each paragraph is set in this band's own type — the formatting is inline, the layout stays the band's. Writing {email} anywhere still drops in the property's own reservations address as a link — it is never typed here, so it cannot disagree with the footer.",
+        "Select any words to make them bold, italic or a link. Press Return for a new paragraph; the style menu adds subheadings, quotes and lists. The layout stays the band's — formatting is inline only. Writing {email} anywhere still drops in the property's own reservations address as a link — it is never typed here, so it cannot disagree with the footer.",
       validation: (Rule) => Rule.required().min(1),
     }),
     toneField,

@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { ChevronIcon } from "@/components/ui/icons";
+import type { BandTone } from "@/components/ui/Section";
 
 type ReadMoreProps = {
   children: ReactNode;
@@ -23,7 +24,7 @@ type ReadMoreProps = {
    * instead of guessing white. Only the two light tones are supported because
    * they are the only ones a page body uses (see Section's `tone`).
    */
-  tone?: "sand" | "sand-deep";
+  tone?: BandTone;
   /** Announced to screen readers, e.g. "Honeymoon Getaway Package benefits". */
   label?: string;
 };
@@ -37,9 +38,13 @@ const MIN_OVERFLOW = 72;
 // is how long the cap is held before being dropped entirely.
 const TRANSITION_MS = 500;
 
-const SCRIM_CLASS: Record<"sand" | "sand-deep", string> = {
+// The clipped edge fades into the band it sits on, so every band colour needs
+// an entry — a missing one would fade to the wrong colour and make the clip
+// look like a rendering fault rather than an affordance.
+const SCRIM_CLASS: Record<BandTone, string> = {
   sand: "from-sand",
   "sand-deep": "from-sand-deep",
+  white: "from-background",
 };
 
 /**

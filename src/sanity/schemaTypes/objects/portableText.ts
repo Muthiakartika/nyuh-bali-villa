@@ -13,6 +13,8 @@ const textLinkAnnotation = defineField({
   name: "textLink",
   title: "Link",
   type: "object",
+  description:
+    "The words you selected become the link. Choose a page on this site wherever one exists — the link then follows that page if its address ever changes.",
   fields: [
     linkTypeField,
     linkReferenceField,
@@ -48,6 +50,8 @@ export const portableText = defineType({
   name: "portableText",
   title: "Rich text",
   type: "array",
+  description:
+    "Select any words to make them bold, italic or a link. Use the style menu for subheadings, quotes and lists. A picture can be dropped straight into the text.",
   of: [
     defineArrayMember({
       type: "block",
@@ -85,6 +89,8 @@ export const inlineRichText = defineType({
   name: "inlineRichText",
   title: "Text",
   type: "array",
+  description:
+    "Select any words to make them bold, italic or a link. This one renders as a single paragraph, which is why it offers no headings, lists or pictures.",
   of: [
     defineArrayMember({
       type: "block",
@@ -118,6 +124,8 @@ export const proseRichText = defineType({
   name: "proseRichText",
   title: "Paragraphs",
   type: "array",
+  description:
+    "Select any words to make them bold, italic or a link. Press Return for a new paragraph, and use the style menu for subheadings, quotes and lists.",
   of: [
     defineArrayMember({
       type: "block",

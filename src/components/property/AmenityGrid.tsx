@@ -1,5 +1,5 @@
 import type { SVGProps } from "react";
-import { Section } from "@/components/ui/Section";
+import { Section, type BandTone } from "@/components/ui/Section";
 import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import {
@@ -50,7 +50,7 @@ type AmenityGridProps = {
    * see HeadingLevel. Editors set it per section in the CMS. */
   headingAs?: HeadingLevel;
   amenities: Amenity[];
-  tone?: "sand" | "sand-deep";
+  tone?: BandTone;
   /** Optional id for deep links, e.g. /seminyak/villa#amenities. */
   anchor?: string;
 };

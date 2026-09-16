@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Section } from "@/components/ui/Section";
+import { Section, type BandTone } from "@/components/ui/Section";
 import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 
@@ -15,7 +15,10 @@ export type LinkCardItem = {
   inScope?: boolean;
 };
 
-type GridTone = "sand" | "sand-deep" | "ink";
+// The editable band colours, plus `ink` — this grid is the one band the
+// design does render dark, on the card grids that close a property page.
+// `ink` stays reachable from code and out of the CMS, like everywhere else.
+type GridTone = BandTone | "ink";
 
 type LinkCardGridProps = {
   /** Optional small label above the heading. */

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Section } from "@/components/ui/Section";
+import { Section, type BandTone } from "@/components/ui/Section";
 import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { RichProse, type ProseValue } from "@/components/sanity/RichProse";
 import { Reveal } from "@/components/ui/Reveal";
@@ -15,6 +15,9 @@ type AboutNarrativeProps = {
   headingAs?: HeadingLevel;
   /** Rich text from the CMS, or the `string[]` src/data holds. */
   paragraphs: ProseValue;
+  /** The band's background. Defaults to what this component used to hardcode,
+   *  so a page that does not set one renders exactly as before. */
+  tone?: BandTone | "white";
   /** Seminyak's page has a short tagline between the narrative and the
    * button ("We serve with smile and sincerity"); Ubud's doesn't have one
    * at all — omitting the prop skips it entirely rather than rendering an
@@ -64,6 +67,7 @@ type AboutNarrativeProps = {
 export function AboutNarrative({
   eyebrow,
   heading,
+  tone = "sand",
   headingAs = "h2",
   paragraphs,
   tagline,
@@ -87,7 +91,7 @@ export function AboutNarrative({
     // the boundary into "Our Villas" is the same 96px as every other boundary on
     // the page — see the note in Section.tsx.
     <Section
-      tone="sand"
+      tone={tone}
       space="none"
       className="pt-12 pb-9 md:pt-[72px] md:pb-13"
     >

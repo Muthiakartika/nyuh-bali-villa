@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { eyebrowField, headingLevelField, sectionSettingsFields } from "./shared";
+import { eyebrowField, headingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 /**
  * The About band — the one that carries "Best Price Guaranteed".
@@ -39,7 +39,7 @@ export const aboutNarrativeSection = defineType({
       title: "Narrative",
       type: "proseRichText",
       group: "narrative",
-      description: "Paragraphs, with bold, italic, links, lists and subheadings. Each paragraph is set in this band's own type — the formatting is inline, the layout stays the band's.",
+      description: "Select any words to make them bold, italic or a link. Press Return for a new paragraph; the style menu adds subheadings, quotes and lists. The layout stays the band's — formatting is inline only.",
       validation: (Rule) => Rule.required().min(1),
     }),
     defineField({
@@ -105,7 +105,8 @@ export const aboutNarrativeSection = defineType({
       group: "offer",
       description: "Optional. Sits above “Best Price Guaranteed”.",
     }),
-    headingLevelField,
+    { ...headingLevelField, group: "narrative" },
+    { ...toneField, group: "narrative" },
     ...sectionSettingsFields,
   ],
   preview: {

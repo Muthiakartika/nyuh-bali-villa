@@ -157,7 +157,6 @@ export type Slug = {
 
 export type BookingWidgetSection = {
   _type: "bookingWidgetSection";
-  heading?: string;
   widgetId?: string;
   anchor?: string;
   isHidden?: boolean;
@@ -184,7 +183,6 @@ export type DealsSection = {
 
 export type AwardsSection = {
   _type: "awardsSection";
-  heading?: string;
   badges?: Array<
     {
       _key: string;
@@ -202,6 +200,7 @@ export type ContactSection = {
   intro?: ProseRichText;
   image?: ImageWithAlt;
   headingLevel?: "h1" | "h2" | "h3";
+  tone?: "sand" | "sand-deep" | "white";
   anchor?: string;
   isHidden?: boolean;
 };
@@ -229,7 +228,7 @@ export type InquiryFormSection = {
   submitLabel?: string;
   confirmation?: string;
   headingLevel?: "h1" | "h2" | "h3";
-  tone?: "sand" | "sand-deep";
+  tone?: "sand" | "sand-deep" | "white";
   anchor?: string;
   isHidden?: boolean;
 };
@@ -245,7 +244,7 @@ export type CtaSection = {
     } & Link
   >;
   image?: ImageWithAlt;
-  tone?: "sand" | "sand-deep";
+  tone?: "sand" | "sand-deep" | "white";
   headingLevel?: "h2" | "h3" | "h4";
   anchor?: string;
   isHidden?: boolean;
@@ -259,7 +258,7 @@ export type FaqSection = {
       _key: string;
     } & FaqItem
   >;
-  tone?: "sand" | "sand-deep";
+  tone?: "sand" | "sand-deep" | "white";
   headingLevel?: "h2" | "h3" | "h4";
   anchor?: string;
   isHidden?: boolean;
@@ -270,7 +269,7 @@ export type PriceTableSection = {
   heading?: string;
   table?: PriceTable;
   headingLevel?: "h2" | "h3" | "h4";
-  tone?: "sand" | "sand-deep";
+  tone?: "sand" | "sand-deep" | "white";
   anchor?: string;
   isHidden?: boolean;
 };
@@ -286,7 +285,7 @@ export type BulletListSection = {
     } & BulletGroup
   >;
   headingLevel?: "h2" | "h3" | "h4";
-  tone?: "sand" | "sand-deep";
+  tone?: "sand" | "sand-deep" | "white";
   anchor?: string;
   isHidden?: boolean;
 };
@@ -303,7 +302,7 @@ export type TreatmentListSection = {
     } & TreatmentCategory
   >;
   cta?: Link;
-  tone?: "sand" | "sand-deep";
+  tone?: "sand" | "sand-deep" | "white";
   headingLevel?: "h2" | "h3" | "h4";
   anchor?: string;
   isHidden?: boolean;
@@ -317,7 +316,7 @@ export type ProgramListSection = {
       _key: string;
     } & ExperienceProgram
   >;
-  tone?: "sand" | "sand-deep";
+  tone?: "sand" | "sand-deep" | "white";
   headingLevel?: "h2" | "h3" | "h4";
   anchor?: string;
   isHidden?: boolean;
@@ -342,7 +341,7 @@ export type PackageListSection = {
     } & PackageItem
   >;
   packageSet?: PackageSetReference;
-  tone?: "sand" | "sand-deep";
+  tone?: "sand" | "sand-deep" | "white";
   headingLevel?: "h2" | "h3" | "h4";
   anchor?: string;
   isHidden?: boolean;
@@ -385,7 +384,7 @@ export type RoomListSection = {
     _type: "roomListItem";
     _key: string;
   }>;
-  tone?: "sand" | "sand-deep";
+  tone?: "sand" | "sand-deep" | "white";
   headingLevel?: "h2" | "h3" | "h4";
   anchor?: string;
   isHidden?: boolean;
@@ -408,7 +407,7 @@ export type CollectionSection = {
   }>;
   limit?: number;
   action?: Link;
-  tone?: "sand" | "sand-deep";
+  tone?: "sand" | "sand-deep" | "white";
   headingLevel?: "h2" | "h3" | "h4";
   anchor?: string;
   isHidden?: boolean;
@@ -427,7 +426,7 @@ export type LinkCardGridSection = {
     _key: string;
   }>;
   columns?: 2 | 3 | 4;
-  tone?: "sand" | "sand-deep";
+  tone?: "sand" | "sand-deep" | "white";
   headingLevel?: "h2" | "h3" | "h4";
   anchor?: string;
   isHidden?: boolean;
@@ -441,7 +440,7 @@ export type AmenityGridSection = {
       _key: string;
     } & Amenity
   >;
-  tone?: "sand" | "sand-deep";
+  tone?: "sand" | "sand-deep" | "white";
   headingLevel?: "h2" | "h3" | "h4";
   anchor?: string;
   isHidden?: boolean;
@@ -457,7 +456,7 @@ export type GallerySection = {
     } & ImageWithAlt
   >;
   alt?: string;
-  tone?: "sand" | "sand-deep";
+  tone?: "sand" | "sand-deep" | "white";
   headingLevel?: "h2" | "h3" | "h4";
   anchor?: string;
   isHidden?: boolean;
@@ -472,7 +471,7 @@ export type SplitContentSection = {
   image?: ImageWithAlt;
   imageSide?: "right" | "left";
   action?: Link;
-  tone?: "sand" | "sand-deep";
+  tone?: "sand" | "sand-deep" | "white";
   headingLevel?: "h2" | "h3" | "h4";
   anchor?: string;
   isHidden?: boolean;
@@ -483,7 +482,7 @@ export type ProseSection = {
   eyebrow?: string;
   heading?: string;
   paragraphs?: ProseRichText;
-  tone?: "sand" | "sand-deep";
+  tone?: "sand" | "sand-deep" | "white";
   headingLevel?: "h2" | "h3" | "h4";
   anchor?: string;
   isHidden?: boolean;
@@ -494,7 +493,7 @@ export type RichTextSection = {
   eyebrow?: string;
   heading?: string;
   body?: PortableText;
-  tone?: "sand" | "sand-deep";
+  tone?: "sand" | "sand-deep" | "white";
   headingLevel?: "h2" | "h3" | "h4";
   anchor?: string;
   isHidden?: boolean;
@@ -514,6 +513,7 @@ export type AboutNarrativeSection = {
   perks?: Array<string>;
   image?: ImageWithAlt;
   headingLevel?: "h2" | "h3" | "h4";
+  tone?: "sand" | "sand-deep" | "white";
   anchor?: string;
   isHidden?: boolean;
 };
@@ -1423,6 +1423,7 @@ export type PageByPathQueryResult = {
           hotspot: SanityImageHotspot | null;
         } | null;
         headingLevel?: "h2" | "h3" | "h4";
+        tone?: "sand-deep" | "sand" | "white";
         anchor?: string;
         isHidden?: boolean;
         images: null;
@@ -1446,7 +1447,7 @@ export type PageByPathQueryResult = {
             _key: string;
           } & Amenity
         >;
-        tone?: "sand-deep" | "sand";
+        tone?: "sand-deep" | "sand" | "white";
         headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
@@ -1467,7 +1468,6 @@ export type PageByPathQueryResult = {
     | {
         _key: string;
         _type: "awardsSection";
-        heading?: string;
         badges: Array<{
           _type: "imageWithAlt";
           asset: SanityImageAssetReference | null;
@@ -1496,7 +1496,6 @@ export type PageByPathQueryResult = {
     | {
         _key: string;
         _type: "bookingWidgetSection";
-        heading?: string;
         widgetId?: string;
         anchor?: string;
         isHidden?: boolean;
@@ -1554,7 +1553,7 @@ export type PageByPathQueryResult = {
           } & BulletGroup
         >;
         headingLevel?: "h2" | "h3" | "h4";
-        tone?: "sand-deep" | "sand";
+        tone?: "sand-deep" | "sand" | "white";
         anchor?: string;
         isHidden?: boolean;
         image: null;
@@ -1630,7 +1629,7 @@ export type PageByPathQueryResult = {
           inScope?: boolean;
           variant?: "outline" | "solid";
         } | null;
-        tone?: "sand-deep" | "sand";
+        tone?: "sand-deep" | "sand" | "white";
         headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
@@ -1690,6 +1689,7 @@ export type PageByPathQueryResult = {
           hotspot: SanityImageHotspot | null;
         } | null;
         headingLevel?: "h1" | "h2" | "h3";
+        tone?: "sand-deep" | "sand" | "white";
         anchor?: string;
         isHidden?: boolean;
         images: null;
@@ -1763,7 +1763,7 @@ export type PageByPathQueryResult = {
           crop: SanityImageCrop | null;
           hotspot: SanityImageHotspot | null;
         } | null;
-        tone?: "sand-deep" | "sand";
+        tone?: "sand-deep" | "sand" | "white";
         headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
@@ -1810,7 +1810,7 @@ export type PageByPathQueryResult = {
             _key: string;
           } & FaqItem
         >;
-        tone?: "sand-deep" | "sand";
+        tone?: "sand-deep" | "sand" | "white";
         headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
@@ -1843,7 +1843,7 @@ export type PageByPathQueryResult = {
           hotspot: SanityImageHotspot | null;
         }> | null;
         alt?: string;
-        tone?: "sand-deep" | "sand";
+        tone?: "sand-deep" | "sand" | "white";
         headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
@@ -1914,7 +1914,7 @@ export type PageByPathQueryResult = {
         submitLabel?: string;
         confirmation?: string;
         headingLevel?: "h1" | "h2" | "h3";
-        tone?: "sand-deep" | "sand";
+        tone?: "sand-deep" | "sand" | "white";
         anchor?: string;
         isHidden?: boolean;
         image: null;
@@ -1975,7 +1975,7 @@ export type PageByPathQueryResult = {
           _key: string;
         }> | null;
         columns?: 2 | 3 | 4;
-        tone?: "sand-deep" | "sand";
+        tone?: "sand-deep" | "sand" | "white";
         headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
@@ -2167,7 +2167,7 @@ export type PageByPathQueryResult = {
             }> | null;
           }> | null;
         } | null;
-        tone?: "sand-deep" | "sand";
+        tone?: "sand-deep" | "sand" | "white";
         headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
@@ -2188,7 +2188,7 @@ export type PageByPathQueryResult = {
         heading?: string;
         table?: PriceTable;
         headingLevel?: "h2" | "h3" | "h4";
-        tone?: "sand-deep" | "sand";
+        tone?: "sand-deep" | "sand" | "white";
         anchor?: string;
         isHidden?: boolean;
         image: null;
@@ -2214,7 +2214,7 @@ export type PageByPathQueryResult = {
             _key: string;
           } & ExperienceProgram
         >;
-        tone?: "sand-deep" | "sand";
+        tone?: "sand-deep" | "sand" | "white";
         headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
@@ -2290,7 +2290,7 @@ export type PageByPathQueryResult = {
             }>
           | ProseRichText
           | null;
-        tone?: "sand-deep" | "sand";
+        tone?: "sand-deep" | "sand" | "white";
         headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
@@ -2356,7 +2356,7 @@ export type PageByPathQueryResult = {
             >
           | PortableText
           | null;
-        tone?: "sand-deep" | "sand";
+        tone?: "sand-deep" | "sand" | "white";
         headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
@@ -2422,7 +2422,7 @@ export type PageByPathQueryResult = {
           _type: "roomListItem";
           _key: string;
         }>;
-        tone?: "sand-deep" | "sand";
+        tone?: "sand-deep" | "sand" | "white";
         headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
@@ -2499,7 +2499,7 @@ export type PageByPathQueryResult = {
           inScope?: boolean;
           variant?: "outline" | "solid";
         } | null;
-        tone?: "sand-deep" | "sand";
+        tone?: "sand-deep" | "sand" | "white";
         headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;
@@ -2583,7 +2583,7 @@ export type PageByPathQueryResult = {
           inScope?: boolean;
           variant?: "outline" | "solid";
         } | null;
-        tone?: "sand-deep" | "sand";
+        tone?: "sand-deep" | "sand" | "white";
         headingLevel?: "h2" | "h3" | "h4";
         anchor?: string;
         isHidden?: boolean;

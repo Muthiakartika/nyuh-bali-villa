@@ -22,23 +22,35 @@ export const sectionSettingsFields: FieldDefinition[] = [
 ];
 
 /**
- * The two band backgrounds the site alternates between. Named after the
- * existing `tone` prop that Section, LinkCardGrid, ProgramList and
- * TreatmentList already accept, so a value chosen here is passed straight
- * through rather than translated.
+ * The band's background colour.
+ *
+ * **Three, and deliberately not four.** `Section` also renders `ink`, the dark
+ * brown, and that one is not offered here: the design puts dark in the chrome
+ * and the frame, never in a page band, and the whole-site audit checks it —
+ * `main > section` with a background of `rgb(38, 30, 19)` must be 0. An editor
+ * given the option would break that with one click and nothing would say so.
+ * The dark shapes that do exist (the "Best Price Guaranteed" plate, the awards
+ * base, the footer) are drawn by their own components, not by this field.
+ *
+ * The labels name the colour rather than the token. "Sand" and "Deep sand" are
+ * what `globals.css` calls them and what the code passes through, but they are
+ * not what someone choosing a background is looking at.
  */
 export const toneField = defineField({
   name: "tone",
-  title: "Background",
+  title: "Background colour",
   type: "string",
   options: {
     layout: "radio",
     list: [
-      { title: "Sand", value: "sand" },
-      { title: "Deep sand", value: "sand-deep" },
+      { title: "Warm white — the usual band", value: "sand" },
+      { title: "Warm beige — for the band between two warm-white ones", value: "sand-deep" },
+      { title: "Plain white — brightest, used sparingly", value: "white" },
     ],
   },
   initialValue: "sand",
+  description:
+    "Bands normally alternate warm white and warm beige down the page so each one reads as its own section. Two of the same colour in a row look like one long band.",
 });
 
 export const eyebrowField = defineField({

@@ -78,6 +78,8 @@ export const propertyPickerSection = defineType({
         "Shown side by side on a desktop and stacked on a phone, in this order. The first one carries the page's heading.",
       validation: (Rule) => Rule.required().min(1).max(4),
     }),
+    // No background field: both panels are full-bleed photographs, so there
+    // is no band colour behind them to choose.
     ...sectionSettingsFields,
   ],
   preview: {

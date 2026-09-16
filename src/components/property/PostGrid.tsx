@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Section } from "@/components/ui/Section";
+import { Section, type BandTone } from "@/components/ui/Section";
 import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { formatPostDate, readingMinutes } from "@/components/property/PostBody";
@@ -44,7 +44,7 @@ type PostGridProps = {
    * see HeadingLevel. Editors set it per section in the CMS. */
   headingAs?: HeadingLevel;
   posts: GridPost[];
-  tone?: "sand" | "sand-deep";
+  tone?: BandTone;
   /**
    * Lead with one large post, then run the rest as a grid. Defaults on when
    * there are enough posts to make a "rest" (4+); a 2- or 3-post list has no

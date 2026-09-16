@@ -1,4 +1,4 @@
-import { Section } from "@/components/ui/Section";
+import { Section, type BandTone } from "@/components/ui/Section";
 import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { RichProse, type ProseValue } from "@/components/sanity/RichProse";
 import { Reveal } from "@/components/ui/Reveal";
@@ -18,7 +18,7 @@ type ProseBandProps = {
    * contact page and this band must never be able to disagree about where a
    * guest writes to. */
   email?: string;
-  tone?: "sand" | "sand-deep";
+  tone?: BandTone;
   anchor?: string;
 };
 

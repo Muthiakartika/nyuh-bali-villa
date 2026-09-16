@@ -268,6 +268,30 @@ inert-button class) anywhere in the build, no `<li class="group/item
 relative"><span`, and every `group/card` tile wrapped in an `<a>`; at the time
 of writing that is 0, 0, and 39 of 39.
 
+**Editors choose a band's background, and `ink` is deliberately not on the
+list.** `toneField` offers three of the four tones `Section` renders — warm
+white, warm beige, plain white — labelled by colour rather than by token name,
+because "Sand" and "Deep sand" are what the code calls them and not what
+someone picking a background is looking at. **`ink` stays reachable from code
+and out of the CMS**: the design puts dark in the chrome and the frame, never
+in a page band, and the whole-site audit checks that `main > section` on
+`rgb(38, 30, 19)` is 0 — an editor given the option would break that in one
+click with nothing to say so. `BandTone` in `Section.tsx` is that editable
+subset and is what every band component takes; `SectionTone` is it plus `ink`.
+The field is on **18 of the 24** page-builder sections. The six without it earn
+the absence: hero and the property picker are full-bleed photographs with no
+band colour behind them, and awards, deals, Instagram and the booking widget
+draw their own surface.
+
+**Two more fields were read by nothing, and the fix was to delete them rather
+than honour them.** `awardsSection.heading` and `bookingWidgetSection.heading`
+existed in the schema; neither `AwardsRow` nor `BookingWidget` accepts a
+heading and neither block ever passed one. Making them work would have *added*
+a heading to two bands the design draws without one — so the fields went
+instead. No published document had a value in either, so nothing was lost.
+Same lesson as `siteSettings`: a CMS field nothing reads is not inert, it is an
+unexploded difference.
+
 **The `inScope` convention:** `PropertyNavItem`, `LinkCardItem`, and `MobileNavLink` all carry an `inScope?: boolean`. When true (or omitted), the item renders as a real `<Link>`; when explicitly `false`, it renders as plain `<span>` text with identical styling — used everywhere a live-site link points at a page this project doesn't build (Villas, Dining, SPA, Offers, Blog, etc.). Follow this same pattern for any new nav/grid item rather than inventing a different scoping mechanism.
 
 **Carousels** (PropertyHero, ImageGallery, TestimonialCarousel) follow one consistent pattern: local `useState` index, plain prev/next handlers with wraparound, hairline-rule indicators — no carousel library. All hide their controls entirely when given a single item (the live Ubud hero genuinely has one slide). PropertyHero auto-advances every 6s and ImageGallery every 5s — a gallery is shorter-lived than the hero and there are often several to a page — both pausing on hover and disabled outright under `prefers-reduced-motion`. ImageGallery uses a `setTimeout` keyed on the active index rather than a standing `setInterval`, so tapping a bullet restarts the wait instead of having the chosen slide yanked away a moment later.

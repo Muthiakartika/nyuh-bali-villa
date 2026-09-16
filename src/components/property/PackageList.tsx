@@ -1,6 +1,6 @@
 import { Fragment, type ReactNode } from "react";
 import Link from "next/link";
-import { Section } from "@/components/ui/Section";
+import { Section, type BandTone } from "@/components/ui/Section";
 import { SectionHeading, type HeadingLevel } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button, buttonClassName } from "@/components/ui/Button";
@@ -65,7 +65,7 @@ type PackageListProps = {
   headingAs?: HeadingLevel;
   intro?: string | PackageRun[];
   packages: PackageItem[];
-  tone?: "sand" | "sand-deep";
+  tone?: BandTone;
 };
 
 /**

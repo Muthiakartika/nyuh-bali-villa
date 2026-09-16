@@ -1,7 +1,17 @@
 import type { ReactNode } from "react";
 import { Container } from "@/components/ui/Container";
 
-type SectionTone = "sand" | "sand-deep" | "ink" | "white";
+/**
+ * The backgrounds a band can have.
+ *
+ * `ink` is reachable from code — the awards base and the footer are drawn on
+ * it — but it is **not** offered to editors: the design puts dark in the
+ * chrome and the frame, never in a page band, and the whole-site audit checks
+ * that `main > section` never has it. `BandTone` is that editable subset, and
+ * is what every band component takes.
+ */
+export type BandTone = "sand" | "sand-deep" | "white";
+type SectionTone = BandTone | "ink";
 type SectionSpace = "none" | "tight" | "normal" | "loose";
 
 type SectionProps = {

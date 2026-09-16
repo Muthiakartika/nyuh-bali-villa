@@ -1,5 +1,5 @@
 import { defineField, defineType } from "sanity";
-import { eyebrowField, pageHeadingLevelField, sectionSettingsFields } from "./shared";
+import { eyebrowField, pageHeadingLevelField, sectionSettingsFields, toneField } from "./shared";
 
 /**
  * The contact page's body — heading, photograph, and the enquiry form.
@@ -27,7 +27,7 @@ export const contactSection = defineType({
       title: "Line above the form",
       type: "proseRichText",
       description:
-        "Ubud's page opens the form column with one line; Seminyak's has none. Empty renders the form on its own. " + "Paragraphs, with bold, italic, links, lists and subheadings. Each paragraph is set in this band's own type — the formatting is inline, the layout stays the band's.",
+        "Ubud's page opens the form column with one line; Seminyak's has none. Empty renders the form on its own. " + "Select any words to make them bold, italic or a link. Press Return for a new paragraph; the style menu adds subheadings, quotes and lists. The layout stays the band's — formatting is inline only.",
     }),
     defineField({
       name: "image",
@@ -36,6 +36,7 @@ export const contactSection = defineType({
       validation: (Rule) => Rule.required(),
     }),
     pageHeadingLevelField("h1"),
+    toneField,
     ...sectionSettingsFields,
   ],
   preview: {

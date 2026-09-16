@@ -105,6 +105,7 @@ export function AboutNarrativeBlock({
       offerHeading={section.offerHeading}
       offerSubtitle={section.offerSubtitle}
       offerCodeLabel={section.offerCodeLabel}
+      tone={section.tone}
       promoCode={section.promoCode}
       perks={section.perks ?? []}
       contactEmail={site.contact.email}
@@ -131,6 +132,7 @@ export function ContactBlock({
       intro={section.intro}
       imageSrc={image}
       imageAlt={section.image?.alt ?? site.label}
+      tone={section.tone}
       anchor={section.anchor}
     />
   );

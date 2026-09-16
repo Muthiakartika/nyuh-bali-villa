@@ -6,8 +6,13 @@ export const awardsSection = defineType({
   name: "awardsSection",
   title: "Awards",
   type: "object",
+  // No heading field. The awards strip has never drawn one — `AwardsRow`
+  // takes badges and a layout and nothing else — and the design closes a page
+  // on this band as a silent dark base under the footer. A field here was
+  // read by nothing, which is worse than absent: an editor fills it in and
+  // the website ignores it. Adding the heading for real would change the
+  // design, so the field goes instead.
   fields: [
-    defineField({ name: "heading", title: "Heading", type: "string" }),
     defineField({
       name: "badges",
       title: "Badges",
@@ -36,9 +41,9 @@ export const awardsSection = defineType({
     ...sectionSettingsFields,
   ],
   preview: {
-    select: { title: "heading", badges: "badges", media: "badges.0" },
-    prepare: ({ title, badges, media }) => ({
-      title: title || "Awards",
+    select: { badges: "badges", media: "badges.0" },
+    prepare: ({ badges, media }) => ({
+      title: "Awards",
       subtitle: badges?.length
         ? `${badges.length} badge${badges.length === 1 ? "" : "s"}`
         : "This property's own awards",
@@ -147,8 +152,10 @@ export const bookingWidgetSection = defineType({
   name: "bookingWidgetSection",
   title: "Booking widget",
   type: "object",
+  // No heading field either, and for the same reason: the booking bar is the
+  // engine's own widget overlapping the hero's bottom edge, with no heading
+  // in the design for one to render into.
   fields: [
-    defineField({ name: "heading", title: "Heading", type: "string" }),
     defineField({
       name: "widgetId",
       title: "Widget ID",
@@ -158,8 +165,11 @@ export const bookingWidgetSection = defineType({
     ...sectionSettingsFields,
   ],
   preview: {
-    select: { title: "heading" },
-    prepare: ({ title }) => ({ title: title || "Booking widget" }),
+    select: { widgetId: "widgetId" },
+    prepare: ({ widgetId }) => ({
+      title: "Booking widget",
+      subtitle: widgetId ? "Custom widget" : "This property's own widget",
+    }),
   },
 });
 
@@ -175,7 +185,7 @@ export const bulletListSection = defineType({
       name: "intro",
       title: "Intro",
       type: "proseRichText",
-      description: "Paragraphs, with bold, italic, links, lists and subheadings. Each paragraph is set in this band's own type — the formatting is inline, the layout stays the band's.",
+      description: "Select any words to make them bold, italic or a link. Press Return for a new paragraph; the style menu adds subheadings, quotes and lists. The layout stays the band's — formatting is inline only.",
     }),
     defineField({
       name: "groups",
