@@ -26,8 +26,18 @@
 #
 # Two repositories deploy this project (algosbiz/nyuhbali and
 # Muthiakartika/nyuh-bali-villa), so both receive `deployment_status` and both
-# run this. Only the one whose Vercel project serves nyuhbalivillas.com needs
-# the secrets; on the other, disable the workflow rather than leaving it red.
+# used to run this — the second one failing every time, for want of secrets it
+# has no reason to hold. The job is gated on the repository instead of being
+# switched off in one repo's Actions tab: both repos carry this same file, so a
+# per-repo toggle is state that lives outside the code and has to be
+# rediscovered, while this is visible to whoever reads the workflow next.
+#
+# WHICH repository was not assumed. algosbiz/nyuhbali is the one whose Vercel
+# project serves nyuhbalivillas.com: it is the project that still deploys (the
+# other's deployment URLs answer DEPLOYMENT_NOT_FOUND, and it received no
+# deployment at all for the most recent commit). **If the domain ever moves to
+# the other Vercel project, change this line or the purge silently stops** —
+# which is the one failure this gate can cause, so it is worth saying twice.
 #
 # `deployment_status` is what Vercel's GitHub integration emits; the job skips
 # preview deployments, which are not behind Cloudflare.
@@ -39,6 +49,7 @@ on:
 jobs:
   purge:
     if: >-
+      github.repository == 'algosbiz/nyuhbali' &&
       github.event.deployment_status.state == 'success' &&
       (github.event.deployment_status.environment == 'Production' ||
        github.event.deployment_status.environment == 'production')
