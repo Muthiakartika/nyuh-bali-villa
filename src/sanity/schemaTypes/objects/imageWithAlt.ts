@@ -1,19 +1,21 @@
 import { defineField, defineType } from "sanity";
 
 /**
- * An image that is either uploaded to Sanity or hotlinked from the live site.
+ * An image that is either uploaded to Sanity or addressed by a path this site
+ * serves.
  *
- * The site does not re-host photographs — `next.config.ts` and CLAUDE.md are
- * explicit that every `<Image>` points at nyuhbalivillas.com's own CDN. So
- * `externalUrl` carries that link, and the content migration fills it in
- * rather than downloading and uploading ~200 files into a project that does
- * not exist yet.
+ * **The field's name is older than what it holds.** It was written when every
+ * `<Image>` pointed at nyuhbalivillas.com's own CDN and the migration filled
+ * it with absolute URLs rather than downloading ~200 files. Both halves of
+ * that have since changed: the photographs live in `public/uploads/` and in
+ * Sanity, and `localizeUploads` rewrites any surviving absolute URL to its
+ * `/uploads/…` path on read. So a value here is now normally a site-relative
+ * path, and the ones that are still absolute are simply the ones the
+ * migration wrote first.
  *
  * Uploading stays available and always wins: the moment an editor drops a
- * file onto the image field, the asset takes over from the hotlink for that
- * one image, with no migration and no code change. That is what makes this a
- * staging post rather than a permanent fork — images can move into Sanity one
- * at a time, whenever the client wants them to.
+ * file onto the image field, the asset takes over for that one image, with no
+ * migration and no code change.
  */
 export const imageWithAlt = defineType({
   name: "imageWithAlt",
@@ -42,9 +44,17 @@ export const imageWithAlt = defineType({
       title: "Hotlinked image URL",
       type: "url",
       description:
-        "Used when nothing is uploaded above. Upload a file to replace it — the upload always wins.",
+        "Used when nothing is uploaded above — normally a path this site serves, like /uploads/2023/05/photo.webp. Upload a file to replace it; the upload always wins.",
+      // `allowRelative` is the whole point: the rule was written for absolute
+      // URLs, and then the assets were brought in-house and every value
+      // became `/uploads/…`. A relative path fails `Rule.uri` without it, so
+      // 24 image fields across 9 documents — every one seeded after the move
+      // — showed a red error in the Studio on content that renders correctly.
+      // Same trap as the kebab-case field name and the 320-character excerpt:
+      // check a rule against `src/data` before adding it, because these
+      // documents were seeded from there.
       validation: (Rule) =>
-        Rule.uri({ scheme: ["http", "https"] }).custom((value, context) => {
+        Rule.uri({ scheme: ["http", "https"], allowRelative: true }).custom((value, context) => {
           // An image with neither an upload nor a link renders nothing, which
           // is a silent hole in the page rather than a visible mistake.
           const parent = context.parent as { asset?: unknown } | undefined;

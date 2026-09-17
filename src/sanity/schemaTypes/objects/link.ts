@@ -66,6 +66,17 @@ export const link = defineType({
       initialValue: "solid",
     }),
   ],
+  /**
+   * The subtitle says where the button actually goes, and it has to ask the
+   * same question the renderer does.
+   *
+   * It used to read `href` alone for anything that was not an internal
+   * reference — so a button whose destination is an *uploaded file* listed
+   * itself as "No destination yet" while the file sat right there in the
+   * field. The first editor to replace a menu PDF saw exactly that and
+   * reasonably read it as the upload having failed. The order below is the
+   * order `linkProjection` resolves in: reference, then file, then href.
+   */
   preview: {
     select: {
       title: "label",
@@ -73,13 +84,17 @@ export const link = defineType({
       linkType: "linkType",
       referencePath: "reference.path",
       referenceTitle: "reference.title",
+      fileName: "file.asset.originalFilename",
+      fileAsset: "file.asset",
     },
-    prepare: ({ title, href, linkType, referencePath, referenceTitle }) => ({
+    prepare: ({ title, href, linkType, referencePath, referenceTitle, fileName, fileAsset }) => ({
       title: title || "Untitled link",
       subtitle:
         linkType === "internal"
           ? referencePath || referenceTitle || "No page chosen yet"
-          : href || "No destination yet",
+          : fileAsset
+            ? fileName || "An uploaded file"
+            : href || "No destination yet",
     }),
   },
 });
