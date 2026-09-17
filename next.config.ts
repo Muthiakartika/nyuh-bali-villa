@@ -375,6 +375,115 @@ const nextConfig: NextConfig = {
       { source: "/ubud-welcoming-the-new-normal-era", destination: "/", permanent: true },
       { source: "/welcoming-the-new-normal-era", destination: "/", permanent: true },
 
+
+      // ── The permalinks the first crawl missed ────────────────────────
+      //
+      // The block above was built from a crawl of the URLs the live site
+      // still answered a 301 for. That is only half the population: a
+      // permalink WordPress had already forgotten answered a 404 there too,
+      // so it never entered the list — and the day this build replaced
+      // WordPress those URLs went on 404ing, now with the ranking and the
+      // inbound links they had kept all along.
+      //
+      // These were found the only way that finds them: every URL the Internet
+      // Archive holds for nyuhbalivillas.com (413 distinct paths) requested
+      // against the live site, cross-checked against the broken backlinks
+      // Ahrefs reports for the domain. Every entry below is a path one of
+      // those two attests, except the three marked as completing a family.
+      // Re-run both after any future restructuring.
+
+      // The culture activities, under the two prefixes that predate
+      // `/ubud/balinese-culture/`. `/ubud/culture/` is the renamed prefix
+      // already redirected above; its children were never mapped with it, and
+      // two of them carry the strongest broken links the domain has
+      // (esoftskills.com at DR 49, knycxjourneying.com at DR 40).
+      { source: "/ubud/culture/chakra-healing-retreat", destination: "/ubud/wellness/chakra-healing", permanent: true },
+      { source: "/ubud/culture/balinese-class", destination: "/ubud/balinese-culture/balinese-class", permanent: true },
+      { source: "/ubud/culture/melukat-purification-ceremony", destination: "/ubud/balinese-culture/melukat-purification-ceremony", permanent: true },
+      // Completes that family; its other three siblings are all attested.
+      { source: "/ubud/culture/rice-field-walk", destination: "/ubud/balinese-culture/rice-field-walk", permanent: true },
+      { source: "/ubud-culture/daily-authentic-balinese-class", destination: "/ubud/balinese-culture/balinese-class", permanent: true },
+      { source: "/ubud-culture/melukat-balinese-purification-ceremony", destination: "/ubud/balinese-culture/melukat-purification-ceremony", permanent: true },
+      { source: "/ubud-culture/complimentary-rice-paddies-walk", destination: "/ubud/balinese-culture/rice-field-walk", permanent: true },
+      { source: "/ubud-culture/market-tour-private-balinese-cooking-lesson", destination: "/ubud/balinese-culture/cooking-class", permanent: true },
+      { source: "/market-tour-private-balinese-cooking-lesson", destination: "/ubud/balinese-culture/cooking-class", permanent: true },
+      { source: "/balinese-culture-activity/rice-field-walk-ubud", destination: "/ubud/balinese-culture/rice-field-walk", permanent: true },
+      { source: "/retreat-in-ubud/rice-field-walk-ubud", destination: "/ubud/balinese-culture/rice-field-walk", permanent: true },
+
+      // Wellness. `/balinese-culture-activity/yoga` is worth more than its
+      // shape suggests — nine referring domains still point at it.
+      { source: "/balinese-culture-activity/yoga", destination: "/ubud/wellness/yoga", permanent: true },
+      { source: "/retreat-in-ubud/chakra-balancing", destination: "/ubud/wellness/chakra-healing", permanent: true },
+      { source: "/retreat-in-ubud/free-access-home-gym", destination: "/ubud/fitness", permanent: true },
+      { source: "/ubudwellness", destination: "/ubud/wellness", permanent: true },
+      // The one class the resort retired rather than renamed: there is no
+      // pilates page here, and there was none on WordPress either by the time
+      // it was crawled. Two sites still link to it, so it goes to the index
+      // listing the classes that did survive rather than to a 404.
+      { source: "/ubud-wellness/ubud-pilates", destination: "/ubud/wellness", permanent: true },
+
+      // The Ubud rooms again, under the two further prefixes they were
+      // published at before `/ubud-villa/` — plus the hyphen-less
+      // `/ubudvilla/` variant, of which only the honeymoon suite was mapped
+      // above. Same pairing of the two honeymoon URLs as the `/ubud-villa/`
+      // block: the live site's own, copied as it stands.
+      { source: "/ubudvilla", destination: "/ubud/villa", permanent: true },
+      { source: "/ubudvilla/nyuh-suite", destination: "/ubud/villa/suite", permanent: true },
+      { source: "/ubudvilla/honeymoon-suite", destination: "/ubud/villa/honeymoon/pool", permanent: true },
+      { source: "/ubudvilla/one-bedroom-deluxe-pool-villa", destination: "/ubud/villa/1-bedroom-pool-deluxe", permanent: true },
+      { source: "/ubudvilla/one-bedroom-royal-pool-villa", destination: "/ubud/villa/1-bedroom-pool-royal", permanent: true },
+      { source: "/ubudvilla/two-bedroom-pool-villa", destination: "/ubud/villa/2-bedroom-pool", permanent: true },
+      { source: "/ubudvilla/three-bedroom-pool-villa", destination: "/ubud/villa/3-bedroom-pool", permanent: true },
+      { source: "/ubudvilla/four-bedroom-pool-villa-family-suite-villa", destination: "/ubud/villa/4-bedroom-pool", permanent: true },
+      { source: "/luxurious-accomodation-in-ubud", destination: "/ubud/villa", permanent: true },
+      { source: "/luxury-villa-ubud/luxurious-accomodation-in-ubud", destination: "/ubud/villa", permanent: true },
+      { source: "/luxurious-accomodation-in-ubud/honeymoon-suite-pool-villa", destination: "/ubud/villa/honeymoon", permanent: true },
+      { source: "/luxurious-accomodation-in-ubud/one-bedroom-deluxe-pool-villa", destination: "/ubud/villa/1-bedroom-pool-deluxe", permanent: true },
+      { source: "/luxurious-accomodation-in-ubud/one-bedroom-royal-pool-villa", destination: "/ubud/villa/1-bedroom-pool-royal", permanent: true },
+      { source: "/luxurious-accomodation-in-ubud/two-bedroom-pool-villa", destination: "/ubud/villa/2-bedroom-pool", permanent: true },
+      { source: "/luxurious-accomodation-in-ubud/three-bedroom-pool-villa", destination: "/ubud/villa/3-bedroom-pool", permanent: true },
+      { source: "/luxurious-accomodation-in-ubud/four-bedroom-pool-villa-family-suite-villa", destination: "/ubud/villa/4-bedroom-pool", permanent: true },
+      // And the same room slugs hung straight off `/ubud/`, which is a live
+      // route here — these are paths beneath it, not the page itself.
+      { source: "/ubud/honeymoon-suite-pool-villa", destination: "/ubud/villa/honeymoon", permanent: true },
+      { source: "/ubud/one-bedroom-deluxe-pool-villa", destination: "/ubud/villa/1-bedroom-pool-deluxe", permanent: true },
+      { source: "/ubud/one-bedroom-royal-pool-villa", destination: "/ubud/villa/1-bedroom-pool-royal", permanent: true },
+      { source: "/ubud/two-bedroom-pool-villa", destination: "/ubud/villa/2-bedroom-pool", permanent: true },
+      { source: "/ubud/three-bedroom-pool-villa", destination: "/ubud/villa/3-bedroom-pool", permanent: true },
+      { source: "/ubud/four-bedroom-pool-villa-family-suite-villa", destination: "/ubud/villa/4-bedroom-pool", permanent: true },
+
+      // Romance, under the prefix `/ubud-romance` already redirects from.
+      // The costume photoshoot is a package this build does not carry, so it
+      // goes to the page carrying the rest of them rather than nowhere.
+      { source: "/ubud-romance/honeymoon", destination: "/ubud/villa/honeymoon/packages", permanent: true },
+      { source: "/ubud-romance/easy-stress-free-proposal-package", destination: "/ubud/villa/honeymoon/packages", permanent: true },
+      { source: "/ubud-romance/balinese-costume-photoshooting", destination: "/ubud/villa/honeymoon/packages", permanent: true },
+
+      // The Ubud spa's own children. Its three booking URLs are one form
+      // here; `mahamaya-spa` is the spa page itself under its old name.
+      { source: "/spa-in-ubud/mahamaya-spa", destination: "/ubud/spa", permanent: true },
+      { source: "/spa-in-ubud/spa-inquiry", destination: "/ubud-spa-booking-form", permanent: true },
+      { source: "/spa-in-ubud/spa-reservation-ubud", destination: "/ubud-spa-booking-form", permanent: true },
+      { source: "/spa-in-ubud/spa-reservation-ubud-2", destination: "/ubud-spa-booking-form", permanent: true },
+
+      // The rest of the hyphen-less set WordPress double-published, which
+      // `/poolvillainseminyak` and `/honeymoonvillainseminyak` above belong
+      // to. The three directory ones matter more than the others: those are
+      // the pages a guest reaches from the QR code beside the bed.
+      { source: "/lumbinirestaurant", destination: "/ubud/dining", permanent: true },
+      { source: "/seminyakdining", destination: "/seminyak/dining", permanent: true },
+      { source: "/seminyakspa", destination: "/seminyak/spa", permanent: true },
+      { source: "/villainseminyak", destination: "/seminyak/villa", permanent: true },
+      { source: "/romanticubudvilla", destination: "/ubud/villa/honeymoon", permanent: true },
+      { source: "/familyubudvilla", destination: "/ubud/villa/4-bedroom-pool", permanent: true },
+      { source: "/seminyakdirectory", destination: "/seminyak-directory", permanent: true },
+      { source: "/ubuddirectory", destination: "/ubud-directory", permanent: true },
+      { source: "/suitedirectory", destination: "/suite-directory", permanent: true },
+
+      // WordPress's blog pagination under the new prefix, the counterpart of
+      // the `/ubud-blog/page/2` entry above.
+      { source: "/ubud/discover/page/2", destination: "/ubud/discover", permanent: true },
+
       // Nothing here for the http:// and www. rows of the same crawl. Those
       // are host-level, not path-level: TLS termination handles the scheme,
       // and www -> apex is a Cloudflare redirect rule, because src/proxy.ts
