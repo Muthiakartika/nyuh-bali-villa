@@ -368,7 +368,20 @@ or a page whose edge copy is old while `?anything=1` on the same URL is new. Tha
 this race, not the CMS. `npm run cache:purge` clears it.
 
 | Vercel finishes a production deploy | Vercel webhook → `/api/purge/vercel` | everything |
+| Scheduled sweep, every 5 min | Vercel cron → `/api/purge/sweep` | only when something changed |
 | A person | `npm run cache:purge` | everything, or `-- /ubud /ubud/villa` |
+
+**The sweep is a net under the webhook, not a replacement for it.** The webhook
+stopped arriving once and nothing anywhere said so — the endpoint answered 200 to a
+hand-made request the whole time, while an editor's publish sat unseen behind a
+one-day edge copy. The sweep asks Content Lake every five minutes whether any
+published document changed in the last eight, and does exactly what the webhook
+would have done for those documents, through the same three functions. Nothing
+changed is the normal answer and costs one GROQ query and no purge.
+
+`CRON_SECRET` on the Vercel project is what Vercel sends as `Authorization: Bearer`;
+unset, the route still answers the scheduler rather than 401ing at it.
+
 
 The webhook is already configured for the Next half (README-SANITY.md §7) and
 needs no change — the same POST now does both halves.

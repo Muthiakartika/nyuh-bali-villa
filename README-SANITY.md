@@ -455,9 +455,24 @@ The Presentation tool loads `SANITY_STUDIO_PREVIEW_ORIGIN` and enables Next.js D
 
 Published changes are picked up by Sanity Live. A webhook gives immediate, deterministic invalidation; the 60-second ISR fallback means a missed webhook delays content rather than freezing it:
 
-- URL: `https://your-domain.example/api/revalidate/sanity`
+- URL: `https://nyuhbalivillas.com/api/revalidate/sanity`
 - Method: `POST`
-- Header: `Authorization: Bearer <SANITY_REVALIDATE_SECRET>`
+- Header: `Authorization: Bearer <SANITY_REVALIDATE_SECRET>` — a **custom HTTP
+  header**, not the "Secret" field above it. That field signs the payload with
+  `sanity-webhook-signature`, which this route does not read, so filling it in
+  instead of the header authenticates nothing.
+- Filter — **not optional, and an empty one is worse than it looks**:
+
+  ```groq
+  !(_id in path("drafts.**")) && _type in ["page","post","room","experience","packageSet","testimonial","legalPage","property","siteSettings","category"]
+  ```
+
+  With no filter the webhook fires on *every* document change in the dataset,
+  and that includes drafts. A draft is written as an editor types, so the Studio
+  turns into a stream of POSTs from a datacentre to `/api/` — each one purging
+  the zone while the editor is still writing the sentence. Which is also a fair
+  description of what bot protection exists to stop, so the empty filter is a
+  candidate for deliveries being dropped rather than merely wasteful.
 - Projection:
 
   ```groq
@@ -474,6 +489,10 @@ Published changes are picked up by Sanity Live. A webhook gives immediate, deter
 Trigger it for create, update and delete on `page`, `post`, `room`, `experience`, `packageSet`, `testimonial`, `legalPage`, `property` and `siteSettings`.
 
 Confirm the webhook exists with `npm run sanity -- hook list`. An empty result means there is no instant production invalidation yet.
+
+**Confirm it is *arriving*, which is a different question and the one that went unasked.** A webhook can be present, enabled and correctly configured and still never reach the site. The test that settles it takes a minute: change one field in a document, then watch the live page's `cf-cache-status` and `age` without purging anything. An `age` that keeps climbing means no purge happened, so no webhook arrived. Compare against calling the endpoint by hand with the same secret — if that answers 200 and purges, the route is fine and the delivery is the problem: look at the webhook's own attempt log in sanity.io/manage, and at Cloudflare's bot protection in front of `/api/` (README-CLOUDFLARE.md §7).
+
+`/api/purge/sweep` is the net under all of this — see README-CLOUDFLARE.md §5.
 
 ## 8. `dynamicParams = false` and the CMS
 

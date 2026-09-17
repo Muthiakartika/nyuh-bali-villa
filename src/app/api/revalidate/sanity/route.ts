@@ -1,6 +1,6 @@
-import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { purgeCloudflare } from "@/server/cloudflare";
+import { revalidateDocumentTags } from "@/server/publishInvalidation";
 import { purgeTargetFor, type PublishedDocument } from "@/server/purgeTargets";
 import { warmOrigin } from "@/server/warmOrigin";
 
@@ -50,26 +50,11 @@ export async function POST(request: Request) {
     // A global invalidation still works for webhooks without a projection.
   }
 
-  // Next 16 requires a cache profile alongside the tag. `expire: 0` says
-  // nothing carrying this tag may be served at any age — a full purge, which
-  // is what a publish webhook means. A named profile such as "max" would
-  // instead leave long-lived entries in place.
-  const purge = (tag: string) => revalidateTag(tag, { expire: 0 });
-
-  purge("sanity");
-
-  if (body._type) {
-    purge(`sanity:${body._type}`);
-
-    // Path-addressed documents (page, post, legalPage) carry the route they
-    // publish; slug-addressed ones (room, experience) carry a slug that is
-    // only unique within a property, which is why the property joins the tag.
-    if (body.path) purge(`sanity:${body._type}:${body.path}`);
-    if (body.slug) {
-      const key = body.property ? `${body.property}/${body.slug}` : body.slug;
-      purge(`sanity:${body._type}:${key}`);
-    }
-  }
+  // The tag list is shared with `/api/purge/sweep`, which does this same
+  // work when a publish never reaches this route. Two copies of it would
+  // drift, and a sweep that invalidated *nearly* what a publish does is worse
+  // than no sweep: it heals the obvious pages and leaves a quiet one stale.
+  revalidateDocumentTags(body);
 
   const target = purgeTargetFor(body);
   const warm = await warmOrigin(target);
