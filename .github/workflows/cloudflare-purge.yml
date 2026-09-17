@@ -59,20 +59,6 @@ jobs:
        (github.event.deployment_status.state == 'success' &&
         (github.event.deployment_status.environment == 'Production' ||
          github.event.deployment_status.environment == 'production')))
-    # The two secrets live on this environment rather than on the repository,
-    # and an environment secret is invisible to a job that does not name its
-    # environment — which is how the first run with the secrets in place still
-    # failed with "Missing environment variables". Naming it here is the whole
-    # fix; the environment carries no protection rules, so nothing waits for an
-    # approval.
-    #
-    # The name is Vercel's, generated, and en-dashed (U+2013) — keep it quoted
-    # and copy it from Settings -> Environments rather than retyping it. If
-    # Vercel ever recreates the project's environments this string is what goes
-    # stale, and the symptom is that same missing-variables failure. Moving both
-    # secrets up to Settings -> Secrets and variables -> Actions -> Repository
-    # secrets and deleting this line is the version that cannot go stale.
-    environment: "Production – nyuhbali-alyb"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
