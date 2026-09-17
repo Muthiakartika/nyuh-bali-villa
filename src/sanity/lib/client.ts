@@ -1,5 +1,4 @@
 import "server-only";
-import { draftMode } from "next/headers";
 import { createClient, type QueryParams } from "next-sanity";
 import { defineLive } from "next-sanity/live";
 import {
@@ -68,56 +67,11 @@ async function fetchPublished<TResult>(
  * Null is intentional: every caller keeps its existing `src/data` content
  * until Sanity is configured and the matching document has been published.
  */
-/**
- * Whether this request is previewing drafts. Outside a request — during
- * `generateStaticParams`, or at build time — `draftMode()` throws, and the
- * answer there is no.
- */
-async function isPreviewing(): Promise<boolean> {
-  try {
-    return (await draftMode()).isEnabled;
-  } catch {
-    return false;
-  }
-}
-
 export async function sanityFetch<TResult>(
   query: string,
   options: SanityFetchOptions = {},
 ): Promise<TResult | null> {
   if (!isSanityConfigured) return null;
-
-  /**
-   * **Published rendering does not go through Live Content, and that is the
-   * fix for "the client published and the site did not change".**
-   *
-   * Live's `sanityFetch` tags its entries correctly — the build's own
-   * `x-next-cache-tags` for a page lists `sanity`, `sanity:page` and
-   * `sanity:page:/its-path`, exactly what the publish webhook drops — but it
-   * sets no `revalidate`, so every route prerendered with it carries
-   * `initialRevalidateSeconds: false`. Measured against production: Sanity
-   * held the new value on both `api` and `apicdn`, the webhook fired and
-   * purged (the edge's `age` reset), the endpoint called by hand answered 200
-   * with a successful warm and purge — and the origin went on rendering the
-   * previous copy for as long as it was watched. A deploy was the only thing
-   * that ever changed it, which is the "one-build lag" this project has
-   * written down twice without recognising it as this.
-   *
-   * `fetchPublished` sets both: the same tags *and* `revalidate`, so a page is
-   * ISR rather than frozen. On-demand invalidation stays the fast path and the
-   * timer is the floor under it — which is what the note in this file has
-   * claimed all along, while nothing actually set it for a healthy render.
-   *
-   * Live stays for what it is for: previewing drafts in the Studio.
-   */
-  if (!(await isPreviewing())) {
-    try {
-      return await fetchPublished<TResult>(query, options);
-    } catch (error) {
-      console.error("Sanity published fetch failed.", error);
-      return null;
-    }
-  }
 
   try {
     const result = await live.sanityFetch({
