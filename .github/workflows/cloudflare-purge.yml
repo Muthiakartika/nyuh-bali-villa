@@ -5,11 +5,29 @@
 # publishes nothing in Sanity and still changes every page (new HTML, new asset
 # hashes), so it needs this.
 #
-# Inert until both repository secrets exist:
-#   Settings → Secrets and variables → Actions
+# NOT inert without its secrets — it fails, on purpose, and an earlier version
+# of this comment claimed otherwise. `requireEnv` in scripts/cloudflare/env.mjs
+# exits 1 when either is missing, so the run goes red rather than green-and-
+# useless. That is the right way round: a purge that silently does not happen
+# leaves Cloudflare serving the old page with nothing anywhere saying so.
+#
+# It is also how this went unnoticed. The workflow ran 23 times over three days,
+# failed every time for want of the two secrets, and nobody was watching the
+# Actions tab — so the first symptom was a redirect that had shipped hours
+# earlier still answering 404 at the edge.
+#
+# Both secrets live in Settings → Secrets and variables → Actions:
 #     CLOUDFLARE_ZONE_ID       Overview → right sidebar, on the zone
 #     CLOUDFLARE_PURGE_TOKEN   a token whose ONLY permission is
 #                              Zone → Cache Purge → Purge, this zone only
+#
+# SITE_URL is a repository *variable*, not a secret, and is optional: without it
+# the purge still runs, it just cannot print what the edge held before and after.
+#
+# Two repositories deploy this project (algosbiz/nyuhbali and
+# Muthiakartika/nyuh-bali-villa), so both receive `deployment_status` and both
+# run this. Only the one whose Vercel project serves nyuhbalivillas.com needs
+# the secrets; on the other, disable the workflow rather than leaving it red.
 #
 # `deployment_status` is what Vercel's GitHub integration emits; the job skips
 # preview deployments, which are not behind Cloudflare.

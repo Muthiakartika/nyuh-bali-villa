@@ -45,16 +45,48 @@ export const purgeToken = process.env.CLOUDFLARE_PURGE_TOKEN?.trim();
 export const rulesToken = process.env.CLOUDFLARE_RULES_TOKEN?.trim();
 export const siteUrl = process.env.SITE_URL?.trim();
 
-/** `requireEnv({ CLOUDFLARE_ZONE_ID: zoneId, … })` — exits naming what is missing. */
+/**
+ * `requireEnv({ CLOUDFLARE_ZONE_ID: zoneId, … })` — exits naming what is
+ * missing, and naming the right place to put it, because the two places are
+ * different.
+ *
+ * On a developer's machine the answer is `.env.local`. **In CI there is no
+ * such file and never will be**, so a message pointing at one sends whoever
+ * reads the log looking for something that does not exist — which is exactly
+ * what happened when the purge workflow ran 23 times without its repository
+ * secrets and reported `Missing in .env.local` on a runner.
+ *
+ * `CI` is set by GitHub Actions and by every other CI worth the name. The
+ * `::error::` annotation puts the reason on the run's summary page rather
+ * than only inside the step's log, which is the difference between a red
+ * tick someone reads and one they scroll past.
+ */
 export function requireEnv(values, hint = "See README-CLOUDFLARE.md.") {
   const missing = Object.entries(values)
     .filter(([, value]) => !value)
     .map(([name]) => name);
 
-  if (missing.length > 0) {
-    console.error(`\n  Missing in .env.local: ${missing.join(", ")}\n\n  ${hint}\n`);
-    process.exit(1);
+  if (missing.length === 0) return;
+
+  const names = missing.join(", ");
+
+  if (process.env.CI) {
+    console.error(
+      `::error::Missing environment variables: ${names}. Add them under ` +
+        "Settings -> Secrets and variables -> Actions.",
+    );
+    console.error(
+      `\n  Missing environment variables: ${names}\n\n` +
+        "  This is CI, so there is no .env.local to fix — these come from\n" +
+        "  the repository's own secrets:\n" +
+        "  Settings -> Secrets and variables -> Actions.\n\n" +
+        `  ${hint}\n`,
+    );
+  } else {
+    console.error(`\n  Missing in .env.local: ${names}\n\n  ${hint}\n`);
   }
+
+  process.exit(1);
 }
 
 /**
