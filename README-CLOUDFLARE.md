@@ -312,10 +312,39 @@ cache:check` catches it before a purge does.
 Edit — read from `CLOUDFLARE_RULES_TOKEN`. That is a one-off admin job: keep it
 on your own machine in `.env.local`, never in Vercel and never in CI.
 
-For the post-deploy purge, `CLOUDFLARE_ZONE_ID` and `CLOUDFLARE_PURGE_TOKEN`
-again as GitHub repository secrets (Settings → Secrets and variables →
-Actions), with `SITE_URL` as a repository *variable* if you want the workflow
-to print the before/after.
+| `VERCEL_WEBHOOK_SECRET` | shown once when the webhook is created, below | the post-deploy purge |
+
+**The post-deploy purge needs nothing duplicated, and that is the point.** It
+used to be a GitHub Actions workflow, which meant the same two Cloudflare
+credentials had to exist a second time as repository secrets — and it never
+once succeeded: 25 runs on one repository and 23 on the other, every one of
+them red, while the values sat here in Vercel the whole time. `/api/purge/vercel`
+runs inside the deployment, so it reads the same variables the publish webhook
+already uses.
+
+Create it at **Vercel → Team Settings → Webhooks**:
+
+| Field | Value |
+|---|---|
+| URL | `https://nyuhbalivillas.com/api/purge/vercel` |
+| Events | **Deployment succeeded** (and *Deployment promoted*, if offered) |
+| Projects | `nyuhbali` only |
+
+Vercel shows the signing secret once; put it on the project as
+`VERCEL_WEBHOOK_SECRET` and redeploy. Until it is set the route answers 503 and
+logs why — an endpoint that purges on an unverified POST is one an anonymous
+caller can use to keep the origin under load.
+
+**The route deliberately waits before purging.** Cloudflare caches whatever the
+origin answers on the *first* request after a purge, so purging while the alias
+still points at the previous deployment re-caches the build being replaced, for
+the full edge TTL. It polls the canonical host until it reports the new
+deployment id (`<html data-dpl-id>`, with a cache-busting query so the question
+reaches the origin rather than the edge), up to 10s, then purges either way.
+
+**If the webhook stops arriving, look at Cloudflare before looking at Vercel** —
+§7 has the same note for the Sanity webhook, and the cause is the same one: bot
+protection in front of `/api/`.
 
 ---
 
@@ -324,7 +353,7 @@ to print the before/after.
 | Trigger | What fires | Scope |
 |---|---|---|
 | Editor publishes in `/studio` | Sanity webhook → `/api/revalidate/sanity` | see below |
-| Vercel finishes a production deploy | `.github/workflows/cloudflare-purge.yml` | everything |
+| Vercel finishes a production deploy | Vercel webhook → `/api/purge/vercel` | everything |
 | A person | `npm run cache:purge` | everything, or `-- /ubud /ubud/villa` |
 
 The webhook is already configured for the Next half (README-SANITY.md §7) and
@@ -470,16 +499,18 @@ them through rather than summarising:
 
 And the ones that are not about the API:
 
-- **The Sanity webhook starts failing once bot protection is on.** It is a POST
-  from a datacentre to `/api/revalidate/sanity`, which is exactly what Bot
-  Fight Mode and the managed WAF rules exist to stop. Add a WAF custom rule
-  with the **Skip** action for
-  `http.request.uri.path eq "/api/revalidate/sanity"`, or point the webhook at
-  the `*.vercel.app` origin instead — it purges Cloudflare either way, it just
+- **A webhook starts failing once bot protection is on.** Both of them are a
+  POST from a datacentre — Sanity's to `/api/revalidate/sanity`, Vercel's to
+  `/api/purge/vercel` — which is exactly what Bot Fight Mode and the managed
+  WAF rules exist to stop. Add a WAF custom rule with the **Skip** action for
+  `starts_with(http.request.uri.path, "/api/")`, or point the webhook at the
+  `*.vercel.app` origin instead — it purges Cloudflare either way, it just
   stops passing through it.
 - **A deploy left the old pages up.** Nothing is published in Sanity during a
-  deploy, so nothing fires. That is what the GitHub Actions workflow is for:
-  check the run, and check both repository secrets exist.
+  deploy, so the Sanity webhook does not fire; the Vercel one does. Read its
+  delivery log at Team Settings → Webhooks. A 503 there means
+  `VERCEL_WEBHOOK_SECRET` is not on the project; a 401 means the secret on the
+  project is not the one that webhook signs with.
 - **One visitor still sees the old page after a successful purge.** Their
   browser is holding it. Check Browser TTL on rule 3 is still "Respect origin"
   — see §3.
