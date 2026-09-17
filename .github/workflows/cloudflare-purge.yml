@@ -45,14 +45,20 @@ name: Purge Cloudflare cache
 
 on:
   deployment_status:
+  # A button in the Actions tab, for the case the deploy hook did not fire or
+  # the edge needs dropping without shipping anything. `npm run cache:purge`
+  # does the same thing but needs a machine holding the token; this needs a
+  # GitHub login, so it is reachable by someone who is not the developer.
+  workflow_dispatch:
 
 jobs:
   purge:
     if: >-
       github.repository == 'algosbiz/nyuhbali' &&
-      github.event.deployment_status.state == 'success' &&
-      (github.event.deployment_status.environment == 'Production' ||
-       github.event.deployment_status.environment == 'production')
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event.deployment_status.state == 'success' &&
+        (github.event.deployment_status.environment == 'Production' ||
+         github.event.deployment_status.environment == 'production')))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
