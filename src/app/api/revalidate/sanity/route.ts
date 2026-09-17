@@ -2,6 +2,7 @@ import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { purgeCloudflare } from "@/server/cloudflare";
 import { purgeTargetFor, type PublishedDocument } from "@/server/purgeTargets";
+import { warmOrigin } from "@/server/warmOrigin";
 
 /**
  * Immediate, deterministic cache invalidation for published changes.
@@ -15,9 +16,15 @@ import { purgeTargetFor, type PublishedDocument } from "@/server/purgeTargets";
  *     without ever reaching the origin, so an origin that has quietly
  *     regenerated changes nothing for them until its copy is dropped.
  *
- * Order matters: revalidate first, purge second. `{ expire: 0 }` makes the
- * next origin request regenerate rather than serve stale, and Cloudflare's
- * first request after a purge is exactly what it then caches.
+ * Order matters, and there are three steps rather than two: **revalidate,
+ * warm, purge**. `revalidateTag` marks a page stale; it does not rebuild it,
+ * and the rebuild happens on the next request. Purging straight afterwards
+ * therefore left a window in which the edge had nothing and the origin had
+ * not rebuilt — and **Cloudflare caches whatever the origin answers on the
+ * first request after a purge**, so the window ended with the pre-publish
+ * page pinned at the edge for the full TTL. `warmOrigin` closes it by making
+ * that first request itself, before the purge. See the note there for the
+ * publish this was found by, and for why a site-wide purge is not warmed.
  *
  * The site also runs a 60-second ISR fallback (see `sanity/lib/client.ts`), so
  * a missed or misconfigured webhook cannot freeze published content
@@ -25,6 +32,9 @@ import { purgeTargetFor, type PublishedDocument } from "@/server/purgeTargets";
  * floor, which is why a failed purge is logged loudly below rather than
  * swallowed.
  */
+/** Two warm rounds plus `purgeCloudflare`'s own 8s bound, with room to spare. */
+export const maxDuration = 30;
+
 export async function POST(request: Request) {
   const secret = process.env.SANITY_REVALIDATE_SECRET;
   const authorization = request.headers.get("authorization");
@@ -61,7 +71,9 @@ export async function POST(request: Request) {
     }
   }
 
-  const cloudflare = await purgeCloudflare(purgeTargetFor(body));
+  const target = purgeTargetFor(body);
+  const warm = await warmOrigin(target);
+  const cloudflare = await purgeCloudflare(target);
 
   if (!cloudflare.ok) {
     // Reported, never fatal, and deliberately still a 200: the tags above are
@@ -75,5 +87,5 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.json({ ok: true, revalidated: body, cloudflare });
+  return NextResponse.json({ ok: true, revalidated: body, warm, cloudflare });
 }

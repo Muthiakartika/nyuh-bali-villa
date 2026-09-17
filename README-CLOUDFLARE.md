@@ -353,6 +353,20 @@ protection in front of `/api/`.
 | Trigger | What fires | Scope |
 |---|---|---|
 | Editor publishes in `/studio` | Sanity webhook → `/api/revalidate/sanity` | see below |
+
+**That publish runs three steps, not two: revalidate, warm, purge.** `revalidateTag`
+marks a page stale rather than rebuilding it, and the rebuild happens on the next
+request — so purging straight afterwards left a window where the edge held nothing
+and the origin had not rebuilt yet. Cloudflare caches whatever the origin answers on
+the first request after a purge, so that window ended with the *pre-publish* page at
+the edge for a full day. `warmOrigin` makes that first request itself, in two rounds
+with a gap, before the purge. A site-wide publish (`property`, `siteSettings`,
+`testimonial`) is not warmed — it changes all 77 pages — and still purges.
+
+**Symptom to recognise:** a publish that is visibly live on one page and not another,
+or a page whose edge copy is old while `?anything=1` on the same URL is new. That is
+this race, not the CMS. `npm run cache:purge` clears it.
+
 | Vercel finishes a production deploy | Vercel webhook → `/api/purge/vercel` | everything |
 | A person | `npm run cache:purge` | everything, or `-- /ubud /ubud/villa` |
 
