@@ -36,7 +36,7 @@ export const linkTypeField = defineField({
   },
   initialValue: "custom",
   description:
-    "Pick a published page wherever one exists — the link then follows that page if its address ever changes.",
+    "Pick a published page wherever one exists — the link then follows that page if its address ever changes. Choose “A file” to replace the PDF this button opens.",
 });
 
 export const linkReferenceField = defineField({
@@ -52,6 +52,17 @@ export const linkReferenceField = defineField({
       return value ? true : "Choose the page this links to.";
     }),
 });
+
+/**
+ * Whether a typed destination already points at a file rather than a page.
+ * Used only to decide whether to *offer* the upload box; nothing renders
+ * differently because of it.
+ */
+function isFileHref(href?: string): boolean {
+  if (!href) return false;
+  const path = href.split("?")[0].split("#")[0].toLowerCase();
+  return /\.(pdf|jpe?g|png)$/.test(path);
+}
 
 /**
  * A file the button opens — the F&B and spa menus, the room directories.
@@ -72,7 +83,16 @@ export const linkFileField = defineField({
   options: { accept: ".pdf,.jpg,.jpeg,.png" },
   description:
     "Drop the new menu here and press Publish — it replaces the file this button opens, everywhere the button appears on this page.",
-  hidden: ({ parent }) => parent?.linkType !== "file",
+  hidden: ({ parent }) => {
+    const linkType = (parent as { linkType?: string } | undefined)?.linkType;
+    if (linkType) return linkType !== "file";
+    // Every link the migration seeded carries no `linkType` at all, so the
+    // radio above reads as unset — and keying the upload box off it alone
+    // hid this field on all 46 menu buttons the feature was built for. The
+    // client's report was simply that there was no way to upload a PDF.
+    // With nothing chosen, let the destination itself say what this is.
+    return !isFileHref((parent as { href?: string } | undefined)?.href);
+  },
   validation: (Rule) =>
     Rule.custom((value, context) => {
       const parent = context.parent as { linkType?: string } | undefined;

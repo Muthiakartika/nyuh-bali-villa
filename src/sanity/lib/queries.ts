@@ -39,6 +39,13 @@ const referenceHref = `{"resolved": select(
 )}.resolved`;
 
 /**
+ * An uploaded file wins wherever one exists, without also requiring the
+ * `linkType` radio to say "file" — the same rule an image follows, where the
+ * asset beats `externalUrl`. The guard used to be there and it made the
+ * upload box a no-op on every link the migration seeded, because those carry
+ * no `linkType`: an editor could drop a new menu in, publish, and watch the
+ * button go on opening the old PDF with nothing to say why.
+ *
  * `->` cannot be followed by a function call — `reference->select(…)` is a
  * parse error — so the branch runs inside a projection and the one attribute
  * it computes is read straight back off it. Verified against the dataset.
@@ -47,7 +54,7 @@ const linkProjection = `{
   ...,
   "href": select(
     linkType == "internal" && defined(reference) => reference->${referenceHref},
-    linkType == "file" && defined(file.asset) => file.asset->url,
+    defined(file.asset) => file.asset->url,
     href
   )
 }`;

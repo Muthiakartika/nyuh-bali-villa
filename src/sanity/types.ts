@@ -46,7 +46,7 @@ export type SanitySeo = {
 export type SanityLink = {
   label: string;
   href: string;
-  linkType?: "internal" | "custom";
+  linkType?: "internal" | "file" | "custom";
   external?: boolean;
   inScope?: boolean;
   variant?: "solid" | "outline";
