@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
 import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
-import { LegalSection } from "@/components/legal/LegalSection";
+import { LegalIntro, LegalSection } from "@/components/legal/LegalSection";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { getLegalPage, getPropertySite } from "@/sanity/lib/content";
-import { resolvePageMetadata } from "@/sanity/lib/metadata";
+import { resolveDocumentMetadata } from "@/sanity/lib/metadata";
+
+const PATH = "/privacy-policy";
 
 export async function generateMetadata(): Promise<Metadata> {
-  // A published `page` document's SEO wins; otherwise this stays
-  // exactly the live site's title and description from src/data/seo.ts.
-  return resolvePageMetadata("/privacy-policy");
+  // The legal page document's own SEO wins — see terms-conditions/page.tsx.
+  const { document } = await getLegalPage(PATH);
+  return resolveDocumentMetadata(PATH, document);
 }
 
 // See terms-conditions/page.tsx for why this hard-codes the Ubud site rather
@@ -20,15 +22,17 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function PrivacyPolicyPage() {
   const site = await getPropertySite("ubud");
   // Published legal copy wins; otherwise src/data/legal.ts.
-  const { sections } = await getLegalPage("/privacy-policy");
+  const { sections, document } = await getLegalPage(PATH);
+  const title = document?.title?.trim() || "Privacy Policy";
   return (
     <>
-      <PropertyHeader site={site} activeHref="/privacy-policy" />
+      <PropertyHeader site={site} activeHref={PATH} />
       <main>
-        <BreadcrumbJsonLd path="/privacy-policy" />
+        <BreadcrumbJsonLd path={PATH} name={title} />
         {/* Same treatment as Terms & Conditions — see the note there. */}
         <Section tone="sand" space="loose" width="narrow">
-          <SectionHeading title="Privacy Policy" as="h1" size="display" />
+          <SectionHeading title={title} as="h1" size="display" />
+          <LegalIntro text={document?.intro} />
 
           <div className="mt-11 flex flex-col gap-10 md:mt-14">
             {sections.map((section) => (

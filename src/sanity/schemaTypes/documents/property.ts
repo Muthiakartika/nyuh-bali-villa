@@ -150,7 +150,15 @@ export const property = defineType({
       group: "contact",
       of: [defineArrayMember({ type: "string" })],
     }),
-    defineField({ name: "email", title: "Email", type: "string", group: "contact" }),
+    defineField({
+      name: "email",
+      title: "Email",
+      type: "string",
+      group: "contact",
+      description:
+        "Shown in the footer and on the contact page. It is also the inbox this property's website forms are sent to, unless the developer has set a server override (CONTACT_TO_…). One address only.",
+      validation: (Rule) => Rule.email(),
+    }),
     defineField({
       name: "maps",
       title: "Google Maps link",

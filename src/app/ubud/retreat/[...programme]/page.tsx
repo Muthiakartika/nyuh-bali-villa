@@ -28,7 +28,13 @@ import { PropertyHero } from "@/components/property/PropertyHero";
 import { ExperienceDetailBody } from "@/components/property/ExperienceDetail";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
-import { getExperience, getExperiences, getPropertySite, getSiteLabels } from "@/sanity/lib/content";
+import {
+  getExperience,
+  getExperiences,
+  getPropertySite,
+  getRetreatInquiry,
+  getSiteLabels,
+} from "@/sanity/lib/content";
 import { resolveDocumentMetadata } from "@/sanity/lib/metadata";
 
 const PREFIX = "retreat/";
@@ -81,6 +87,9 @@ export default async function RetreatProgrammePage({
   if (!item) notFound();
   const site = await getPropertySite("ubud");
   const labels = await getSiteLabels();
+  // The enquiry form at the foot of the page — Site settings, one copy for
+  // all six programmes.
+  const inquiry = await getRetreatInquiry();
   // The closing "Other Personalized Luxury Retreat" grid shows the *other*
   // retreats, so their thumbnails have to be resolved here — the detail body
   // is handed one experience and cannot see the rest.
@@ -104,6 +113,7 @@ export default async function RetreatProgrammePage({
           site={site}
           cardImages={cardImages}
           labels={labels}
+          inquiry={inquiry}
         />
         <AwardsRow variant={site.awards.variant} badges={site.awards.badges} />
       </main>

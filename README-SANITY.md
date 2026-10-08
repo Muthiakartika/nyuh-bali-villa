@@ -357,7 +357,16 @@ and `Code : "ilovenyuh"` were literals inside `DirectBookingDeals`, on a bar
 that renders on all 78 pages — and the same code was already an editable field
 on the About band, so the two could drift apart. `DirectBookingDeals` is now a
 server component that resolves all three strings and renders the client bar
-(`DirectBookingDealsBar`), which is presentation only.
+(`DirectBookingDealsBar`), which is presentation only. Since 2026-10-08 it can
+also be switched off: Site settings → Booking offer → **Hide the offer bar**.
+Clearing the offer line does not do it — an empty field means "the default".
+
+**Four fields that looked editable and were not (fixed 2026-10-08).** Legal
+page Title / Intro / SEO, the property's Email as the forms' inbox, the offer
+bar's on/off, and the retreat programmes' Inquiry form (Site settings →
+**Retreat enquiry form**; seed an existing dataset with
+`npm run sanity:retreat-inquiry`, `:dry` first, after the deploy). Details in
+CLAUDE.md, under "A re-check on 2026-10-08".
 
 **Paragraphs are rich text.** Nine fields moved from plain `text` /
 `string[]` to the new `proseRichText`: the About narrative, the prose band,

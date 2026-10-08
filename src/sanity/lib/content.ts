@@ -20,6 +20,7 @@ import type { Post, PostBlock } from "@/data/posts";
 import type { PropertySite, PropertySlug } from "@/data/properties";
 import type { RoomDetail } from "@/data/rooms";
 import type { Testimonial } from "@/data/testimonials";
+import type { InquiryField } from "@/components/property/InquiryForm";
 import type { PackageItem } from "@/components/property/PackageList";
 import {
   instagramFeedWidget,
@@ -28,7 +29,7 @@ import {
 } from "@/components/property/instagramFeed";
 import type { ArticleBlock } from "@/components/property/postBlocks";
 
-import { EXPERIENCES } from "@/data/experiences";
+import { EXPERIENCES, RETREAT_INQUIRY_FIELDS } from "@/data/experiences";
 import { PRIVACY_POLICY_SECTIONS, TERMS_CONDITIONS_SECTIONS } from "@/data/legal";
 import { POSTS } from "@/data/posts";
 import { PROPERTY_SITES } from "@/data/properties";
@@ -56,6 +57,7 @@ import type {
   SanityArticleBlock,
   SanityExperience,
   SanityImage,
+  SanityInquiryField,
   SanityLegalPage,
   SanityPackageItem,
   SanityPackageSet,
@@ -667,6 +669,9 @@ export type DirectBookingDeal = {
   headline: string;
   code?: string;
   buttonLabel: string;
+  /** Site settings' "Hide the offer bar" switch. When true the bar renders
+   *  nowhere, and the footer drops the padding it reserved for it. */
+  hidden: boolean;
 };
 
 /**
@@ -688,6 +693,9 @@ export async function getDirectBookingDeal(): Promise<DirectBookingDeal> {
     headline: settings?.dealHeadline || "Direct Booking Deals 66% Off",
     code: settings?.dealCode ?? 'Code : "ilovenyuh"',
     buttonLabel: settings?.dealButtonLabel || "Book Now",
+    // Only an explicit `true` hides it: unset is every document published
+    // before the switch existed, and those keep the bar.
+    hidden: settings?.dealHidden === true,
   };
 }
 
@@ -738,5 +746,53 @@ export async function getSiteLabels(): Promise<SiteLabels> {
       s?.relatedRetreatsHeading?.trim() || "Other Personalized Luxury Retreat",
     inquiry: s?.inquiryHeading?.trim() || "Inquiry",
     followInstagram: s?.followInstagramLabel?.trim() || "Follow on Instagram",
+  };
+}
+
+/**
+ * A form's questions as the Studio stores them, in the shape `InquiryForm`
+ * takes. One converter for both places a form is authored — an "Enquiry form"
+ * section on a page, and the retreat enquiry form in Site settings — so the
+ * two cannot read the same field differently.
+ */
+export function toInquiryFields(fields: SanityInquiryField[] | null | undefined): InquiryField[] {
+  return (fields ?? []).map(
+    (field) =>
+      ({
+        kind: field.kind,
+        name: field.name,
+        label: field.label,
+        required: field.required,
+        ...(field.options?.length ? { options: field.options } : {}),
+      }) as InquiryField,
+  );
+}
+
+export type RetreatInquiry = {
+  fields: InquiryField[];
+  submitLabel?: string;
+  confirmation?: string;
+};
+
+/**
+ * The enquiry form that closes the six retreat programmes, from Site settings.
+ *
+ * It was the one form on the site an editor could not touch: its six
+ * questions were a constant in `ExperienceDetail.tsx`, while every other form
+ * is an "Enquiry form" section with its questions in the Studio.
+ *
+ * Empty falls back to the live form's six questions, and an unset button or
+ * confirmation to `InquiryForm`'s own defaults — so an unpublished or
+ * half-filled document renders exactly the form the pages had before. The
+ * heading is not here: it is `getSiteLabels().inquiry`, the same Site
+ * settings field it always was, now shown in this form's group.
+ */
+export async function getRetreatInquiry(): Promise<RetreatInquiry> {
+  const s = await getSiteSettings();
+  const fields = toInquiryFields(s?.retreatInquiryFields);
+  return {
+    fields: fields.length ? fields : RETREAT_INQUIRY_FIELDS,
+    submitLabel: s?.retreatInquirySubmitLabel?.trim() || undefined,
+    confirmation: s?.retreatInquiryConfirmation?.trim() || undefined,
   };
 }

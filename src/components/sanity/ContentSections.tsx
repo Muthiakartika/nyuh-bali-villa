@@ -16,7 +16,7 @@ import { InquiryForm } from "@/components/property/InquiryForm";
 import { InstagramTeaser } from "@/components/property/InstagramTeaser";
 import { PropertyPanel } from "@/components/home/PropertyPanel";
 import type { InstagramFeedKey } from "@/components/property/instagramFeed";
-import { getInstagramWidget, getSiteLabels } from "@/sanity/lib/content";
+import { getInstagramWidget, getSiteLabels, toInquiryFields } from "@/sanity/lib/content";
 import { LinkCardGrid } from "@/components/property/LinkCardGrid";
 import { PackageList } from "@/components/property/PackageList";
 import { ProgramList } from "@/components/property/ProgramList";
@@ -26,7 +26,6 @@ import { RoomList } from "@/components/property/RoomList";
 import { TreatmentList } from "@/components/property/TreatmentList";
 import SanityPortableText from "@/components/sanity/SanityPortableText";
 import type { PropertySite } from "@/data/properties";
-import type { InquiryField } from "@/components/property/InquiryForm";
 import type { PackageItem } from "@/components/property/PackageList";
 import { resolveImageUrl, resolveImageUrls } from "@/sanity/lib/image";
 import { toRuns } from "@/sanity/lib/richText";
@@ -584,16 +583,7 @@ export function InquiryFormBlock({
   section: Narrow<"inquiryFormSection">;
   site: PropertySite;
 }) {
-  const fields = section.fields.map(
-    (field) =>
-      ({
-        kind: field.kind,
-        name: field.name,
-        label: field.label,
-        required: field.required,
-        ...(field.options?.length ? { options: field.options } : {}),
-      }) as InquiryField,
-  );
+  const fields = toInquiryFields(section.fields);
   return (
     <Section tone={section.tone} width="narrow" id={section.anchor}>
       <InquiryForm

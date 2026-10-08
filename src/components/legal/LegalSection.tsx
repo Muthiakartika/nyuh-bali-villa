@@ -19,6 +19,24 @@ type LegalSectionProps = {
  * someone may actually be obliged to read. Gold stays on the list markers,
  * where contrast carries no meaning.
  */
+/**
+ * The Legal page document's optional Intro — a paragraph between the title and
+ * the first numbered section. Neither page publishes one today, so this
+ * renders nothing on either; it exists so the field in the Studio does what
+ * it says rather than being stored and ignored. Same type as a paragraph
+ * section, at the band's own heading→content gap; `whitespace-pre-line` keeps
+ * the line breaks an editor types into the plain-text field.
+ */
+export function LegalIntro({ text }: { text?: string }) {
+  const intro = text?.trim();
+  if (!intro) return null;
+  return (
+    <p className="mt-8 text-[17px] leading-[1.9] font-light whitespace-pre-line text-text md:mt-10">
+      {intro}
+    </p>
+  );
+}
+
 export function LegalSection({ section }: LegalSectionProps) {
   return (
     <section className="flex flex-col gap-4">

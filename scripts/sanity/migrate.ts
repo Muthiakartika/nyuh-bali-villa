@@ -41,7 +41,12 @@ import { join } from "node:path";
 import { createClient } from "@sanity/client";
 import { getCliClient } from "sanity/cli";
 
-import { EXPERIENCES, PERSONALISED_RETREATS, type Experience } from "../../src/data/experiences";
+import {
+  EXPERIENCES,
+  PERSONALISED_RETREATS,
+  RETREAT_INQUIRY_FIELDS,
+  type Experience,
+} from "../../src/data/experiences";
 import {
   PRIVACY_POLICY_SECTIONS,
   TERMS_CONDITIONS_SECTIONS,
@@ -590,6 +595,22 @@ async function migrateProperties() {
 
 // ── Site settings ──────────────────────────────────────────────────────
 
+/** `RETREAT_INQUIRY_FIELDS` as Site settings stores it — the same shape an
+ * "Enquiry form" section's `fields` take. `seed-retreat-inquiry.mjs` writes
+ * the same value into an existing dataset, where this step would be a no-op
+ * (`createIfNotExists`). */
+function retreatInquiryFieldsValue() {
+  return RETREAT_INQUIRY_FIELDS.map((field, index) => ({
+    _type: "inquiryField",
+    _key: key("retreat-inquiry", index),
+    kind: field.kind,
+    name: field.name,
+    label: field.label,
+    ...("options" in field && field.options?.length ? { options: field.options } : {}),
+    ...(field.required ? { required: true } : {}),
+  }));
+}
+
 async function migrateSiteSettings() {
   const home = ROUTE_SEO["/"];
   await write({
@@ -630,6 +651,11 @@ async function migrateSiteSettings() {
       },
     ],
     defaultSeo: seoFor("/"),
+    // The form that closes the six retreat programmes. Seeded so the Studio
+    // shows the six questions the pages render, rather than an empty list an
+    // editor would have to rebuild from memory to change one label.
+    retreatInquiryFields: retreatInquiryFieldsValue(),
+    retreatInquirySubmitLabel: "Send",
   });
   console.log("  siteSettings");
 }

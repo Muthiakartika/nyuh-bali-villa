@@ -8,20 +8,12 @@ import { LinkCardGrid } from "@/components/property/LinkCardGrid";
 import { ProgramList } from "@/components/property/ProgramList";
 import { FaqList } from "@/components/property/FaqList";
 import { InquiryForm, type InquiryField } from "@/components/property/InquiryForm";
-import { otherPersonalisedRetreats, type Experience } from "@/data/experiences";
+import {
+  otherPersonalisedRetreats,
+  RETREAT_INQUIRY_FIELDS,
+  type Experience,
+} from "@/data/experiences";
 import type { PropertySite } from "@/data/properties";
-
-/** The live retreat pages all close with the same six-field WPForms enquiry
- * form, reached by the INQUIRY button that sits beside BOOK NOW at the top.
- * Field labels are the live form's own. */
-const RETREAT_INQUIRY_FIELDS: InquiryField[] = [
-  { kind: "text", name: "name", label: "Name", required: true },
-  { kind: "email", name: "email", label: "Email", required: true },
-  { kind: "number", name: "pax", label: "No of Pax" },
-  { kind: "date", name: "checkIn", label: "Check-in" },
-  { kind: "date", name: "checkOut", label: "Check-out" },
-  { kind: "textarea", name: "message", label: "Message" },
-];
 
 const INQUIRY_ANCHOR = "retreat-inquiry";
 
@@ -44,6 +36,12 @@ type ExperienceDetailBodyProps = {
    * one experience and cannot see the others.
    */
   cardImages?: Record<string, string | undefined>;
+  /**
+   * The retreat enquiry form — Site settings → "Retreat enquiry form", one
+   * copy for all six programmes. Only the retreat route passes it; the
+   * default is the live form, for any caller that does not.
+   */
+  inquiry?: { fields: InquiryField[]; submitLabel?: string; confirmation?: string };
 };
 
 /**
@@ -76,6 +74,7 @@ export function ExperienceDetailBody({
     relatedRetreats: "Other Personalized Luxury Retreat",
     inquiry: "Inquiry",
   },
+  inquiry = { fields: RETREAT_INQUIRY_FIELDS },
 }: ExperienceDetailBodyProps) {
   // Same rule as `RoomDetail`: the page opens on `hero`, so the gallery below
   // shows everything except that one photograph rather than repeating it.
@@ -451,7 +450,9 @@ export function ExperienceDetailBody({
           <InquiryForm
             property={site.slug}
             heading={labels.inquiry}
-            fields={RETREAT_INQUIRY_FIELDS}
+            fields={inquiry.fields}
+            submitLabel={inquiry.submitLabel}
+            confirmation={inquiry.confirmation}
           />
         </Section>
       ) : null}

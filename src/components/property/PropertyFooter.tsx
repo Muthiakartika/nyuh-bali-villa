@@ -11,7 +11,7 @@ import {
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { CurrentYear } from "@/components/ui/CurrentYear";
-import { getFooterSettings } from "@/sanity/lib/content";
+import { getDirectBookingDeal, getFooterSettings } from "@/sanity/lib/content";
 
 type PropertyFooterProps = {
   site: PropertySite;
@@ -40,6 +40,7 @@ export async function PropertyFooter({ site }: PropertyFooterProps) {
   // file's. Unpublished or unconfigured it resolves to exactly the literals
   // this component used to hold, so nothing about the rendered footer moved.
   const footer = await getFooterSettings(site);
+  const dealHidden = (await getDirectBookingDeal()).hidden;
   const footerLinks = footer.menuLinks;
   const mailHref = `mailto:${site.contact.email}`;
 
@@ -49,8 +50,14 @@ export async function PropertyFooter({ site }: PropertyFooterProps) {
   return (
     // Mobile `pb-24` clears DirectBookingDeals, which docks as a full-width bar
     // along the bottom edge on phones; on desktop that bar is a corner card, so
-    // the padding drops to `md:pb-6`.
-    <footer className="border-t-2 border-primary bg-ink px-5 pt-8 pb-24 sm:px-8 md:pt-9 md:pb-6">
+    // the padding drops to `md:pb-6`. With the bar switched off in Site
+    // settings there is nothing to clear, and the phone gets the desktop
+    // padding rather than 72px of empty dark band under the legal line.
+    <footer
+      className={`border-t-2 border-primary bg-ink px-5 pt-8 ${
+        dealHidden ? "pb-6" : "pb-24"
+      } sm:px-8 md:pt-9 md:pb-6`}
+    >
       <Container>
         <div className="grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-[1.1fr_0.8fr_1.15fr_1.25fr]">
           {/* Brand column — logo, the booking CTA, and social, on the same row

@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { inquiryFieldMember } from "../objects/sections/inquiryFormSection";
 
 /**
  * Everything the site says that belongs to neither one page nor one property:
@@ -26,6 +27,7 @@ export const siteSettings = defineType({
     { name: "brand", title: "Brand", default: true },
     { name: "labels", title: "Buttons & section labels" },
     { name: "offer", title: "Booking offer" },
+    { name: "retreatInquiry", title: "Retreat enquiry form" },
     { name: "footer", title: "Footer" },
     { name: "seo", title: "Search defaults" },
   ],
@@ -125,13 +127,45 @@ export const siteSettings = defineType({
       description:
         'Over the grid that closes the four personalised retreat pages. Empty reads "Other Personalized Luxury Retreat".',
     }),
+    // ── Retreat enquiry form ─────────────────────────────────────────
+    //
+    // The form that closes all six retreat programmes. Here and not on each
+    // experience for the reason the labels above are: it is one form, six
+    // times, and six copies would drift. Every other form on the site is an
+    // "Enquiry form" section on its own page and is edited there.
     defineField({
       name: "inquiryHeading",
-      title: "Retreat enquiry heading",
+      title: "Heading",
       type: "string",
-      group: "labels",
+      group: "retreatInquiry",
       description:
-        'Over the enquiry form on a retreat page. Empty reads "Inquiry". The three standalone form pages set their own heading on the page itself.',
+        'Over the enquiry form at the foot of each retreat programme. Empty reads "Inquiry". The three standalone form pages set their own heading on the page itself.',
+    }),
+    defineField({
+      name: "retreatInquiryFields",
+      title: "Fields",
+      type: "array",
+      group: "retreatInquiry",
+      of: [inquiryFieldMember],
+      description:
+        "The questions, in order. Empty uses the live form's six: Name, Email, No of Pax, Check-in, Check-out, Message. Keep a field whose label contains \"Email\": pressing Reply on the notification answers the address typed there.",
+    }),
+    defineField({
+      name: "retreatInquirySubmitLabel",
+      title: "Submit button label",
+      type: "string",
+      group: "retreatInquiry",
+      description: 'Empty reads "Send".',
+      validation: (Rule) => Rule.max(30),
+    }),
+    defineField({
+      name: "retreatInquiryConfirmation",
+      title: "Confirmation message",
+      type: "text",
+      rows: 2,
+      group: "retreatInquiry",
+      description:
+        "Shown in place of the form once the enquiry has been sent. Empty reads “Thank you for reaching out — we'll get back to you shortly.”",
     }),
     defineField({
       name: "followInstagramLabel",
@@ -168,6 +202,21 @@ export const siteSettings = defineType({
       description:
         'Empty reads "Book Now". It always points at the booking engine of whichever property the page belongs to.',
       validation: (Rule) => Rule.max(30),
+    }),
+    // A switch rather than "leave the offer line empty", because empty already
+    // means something else here: every field on this document falls back to
+    // the string the site shipped with, so clearing the offer line brings back
+    // "Direct Booking Deals 66% Off" — a promotion that may have ended.
+    // Named for *hiding* so an unset switch (every document published before
+    // this field existed) reads as off and the bar stays, exactly as it was.
+    defineField({
+      name: "dealHidden",
+      title: "Hide the offer bar",
+      type: "boolean",
+      group: "offer",
+      description:
+        "Turn on to take the bar off every page — for when no direct-booking promotion is running. Turn it off again to bring it back with the wording above.",
+      initialValue: false,
     }),
     defineField({
       name: "homeLogo",

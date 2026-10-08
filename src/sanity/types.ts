@@ -135,6 +135,18 @@ export type SanityPropertyPanel = {
   href?: string;
 };
 
+/** One question on a form — an "Enquiry form" section's, or the retreat
+ *  enquiry form's in Site settings. `toInquiryFields` turns it into the
+ *  `InquiryField` the form component takes. */
+export type SanityInquiryField = {
+  _key: string;
+  kind: string;
+  name: string;
+  label: string;
+  options?: string[];
+  required?: boolean;
+};
+
 export type SanitySection =
   | (SectionBase & {
       _type: "heroSection";
@@ -290,14 +302,7 @@ export type SanitySection =
   | (SectionBase & {
       _type: "inquiryFormSection";
       heading: string;
-      fields: {
-        _key: string;
-        kind: string;
-        name: string;
-        label: string;
-        options?: string[];
-        required?: boolean;
-      }[];
+      fields: SanityInquiryField[];
       submitLabel?: string;
       confirmation?: string;
       pricing?: {
@@ -534,10 +539,14 @@ export type SanitySiteSettings = {
   blogLabel?: string;
   relatedRetreatsHeading?: string;
   inquiryHeading?: string;
+  retreatInquiryFields?: SanityInquiryField[];
+  retreatInquirySubmitLabel?: string;
+  retreatInquiryConfirmation?: string;
   followInstagramLabel?: string;
   dealHeadline?: string;
   dealCode?: string;
   dealButtonLabel?: string;
+  dealHidden?: boolean;
   homeLogo?: SanityImage;
   footerLogo?: SanityImage;
   footerBookingLabel?: string;

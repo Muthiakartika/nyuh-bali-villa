@@ -23,6 +23,7 @@ export const legalPage = defineType({
       title: "Title",
       type: "string",
       group: "content",
+      description: "The page's heading, and its name in the breadcrumb search engines read.",
       validation: (Rule) => Rule.required().max(120),
     }),
     defineField({
@@ -44,6 +45,8 @@ export const legalPage = defineType({
       type: "text",
       rows: 3,
       group: "content",
+      description:
+        "Optional. A paragraph under the heading, before the first section. Empty shows nothing.",
     }),
     defineField({
       name: "sections",

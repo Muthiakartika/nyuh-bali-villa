@@ -1,17 +1,23 @@
 import type { Metadata } from "next";
 import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { PropertyFooter } from "@/components/property/PropertyFooter";
-import { LegalSection } from "@/components/legal/LegalSection";
+import { LegalIntro, LegalSection } from "@/components/legal/LegalSection";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { getLegalPage, getPropertySite } from "@/sanity/lib/content";
-import { resolvePageMetadata } from "@/sanity/lib/metadata";
+import { resolveDocumentMetadata } from "@/sanity/lib/metadata";
+
+const PATH = "/terms-conditions";
 
 export async function generateMetadata(): Promise<Metadata> {
-  // A published `page` document's SEO wins; otherwise this stays
-  // exactly the live site's title and description from src/data/seo.ts.
-  return resolvePageMetadata("/terms-conditions");
+  // The legal page document's own SEO tab wins, field by field; otherwise
+  // this stays exactly the live site's title and description from
+  // src/data/seo.ts. It used to ask for a `page` document at this path —
+  // which no one ever creates for a legal page — so the SEO an editor typed
+  // into the Legal page document was never read.
+  const { document } = await getLegalPage(PATH);
+  return resolveDocumentMetadata(PATH, document);
 }
 
 // Global, not per-property — the live site renders this (and Privacy Policy)
@@ -30,15 +36,19 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default async function TermsConditionsPage() {
   const site = await getPropertySite("ubud");
-  // Published legal copy wins; otherwise src/data/legal.ts.
-  const { sections } = await getLegalPage("/terms-conditions");
+  // Published legal copy wins; otherwise src/data/legal.ts. The title and
+  // intro come from the same document, so editing them in the Studio is not
+  // a field that silently does nothing.
+  const { sections, document } = await getLegalPage(PATH);
+  const title = document?.title?.trim() || "Terms & Conditions";
   return (
     <>
-      <PropertyHeader site={site} activeHref="/terms-conditions" />
+      <PropertyHeader site={site} activeHref={PATH} />
       <main>
-        <BreadcrumbJsonLd path="/terms-conditions" />
+        <BreadcrumbJsonLd path={PATH} name={title} />
         <Section tone="sand" space="loose" width="narrow">
-          <SectionHeading title="Terms & Conditions" as="h1" size="display" />
+          <SectionHeading title={title} as="h1" size="display" />
+          <LegalIntro text={document?.intro} />
 
           <div className="mt-11 flex flex-col gap-10 md:mt-14">
             {sections.map((section) => (

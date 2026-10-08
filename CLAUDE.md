@@ -355,6 +355,48 @@ rides on `PropertySite` now, filled in by `getPropertySite`, which is what
 lets two Client Components read a site-wide setting without threading a prop
 through all 31 routes that render the header.
 
+**A re-check on 2026-10-08 found the claim above too strong, and four fields
+that *looked* editable and were not.** The worst kind, because an editor
+changes them, publishes, and nothing happens. All four are fixed:
+
+- **Legal page Title, Intro and SEO were read by nothing.** Both routes
+  hard-coded the `<h1>` and asked `resolvePageMetadata` for a `page` document
+  at their path — which never exists for a legal page — so the SEO filled in
+  on both Legal page documents was ignored. They read the `legalPage` document
+  now (`resolveDocumentMetadata`), and `LegalIntro` renders the intro when one
+  is set.
+- **Form mail ignored the property's Email in Sanity.** With `CONTACT_TO_*`
+  unset, `/api/contact` fell back to `src/data/properties.ts`, so changing the
+  address in the Studio moved the footer and not the inbox. It falls back to
+  `getPropertySite` now — the same value the footer shows — and refuses
+  anything that is not one plain address.
+- **The offer bar could be reworded but never switched off** — clearing the
+  offer line brings the default back. Site settings → **"Hide the offer bar"**
+  (`dealHidden`) removes it everywhere, including a page's own `dealsSection`,
+  and `PropertyFooter` drops the phone padding it reserved for the bar.
+- **The six retreat programmes' Inquiry form was a constant** in
+  `ExperienceDetail.tsx` — the one form on the site with no fields in the
+  Studio. Site settings → **"Retreat enquiry form"** holds its fields, button
+  and confirmation now (beside the heading, `inquiryHeading`, which moved into
+  that group), reusing `inquiryFieldMember` so it is the same shape as every
+  "Enquiry form" section; `toInquiryFields` reads both. Empty falls back to
+  `RETREAT_INQUIRY_FIELDS`, now in `src/data/experiences.ts`.
+  `npm run sanity:retreat-inquiry` seeds the six questions into an existing
+  dataset (`:dry` first, and only after the deploy that adds the schema).
+
+All four were verified to change nothing as published: two clean builds
+either side, and `<main>`, the head's metadata, the footer and everything
+after it byte-identical on all 79 prerendered pages.
+
+**Still in code, and visible** — copy rather than accessible names, found by
+the same re-check and left as known gaps: the Contact form's five field labels
+(`ContactForm.tsx`, heading and confirmation *are* fields); "Amenities" /
+"Facilities" over the two lists on a room page; "Read more" / "Read less"
+(`ReadMore`, `PostGrid`) and "min read" on the blog; the names and membership
+of the "Other Personalized Luxury Retreat" grid (`PERSONALISED_RETREATS` —
+only each card's photograph is a field); and the "Seminyak / Ubud" links in
+the landing page's header and footer (`PROPERTIES`).
+
 **The 47 document-backed pages set their headings and buttons from Site
 settings now, not from the components.** Rooms, experiences, posts and the
 legal pages have no page-builder — their content comes from their own document
@@ -639,7 +681,7 @@ content.
 
   **The one-request order is the security property, and it is also a hard constraint.** There is deliberately no verify-only route — an earlier pass had `/api/turnstile/verify` and it had to go the moment mail was added. **Cloudflare spends a token the first time it is checked**, so verifying in one request and sending in another fails the second one every time with `timeout-or-duplicate`. Check and send stay in one handler, and the widget resets itself whenever that handler says no.
 
-  **Nothing about the recipient comes from the browser.** The client sends a property slug; the server maps it to an address it already knows (`CONTACT_TO_*`, else the published address in `data/properties.ts`). A form that could name its own recipient is an open relay with a nice typeface. For the same reason the visitor's own address only ever reaches `Reply-To`, and only after `isEmailAddress` has refused anything carrying a comma, an angle bracket or a line break — sending *as* the visitor fails SPF/DKIM and lands the mail in spam.
+  **Nothing about the recipient comes from the browser.** The client sends a property slug; the server maps it to an address it already knows (`CONTACT_TO_*`, else the Email on the property document in Sanity — the address the footer shows — else `data/properties.ts`). A form that could name its own recipient is an open relay with a nice typeface. For the same reason the visitor's own address only ever reaches `Reply-To`, and only after `isEmailAddress` has refused anything carrying a comma, an angle bracket or a line break — sending *as* the visitor fails SPF/DKIM and lands the mail in spam.
 
   **Sender and recipient are configured separately, and per property, because the business runs two domains.** `SENDGRID_FROM_SEMINYAK` / `SENDGRID_FROM_UBUD` name the sender, falling back to `SENDGRID_FROM_EMAIL` for either; `CONTACT_TO_SEMINYAK` / `CONTACT_TO_UBUD` name the inbox, falling back to that property's published address; `CONTACT_CC` copies a comma-separated list on both, for watching real submissions arrive without diverting them, and drops any entry equal to that property's own recipient because SendGrid rejects a send where one address appears twice across to/cc/bcc. Only the **sender** side needs anything of SendGrid: a From address must be a verified Sender Identity there or the send is refused with a 403, and its domain is what SPF/DKIM are checked against — which is why Ubud should leave from `ubudnyuhbali.com` rather than borrowing Seminyak's domain, once both are authenticated. Recipients need no verification at all. A property with no sender resolvable logs which of the two variables to set and is the only configuration that reaches SendGrid's 403. **The notification carries the property's wordmark, centred on the dark band, and it travels *inside* the message.** `src/server/emailLogos.ts` holds it as base64 PNG, sent as an inline attachment and referenced as `cid:`. Three constraints pushed it there and each is easy to re-discover the hard way: the site's own `logoSrc` is the right artwork — its tagline is set in cream, for exactly this dark header — but it is **WebP, which Outlook on Windows cannot render**, and Outlook is what a resort's reservations inbox tends to be; the media library's only PNGs are a *different* lockup whose tagline is dark olive and vanishes against `ink` (compositing them over #261e13 and looking is what settled it, and `Logo-Nyuh-Bali.png` hides an Ubud-specific mark behind a generic name); and a converted file would need public hosting that does not exist yet. Embedding answers all three, and skips the "display images" prompt as well. The PNG is **pre-composited onto #261e13**, so it needs no alpha and costs 8.6 KB — about 11.5 KB base64 per send — but that also means **a change to the band's colour requires re-exporting it**. Width and height are set as attributes *and* in the style, and the cell carries `align="center"`, because Outlook reads the attributes, invents a size without them, and ignores `margin:0 auto`; the `alt` is styled in gold so a blocked image leaves a line of type rather than a broken box. The message carries a real `<head>` — viewport, charset, `x-apple-disable-message-reformatting`, and **`color-scheme: light`**, the last of which guards the logo specifically: with the band's colour baked into the PNG, a client that force-inverts for dark mode would lighten the band and leave the mark sitting in a dark rectangle. Measured at 320 / 375 / 414 with a long unbroken address in the body: no overflow, and `word-break:break-word` on the value cell is what keeps it that way. **Every delivery logs one line naming both ends** — `sent "Contact Us" (seminyak) from Nyuh Bali Seminyak <no-reply@nyuhbalivillas.com> → …` — business addresses only, never the visitor's; the sender is in it because the sender is the half SendGrid refuses over, so a 403 can be read rather than guessed at.
 

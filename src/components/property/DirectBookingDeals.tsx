@@ -28,6 +28,10 @@ export async function DirectBookingDeals({
   buttonLabel,
 }: DirectBookingDealsProps) {
   const deal = await getDirectBookingDeal();
+  // Site settings → "Hide the offer bar". Site-wide on purpose, so it also
+  // wins over a page's own `dealsSection`: switching the promotion off has to
+  // mean it is off everywhere, not everywhere except the pages that restate it.
+  if (deal.hidden) return null;
   return (
     <DirectBookingDealsBar
       bookingHref={bookingHref}

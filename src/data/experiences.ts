@@ -5,7 +5,27 @@
 //   src/app/ubud/[...experience]/page.tsx
 //   src/components/property/ExperienceDetail.tsx
 
+import type { InquiryField } from "@/components/property/InquiryForm";
+
 const U = "/uploads/";
+
+/** The enquiry form that closes all six retreat programmes — the live pages'
+ * six-field WPForms enquiry, reached by the INQUIRY button beside BOOK NOW at
+ * the top. Field labels are the live form's own.
+ *
+ * The fallback, not the source of truth: Site settings → "Retreat enquiry
+ * form" holds the published copy and wins whenever it has any fields. It is
+ * here rather than in `ExperienceDetail.tsx` so the migration can seed the
+ * Studio from the same list the page renders (a plain Node script cannot
+ * import a component). */
+export const RETREAT_INQUIRY_FIELDS: InquiryField[] = [
+  { kind: "text", name: "name", label: "Name", required: true },
+  { kind: "email", name: "email", label: "Email", required: true },
+  { kind: "number", name: "pax", label: "No of Pax" },
+  { kind: "date", name: "checkIn", label: "Check-in" },
+  { kind: "date", name: "checkOut", label: "Check-out" },
+  { kind: "textarea", name: "message", label: "Message" },
+];
 
 /** A titled run of bullets. One of these is a block inside a programme tier
  * ("Retreat Exclusive", "Complimentary"), or a stand-alone list like the

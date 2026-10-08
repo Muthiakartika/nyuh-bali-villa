@@ -30,7 +30,9 @@
     "sanity:menus": "node scripts/sanity/unify-menu-files.mjs",
     "sanity:menus:dry": "node scripts/sanity/unify-menu-files.mjs --dry-run",
     "sanity:spa-steps": "node scripts/sanity/split-treatment-steps.mjs",
-    "sanity:spa-steps:dry": "node scripts/sanity/split-treatment-steps.mjs --dry-run"
+    "sanity:spa-steps:dry": "node scripts/sanity/split-treatment-steps.mjs --dry-run",
+    "sanity:retreat-inquiry": "node --experimental-strip-types --no-warnings scripts/sanity/seed-retreat-inquiry.mjs",
+    "sanity:retreat-inquiry:dry": "node --experimental-strip-types --no-warnings scripts/sanity/seed-retreat-inquiry.mjs --dry-run"
   },
   "dependencies": {
     "@portabletext/react": "^8.0.1",

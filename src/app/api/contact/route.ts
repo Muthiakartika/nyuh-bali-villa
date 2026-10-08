@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { PROPERTY_SITES, type PropertySlug } from "@/data/properties";
+import { getPropertySite } from "@/sanity/lib/content";
 import { verifyTurnstile } from "@/server/turnstile";
 import { sendMail } from "@/server/sendgrid";
 import { EMAIL_LOGOS } from "@/server/emailLogos";
@@ -38,8 +39,33 @@ const RECIPIENTS: Record<PropertySlug, string | undefined> = {
   ubud: process.env.CONTACT_TO_UBUD,
 };
 
-function recipientFor(property: PropertySlug): string {
-  return RECIPIENTS[property] || PROPERTY_SITES[property].contact.email;
+/**
+ * The env var, else **the email published on the property document in
+ * Sanity**, else `src/data/properties.ts`.
+ *
+ * The middle step is the fix. This used to skip straight to `src/data`, so an
+ * editor who changed the property's email in the Studio saw the footer and the
+ * contact page change while every enquiry went on arriving at the old inbox —
+ * the one place the address actually matters. `getPropertySite` is what the
+ * footer reads, so the two can no longer disagree.
+ *
+ * Still never from the request: the Studio is the business's own data, behind
+ * its own login. A value that is not one plain address — two addresses typed
+ * into the field, a stray comma — is refused here rather than handed to
+ * SendGrid, and the enquiry goes to the file's address instead of nowhere.
+ */
+async function recipientFor(property: PropertySlug): Promise<string> {
+  const configured = RECIPIENTS[property];
+  if (configured) return configured;
+
+  const published = (await getPropertySite(property)).contact.email.trim();
+  if (isEmailAddress(published)) return published;
+
+  const fallback = PROPERTY_SITES[property].contact.email;
+  console.error(
+    `[contact] the ${property} property's email in Sanity is not a single address ("${published}") — sending to ${fallback} instead.`,
+  );
+  return fallback;
 }
 
 /**
@@ -161,7 +187,7 @@ export async function POST(request: Request) {
   // real submissions arrive without taking them away from the resort, so it is
   // a **server** setting: the browser has no say in who gets a copy, for the
   // same reason it has no say in the recipient.
-  const to = recipientFor(property);
+  const to = await recipientFor(property);
   const copies = parseCopyList(process.env.CONTACT_CC, to);
 
   // "Nyuh Bali Seminyak" / "Nyuh Bali Ubud" — the same wording the site's own
@@ -228,7 +254,7 @@ export async function POST(request: Request) {
     // the same thing this project did before SendGrid existed — while the log
     // and `delivered: false` say plainly that the message went nowhere.
     console.error(
-      `[contact] SENDGRID_API_KEY is not set — "${formName}" (${property}) was NOT delivered.`,
+      `[contact] SENDGRID_API_KEY is not set — "${formName}" (${property}) was NOT delivered (it was addressed to ${to}).`,
     );
   }
 
