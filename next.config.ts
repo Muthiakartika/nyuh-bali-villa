@@ -11,7 +11,77 @@
 // that week. With it gone, such a URL fails loudly the first time it renders,
 // which is the failure this project can act on. Anything in the CMS still
 // holding an old URL is rewritten on read — see src/sanity/lib/uploads.ts.
+import { readdirSync } from "node:fs";
+import { join } from "node:path";
+
 import type { NextConfig } from "next";
+
+/**
+ * ── THE MEDIA LIBRARY, ONE REDIRECT PER FILE THAT EXISTS ───────────────
+ * Every photograph and menu PDF in `public/uploads/` keeps WordPress's own
+ * `/YYYY/MM/name.ext` layout, so an old `/wp-content/uploads/…` URL is the
+ * same path under a different prefix. That is what used to make this one
+ * line: `/wp-content/uploads/:path*` → `/uploads/:path*`.
+ *
+ * **The wildcard was replaced because of what it did to the files this
+ * build does NOT carry.** It matched those too, so a dead URL stopped
+ * being a plain 404 and became a **308 to one** — and a hop that ends in
+ * a 404 is strictly worse than the 404 it replaced. It is the same
+ * outcome for a crawler (nothing is indexed either way, and no ranking
+ * is preserved either way), but it manufactures a second URL on the way
+ * there: `/uploads/2016/02/easter.jpg` was never published by anything,
+ * and Ahrefs Site Audit reported it as a 404 page carrying one inlink —
+ * the inlink being this redirect. There are ~450 archived upload URLs
+ * this build does not carry, so that was ~450 URLs of our own making,
+ * waiting to be discovered one report at a time.
+ *
+ * Reading the directory at build time is what lets the rule distinguish
+ * them: a file that exists gets a redirect, a file that does not gets
+ * nothing and therefore a direct 404. **Coverage is identical** — the
+ * wildcard only ever resolved to 200 when the file was there.
+ *
+ * Three things worth knowing before changing this:
+ *
+ *  - **It runs at build, never at runtime.** `redirects()` is called by
+ *    `next build` to write the routes manifest, and the server reads the
+ *    manifest afterwards. The `readdirSync` must therefore stay inside
+ *    this function — at module scope it would run wherever
+ *    `next.config.ts` is loaded, including runtimes that do not ship
+ *    `public/`.
+ *  - **Regenerating is automatic.** Add a file to `public/uploads/` and
+ *    the next build redirects it; delete one and the redirect goes. There
+ *    is no manifest to keep in step, which is the failure this shape
+ *    avoids — a stale list would 404 a file that is actually there.
+ *  - **It is ~352 entries, and that is within the documented range.**
+ *    Next checks redirects on every request and suggests moving to
+ *    middleware past roughly a thousand; middleware is not an option here
+ *    anyway, because `src/proxy.ts`'s matcher excludes every path
+ *    carrying a file extension.
+ */
+function existingUploadRedirects() {
+  const root = join(process.cwd(), "public", "uploads");
+  const paths: string[] = [];
+
+  const walk = (dir: string, prefix: string) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const next = prefix ? `${prefix}/${entry.name}` : entry.name;
+      if (entry.isDirectory()) walk(join(dir, entry.name), next);
+      else paths.push(next);
+    }
+  };
+  walk(root, "");
+
+  // Sorted so the routes manifest is byte-stable across machines —
+  // readdir order is not guaranteed, and an unstable manifest turns every
+  // build into a diff.
+  paths.sort();
+
+  return paths.map((path) => ({
+    source: `/wp-content/uploads/${path}`,
+    destination: `/uploads/${path}`,
+    permanent: true as const,
+  }));
+}
 
 const nextConfig: NextConfig = {
   images: {
@@ -563,16 +633,38 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
-      // Nothing here for `/wp-content/uploads/2016/02/easter.jpg`, the fifth
-      // URL on the client's list, and the omission is deliberate. It was a
-      // 2016 seasonal promotion: this build has no Easter photograph, no
-      // seasonal offer page, and nothing whose name matches — the nearest
-      // candidate, `sweet-celebration.webp`, is a romantic bed setup with
-      // heart balloons, which is a different occasion wearing the word
-      // "celebration". The Internet Archive never captured the file, so it
-      // cannot even be looked at, and Ahrefs reports no referring domain for
-      // it, so a 404 costs nothing. Inventing a match is how a redirect
-      // starts lying; if the business wants one, it is a content decision.
+      // `easter.jpg`, the fifth URL on the client's list, and the one this
+      // file deliberately left alone until the page it belonged to turned up.
+      // The earlier note said the Internet Archive never captured the file so
+      // it could not be looked at — true of the file, and the wrong thing to
+      // have looked for. **The page it illustrated is archived**:
+      // `/easterholidaypackage.php` (20160119122841), whose `<h1>` is "Easter
+      // Holiday Package : USD 650++" and whose offer is "Escape three nights
+      // during Easter to private pool villa… 4 days 3 Nights stay in One
+      // Bedroom Pool Villa". So the subject is not Easter at all — it is the
+      // Seminyak One Bedroom Pool Villa, which this build carries, and
+      // `One-Bedroom-Pool-Villa-1.webp` is that villa's private pool, the
+      // phrase the offer leads with. That is a match read off the source
+      // rather than guessed at, which is what the earlier objection asked for.
+      // (`-3` is pinned to its own legacy URL above and `-2` is the room's
+      // hero, an interior; the pool is the closer read of "private pool
+      // villa".)
+      {
+        source: "/wp-content/uploads/2016/02/:file(easter(?:-\\d+x\\d+)?\\.jpe?g)",
+        destination: "/uploads/2023/03/One-Bedroom-Pool-Villa-1.webp",
+        permanent: true,
+      },
+      // The same name under this build's own prefix. It is not a WordPress
+      // URL and nothing ever published it — the wildcard at the foot of this
+      // block minted it, by sending the `/wp-content` spelling to a path with
+      // no file behind it, and Ahrefs indexed the 404 at the end of that hop.
+      // The rule above ends the hop for anything crawling the old URL today;
+      // this one retires the orphan the hop already created.
+      {
+        source: "/uploads/2016/02/:file(easter(?:-\\d+x\\d+)?\\.jpe?g)",
+        destination: "/uploads/2023/03/One-Bedroom-Pool-Villa-1.webp",
+        permanent: true,
+      },
 
 
       // The seven image URLs carrying the most links, none of which this
@@ -663,14 +755,15 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
-      // Everything else the media library ever served, at the same path under
-      // the prefix this build uses. LAST, because the rules above are more
-      // specific and Next takes the first match.
-      {
-        source: "/wp-content/uploads/:path*",
-        destination: "/uploads/:path*",
-        permanent: true,
-      },
+      // Every file the media library still serves, at the same path under
+      // the prefix this build uses — one entry each, generated from
+      // `public/uploads/` at build time. LAST, because the rules above are
+      // more specific and Next takes the first match. A `/wp-content` URL
+      // for a file this build does not carry matches nothing here and gets
+      // a direct 404 rather than a hop to one; see the note on
+      // `existingUploadRedirects` at the top of this file for why that
+      // distinction was worth 352 entries.
+      ...existingUploadRedirects(),
 
       // Nothing here for the http:// and www. rows of the same crawl. Those
       // are host-level, not path-level: TLS termination handles the scheme,
