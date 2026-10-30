@@ -81,7 +81,10 @@ export function PropertyHeader({ site, activeHref }: PropertyHeaderProps) {
               fill
               sizes="128px"
               className="object-contain object-left"
-              priority
+              // No `priority`: its preload was queued ahead of the hero
+              // photograph that is the page's LCP element, on every
+              // property page. It is in view, so it still loads on first
+              // layout.
             />
           </Link>
 

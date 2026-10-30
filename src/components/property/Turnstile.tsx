@@ -20,6 +20,15 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
  * Cloudflare spends a token the first time it is checked, so verifying in one
  * request and sending in another would fail the second one every time.
  *
+ * **The vendor script waits for the visitor to touch the form.** Loading it
+ * on mount cost every page with a form roughly 950 KB of challenge scripts
+ * and frames before anyone had typed a letter — on /seminyak/contact that was
+ * most of the page's weight, and it ran during the window PageSpeed scores.
+ * The first focus, input or pointer press anywhere inside the form starts
+ * it; a visitor filling in five fields gives the challenge ample time to
+ * solve itself, and one who hits Send first gets the same "complete the
+ * check" line `take()` already shows for an unsolved challenge.
+ *
  * **Unconfigured means invisible.** With no `NEXT_PUBLIC_TURNSTILE_SITE_KEY`
  * the hook renders nothing and `take()` returns `""` — "no check to make" —
  * so the forms behave exactly as they did before Turnstile existed. That is
@@ -146,9 +155,27 @@ export function useTurnstileGate(action?: string): TurnstileGate {
 
   const [token, setToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Flips once, on the first interaction with the form — see the note at the
+  // top of this file on why the script is not loaded on mount.
+  const [armed, setArmed] = useState(false);
 
   useEffect(() => {
-    if (!isTurnstileConfigured) return;
+    if (!isTurnstileConfigured || armed) return;
+    // The widget sits inside the form it protects, so the form is the
+    // nearest `<form>` ancestor. Without one (not a case this site has),
+    // fall back to the container itself rather than never loading.
+    const target = containerRef.current?.closest("form") ?? containerRef.current;
+    if (!target) return;
+    const arm = () => setArmed(true);
+    const events = ["focusin", "input", "pointerdown"] as const;
+    for (const type of events) target.addEventListener(type, arm, { once: true, passive: true });
+    return () => {
+      for (const type of events) target.removeEventListener(type, arm);
+    };
+  }, [armed]);
+
+  useEffect(() => {
+    if (!isTurnstileConfigured || !armed) return;
 
     let cancelled = false;
 
@@ -201,7 +228,7 @@ export function useTurnstileGate(action?: string): TurnstileGate {
         }
       }
     };
-  }, []);
+  }, [armed]);
 
   function reset() {
     setToken(null);

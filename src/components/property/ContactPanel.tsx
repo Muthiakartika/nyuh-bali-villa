@@ -70,6 +70,8 @@ export function ContactPanel({
             sizes="(min-width: 768px) 560px, 100vw"
             className="object-cover"
             priority
+            // The page's LCP element; `priority` alone does not set this.
+            fetchPriority="high"
           />
         </div>
 
