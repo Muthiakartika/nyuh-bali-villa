@@ -114,6 +114,9 @@ export function PropertyHero({ images, alt, eyebrow, title }: PropertyHeroProps)
                 sizes="100vw"
                 className="object-cover"
                 priority={index === 0}
+                // `priority` preloads but does not set `fetchpriority`; this
+                // photograph is the page's LCP element, so ask for it first.
+                fetchPriority={index === 0 ? "high" : undefined}
               />
             </div>
           </div>

@@ -670,6 +670,7 @@ export function PropertyPickerBlock({
           <PropertyPanel
             key={panel._key ?? panel.href}
             headingLevel={index === 0 ? "h1" : "h2"}
+            priority={index === 0}
             name={panel.name}
             description={panel.description ?? ""}
             imageSrc={imageSrc}

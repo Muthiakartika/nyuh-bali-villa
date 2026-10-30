@@ -10,6 +10,11 @@ type PropertyPanelProps = {
   /** Which heading tag to render (see the note below on why this is a prop
    * instead of always being the same tag). */
   headingLevel: "h1" | "h2";
+  /** True for the panel whose photograph is the page's LCP element. Only one
+   * panel may set it: on a phone the panels stack, so the second photograph
+   * starts below the fold, and preloading both made them compete for the
+   * same slow connection as the one the visitor actually sees first. */
+  priority?: boolean;
 };
 
 /**
@@ -37,6 +42,7 @@ export function PropertyPanel({
   imageSrc,
   href,
   headingLevel,
+  priority = false,
 }: PropertyPanelProps) {
   const Heading: ElementType = headingLevel;
 
@@ -53,7 +59,10 @@ export function PropertyPanel({
         fill
         sizes="(min-width: 768px) 50vw, 100vw"
         className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05]"
-        priority
+        // `priority` alone emits the preload but not `fetchpriority`, so the
+        // browser still queued the LCP photograph behind the fonts.
+        priority={priority}
+        fetchPriority={priority ? "high" : undefined}
       />
 
       {/* Two gradients, not one flat wash. The top one exists only so the

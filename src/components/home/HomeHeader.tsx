@@ -46,7 +46,9 @@ export function HomeHeader({ logoSrc, logoAlt }: HomeHeaderProps) {
             fill
             sizes="126px"
             className="object-contain object-left"
-            priority
+            // No `priority`: its preload was queued ahead of the panel
+            // photograph that is the page's LCP element. It is in view, so
+            // it still loads on first layout.
           />
         </Link>
 

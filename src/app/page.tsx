@@ -59,6 +59,7 @@ export default async function Home() {
             <PropertyPanel
               key={panel.href}
               headingLevel={index === 0 ? "h1" : "h2"}
+              priority={index === 0}
               name={panel.name}
               description={panel.description}
               imageSrc={panel.imageSrc}
