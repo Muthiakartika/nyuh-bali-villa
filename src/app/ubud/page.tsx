@@ -11,7 +11,9 @@ import { InstagramTeaser } from "@/components/property/InstagramTeaser";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import ManagedPage from "@/components/sanity/ManagedPage";
 import { getInstagramWidget, getPropertySite, getSiteLabels, getTestimonials } from "@/sanity/lib/content";
-import { resolvePageMetadata } from "@/sanity/lib/metadata";
+import { resolvePageMetadata, resolveWebPageText } from "@/sanity/lib/metadata";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { ubudJsonLd } from "@/data/structuredData";
 
 export async function generateMetadata(): Promise<Metadata> {
   // A published `page` document's SEO wins; otherwise this stays
@@ -29,10 +31,15 @@ export default async function UbudAboutPage() {
   const labels = await getSiteLabels();
   const instagramWidget = await getInstagramWidget("ubud");
   const testimonials = await getTestimonials("ubud");
+  const webPage = await resolveWebPageText("/ubud");
   return (
     <>
       <PropertyHeader site={site} activeHref="/ubud" />
       <main>
+        {/* The resort's structured data, beside the BreadcrumbList that
+            ManagedPage renders. Outside ManagedPage on purpose: it is the
+            same whichever of the route's JSX or the CMS sections renders. */}
+        <JsonLd data={ubudJsonLd(webPage)} />
         {/* Every band below is the fallback: publish a `page`
             document at this path in the Studio and its sections
             render instead, with the chrome unchanged. */}

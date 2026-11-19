@@ -5,7 +5,9 @@ import { PropertyPanel } from "@/components/home/PropertyPanel";
 import { BookNowRibbon } from "@/components/layout/BookNowRibbon";
 import { getBookNowLabel, getHomeLogo } from "@/sanity/lib/content";
 import ManagedPage from "@/components/sanity/ManagedPage";
-import { resolvePageMetadata } from "@/sanity/lib/metadata";
+import { resolvePageMetadata, resolveWebPageText } from "@/sanity/lib/metadata";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { homeJsonLd } from "@/data/structuredData";
 import { HOME_PANELS } from "@/data/pages/home";
 
 // Home used to be the one route with no metadata of its own, inheriting the
@@ -41,8 +43,15 @@ const GROUP_BOOKING_HREF =
  */
 export default async function Home() {
   const homeLogo = await getHomeLogo();
+  const webPage = await resolveWebPageText("/");
   return (
     <div className="relative min-h-screen">
+      {/* The brand's structured data. Rendered here, by the home route
+          alone — never from a layout — so it cannot appear on any other
+          page. Outside <main>, because <main> is the two-column grid and
+          nothing but the panels belongs in it. The landing page has no
+          BreadcrumbList, so this is its only JSON-LD. */}
+      <JsonLd data={homeJsonLd(webPage)} />
       <HomeHeader logoSrc={homeLogo.src} logoAlt={homeLogo.alt} />
 
       {/* Gapless on purpose: the seam where the two photographs meet is the

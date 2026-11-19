@@ -66,6 +66,30 @@ export async function resolvePageMetadata(
 }
 
 /**
+ * The page's `<title>` and meta description as plain strings, for a JSON-LD
+ * `WebPage` node to restate.
+ *
+ * Read through `resolvePageMetadata` — the same call the route's
+ * `generateMetadata` makes — rather than from the Sanity document directly,
+ * so the structured data cannot disagree with the head: a title set in the
+ * Studio wins in both, and an empty one falls back to `src/data/seo.ts` in
+ * both. Publishing revalidates the page's tag, so the two change together.
+ */
+export async function resolveWebPageText(
+  path: string,
+): Promise<{ name?: string; description?: string }> {
+  const { title, description } = await resolvePageMetadata(path);
+  let name: string | undefined;
+  if (typeof title === "string") name = title;
+  else if (title && "absolute" in title) name = title.absolute;
+  else if (title && "default" in title) name = title.default;
+  return {
+    name,
+    description: typeof description === "string" ? description : undefined,
+  };
+}
+
+/**
  * For routes backed by their own document type (post, room, experience,
  * legal page) rather than by a `page`. The document's own SEO wins, then the
  * route's existing metadata fills the rest.

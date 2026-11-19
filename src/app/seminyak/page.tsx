@@ -12,7 +12,9 @@ import { type InstagramPost } from "@/components/property/instagramFeed";
 import { AwardsRow } from "@/components/property/AwardsRow";
 import ManagedPage from "@/components/sanity/ManagedPage";
 import { getInstagramWidget, getPropertySite, getSiteLabels, getTestimonials } from "@/sanity/lib/content";
-import { resolvePageMetadata } from "@/sanity/lib/metadata";
+import { resolvePageMetadata, resolveWebPageText } from "@/sanity/lib/metadata";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { seminyakJsonLd } from "@/data/structuredData";
 
 
 // Overrides the root layout's Home-page title/description — every route
@@ -105,11 +107,16 @@ export default async function SeminyakAboutPage() {
   const labels = await getSiteLabels();
   const instagramWidget = await getInstagramWidget("seminyak");
   const testimonials = await getTestimonials("seminyak");
+  const webPage = await resolveWebPageText("/seminyak");
 
   return (
     <>
       <PropertyHeader site={site} activeHref="/seminyak" />
       <main>
+        {/* The hotel's structured data, beside the BreadcrumbList that
+            ManagedPage renders. Outside ManagedPage on purpose: it is the
+            same whichever of the route's JSX or the CMS sections renders. */}
+        <JsonLd data={seminyakJsonLd(webPage)} />
         {/* Every band below is the fallback: publish a `page`
             document at this path in the Studio and its sections
             render instead, with the chrome unchanged. */}
